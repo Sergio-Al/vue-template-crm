@@ -6,6 +6,7 @@ import { userStore } from 'src/modules/Users/store/UserStore';
 import { TableSkeleton } from 'src/components';
 
 import ProductTypeDialog from '../components/Dialogs/ProductTypeDialog.vue';
+import AdvancedFilterTable from '../components/Filters/AdvancedFilterTable.vue';
 
 import {
   base,
@@ -33,9 +34,9 @@ const { setVisibleColumn, getListProductType, reloadList, setPagination } =
   useProductTypesStore();
 
 //Refs
-// const filterAdvancedRef = ref<InstanceType<typeof AdvancedFilterTable> | null>(
-//   null
-// );
+const filterAdvancedRef = ref<InstanceType<typeof AdvancedFilterTable> | null>(
+  null
+);
 // const projectDialogRef = ref<InstanceType<typeof ProjectDialog> | null>(null);
 // const accountDialogRef = ref<InstanceType<typeof AccountDialog> | null>(null);
 
@@ -76,8 +77,10 @@ const onUpdateMultiple = (selected: base[]) => {
 
 const onSubmitDataFilter = () => {
   try {
-    // table.data_filter = filterAdvancedRef.value?.dataFilter;
+    console.log('your data filter', filterAdvancedRef.value?.dataFilter);
+    table.data_filter = filterAdvancedRef.value?.dataFilter;
     table.setFilterData();
+    // obtiene datos segun el filtro actual (el filtro esta en el store)
     table.reloadList();
   } catch (error) {
     throw error;
@@ -86,7 +89,7 @@ const onSubmitDataFilter = () => {
 
 const onClearDataFilter = () => {
   try {
-    // filterAdvancedRef.value?.clearFilter();
+    filterAdvancedRef.value?.clearFilter();
     table.clearFilterData();
     table.setFilterData();
     table.reloadList();
@@ -185,7 +188,7 @@ const constructorComp = async (idUser?: string) => {
       :loading="table.loading"
       :defaultRows="false"
       :style="'height: 95dvh'"
-      searchPlaceholder="Busqueda por: Razon social tipo, nro_resolucion_min,"
+      searchPlaceholder="Busqueda por: Nombre, Division"
       @visibleColumns="setVisibleColumn"
       @submitFilter="onSubmitDataFilter"
       @updateMultiple="onUpdateMultiple"

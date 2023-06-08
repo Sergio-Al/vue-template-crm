@@ -6,13 +6,13 @@ import { storeToRefs } from 'pinia';
 import Notification from 'src/composables/notify';
 
 // typescript types
-import { ProductType } from '../../utils/types';
+import type { ProductRequirement, ProductType } from '../../utils/types';
 
 // module files (store,composables,etc)
 import { userStore } from 'src/modules/Users/store/UserStore';
 
 // Global properties
-import { axios_GLOBAL } from 'src/conections/axiosCRM';
+import { axios_GLOBAL, axios_NS_01 } from 'src/conections/axiosCRM';
 
 // intancia del store
 const uStore = userStore();
@@ -21,6 +21,7 @@ const uStore = userStore();
 const localId = ref<string>('');
 const isLoading = ref<boolean>(false);
 const productTypeData = ref<ProductType>({} as ProductType);
+const productRequirements = ref<ProductRequirement[]>([]);
 const { userCRM } = storeToRefs(uStore);
 
 // methods
@@ -45,9 +46,11 @@ const resetProductTypeData = () => {
   // borrar los datos de localId y productTypeData (o volver a asignar los valores por defecto)
 };
 
-const createProductType = (data: ProductType, reload = false) => {
+const createProductType = async (data: ProductType, reload = false) => {
   try {
+    console.log(data);
     // llamar a servicio para crear tipo de producto
+    await axios_NS_01.post('/product-type', data);
   } catch (error) {
     // notificar error
   }
@@ -118,6 +121,7 @@ export function useProductType(
     localId,
     isLoading,
     productTypeData,
+    productRequirements,
     userCRM,
 
     // * Methods

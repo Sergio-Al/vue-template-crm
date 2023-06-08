@@ -61,6 +61,7 @@ const {
 const {
   isLoading: isDataLoading,
   localId,
+  createProductType,
   deleteProductType,
   getProductType,
 } = useProductType();
@@ -71,7 +72,7 @@ const generalFormRef = ref<InstanceType<typeof ViewGeneral> | null>(null);
 const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
 
 const saveForm = async (idNew: string) => {
-  console.log('guardando')
+  console.log('guardando');
   titleDialog.value = 'Detalle del Prospecto:';
   loadingView.value = false;
   id.value = idNew;

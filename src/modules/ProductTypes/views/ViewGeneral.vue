@@ -11,10 +11,11 @@ import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vu
 
 // module-components
 import CardInfo from '../components/Cards/CardInfo.vue';
+import CardRequirements from '../components/Cards/CardRequirements.vue';
 
 // module-files
 import { useProductType } from '../composables';
-import { ProductType } from '../utils/types';
+import type { ProductType } from '../utils/types';
 </script>
 <script lang="ts" setup>
 const props = defineProps<{
@@ -32,6 +33,7 @@ const {
   isLoading: isOppLoading,
   localId,
   productTypeData,
+  productRequirements,
 
   userCRM,
   assignDefaultValues,
@@ -55,6 +57,9 @@ const commentCreate = ref('');
 // const infoCardRef = ref<InstanceType<typeof CardInfo> | null>(null);
 // const leadRelationsRef = ref<InstanceType<typeof InfoAdditional> | null>(null);
 const cardInfoRef = ref<InstanceType<typeof CardInfo> | null>(null);
+const cardRequirementsRef = ref<InstanceType<typeof CardRequirements> | null>(
+  null
+);
 
 // const InfoOthersRef = ref<InstanceType<typeof InfoOthers> | null>(null);
 const commentRef = ref<InstanceType<typeof QInput> | null>(null);
@@ -117,14 +122,17 @@ const onSubmit = async () => {
   } else {
     // crear nuevo tipo de producto si NO existe localId
     const cardInfoData = cardInfoRef.value?.exposeData();
+    const requerimientos = cardRequirementsRef.value?.exposeData();
     const assignedUser = assignedSingleUserRef.value?.dataSend.id;
     const firstComment = commentCreate.value;
 
-    if (!!cardInfoData) {
+    if (!!cardInfoData && !!requerimientos && requerimientos?.length > 0) {
       try {
         const body: ProductType = {
           ...cardInfoData,
+          requerimientos,
         };
+        console.log(body);
         await createProductType(body, true);
         emits('submitComplete', localId.value);
       } catch (error) {
@@ -161,6 +169,12 @@ defineExpose({
           :id="localId"
           class="col-12"
           ref="cardInfoRef"
+        />
+        <CardRequirements
+          :data="productRequirements"
+          :id="localId"
+          class="col-12"
+          ref="cardRequirementsRef"
         />
       </div>
     </div>
