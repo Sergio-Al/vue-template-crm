@@ -132,7 +132,6 @@ const onSubmit = async () => {
           ...cardInfoData,
           requerimientos,
         };
-        console.log(body);
         await createProductType(body, true);
         emits('submitComplete', localId.value);
       } catch (error) {

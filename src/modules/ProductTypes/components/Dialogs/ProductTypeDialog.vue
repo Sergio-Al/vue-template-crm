@@ -100,7 +100,7 @@ const saveCurrentForm = async () => {
   } catch (error) {
     $q.notify({
       type: 'negative',
-      message: 'Error al guardar lead',
+      message: 'Error al guardar tipo de producto',
     });
   }
   loadingView.value = false;
