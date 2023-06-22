@@ -12,7 +12,7 @@ export default {
       name: 'productTypes',
       meta: {
         isComplete: true,
-        nameLabel: 'Tipo de Producto',
+        nameLabel: 'Tipos de Producto',
       },
       component: () => import('../views/ViewList.vue'),
       props: (route: { query: { iduser: string; menu: boolean } }) => {

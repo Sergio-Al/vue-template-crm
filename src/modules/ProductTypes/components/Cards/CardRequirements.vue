@@ -1,23 +1,23 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { Requirement } from '../../../Requirements/utils/types';
 
-import type { ProductRequirement } from '../../utils/types';
 
 interface Props {
-  data?: ProductRequirement[];
+  data?: Requirement[];
   id?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  data: () => [] as ProductRequirement[],
+  data: () => [] as Requirement[],
   id: '',
 });
 
-const localRequirements = ref<ProductRequirement[]>(props.data);
+const localRequirements = ref<Requirement[]>(props.data);
 
 // methods
 const addRequirement = () => {
-  localRequirements.value.push({ nombre: '' });
+  localRequirements.value.push({ name: '' });
 };
 
 const deleteRequirement = (index: number) => {
@@ -25,7 +25,7 @@ const deleteRequirement = (index: number) => {
 };
 
 defineExpose({
-  exposeData: (): ProductRequirement[] => localRequirements.value,
+  exposeData: (): Requirement[] => localRequirements.value,
 });
 </script>
 
@@ -66,7 +66,7 @@ defineExpose({
             </div>
             <q-input
               class="col-11"
-              v-model.trim="item.nombre"
+              v-model.trim="item.name"
               type="text"
               outlined
               dense

@@ -1,254 +1,269 @@
-<script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useCompaniesStore } from '../store/companies';
-import { HANSACRM3_URL } from 'src/conections/api_conectors';
-import { userStore } from 'src/modules/Users/store/UserStore';
-import { TableSkeleton } from 'src/components';
+<script lang="ts">
+// vue-quasar-libraries
+import { Loading, QInput } from 'quasar';
+import { computed, ref } from 'vue';
 
-import {
-  base,
-  Pagination,
-  Filter,
-  UpdateMassiveModel,
-  IndicatorsModel,
-} from '../utils/types';
+// global-components
 
-//properties
-const props = withDefaults(
-  defineProps<{
-    idUser?: string;
-    moduleId?: string;
-  }>(),
-  {
-    idUser: '',
-  }
-);
+import { useCompaniesStore } from '../store/companyStore';
+//import CommentsList from 'src/components/Comments/CommentsList.vue';
+import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
+// import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
 
-//Stores
-const user = userStore();
-const table = useCompaniesStore();
-const { setVisibleColumn, getListCompanies, reloadList, setPagination } =
-  useCompaniesStore();
+// module-components
+import CardDocuments from '../components/Cards/CardDocuments.vue';
+import CardInfo from '../components/Cards/CardInfo.vue';
+import CardContact from '../components/Cards/CardContact.vue';
 
-//Refs
-// const filterAdvancedRef = ref<InstanceType<typeof AdvancedFilterTable> | null>(
-//   null
-// );
-// const projectDialogRef = ref<InstanceType<typeof ProjectDialog> | null>(null);
-// const accountDialogRef = ref<InstanceType<typeof AccountDialog> | null>(null);
+// module-files
+import { useAsyncState } from '@vueuse/core';
+import { storeToRefs } from 'pinia';
+import { Company } from '../utils/types';
+import DirectionCard from 'src/components/MainCard/DirectionCard.vue';
+import CardDelegate from '../components/Cards/CardDelegate.vue';
+</script>
+<script lang="ts" setup>
+const props = defineProps<{
+  id?: string;
+}>();
 
-// const updateMassiveRef = ref<InstanceType<
-//   typeof UpdateMassiveComponent
-// > | null>(null);
+const companyStore = useCompaniesStore();
+const { cardInfo, cardContact } = storeToRefs(companyStore);
 
-//functions
-const formSaved = async () => {
-  await table.reloadList();
-};
+const tab = ref(props.id ? 'Activities' : 'comentarios');
+const localId = ref(props.id ?? '');
+const commentCreate = ref('');
 
-const onRequestTable = async (val: {
-  pagination: Pagination;
-  filter: Filter;
-}) => {
-  await setPagination(val.pagination);
-  await getListCompanies(val);
-};
+const cardInfoRef = ref<InstanceType<typeof CardInfo> | null>(null);
+const cardContactRef = ref<InstanceType<typeof CardContact> | null>(null);
+const cardDocumentsRef = ref<InstanceType<typeof CardDocuments> | null>(null);
+const directionCardComponentRef = ref<InstanceType<
+  typeof DirectionCard
+> | null>(null);
+const cardDelegateRef = ref<InstanceType<typeof CardDelegate> | null>(null);
 
-const onDeleteMultiple = (selected: base[]) => {
-  const items = selected.map((el: base) => {
-    return { id: el.id };
-  });
-  table.deleteMultiple(items);
-};
+const commentRef = ref<InstanceType<typeof QInput> | null>(null);
 
-const onUpdateMultiple = (selected: base[]) => {
-  const items = selected.map((el: base) => {
-    return { id: el.id };
-  });
-  // const data = <UpdateMassiveModel>updateMassiveRef.value?.getData();
-  // table.updateMultiple(data, items);
-};
-
-const onSubmitDataFilter = () => {
-  try {
-    // table.data_filter = filterAdvancedRef.value?.dataFilter;
-    table.setFilterData();
-    table.reloadList();
-  } catch (error) {
-    throw error;
-  }
-};
-
-const onClearDataFilter = () => {
-  try {
-    // filterAdvancedRef.value?.clearFilter();
-    table.clearFilterData();
-    table.setFilterData();
-    table.reloadList();
-  } catch (error) {
-    throw error;
-  }
-};
-
-const onUpdateDataTable = async () => {
-  try {
-    await reloadList();
-  } catch (error) {
-    throw error;
-  }
-};
-
-const openDialog = (title: string) => {
-  // projectDialogRef.value?.openDialogProject(undefined, title);
-};
-
-const openAccountDialog = (id: string) => {
-  // accountDialogRef.value?.openDialogAccountTab(id);
-};
-
-const openItemSelected = (id: string) => {
-  // projectDialogRef.value?.openDialogProject(id);
-};
-
-const setStatusColor = (status: string) => {
-  const statusName = [
-    {
-      name: 'In Review',
-      color: 'blue-1',
-      textColor: 'blue',
-      icon: 'timeline',
-    },
-    {
-      name: 'Draft',
-      color: 'grey-4',
-      textColor: 'grey-7',
-      icon: 'mode',
-    },
-    {
-      name: 'Underway',
-      color: 'yellow-2',
-      textColor: 'yellow-9',
-      icon: 'timeline',
-    },
-    {
-      name: 'On_Hold',
-      color: 'cyan-2',
-      textColor: 'cyan-9',
-      icon: 'watch_later',
-    },
-    {
-      name: 'Completed',
-      color: 'green-2',
-      textColor: 'green-9',
-      icon: 'check',
-    },
-    {
-      name: 'Canceled',
-      color: 'red-2',
-      textColor: 'red-9',
-      icon: 'close',
-    },
-  ];
-  return statusName.find((el) => el.name === status);
-};
-
-onMounted(async () => {
-  //isReady.value = false;
-  //await getUserConfig();
-  //isReady.value = true;
-  if (props.moduleId) openItemSelected(props.moduleId);
+const isSomeCardEditing = computed(() => {
+  return [
+    // infoCardRef.value?.isEditing,
+    // leadRelationsRef.value?.isEditing
+    cardContactRef.value?.isEditing,
+    cardInfoRef.value?.isEditing,
+    directionCardComponentRef.value?.isEditing,
+  ].some((value) => !!value);
 });
 
-const constructorComp = async (idUser?: string) => {
-  if (idUser) user.insertUser(idUser);
+//se dispara cuando carga el componente
+const { isLoading, execute } = useAsyncState(async () => {
+  if (!!localId.value) {
+    return await companyStore.onGetCompany(localId.value);
+  }
+}, {});
+
+// const validateCards = async () => {
+//   const validCards: (boolean | undefined)[] = [];
+//   if (infoCardRef.value?.isEditing) {
+//     const infoCardValidation = await infoCardRef.value.validateInputs();
+//     validCards.push(infoCardValidation);
+//   }
+//   if (!localId.value) {
+//     const firstCommentValidation = await commentRef.value?.validate();
+//     validCards.push(firstCommentValidation);
+//   }
+//   return validCards.every((card) => !!card);
+// };
+
+const onSubmit = async () => {
+  // Validar datos...
+  // const areCardsValid = await validateCards();
+  // if (!areCardsValid) {
+  //   $q.notify({
+  //     type: 'warning',
+  //     message: 'Error de validación',
+  //     caption: 'Algunos campos necesitan ser llenados',
+  //   });
+  //   return;
+  // }
+
+  // Verificar si existe un id por localId
+  if (!!localId.value) {
+    // actualizar datos si existe localId
+    const cardInfoData = cardInfoRef.value?.exposeData();
+    const cardContactData = cardContactRef.value?.exposeData();
+    const directionData = directionCardComponentRef.value?.captureCurrentData();
+
+    console.log(directionData);
+
+    if (!!cardInfoData || !!cardContactData) {
+      try {
+        const body: Company = {
+          ...cardInfoData,
+          ...cardContactData,
+        };
+        await companyStore.onUpdateCompany(localId.value, body);
+        emits('submitComplete', localId.value);
+        await execute();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  } else {
+    const cardInfoData = cardInfoRef.value?.exposeData();
+    const cardContactData = cardContactRef.value?.exposeData();
+    const directionData = directionCardComponentRef.value?.captureCurrentData();
+
+    if (!!cardInfoData || !!cardContactData) {
+      try {
+        Loading.show({
+          message: 'Guardando Información',
+        });
+        const newCompany = await companyStore.onCreateCompany(
+          { ...cardInfoData, ...cardContactData },
+          []
+        );
+        localId.value = newCompany.id;
+        emits('submitComplete', localId.value);
+        await execute();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
 };
 
-(() => {
-  constructorComp(props.idUser);
-})();
-</script>
+// Funciones que se podran usar al declarar una referencia de este componente
+defineExpose({
+  onSubmit,
+  isSomeCardEditing,
+});
 
+const emits = defineEmits<{
+  (event: 'submitComplete', values: string): void;
+  (event: 'pruebaRefrescar'): void;
+  (event: 'submitFail', values: string, options?: object): void;
+}>();
+</script>
 <template>
-  <div :class="$q.platform.is.desktop ? 'q-pa-md' : 'q-pa-sm'">
-    <table-component
-      :rows="table.data_table.rows"
-      :columns="table.data_table.columns"
-      :total="table.pagination.rowsNumber"
-      :rowsPerPage="table.pagination.rowsPerPage"
-      :sortBy="table.pagination.sortBy"
-      :descending="table.pagination.descending"
-      :visible="table.visible_columns"
-      :dataFilter="table.data_filter"
-      :loading="table.loading"
-      :defaultRows="false"
-      :style="'height: 95dvh'"
-      searchPlaceholder="Busqueda por: Razon_social, nro_resolucion_min,"
-      @visibleColumns="setVisibleColumn"
-      @submitFilter="onSubmitDataFilter"
-      @updateMultiple="onUpdateMultiple"
-      @deleteMultiple="onDeleteMultiple"
-      @updateData="onUpdateDataTable"
-      @update:props="onRequestTable"
-      @clearFilter="onClearDataFilter"
-      @openDialog="openDialog"
-      v-if="true"
-    >
-      <template #rows="{ propsTable }">
-        <q-tr :props="propsTable">
-          <q-td class="text-left">
-            <q-checkbox v-model="propsTable.selected" flat dense />
-          </q-td>
-          <q-td key="razon_social" :props="propsTable" :style="'width: 100px;'">
-            {{ propsTable.row.razon_social }}
-          </q-td>
-          <q-td key="direccion" :props="propsTable" :style="'width: 100px;'">
-            {{ propsTable.row.direccion }}
-          </q-td>
-          <q-td key="nro_resolucion_min" :props="propsTable">
-            {{ propsTable.row.direccion }}
-          </q-td>
-          <q-td key="id_representante" :props="propsTable">
-            <div
-              class="text-primary"
-              style="display: flex; align-items: center"
-            >
-              <small
-                :style="'width: 150px;line-break: auto;white-space: normal;margin-left: 0.5rem;'"
-              >
-                {{ propsTable.row.nombre_representante }}
-              </small>
-            </div>
-            <div></div>
-          </q-td>
-        </q-tr>
-      </template>
-      <template v-slot:buttons>
-        <q-btn
-          color="primary"
-          label="Nuevo"
-          v-if="!$q.screen.xs"
-          @click="openDialog('NUEVA EMPRESA')"
-        >
-        </q-btn>
-        <q-page-sticky :offset="[18, 0]" position="bottom-right" v-else>
-          <q-btn
-            fab
-            color="primary"
-            icon="add"
-            @click="openDialog('NUEVO EMPRESA')"
-          />
-        </q-page-sticky>
-      </template>
-      <template #updateContent>
-        <UpdateMassiveComponent ref="updateMassiveRef" />
-      </template>
-      <template #filterContent>
-        <AdvancedFilterTable
-          ref="filterAdvancedRef"
-          @submitFilter="onSubmitDataFilter"
+  <ViewGeneralSkeleton v-if="isLoading" />
+  <div v-else class="row q-col-gutter-lg q-pa-md">
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <div class="row q-gutter-y-md">
+        <CardInfo
+          :data="cardInfo"
+          :id="localId"
+          class="col-12"
+          ref="cardInfoRef"
         />
-      </template>
-    </table-component>
-    <TableSkeleton v-else />
+        <CardContact
+          :data="cardContact"
+          :id="localId"
+          class="col-12"
+          ref="cardContactRef"
+        />
+
+        <direction-card-component
+          ref="directionCardComponentRef"
+          :id-local="localId"
+          :data="{}"
+          :options="[]"
+          class="col-12"
+        />
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <div class="row q-gutter-y-md">
+        <CardDelegate ref="cardDelegateRef" />
+        <div class="q-gutter-y-md col-12">
+          <q-card>
+            <q-card-section style="padding: 0px">
+              <q-tabs
+                class="q-ma-none"
+                v-model="tab"
+                indicator-color="primary"
+                :inline-label="!$q.screen.xs"
+                :active-color="$q.dark.isActive ? 'orange' : 'primary'"
+                align="justify"
+                :no-caps="$q.screen.xs ? true : false"
+              >
+                <q-tab
+                  name="Activities"
+                  icon="person"
+                  label="Actividades"
+                  :disable="!localId"
+                />
+                <q-tab name="comentarios" icon="comment" label="Comentarios" />
+
+                <q-tab
+                  name="historychanges"
+                  icon="history"
+                  label="Historial"
+                  :disable="!localId"
+                />
+              </q-tabs>
+              <q-separator />
+              <q-tab-panels
+                v-model="tab"
+                animated
+                style="min-height: fit-content"
+              >
+                <q-tab-panel
+                  name="comentarios"
+                  style="min-height: 500px"
+                  class="q-py-sm"
+                  v-if="!!localId"
+                >
+                  <CommentsList
+                    :id="localId"
+                    :descCRM3="''"
+                    :modulo="'Opportunities'"
+                  >
+                  </CommentsList>
+                </q-tab-panel>
+                <q-tab-panel
+                  name="comentarios"
+                  style="min-height: 500px"
+                  class="q-pd-sm"
+                  v-else
+                >
+                  <q-input
+                    autogrow
+                    outlined
+                    bottom-slots
+                    v-model="commentCreate"
+                    placeholder="Escriba su comentario"
+                    dense
+                    color="primary"
+                    ref="commentRef"
+                    :rules="[(val) => !!val || 'El campo es requerido']"
+                  >
+                    <template v-slot:before> </template>
+                  </q-input>
+                </q-tab-panel>
+                <q-tab-panel name="Activities">
+                  <!-- <ActivitiesComponent
+                  :id="localId"
+                  :idUser="userCRM.id"
+                  module="Opportunities"
+                ></ActivitiesComponent> -->
+                  <div>Activities component</div>
+                </q-tab-panel>
+              </q-tab-panels>
+            </q-card-section>
+          </q-card>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- <AssignedSingleUser2
+        ref="assignedSingleUserRef"
+        :module="'HANCE_Empresa'"
+        :module-id="localId"
+        :withList="false"
+        @changeUser="onChangeUserAssigned"
+      /> -->
+
+      <q-separator inset></q-separator>
+    </div>
   </div>
 </template>

@@ -239,8 +239,9 @@ export const useProjectTableStore = defineStore('project-table', {
         };
         const data = await getTableData(params);
 
-        this.data_table.rows = data?.rows;
-        this.pagination.rowsNumber = data?.total;
+        this.data_table.rows = data;
+        this.pagination.rowsNumber = data.length;
+        console.log(data.length);
       } catch (error) {
         console.log(error);
       } finally {

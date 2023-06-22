@@ -9,7 +9,7 @@ export default {
   children: [
     {
       path: '',
-      name: 'opportunities',
+      name: 'certifications',
       meta: {
         isComplete: true,
         nameLabel: 'Certificaciones',

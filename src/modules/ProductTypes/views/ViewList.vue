@@ -7,6 +7,7 @@ import { TableSkeleton } from 'src/components';
 
 import ProductTypeDialog from '../components/Dialogs/ProductTypeDialog.vue';
 import AdvancedFilterTable from '../components/Filters/AdvancedFilterTable.vue';
+import { useProductTypeTableStore } from '../store/useProductTypeTableStore';
 
 import {
   base,
@@ -29,9 +30,9 @@ const props = withDefaults(
 
 //Stores
 const user = userStore();
-const table = useProductTypesStore();
-const { setVisibleColumn, getListProductType, reloadList, setPagination } =
-  useProductTypesStore();
+const table = useProductTypeTableStore();
+const { setVisibleColumn, getListProductTypes, reloadList, setPagination } =
+  useProductTypeTableStore();
 
 //Refs
 const filterAdvancedRef = ref<InstanceType<typeof AdvancedFilterTable> | null>(
@@ -57,7 +58,7 @@ const onRequestTable = async (val: {
   filter: Filter;
 }) => {
   await setPagination(val.pagination);
-  await getListProductType(val);
+  await getListProductTypes(val);
 };
 
 const onDeleteMultiple = (selected: base[]) => {
@@ -80,7 +81,6 @@ const onSubmitDataFilter = () => {
     console.log('your data filter', filterAdvancedRef.value?.dataFilter);
     table.data_filter = filterAdvancedRef.value?.dataFilter;
     table.setFilterData();
-    // obtiene datos segun el filtro actual (el filtro esta en el store)
     table.reloadList();
   } catch (error) {
     throw error;
@@ -188,7 +188,7 @@ const constructorComp = async (idUser?: string) => {
       :loading="table.loading"
       :defaultRows="false"
       :style="'height: 95dvh'"
-      searchPlaceholder="Busqueda por: Nombre, Division"
+      searchPlaceholder="Busqueda por: Razon social tipo, nro_resolucion_min,"
       @visibleColumns="setVisibleColumn"
       @submitFilter="onSubmitDataFilter"
       @updateMultiple="onUpdateMultiple"
@@ -204,8 +204,11 @@ const constructorComp = async (idUser?: string) => {
           <q-td class="text-left">
             <q-checkbox v-model="propsTable.selected" flat dense />
           </q-td>
-          <q-td key="nombre" :props="propsTable" :style="'width: 100px;'">
-            {{ propsTable.row.nombre }}
+          <q-td key="name" :props="propsTable" :style="'width: 100px;'">
+            {{ propsTable.row.name }}
+          </q-td>
+          <q-td key="description" :props="propsTable" :style="'width: 100px;'">
+            {{ propsTable.row.description }}
           </q-td>
           <q-td key="iddivision_c" :props="propsTable" :style="'width: 100px;'">
             {{ propsTable.row.iddivision_c }}
@@ -213,18 +216,8 @@ const constructorComp = async (idUser?: string) => {
           <q-td key="idamercado_c" :props="propsTable">
             {{ propsTable.row.idamercado_c }}
           </q-td>
-          <q-td key="idregional_c" :props="propsTable">
-            <div
-              class="text-primary"
-              style="display: flex; align-items: center"
-            >
-              <small
-                :style="'width: 150px;line-break: auto;white-space: normal;margin-left: 0.5rem;'"
-              >
-                {{ propsTable.row.idregional_c }}
-              </small>
-            </div>
-            <div></div>
+            <q-td key="idregional_c" :props="propsTable">
+            {{ propsTable.row.idregional_c }}
           </q-td>
           <q-td key="idgrupocliente_c" :props="propsTable">
             {{ propsTable.row.idgrupocliente_c }}

@@ -7,6 +7,8 @@ import ViewGeneral from '../../views/ViewGeneral.vue';
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import { useQuasar, QSpinnerPuff } from 'quasar';
 import { useProductType } from '../../composables/useProductType';
+import { useProductTypesStore } from '../../store/productTypes';
+import { useProductTypeTableStore } from '../../store/useProductTypeTableStore';
 </script>
 
 <script lang="ts" setup>
@@ -39,7 +41,7 @@ const tabsDefinition = [
 ];
 
 const loadingView = ref(false);
-const showCloseDialog = ref(false);
+//const showCloseDialog = ref(false);
 const deleteLeadDialog = ref(false);
 
 //* Composable values
@@ -70,17 +72,26 @@ const {
 const generalFormRef = ref<InstanceType<typeof ViewGeneral> | null>(null);
 //* computed variables
 const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
+const closeDialogState = ref(false);
 
-const saveForm = async (idNew: string) => {
-  console.log('guardando');
-  titleDialog.value = 'Detalle del Prospecto:';
-  loadingView.value = false;
+const store = useProductTypesStore();
+const tableStore = useProductTypeTableStore();
+
+// const saveForm = async (idNew: string) => {
+//   console.log('guardando')
+//   titleDialog.value = 'Detalle del Tipo de Producto:';
+//   loadingView.value = false;
+//   id.value = idNew;
+
+//   emits('formSave', id.value);
+//   if (props.closeAfterSaving) {
+//     open.value = false;
+//   }
+// };
+const saveForm = (idNew: string) => {
   id.value = idNew;
-
-  emits('formSave', id.value);
-  if (props.closeAfterSaving) {
-    open.value = false;
-  }
+  //cerrar el dialog aqui
+  tableStore.reloadList();
 };
 
 //* methods
@@ -92,15 +103,23 @@ const clearData = () => {
   resetValues();
 };
 
+const showCloseDialog = () => {
+  if (generalFormRef.value?.isSomeCardEditing) {
+    closeDialogState.value = true;
+    return;
+  }
+  onCloseDialog();
+};
+
 const saveCurrentForm = async () => {
-  console.log('submitting something');
+  //console.log('submitting something');
   loadingView.value = true;
   try {
     await generalFormRef.value?.onSubmit();
   } catch (error) {
     $q.notify({
       type: 'negative',
-      message: 'Error al guardar tipo de producto',
+      message: 'Error al guardar el tipo de producto',
     });
   }
   loadingView.value = false;
@@ -250,7 +269,7 @@ defineExpose({
           flat
           color="white"
           :icon="!$q.screen.xs ? 'close' : 'arrow_forward'"
-          @click="showCloseDialog = true"
+          @click="showCloseDialog = !showCloseDialog"
         >
           <q-tooltip class="bg-white text-primary">Cerrar</q-tooltip>
         </q-btn>
@@ -323,9 +342,9 @@ defineExpose({
     iconSize="50px"
     btn-color="primary"
     btn-text="Si, salir"
-    v-model="showCloseDialog"
+    v-model="closeDialogState"
     @confirm="onCloseDialog"
-    @denegate="showCloseDialog = false"
+    @denegate="closeDialogState = false"
   >
     <template #body>
       <span class="q-py-sm">

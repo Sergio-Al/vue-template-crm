@@ -67,11 +67,11 @@
       </span>
       <br />
       <small
-        v-for="({ nombre }, index) in selected"
+        v-for="({ name }, index) in selected"
         :key="index"
         class="text-negative col-12 text-left q-px-md"
       >
-        {{ index + 1 }}. {{ nombre }}
+        {{ index + 1 }}. {{ name }}
       </small>
     </template>
   </AlertComponent>
@@ -847,6 +847,9 @@ const onClearFilter = () => {
 };
 
 const onDeleteMassive = () => {
+  // console.log('registros a eliminar');
+  // console.log(selected.value);
+  // return;
   emit('deleteMultiple', selected.value);
   selected.value = [];
 };

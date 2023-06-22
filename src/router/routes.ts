@@ -2,12 +2,12 @@ import { RouteRecordRaw } from 'vue-router';
 
 import certificationsRouter from 'src/modules/Certifications/router';
 import companiesRouter from 'src/modules/Companies/router';
-import productsRouter from 'src/modules/ProductTypes/router';
+import productTypesRouter from 'src/modules/ProductTypes/router';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/products',
+    redirect: '/certifications',
   },
   {
     path: '/certifications',
@@ -18,8 +18,8 @@ const routes: RouteRecordRaw[] = [
     ...companiesRouter,
   },
   {
-    path: '/products',
-    ...productsRouter,
+    path: '/product-types',
+    ...productTypesRouter,
   },
   {
     path: '/login',

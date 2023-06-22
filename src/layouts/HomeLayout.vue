@@ -37,10 +37,10 @@ onMounted(async () => {
   >
     <q-layout view="LHh LpR fFf" class="rounded-borders">
       <!-- Header del template  -->
-      <!-- <ToolbarComponent /> -->
+      <ToolbarComponent />
 
       <!-- Sidebar del template, menus  -->
-      <!-- <SidebarComponent /> -->
+      <SidebarComponent />
 
       <q-page-container class="GPL__page-container">
         <q-page class="row" style="height: 90vh">

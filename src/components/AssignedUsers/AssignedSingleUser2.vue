@@ -7,7 +7,7 @@ import { getListUsers, getFormattedUser   } from '../../services/AssignedUserSer
 import { HANSACRM3_URL }                    from 'src/conections/api_conectors';
 import { useDivAreaMercado, useDivision }   from 'src/composables/useLanguage';
 import { userStore }                        from 'src/modules/Users/store/UserStore';
-import AlertComponent                       from '../MainAlert/AlertComponent.vue';
+//import AlertComponent                       from '../MainAlert/AlertComponent.vue';
 import Notification                         from '../../composables/notify';
 import { AssignedUserStore }                from 'src/components/AssignedUsers/store';
 import { storeToRefs }                      from 'pinia';

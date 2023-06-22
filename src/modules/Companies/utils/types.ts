@@ -200,3 +200,55 @@ export interface ClientData {
   contact: [];
   oportunities: [];
 }
+
+export interface Company {
+  id?: string;
+  name: string;
+  razon_social_c: string;
+  direccion_c: string;
+  resolucion_ministerial_c: string;
+  identificacion_fiscal_c?: string;
+  modified_user_id?: string;
+  created_by?: string;
+  //idgrupocliente_c: string;
+}
+
+export interface ChildCompany {
+  id_participacion_empresa: string;
+  name: string;
+  direccion_c: string;
+  razon_social_c: string;
+  resolucion_ministerial_c: string;
+  identificacion_fiscal_c?: string;
+  ownership: string;
+  phone_office: string;
+  website: string;
+  email1: string;
+  phone_alternate: string;
+  parent_id_c: string;
+}
+
+export interface User {
+  id_usuario: string;
+  first_name: string;
+  last_name: string;
+  iddivision_c: string;
+  idregional: string;
+  idamercado: string;
+  id_empresa: string;
+}
+
+export interface CompanyDocument {
+  id?: string;
+  document_name: string;
+  category_id: string;
+  status_id: string;
+  company_id?: string;
+}
+
+export interface Contact {
+  website: string;
+  email: string;
+  phone_office: string;
+  phone_alternate?: string;
+}

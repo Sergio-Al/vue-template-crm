@@ -71,7 +71,7 @@ const useRegionales = () => {
   const listRegionales = ref([]);
   try {
     const getRegionales = async () => {
-      const { data } = await axios_LB_05.get('/lang-es-dimorigenes-lists');
+      const { data } = await axios_LB_05.get('/pais-list');
       listRegionales.value = data;
     };
 

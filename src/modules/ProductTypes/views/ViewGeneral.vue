@@ -1,7 +1,12 @@
 <script lang="ts">
 // vue-quasar-libraries
 import { ref, computed, toRef, onMounted } from 'vue';
-import { QInput, useQuasar } from 'quasar';
+import { Notify, QInput, useQuasar } from 'quasar';
+import { Loading } from 'quasar';
+
+import { storeToRefs } from 'pinia';
+
+import { useProductTypesStore } from '../store/productTypes';
 
 // global-components
 import AssignedSingleUser2 from 'src/components/AssignedUsers/AssignedSingleUser2.vue';
@@ -45,6 +50,8 @@ const {
   setUserAssigned,
 } = useProductType(props.id, { immediateOptions: true });
 
+const productStore = useProductTypesStore();
+
 const tab = ref(props.id ? 'Activities' : 'comentarios');
 
 const $q = useQuasar();
@@ -62,7 +69,7 @@ const cardRequirementsRef = ref<InstanceType<typeof CardRequirements> | null>(
 );
 
 // const InfoOthersRef = ref<InstanceType<typeof InfoOthers> | null>(null);
-const commentRef = ref<InstanceType<typeof QInput> | null>(null);
+//const commentRef = ref<InstanceType<typeof QInput> | null>(null);
 
 const isSomeCardEditing = computed(() => {
   return [
@@ -78,21 +85,22 @@ const onChangeUserAssigned = async (id: string) => {
   emits('submitComplete', localId.value);
 };
 
-// const validateCards = async () => {
-//   const validCards: (boolean | undefined)[] = [];
-//   if (infoCardRef.value?.isEditing) {
-//     const infoCardValidation = await infoCardRef.value.validateInputs();
-//     validCards.push(infoCardValidation);
-//   }
-//   if (!localId.value) {
-//     const firstCommentValidation = await commentRef.value?.validate();
-//     validCards.push(firstCommentValidation);
-//   }
-//   return validCards.every((card) => !!card);
-// };
+const validateCards = async () => {
+  const validCards: (boolean | undefined)[] = [];
+  if (cardInfoRef.value?.isEditing) {
+    const infoCardValidation = await cardInfoRef.value.validateInputs();
+    validCards.push(infoCardValidation);
+  }
+  // if (!localId.value) {
+  //   const firstCommentValidation = await commentRef.value?.validate();
+  //   validCards.push(firstCommentValidation);
+  // }
+  return validCards.every((card) => !!card);
+};
 
 const onSubmit = async () => {
   // Validar datos...
+
   // const areCardsValid = await validateCards();
   // if (!areCardsValid) {
   //   $q.notify({
@@ -103,40 +111,60 @@ const onSubmit = async () => {
   //   return;
   // }
 
+  const cardInfoData = cardInfoRef.value?.exposeData();
+  const requerimientos = cardRequirementsRef.value?.exposeData();
+
   // Verificar si existe un id por localId
   if (!!localId.value) {
     // actualizar datos si existe localId
-    const cardInfoData = cardInfoRef.value?.exposeData();
 
-    if (!!cardInfoData) {
+    // if (!!cardInfoData) {
+    //   try {
+    //     const body: ProductType = {
+    //       ...cardInfoData,
+    //     };
+    //     await updateProductType(localId.value, body, true);
+    //     //await productStore.onUpdateProduct(cardInfoData, requerimientos);
+    //     emits('submitComplete', localId.value);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // }
+  } 
+  else {
+
+    // crear nuevo tipo de producto si NO existe localId
+    //const cardInfoData = cardInfoRef.value?.exposeData();
+    //const requerimientos = cardRequirementsRef.value?.exposeData();
+    //const assignedUser = assignedSingleUserRef.value?.dataSend.id;
+    //const firstComment = commentCreate.value;
+
+    if (!!cardInfoData && !!requerimientos && requerimientos?.length > 0) {
       try {
-        const body: ProductType = {
-          ...cardInfoData,
-        };
-        await updateProductType(localId.value, body, true);
+        Loading.show({
+          message: 'Guardando Información',
+        });
+        // const body: ProductType = {
+        //   ...cardInfoData,
+        //   requerimientos,
+        // };
+        //console.log(body);
+        const newProductType = await productStore.onCreateProduct(cardInfoData, requerimientos);
+        //await createProductType(body, true);
+        //console.log(newProductType.id);
+
+        localId.value = newProductType.id;
         emits('submitComplete', localId.value);
       } catch (error) {
         console.log(error);
       }
     }
-  } else {
-    // crear nuevo tipo de producto si NO existe localId
-    const cardInfoData = cardInfoRef.value?.exposeData();
-    const requerimientos = cardRequirementsRef.value?.exposeData();
-    const assignedUser = assignedSingleUserRef.value?.dataSend.id;
-    const firstComment = commentCreate.value;
-
-    if (!!cardInfoData && !!requerimientos && requerimientos?.length > 0) {
-      try {
-        const body: ProductType = {
-          ...cardInfoData,
-          requerimientos,
-        };
-        await createProductType(body, true);
-        emits('submitComplete', localId.value);
-      } catch (error) {
-        console.log(error);
-      }
+    else{
+       Notify.create({
+        type: 'warning',
+        message: 'Debe agregar requerimientos al tipo de producto',
+        actions: [{ icon: 'close', color: 'dark', size: 'sm', round: true }],
+      });
     }
   }
 };

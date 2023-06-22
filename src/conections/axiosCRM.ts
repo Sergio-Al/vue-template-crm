@@ -6,6 +6,7 @@ import {
   CRM4_LB_04,
   CRM4_LB_01,
   CRM4_NS_01,
+  CRM4_NS_07,
   CRM4_LB_02,
   CRM4_LB_06,
   CRM4_LB_GLOBAL,
@@ -19,6 +20,7 @@ const axios_LB_04 = axios.create({ baseURL: CRM4_LB_04 });
 const axios_LB_05 = axios.create({ baseURL: CRM4_LB_05 });
 const axios_LB_03 = axios.create({ baseURL: CRM4_LB_03 });
 const axios_NS_01 = axios.create({ baseURL: CRM4_NS_01 });
+const axios_NS_07 = axios.create({ baseURL: CRM4_NS_07 });
 const axios_LB_02 = axios.create({ baseURL: CRM4_LB_02 });
 
 const axios_LB_06 = axios.create({ baseURL: CRM4_LB_06 });
@@ -34,6 +36,7 @@ export {
   axios_LB_05,
   axios_LB_03,
   axios_NS_01,
+  axios_NS_07,
   axios_LB_02,
   axios_LB_06,
   axios_GLOBAL,

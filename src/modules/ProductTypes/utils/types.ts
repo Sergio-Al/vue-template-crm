@@ -202,18 +202,13 @@ export interface ClientData {
 }
 
 export interface ProductType {
-  id_tipo?: string;
-  nombre: string;
+  id?: string;
+  name: string;
+  description?: string;
   iddivision_c: string;
   idamercado_c: string;
   idregional_c: string;
   idgrupocliente_c: string;
-  requerimientos: ProductRequirement[];
-  requerimientos_eliminados?: string[];
-}
-
-export interface ProductRequirement {
-  id_requerimiento?: string;
-  nombre: string;
-  id_tipo_producto?: string;
+  //requerimientos: ProductRequirement[];
+  //requerimientos_eliminados?: string[];
 }
