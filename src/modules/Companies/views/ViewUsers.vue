@@ -6,6 +6,9 @@ import { useCompaniesStore } from '../store/companyStore';
 import { useAsyncState } from '@vueuse/core';
 
 import SelectUser from '../components/Dialogs/SelectUser.vue';
+import type { User } from '../utils/types';
+
+import { assignUsersToCompany } from '../services/useCompanyService';
 
 interface Props {
   id: string;
@@ -54,11 +57,17 @@ const userColumns: QTableColumn[] = [
 ];
 
 // event functions
-const selectUser = (id: string) => {
+const selectUser = async (users: User[]) => {
+  const userIds = users.map((user) => user.id_usuario);
+
   $q.notify({
     type: 'positive',
-    message: `user with id ${id} selected`,
+    message: `company ${props.id} user with id ${userIds} selected`,
   });
+
+  // llamar a servicio para asignar usuarios a empresa
+  // body
+  // await assignUsersToCompany(props.id, usersIds);
 };
 
 //se dispara cuando carga el componente

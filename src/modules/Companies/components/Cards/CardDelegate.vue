@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const delegate = ref(null);
-const options = ref<string[] | undefined>(undefined);
+import { users } from '../../utils/dummyData';
+import type { User } from '../../utils/types';
 
-const dummyUsers = ['Kevin', 'Fabio', 'Dani', 'Rafael'];
+const delegate = ref(null);
+const options = ref<User[] | undefined>(undefined);
 
 const filterFn = (
   val: string,
@@ -20,12 +21,18 @@ const filterFn = (
 
   // obtener representantes por api
   // options.value = await getRepresentantes();
-  // ↓ obtener representantes como prueba
+  // ↓ obtener representantes como prueba, reemplazar toda la funcion
+  //   settimeout por el await y asignar a options.value
   setTimeout(() => {
     update(() => {
-      options.value = dummyUsers;
+      if (val === '') {
+        options.value = [];
+      } else {
+        // const needle = val.toLowerCase();
+        options.value = users.filter((v) => v.first_name.includes(val));
+      }
     });
-  }, 2000);
+  }, 1500);
 };
 
 const abortFilterFn = () => {
@@ -46,20 +53,49 @@ defineExpose({
     <q-separator />
     <q-card-section>
       <q-select
-        v-model="delegate"
-        :options="options"
+        use-input
+        hide-selected
+        fill-input
+        input-debounce="0"
         label="Buscar usuario"
+        :options="options"
+        @filter="filterFn"
+        @filter-abort="abortFilterFn"
+        hint="Ingrese el nombre del usuario"
+        emit-value
+        map-options
+        option-label="first_name"
+        option-value="id_usuario"
+        v-model="delegate"
         outlined
         dense
         hide-dropdown-icon
         use-chips
-        @filter="filterFn"
-        @filter-abort="abortFilterFn"
       >
         <template #prepend>
           <q-icon name="search" />
         </template>
+
+        <template v-slot:option="scope">
+          <q-item v-bind="scope.itemProps">
+            <q-item-section avatar>
+              <q-icon name="person" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label
+                >{{ scope.opt.first_name }}
+                {{ scope.opt.last_name }}</q-item-label
+              >
+              <q-item-label caption
+                >Division: {{ scope.opt.iddivision_c }}</q-item-label
+              >
+            </q-item-section>
+          </q-item>
+        </template>
       </q-select>
+    </q-card-section>
+    <q-card-section v-if="!!delegate">
+      Se ha seleccionado a {{ delegate }}
     </q-card-section>
   </q-card>
 </template>

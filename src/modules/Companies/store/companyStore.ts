@@ -56,6 +56,14 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     };
   });
 
+  const cardAddress = computed(() => {
+    return {
+      address_street_generated_c: payload.value.direccion_c,
+      latitude: 0,
+      longitude: 0,
+    };
+  });
+
   //actions
   const onCreateCompany = async (
     dataCompany: Company,
@@ -77,6 +85,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
   };
 
   const onCreateChildCompany = async (
+    idParent: string,
     dataCompany: ChildCompany,
     dataDocuments: any[]
   ) => {
@@ -84,8 +93,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       Loading.show({
         message: 'Guardando Info',
       });
-      console.log(dataCompany);
-      const response = await createChildCompany(dataCompany);
+      const response = await createChildCompany(idParent, dataCompany);
       return response;
     } catch (error) {
       throw error;
@@ -179,6 +187,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     //getter
     cardInfo,
     cardContact,
+    cardAddress,
     //actions
     onCreateCompany,
     onUpdateCompany,

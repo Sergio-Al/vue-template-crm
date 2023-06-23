@@ -1,6 +1,6 @@
 <script lang="ts">
 // vue-quasar-libraries
-import { Loading, QInput } from 'quasar';
+import { Loading, QInput, useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 
 // global-components
@@ -27,8 +27,9 @@ const props = defineProps<{
   id?: string;
 }>();
 
+const $q = useQuasar();
 const companyStore = useCompaniesStore();
-const { cardInfo, cardContact } = storeToRefs(companyStore);
+const { cardInfo, cardContact, cardAddress } = storeToRefs(companyStore);
 
 const tab = ref(props.id ? 'Activities' : 'comentarios');
 const localId = ref(props.id ?? '');
@@ -112,16 +113,38 @@ const onSubmit = async () => {
     const cardInfoData = cardInfoRef.value?.exposeData();
     const cardContactData = cardContactRef.value?.exposeData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
+    const assignedUser = cardDelegateRef.value?.exposeData();
 
     if (!!cardInfoData || !!cardContactData) {
       try {
         Loading.show({
           message: 'Guardando Información',
         });
-        const newCompany = await companyStore.onCreateCompany(
-          { ...cardInfoData, ...cardContactData },
-          []
-        );
+        const body = {
+          ...cardInfoData,
+          ...cardContactData,
+          comment: commentCreate.value,
+          address: directionData?.address_street_generated_c,
+          assigned_user: assignedUser,
+        } as Company;
+
+        // {
+        //   address: 'Av/ asdfdas,| Z/ asdfsd,| C/ asdfsda,| #. asdfdsa_gnrtd',
+        //   assigned_user: null,
+        //   comment: 'asdfdsf',
+        //   email1: 'asdfdsa',
+        //   identificacion_fiscal_c: 'asdfasd',
+        //   name: 'dfds',
+        //   phone_alternate: 'asdfdsa',
+        //   phone_office: 'sadfsad',
+        //   razon_social_c: 'sdfdsa',
+        //   resolucion_ministerial_c: 'asdfdsa',
+        //   user_id_c: undefined,
+        //   website: 'asdfads',
+        // }
+        console.log(body);
+
+        const newCompany = await companyStore.onCreateCompany(body, []);
         localId.value = newCompany.id;
         emits('submitComplete', localId.value);
         await execute();
@@ -165,7 +188,7 @@ const emits = defineEmits<{
         <direction-card-component
           ref="directionCardComponentRef"
           :id-local="localId"
-          :data="{}"
+          :data="cardAddress"
           :options="[]"
           class="col-12"
         />

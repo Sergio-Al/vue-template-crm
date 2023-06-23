@@ -125,10 +125,13 @@ const onSubmit = async (parentId: string) => {
           ...cardInfoData,
           ...cardContactData,
           direccion_c: directionData?.address_street_generated_c || '',
-          parent_id_c: parentId,
         } as ChildCompany;
 
-        const newCompany = await companyStore.onCreateChildCompany(body, []);
+        const newCompany = await companyStore.onCreateChildCompany(
+          parentId,
+          body,
+          []
+        );
 
         localId.value = newCompany.id;
         emits('submitComplete', localId.value);

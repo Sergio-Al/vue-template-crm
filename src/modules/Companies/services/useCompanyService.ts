@@ -85,11 +85,16 @@ export const createCompany = async (
   }
 };
 
-export const createChildCompany = async (dataCompany: ChildCompany) => {
+export const createChildCompany = async (
+  idParent: string,
+  dataCompany: ChildCompany
+) => {
   try {
     // endpoint para empresas como participacion
-    const { data } = await axios_NS_07.post('/empresas', dataCompany);
-    return data;
+    const body = { ...dataCompany, parent_id_c: idParent } as ChildCompany;
+
+    // const { data } = await axios_NS_07.post('/empresas', body);
+    // return data;
   } catch (error) {
     throw error;
   }
@@ -282,4 +287,9 @@ export const getActivitiesProyects = async (
   } catch (error) {
     console.log(error);
   }
+};
+
+export const assignUsersToCompany = async (id: string, userIds: string[]) => {
+  const body = { id, users_id: userIds };
+  // iniciar peticion al backend con body
 };

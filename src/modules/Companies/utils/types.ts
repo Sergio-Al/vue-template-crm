@@ -210,6 +210,9 @@ export interface Company {
   identificacion_fiscal_c?: string;
   modified_user_id?: string;
   created_by?: string;
+  comment?: string;
+  address?: string;
+  assigned_user?: string;
   //idgrupocliente_c: string;
 }
 
@@ -233,9 +236,9 @@ export interface User {
   first_name: string;
   last_name: string;
   iddivision_c: string;
-  idregional: string;
-  idamercado: string;
-  id_empresa: string;
+  idregional_c: string;
+  idamercado_c: string;
+  id_empresa_c: string;
 }
 
 export interface CompanyDocument {

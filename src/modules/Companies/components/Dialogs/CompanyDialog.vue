@@ -21,17 +21,18 @@ const tabsDefinition = [
     enabledForCreation: true,
   },
   {
-    name: 'participants',
-    component: ViewParticipants,
-    label: 'Participantes',
-    enabledForCreation: true,
-  },
-  {
     name: 'users',
     component: ViewUsers,
     label: 'Usuarios',
     enabledForCreation: true,
   },
+  {
+    name: 'participants',
+    component: ViewParticipants,
+    label: 'Participación como',
+    enabledForCreation: true,
+  },
+
   {
     name: 'documents',
     component: ViewDocuments,

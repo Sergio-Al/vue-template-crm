@@ -44,7 +44,7 @@ const columns: QTableColumn[] = [
 
 const selectedUser = ref<string>('');
 const userFiltered = ref<string>('');
-const selected = ref<string[]>([]);
+const selected = ref<User[]>([]);
 const users = ref(availableUsers);
 
 const isLoading = ref(false);
@@ -56,7 +56,7 @@ const searchUser = async () => {
 };
 
 const emits = defineEmits<{
-  (e: 'selectUser', id: string): void;
+  (e: 'selectUser', id: User[]): void;
 }>();
 </script>
 
@@ -97,6 +97,11 @@ const emits = defineEmits<{
           icon="group_add"
           label="Confirmar"
           v-close-popup
+          @click="
+            () => {
+              emits('selectUser', selected);
+            }
+          "
         />
       </q-footer>
 
