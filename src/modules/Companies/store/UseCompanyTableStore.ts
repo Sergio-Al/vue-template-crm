@@ -104,25 +104,25 @@ export const useCompanyTableStore = defineStore('company_table', {
           field: 'ownership',
           sortable: true,
           visible: true,
-        }
+        },
       ],
     },
     visible_fields: [
-        'account',
-        'name',
-        'status',
-        'country',
-        'created_by',
-        'assigned_to',
-      ],
-      visible_columns: [
-        'name',
-        'razon_social_c',
-        'direccion_c',
-        'resolucion_ministerial_c',
-        'phone_office',
-        'ownership'
-      ],
+      'account',
+      'name',
+      'status',
+      'country',
+      'created_by',
+      'assigned_to',
+    ],
+    visible_columns: [
+      'name',
+      'razon_social_c',
+      'direccion_c',
+      'resolucion_ministerial_c',
+      'phone_office',
+      'ownership',
+    ],
   }),
   actions: {
     async getUserConfig() {

@@ -213,6 +213,9 @@ export interface Company {
   comment?: string;
   address?: string;
   assigned_user?: string;
+  email1?: string;
+  phone_alternate?: string;
+  phone: string;
   //idgrupocliente_c: string;
 }
 
@@ -232,7 +235,7 @@ export interface ChildCompany {
 }
 
 export interface User {
-  id_usuario: string;
+  id: string;
   first_name: string;
   last_name: string;
   iddivision_c: string;

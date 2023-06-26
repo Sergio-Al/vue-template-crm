@@ -6,6 +6,7 @@ import { computed, ref } from 'vue';
 import {
   createChildCompany,
   createCompany,
+  getCompanyUsers,
   getOneCompany,
   updateCompany,
 } from '../services/useCompanyService';
@@ -31,6 +32,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     phone_alternate: '',
     website: '',
     ownership: '',
+    assigned_user: '',
     user_id_c: userCRM.id,
   });
 
@@ -62,6 +64,10 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       latitude: 0,
       longitude: 0,
     };
+  });
+
+  const cardOwner = computed(() => {
+    return payload.value.assigned_user;
   });
 
   //actions
@@ -148,6 +154,8 @@ export const useCompaniesStore = defineStore('companies-store', () => {
   const onGetCompanyUsers = async (id: string) => {
     try {
       // obtener array de usuarios
+      console.log(id);
+      const users = await getCompanyUsers(id);
       return users;
     } catch (error) {
       throw error;
@@ -188,6 +196,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     cardInfo,
     cardContact,
     cardAddress,
+    cardOwner,
     //actions
     onCreateCompany,
     onUpdateCompany,

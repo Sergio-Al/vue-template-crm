@@ -58,7 +58,7 @@ const userColumns: QTableColumn[] = [
 
 // event functions
 const selectUser = async (users: User[]) => {
-  const userIds = users.map((user) => user.id_usuario);
+  const userIds = users.map((user) => user.id);
 
   $q.notify({
     type: 'positive',
@@ -72,8 +72,10 @@ const selectUser = async (users: User[]) => {
 
 //se dispara cuando carga el componente
 const { state: users, isLoading } = useAsyncState(async () => {
-  return await companyStore.onGetCompanyUsers(props.id);
-}, []);
+  const response = await companyStore.onGetCompanyUsers(props.id);
+  console.log(response);
+  return response;
+}, [] as User[]);
 </script>
 
 <template>
@@ -85,11 +87,11 @@ const { state: users, isLoading } = useAsyncState(async () => {
       :rows="users"
       :columns="userColumns"
       :loading="isLoading"
-      row-key="id_usuario"
+      row-key="id"
     >
       <template #top>
         <div class="column">
-          <span class="text-h6">Usuarios de la empresa</span>
+          <span class="text-h6">Empleados de la empresa</span>
           <span v-if="props.child" class="text-caption"
             >Empresa participante</span
           >
@@ -98,7 +100,7 @@ const { state: users, isLoading } = useAsyncState(async () => {
         <q-btn
           color="primary"
           icon="add"
-          label="Seleccionar"
+          label="Nuevo"
           @click="() => (openDialog = true)"
         />
       </template>

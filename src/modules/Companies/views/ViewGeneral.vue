@@ -29,7 +29,8 @@ const props = defineProps<{
 
 const $q = useQuasar();
 const companyStore = useCompaniesStore();
-const { cardInfo, cardContact, cardAddress } = storeToRefs(companyStore);
+const { cardInfo, cardContact, cardAddress, cardOwner } =
+  storeToRefs(companyStore);
 
 const tab = ref(props.id ? 'Activities' : 'comentarios');
 const localId = ref(props.id ?? '');
@@ -124,7 +125,7 @@ const onSubmit = async () => {
           ...cardInfoData,
           ...cardContactData,
           comment: commentCreate.value,
-          address: directionData?.address_street_generated_c,
+          direccion_c: directionData?.address_street_generated_c,
           assigned_user: assignedUser,
         } as Company;
 
@@ -154,6 +155,8 @@ const onSubmit = async () => {
     }
   }
 };
+
+console.log(props.id);
 
 // Funciones que se podran usar al declarar una referencia de este componente
 defineExpose({
@@ -196,7 +199,7 @@ const emits = defineEmits<{
     </div>
     <div class="col-12 col-md-6">
       <div class="row q-gutter-y-md">
-        <CardDelegate ref="cardDelegateRef" />
+        <CardDelegate ref="cardDelegateRef" :id="cardOwner" />
         <div class="q-gutter-y-md col-12">
           <q-card>
             <q-card-section style="padding: 0px">

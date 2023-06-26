@@ -10,6 +10,7 @@ import {
   ChildCompany,
   Company,
   Params,
+  User,
   base,
 } from '../utils/types';
 
@@ -19,7 +20,8 @@ const { userCRM } = userStore();
 
 export const getTableData = async (params: Params) => {
   try {
-    const { data } = await axios_NS_07.get('/empresas');
+    // const { data } = await axios_NS_07.get('/empresas');
+    const { data } = await axios_NS_07.get('api/companies');
     console.log(data);
     return data;
   } catch (error) {
@@ -78,7 +80,8 @@ export const createCompany = async (
     //   comments: comment,
     // };
     // console.log(dataSend);
-    const { data } = await axios_NS_07.post('/empresas', dataCompany);
+    // const { data } = await axios_NS_07.post('/empresas', dataCompany);
+    const { data } = await axios_NS_07.post('/api/companies', dataCompany);
     return data;
   } catch (error) {
     throw error;
@@ -111,9 +114,24 @@ export const getIndicators = async (id: string) => {
 
 export const getOneCompany = async (id: string) => {
   try {
-    const response = await axios_NS_07.get(`empresas/${id}`);
+    const response = await axios_NS_07.get(`api/companies/${id}`);
+    // const response = await axios_NS_07.get(`empresas/${id}`);
     console.log('service ', response);
     return response.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getCompanyUsers = async (id: string) => {
+  try {
+    const { data } = await axios_NS_07.get('api/users/', {
+      params: {
+        company_id: id,
+      },
+    });
+
+    return data;
   } catch (error) {
     return error;
   }
@@ -270,7 +288,18 @@ export const get_avance_grafico = async (data_filter: any) => {
 
 export const getUsers = async (name: string) => {
   //llamar a endpoint, obtener array de usuario con el nombre [name]
-  return [];
+  const { data } = await axios_NS_07.get('api/users', {
+    params: {
+      name,
+    },
+  });
+
+  return data;
+};
+
+export const getUser = async (id: string) => {
+  const { data } = await axios_NS_07.get(`api/users/${id}`);
+  return data;
 };
 
 export const getActivitiesProyects = async (
