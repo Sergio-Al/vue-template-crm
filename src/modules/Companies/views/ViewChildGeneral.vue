@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 // global-components
 
-import { useCompaniesStore } from '../store/companyStore';
+import { useChildCompaniesStore } from '../store/childCompanyStore';
 //import CommentsList from 'src/components/Comments/CommentsList.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
 // import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
@@ -27,8 +27,8 @@ const props = defineProps<{
   id?: string;
 }>();
 
-const companyStore = useCompaniesStore();
-const { cardInfo, cardContact, childPayload } = storeToRefs(companyStore);
+const childCompanyStore = useChildCompaniesStore();
+const { childPayload } = storeToRefs(childCompanyStore);
 
 const tab = ref(props.id ? 'Activities' : 'comentarios');
 const localId = ref(props.id ?? '');
@@ -57,9 +57,9 @@ const isSomeCardEditing = computed(() => {
 //se dispara cuando carga el componente
 const { isLoading, execute } = useAsyncState(async () => {
   if (!!localId.value) {
-    return await companyStore.onGetCompany(localId.value);
+    return await childCompanyStore.onGetChildCompany(localId.value);
   }
-}, {});
+}, {} as ChildCompany);
 
 // const validateCards = async () => {
 //   const validCards: (boolean | undefined)[] = [];
@@ -101,7 +101,7 @@ const onSubmit = async (parentId: string) => {
           ...cardInfoData,
           ...cardContactData,
         } as ChildCompany;
-        await companyStore.onUpdateCompany(localId.value, body);
+        await childCompanyStore.onUpdateChildCompany(localId.value, body);
         emits('submitComplete', localId.value);
         await execute();
       } catch (error) {
@@ -127,7 +127,7 @@ const onSubmit = async (parentId: string) => {
           direccion_c: directionData?.address_street_generated_c || '',
         } as ChildCompany;
 
-        const newCompany = await companyStore.onCreateChildCompany(
+        const newCompany = await childCompanyStore.onCreateChildCompany(
           parentId,
           body,
           []
@@ -140,6 +140,20 @@ const onSubmit = async (parentId: string) => {
         console.log(error);
       }
     }
+  }
+};
+
+const updateAssigned = async (id: string | null) => {
+  try {
+    console.log(id);
+    if (!!id) {
+      await childCompanyStore.onUpdateChildCompany(localId.value, {
+        assigned_user_id: id,
+      });
+      await execute();
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -177,7 +191,9 @@ const emits = defineEmits<{
           ref="directionCardComponentRef"
           :id-local="localId"
           :data="{
-            address_street_generated_c: childPayload.direccion_c,
+            address_street_generated_c: !!childPayload
+              ? childPayload.direccion_c
+              : '',
             latitude: 0,
             longitude: 0,
           }"
@@ -188,7 +204,12 @@ const emits = defineEmits<{
     </div>
     <div class="col-12 col-md-6">
       <div class="row q-gutter-y-md">
-        <CardDelegate ref="cardDelegateRef" />
+        <CardDelegate
+          ref="cardDelegateRef"
+          :id="childPayload ? childPayload.assigned_user_id : ''"
+          :show-save="!!localId"
+          @update="updateAssigned"
+        />
         <div class="q-gutter-y-md col-12">
           <q-card>
             <q-card-section style="padding: 0px">

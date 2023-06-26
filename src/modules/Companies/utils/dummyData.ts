@@ -21,7 +21,7 @@ export const companies: Company[] = [
 
 export const childCompanies = [
   {
-    id_empresa: 'b7977d14-d177-4420-870d-23e42d3b2827',
+    id: 'b7977d14-d177-4420-870d-23e42d3b2827',
     name: 'Voonte',
     direccion_c: '73 Northland Alley',
     ownership: 'Gates Peel',
@@ -31,7 +31,7 @@ export const childCompanies = [
     parent_id_c: '415814f1-47e0-4848-93ef-167b4e4abc64',
   },
   {
-    id_empresa: 'ff9a39be-e50e-4395-a0b3-ff064565ead5',
+    id: 'ff9a39be-e50e-4395-a0b3-ff064565ead5',
     name: 'Vinder',
     direccion_c: '09847 Fairview Park',
     ownership: 'Mag Ewbanke',
@@ -42,7 +42,7 @@ export const childCompanies = [
     parent_id_c: 'fb86549f-cae4-4afa-a541-e472e123304d',
   },
   {
-    id_empresa: 'c31f5354-065a-4e7b-bd19-61f983b02e33',
+    id: 'c31f5354-065a-4e7b-bd19-61f983b02e33',
     name: 'Voonder',
     direccion_c: '415 Oakridge Street',
     ownership: 'Hugo Bettam',
@@ -53,7 +53,7 @@ export const childCompanies = [
     parent_id_c: 'de042396-b1b7-4392-848d-ae4adcfdb80f',
   },
   {
-    id_empresa: 'b86814cc-6a6a-4ef3-b3af-4094100ef948',
+    id: 'b86814cc-6a6a-4ef3-b3af-4094100ef948',
     name: 'Realmix',
     direccion_c: '70584 Packers Road',
     ownership: 'Cherri Paudin',
@@ -64,7 +64,7 @@ export const childCompanies = [
     parent_id_c: 'd97ed9a7-3022-4417-8ddd-5c877b914a77',
   },
   {
-    id_empresa: 'a2905b2a-aed0-4bbf-a514-fd124640bb2e',
+    id: 'a2905b2a-aed0-4bbf-a514-fd124640bb2e',
     name: 'Lazzy',
     direccion_c: '18625 Burning Wood Court',
     ownership: 'Florian Scardifield',
@@ -75,7 +75,7 @@ export const childCompanies = [
     parent_id_c: 'eff355ed-4ad8-4313-8815-46229d105c78',
   },
   {
-    id_empresa: '88d0b2b6-2ff1-4102-bd7a-5b311fb182af',
+    id: '88d0b2b6-2ff1-4102-bd7a-5b311fb182af',
     name: 'Realbridge',
     direccion_c: '05166 Brown Center',
     ownership: 'Arabelle Middlemist',
@@ -86,7 +86,7 @@ export const childCompanies = [
     parent_id_c: '3eff0dd5-b5b0-4e24-ab11-70f18ab11c54',
   },
   {
-    id_empresa: '235a6071-9543-4059-85de-b3a06b74d0f0',
+    id: '235a6071-9543-4059-85de-b3a06b74d0f0',
     name: 'Vidoo',
     direccion_c: '420 Dryden Road',
     ownership: 'Christina Jacobssen',
@@ -97,7 +97,7 @@ export const childCompanies = [
     parent_id_c: '0b1f5a4c-0cf7-4fc9-b814-005661d70fbb',
   },
   {
-    id_empresa: '0485da61-6740-4090-8a77-c56be47129a0',
+    id: '0485da61-6740-4090-8a77-c56be47129a0',
     name: 'Photospace',
     direccion_c: '60954 Forest Dale Parkway',
     ownership: 'Mireille Hellings',
@@ -108,7 +108,7 @@ export const childCompanies = [
     parent_id_c: 'fd78f1ba-3efe-436f-b6f6-c57fdcef9d39',
   },
   {
-    id_empresa: '87e570d3-2995-4bce-814d-0c0c493e0094',
+    id: '87e570d3-2995-4bce-814d-0c0c493e0094',
     name: 'Avavee',
     direccion_c: '295 Fordem Point',
     ownership: 'Lock Rewan',
@@ -119,7 +119,7 @@ export const childCompanies = [
     parent_id_c: '58f2014d-a79e-4e02-8b59-8d517d9d69c4',
   },
   {
-    id_empresa: '4123d101-9531-4a68-936f-cd12ad8e74e1',
+    id: '4123d101-9531-4a68-936f-cd12ad8e74e1',
     name: 'Thoughtbeat',
     direccion_c: '17 Village Drive',
     ownership: 'Duff Faircloth',
@@ -130,7 +130,7 @@ export const childCompanies = [
     parent_id_c: '070cfcc6-50e3-4cd4-b2e8-eba75b84e8c2',
   },
   {
-    id_empresa: '72e1d509-3557-4098-822c-a2138a687b51',
+    id: '72e1d509-3557-4098-822c-a2138a687b51',
     name: 'Kwideo',
     direccion_c: '083 Springs Plaza',
     ownership: 'Philippa Harradence',
@@ -141,7 +141,7 @@ export const childCompanies = [
     parent_id_c: '00be9e4d-e497-41b3-b54c-ed04323de59f',
   },
   {
-    id_empresa: 'b90718d9-3d96-4eb2-be07-37716b3c8d58',
+    id: 'b90718d9-3d96-4eb2-be07-37716b3c8d58',
     name: 'Jaxspan',
     direccion_c: '465 Emmet Court',
     ownership: 'Bailie Jovic',
@@ -152,7 +152,7 @@ export const childCompanies = [
     parent_id_c: '06be8575-fb0b-435d-8c4e-7e53f0d1ecbd',
   },
   {
-    id_empresa: 'c2f39125-fe02-4f1a-8cb5-772619c5c153',
+    id: 'c2f39125-fe02-4f1a-8cb5-772619c5c153',
     name: 'Rhycero',
     direccion_c: '017 Service Place',
     ownership: 'Joleen Jorden',
@@ -163,7 +163,7 @@ export const childCompanies = [
     parent_id_c: '5c1d2694-073f-4668-b7a8-9ffe603e129f',
   },
   {
-    id_empresa: '5d2bbe30-813c-49f0-bf60-135caeb0d2aa',
+    id: '5d2bbe30-813c-49f0-bf60-135caeb0d2aa',
     name: 'Edgetag',
     direccion_c: '4855 Tennessee Place',
     ownership: 'Trixy Fretson',
@@ -174,7 +174,7 @@ export const childCompanies = [
     parent_id_c: '9e1435d6-6b63-4f07-847e-83433e085278',
   },
   {
-    id_empresa: '1b2fff6f-82dc-43ea-8fc3-ab912bf63bf3',
+    id: '1b2fff6f-82dc-43ea-8fc3-ab912bf63bf3',
     name: 'Jabbertype',
     direccion_c: '9578 Kedzie Crossing',
     ownership: 'Charis Ransome',
@@ -185,7 +185,7 @@ export const childCompanies = [
     parent_id_c: 'eaaa5190-c6c6-4d7e-8f34-d6eba906e66b',
   },
   {
-    id_empresa: 'f5db92de-38a3-4f3c-b526-022e6583e39e',
+    id: 'f5db92de-38a3-4f3c-b526-022e6583e39e',
     name: 'Youopia',
     direccion_c: '2 Longview Drive',
     ownership: 'Doe Culpin',
@@ -196,7 +196,7 @@ export const childCompanies = [
     parent_id_c: 'a1bfe0a4-cdd1-437f-b3ad-32fd6e532f72',
   },
   {
-    id_empresa: '152dc566-8c32-454f-ad15-bd3913059e50',
+    id: '152dc566-8c32-454f-ad15-bd3913059e50',
     name: 'Wikizz',
     direccion_c: '1 Harper Drive',
     ownership: 'Teddi Rawls',
@@ -207,7 +207,7 @@ export const childCompanies = [
     parent_id_c: 'b19a66d2-6987-4add-9386-9004906b59ba',
   },
   {
-    id_empresa: '17c1a0a7-23b6-4502-8882-f056f5b427c7',
+    id: '17c1a0a7-23b6-4502-8882-f056f5b427c7',
     name: 'Roomm',
     direccion_c: '4932 Carpenter Circle',
     ownership: 'Ripley Halhead',
@@ -218,7 +218,7 @@ export const childCompanies = [
     parent_id_c: 'ce960214-d705-47b6-ac83-1789fd5e0b5f',
   },
   {
-    id_empresa: '099513d0-5df2-4136-8a52-a6bda6ee2274',
+    id: '099513d0-5df2-4136-8a52-a6bda6ee2274',
     name: 'Jabberbean',
     direccion_c: '8 Rusk Crossing',
     ownership: 'Faun Coulthard',
@@ -229,7 +229,7 @@ export const childCompanies = [
     parent_id_c: 'e6a66392-41ac-410f-a667-0736eee1cc9f',
   },
   {
-    id_empresa: '0d9551b6-4b72-4a5d-9f6a-f4da837141dc',
+    id: '0d9551b6-4b72-4a5d-9f6a-f4da837141dc',
     name: 'Twitterbridge',
     direccion_c: '2 Almo Point',
     ownership: 'Ambros McPike',

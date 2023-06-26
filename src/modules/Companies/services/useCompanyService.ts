@@ -16,7 +16,11 @@ import {
 } from '../utils/types';
 
 import { userStore } from 'src/modules/Users/store/UserStore';
-import { GuestsRecordResponse, RecordOptionsModel, SearchUser } from 'src/components/types';
+import {
+  GuestsRecordResponse,
+  RecordOptionsModel,
+  SearchUser,
+} from 'src/components/types';
 
 const { userCRM } = userStore();
 
@@ -97,7 +101,28 @@ export const createChildCompany = async (
 ) => {
   try {
     // endpoint para empresas como participacion
-    const body = { ...dataCompany, hance_empresa_id_c: idParent } as ChildCompany;
+    const body = {
+      ...dataCompany,
+      hance_empresa_id_c: idParent,
+    } as ChildCompany;
+
+    // example body
+    // {
+    //   name: 'dfasdfdas',
+    //   razon_social_c: '',
+    //   direccion_c: 'Av/ asdfasdf,| Z/ sadfasdf,| C/ asdfasd,| #. sadfasd_gnrtd',
+    //   email1: 'asdfads',
+    //   resolucion_ministerial_c: '',
+    //   identificacion_fiscal_c: '',
+    //   phone_office: 'asdfasd',
+    //   phone_alternate: 'sadfsad',
+    //   website: 'asdfasd',
+    //   ownership: '',
+    //   assigned_user_id: '',
+    //   user_id_c: undefined,
+    //   hance_empresa_id_c: ''
+    // }
+    console.log(body);
 
     const { data } = await axios_NS_07.post('/participacion', body);
     console.log(data);
@@ -105,6 +130,15 @@ export const createChildCompany = async (
   } catch (error) {
     throw error;
   }
+};
+
+export const getOneChildCompany = async (id: string) => {
+  try {
+    const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
+
+    console.log('child company', data);
+    return data;
+  } catch (error) {}
 };
 
 export const getOneCompany = async (id: string) => {
@@ -121,7 +155,7 @@ export const getOneCompany = async (id: string) => {
 export const getCompanyUsers = async (id: string) => {
   try {
     const params = {
-      division: '04'
+      division: '04',
     };
     const { data } = await axios_LB_01.get(
       `/users/division/amercado?params=${JSON.stringify(params)}`
@@ -147,6 +181,23 @@ export const updateCompany = async (
   }
 };
 
+export const updateChildCompany = async (
+  id: string,
+  information: BasicInformation
+) => {
+  try {
+    const dataSend = {
+      ...information,
+    };
+
+    // descomentar y poner el endpoint para actualizar participantes
+    // const response = await axios_NS_07.patch(`/empresas/${id}`, dataSend);
+    // return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getAccountFilter = async (dataFilter: base) => {
   try {
     const { data } = await axios_rep_01.post('/filter/accounts', dataFilter);
@@ -166,7 +217,6 @@ export const getContactsAccount = async (account_id: string) => {
     throw error;
   }
 };
-
 
 export const deleteMassiveData = async (data: any) => {
   // console.log('delete massive');
@@ -219,12 +269,10 @@ export async function getUsers(
   }
 }
 
-
 export const getUser = async (id: string) => {
   const { data } = await axios_NS_07.get(`/user/${id}`);
   return data;
 };
-
 
 export const assignUsersToCompany = async (id: string, userIds: string[]) => {
   const body = { id, users_id: userIds };

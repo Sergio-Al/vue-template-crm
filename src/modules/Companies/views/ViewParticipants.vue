@@ -7,6 +7,8 @@ import ChildCompanyDialog from '../components/Dialogs/ChildCompanyDialog.vue';
 
 import { useCompaniesStore } from '../store/companyStore';
 
+// import { childCompanies } from '../utils/dummyData';
+
 interface Props {
   id: string;
 }
@@ -62,7 +64,11 @@ const childCompanyDialogRef = ref<InstanceType<
   typeof ChildCompanyDialog
 > | null>(null);
 
-const openDialog = () => {
+const openDialog = (id?: string, title?: string) => {
+  if (!!id) {
+    childCompanyDialogRef.value?.openDialogTab(id, title);
+    return;
+  }
   childCompanyDialogRef.value?.openDialogTab();
 };
 
@@ -74,6 +80,7 @@ const visitPage = (url: string) => {
 const {
   state: companies,
   isLoading,
+  execute,
 } = useAsyncState(async () => {
   return await companyStore.onGetListCompaniesChild(props.id);
 }, []);
@@ -93,7 +100,7 @@ const {
       <template #top>
         <span class="text-h6">Participantes de la empresa</span>
         <q-space />
-        <q-btn color="primary" icon="add" label="Nuevo" @click="openDialog" />
+        <q-btn color="primary" icon="add" label="Nuevo" @click="openDialog()" />
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -118,7 +125,16 @@ const {
           </q-td>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <!-- colocar el mismo nombre de la columna del array de columnas -->
-            <div v-if="col.name === 'ownership'">
+
+            <div v-if="col.name === 'name'">
+              <span
+                class="text-primary"
+                @click="openDialog(props.row.id, col.value)"
+              >
+                {{ col.value }}
+              </span>
+            </div>
+            <div v-else-if="col.name === 'ownership'">
               <q-avatar
                 icon="person"
                 color="primary"
@@ -152,7 +168,11 @@ const {
       </template>
     </q-table>
   </div>
-  <ChildCompanyDialog :parent-id="props.id" ref="childCompanyDialogRef" />
+  <ChildCompanyDialog
+    :parent-id="props.id"
+    ref="childCompanyDialogRef"
+    @change="execute()"
+  />
 </template>
 
 <style lang="scss">

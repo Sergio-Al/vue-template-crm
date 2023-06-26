@@ -220,7 +220,7 @@ export interface Company {
 }
 
 export interface ChildCompany {
-  id_participacion_empresa: string;
+  id: string;
   name: string;
   direccion_c: string;
   razon_social_c: string;
@@ -231,7 +231,9 @@ export interface ChildCompany {
   website: string;
   email1: string;
   phone_alternate: string;
-  parent_id_c: string;
+  assigned_user_id: string;
+  user_id_c: string;
+  hance_empresa_id_c: '';
 }
 
 export interface User {

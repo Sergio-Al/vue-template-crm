@@ -1,13 +1,12 @@
 <script lang="ts">
+import { computed, ref } from 'vue';
 import { AlertComponent } from 'src/components';
 import { Notification } from 'src/composables';
 import { useDialogTabs } from 'src/composables/Dialog/useDialog';
-import { computed, ref } from 'vue';
-import { useCompanyTableStore } from '../../store/UseCompanyTableStore';
-import { useCompaniesStore } from '../../store/companyStore';
 import ViewUsers from '../../views/ViewUsers.vue';
 import ViewDocuments from '../../views/ViewDocuments.vue';
 import ViewChildGeneral from '../../views/ViewChildGeneral.vue';
+import { useChildCompaniesStore } from '../../store/childCompanyStore';
 </script>
 
 <script lang="ts" setup>
@@ -15,7 +14,12 @@ interface Props {
   parentId: string;
 }
 
+interface Emits {
+  (e: 'change'): void;
+}
+
 const props = defineProps<Props>();
+const emits = defineEmits<Emits>();
 
 //* variables
 const tabsDefinition = [
@@ -29,7 +33,7 @@ const tabsDefinition = [
     name: 'users',
     component: ViewUsers,
     label: 'Empleados',
-    enabledForCreation: true,
+    enabledForCreation: false,
   },
   {
     name: 'documents',
@@ -41,8 +45,7 @@ const tabsDefinition = [
 
 const showCloseAlert = ref(false);
 
-const companyStore = useCompaniesStore();
-const companyTableStore = useCompanyTableStore();
+const childCompanyStore = useChildCompaniesStore();
 
 //* Composable values
 const {
@@ -69,7 +72,7 @@ const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
 const clearData = () => {
   console.log('cleaning data');
   id.value = '';
-  companyStore.clearData();
+  childCompanyStore.clearData();
   resetValues();
 };
 
@@ -198,7 +201,7 @@ defineExpose({
           :is="activeTabComponent"
           :id="id"
           child
-          @submitComplete="companyTableStore.reloadList()"
+          @submitComplete="emits('change')"
           ref="generalFormRef"
         />
       </q-page>

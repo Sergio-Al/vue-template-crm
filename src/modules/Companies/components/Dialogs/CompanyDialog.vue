@@ -24,13 +24,13 @@ const tabsDefinition = [
     name: 'users',
     component: ViewUsers,
     label: 'Empleados',
-    enabledForCreation: true,
+    enabledForCreation: false,
   },
   {
     name: 'participants',
     component: ViewParticipants,
     label: 'Participación como',
-    enabledForCreation: true,
+    enabledForCreation: false,
   },
 
   {

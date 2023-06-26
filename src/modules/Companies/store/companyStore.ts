@@ -9,7 +9,8 @@ import {
   getCompanyUsers,
   getOneCompany,
   updateCompany,
-  getCompanyChild
+  getCompanyChild,
+  getOneChildCompany,
 } from '../services/useCompanyService';
 import type { ChildCompany, Company } from '../utils/types';
 
@@ -148,7 +149,6 @@ export const useCompaniesStore = defineStore('companies-store', () => {
 
   const onGetChildCompanies = async (id: string) => {
     try {
-
       // obtener datos del servicio
       return childCompanies;
     } catch (error) {
@@ -164,7 +164,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       console.log(error);
     } finally {
     }
-  }
+  };
 
   const onGetCompanyUsers = async (id: string) => {
     try {
@@ -200,7 +200,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       website: '',
       ownership: '',
       user_id_c: userCRM.id,
-      assigned_user_id:''
+      assigned_user_id: '',
     };
   };
 
@@ -222,6 +222,6 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     onGetChildCompanies,
     onGetCompanyUsers,
     onGetCompanyDocuments,
-    onGetListCompaniesChild
+    onGetListCompaniesChild,
   };
 });
