@@ -156,6 +156,19 @@ const onSubmit = async () => {
   }
 };
 
+const updateAssigned = async (id: string | null) => {
+  try {
+    console.log(id);
+    if (!!id) {
+      await companyStore.onUpdateCompany(localId.value, {
+        assigned_user_id: id,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 console.log(props.id);
 
 // Funciones que se podran usar al declarar una referencia de este componente
@@ -199,7 +212,11 @@ const emits = defineEmits<{
     </div>
     <div class="col-12 col-md-6">
       <div class="row q-gutter-y-md">
-        <CardDelegate ref="cardDelegateRef" :id="cardOwner" />
+        <CardDelegate
+          ref="cardDelegateRef"
+          :id="cardOwner"
+          @update="updateAssigned"
+        />
         <div class="q-gutter-y-md col-12">
           <q-card>
             <q-card-section style="padding: 0px">

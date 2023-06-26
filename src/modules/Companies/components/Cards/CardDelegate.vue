@@ -8,7 +8,12 @@ interface Props {
   id?: string;
 }
 
+interface Emits {
+  (e: 'update', id: string | null): void;
+}
+
 const props = defineProps<Props>();
+const emits = defineEmits<Emits>();
 
 const delegate = ref(null);
 const options = ref<User[] | undefined>(undefined);
@@ -42,6 +47,12 @@ const filterFn = async (
 
 const abortFilterFn = () => {
   // console.log('delayed filter aborted')
+};
+
+const updateAssigned = () => {
+  if (!!delegate.value) {
+    emits('update', delegate.value);
+  }
 };
 
 onMounted(async () => {
@@ -124,7 +135,17 @@ defineExpose({
         <q-card-actions>
           <q-btn flat round icon="person" />
           <q-btn flat> {{ userSelected?.iddivision_c }} </q-btn>
-          <q-btn flat color="primary"> {{ userSelected?.idregional_c }} </q-btn>
+          <q-btn flat color="primary">
+            {{ userSelected?.idregional_c }}
+          </q-btn>
+        </q-card-actions>
+        <q-card-actions vertical align="left">
+          <q-btn
+            v-if="!!props.id"
+            flat
+            label="Guardar"
+            @click="updateAssigned()"
+          />
         </q-card-actions>
       </q-card>
     </q-card-section>
