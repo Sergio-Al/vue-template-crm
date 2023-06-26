@@ -6,13 +6,16 @@ import { getUser, getUsers } from '../../services/useCompanyService';
 
 interface Props {
   id?: string;
+  showSave?: boolean;
 }
 
 interface Emits {
   (e: 'update', id: string | null): void;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  showSave: false,
+});
 const emits = defineEmits<Emits>();
 
 const delegate = ref(null);
@@ -141,7 +144,7 @@ defineExpose({
         </q-card-actions>
         <q-card-actions vertical align="left">
           <q-btn
-            v-if="!!props.id"
+            v-if="!!props.id || props.showSave"
             flat
             label="Guardar"
             @click="updateAssigned()"
