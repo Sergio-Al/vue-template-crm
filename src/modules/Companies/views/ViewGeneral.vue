@@ -163,6 +163,7 @@ const updateAssigned = async (id: string | null) => {
       await companyStore.onUpdateCompany(localId.value, {
         assigned_user_id: id,
       });
+      await execute();
     }
   } catch (error) {
     console.log(error);
