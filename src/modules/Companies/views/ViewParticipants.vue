@@ -7,6 +7,10 @@ import ChildCompanyDialog from '../components/Dialogs/ChildCompanyDialog.vue';
 
 import { useCompaniesStore } from '../store/companyStore';
 
+import { useChildCompaniesStore } from '../store/childCompanyStore';
+
+import { ChildCompany, Company } from '../utils/types';
+
 // import { childCompanies } from '../utils/dummyData';
 
 interface Props {
@@ -60,6 +64,8 @@ const columns: QTableColumn[] = [
   },
 ];
 
+const childCompanyStore = useChildCompaniesStore();
+
 const childCompanyDialogRef = ref<InstanceType<
   typeof ChildCompanyDialog
 > | null>(null);
@@ -76,14 +82,22 @@ const visitPage = (url: string) => {
   window.open(url, '_blank');
 };
 
+const localId = ref(props.id ?? '');
 //se dispara cuando carga el componente
-const {
-  state: companies,
-  isLoading,
-  execute,
-} = useAsyncState(async () => {
-  return await companyStore.onGetListCompaniesChild(props.id);
-}, []);
+// const {
+//   state: companies,
+//   isLoading,
+//   execute,
+// } = useAsyncState(async () => {
+//   return await companyStore.onGetListCompaniesChild(props.id);
+// }, []);
+
+const { isLoading, execute, state: companies } = useAsyncState(async () => {
+  if (!!localId.value) {
+    return await childCompanyStore.onGetChildCompany(localId.value);
+  }
+}, {} as ChildCompany);
+
 </script>
 
 <template>

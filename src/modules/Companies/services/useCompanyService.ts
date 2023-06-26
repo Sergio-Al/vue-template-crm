@@ -36,8 +36,9 @@ export const getTableData = async (params: Params) => {
 };
 
 export const getCompanyChild = async (id: string) => {
+  console.log(id);
   try {
-    const { data } = await axios_NS_07.get(`/participacion/child/${id}}`);
+    const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
     console.log(data);
     return data;
   } catch (error) {
@@ -122,10 +123,9 @@ export const createChildCompany = async (
     //   user_id_c: undefined,
     //   hance_empresa_id_c: ''
     // }
-    console.log(body);
 
     const { data } = await axios_NS_07.post('/participacion', body);
-    console.log(data);
+
     return data;
   } catch (error) {
     throw error;
@@ -135,8 +135,6 @@ export const createChildCompany = async (
 export const getOneChildCompany = async (id: string) => {
   try {
     const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
-
-    console.log('child company', data);
     return data;
   } catch (error) {}
 };
