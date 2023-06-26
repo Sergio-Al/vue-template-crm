@@ -7,7 +7,7 @@ import productTypesRouter from 'src/modules/ProductTypes/router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/certifications',
+    redirect: '/companies',
   },
   {
     path: '/certifications',

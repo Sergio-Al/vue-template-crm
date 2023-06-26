@@ -69,7 +69,7 @@ export const useCompanyTableStore = defineStore('company_table', {
         {
           name: 'razon_social_c',
           align: 'left',
-          label: 'Razón social',
+          label: 'Nombre Comercial',
           field: 'razon_social_c',
           sortable: true,
           visible: true,
