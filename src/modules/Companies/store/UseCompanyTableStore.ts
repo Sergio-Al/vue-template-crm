@@ -12,6 +12,7 @@ import {
   getTablePreferences,
   saveTablePreferences,
   updateTablePreferences,
+  getCompanyChild
 } from '../services/useCompanyService';
 import { axios_PREFERENCES } from 'src/conections/axiosCRM';
 import { Notification } from 'src/composables';

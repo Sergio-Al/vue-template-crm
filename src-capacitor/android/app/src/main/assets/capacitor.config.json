@@ -1,6 +1,6 @@
 {
   "appId": "org.capacitor.quasar.app",
-  "appName": "Projects App",
+  "appName": "Certificaciones App",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

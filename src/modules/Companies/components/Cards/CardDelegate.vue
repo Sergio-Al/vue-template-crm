@@ -40,10 +40,13 @@ const filterFn = async (
     if (val === '') {
       if (!!options.value && options.value.length > 0) return;
       options.value = [];
+      
     } else {
       const term = val;
       const response = await getUsers(term);
+      
       options.value = response;
+      console.log(options.value);
     }
   });
 };
@@ -62,6 +65,8 @@ onMounted(async () => {
   if (props.id) {
     console.log('searching...');
     const user = await getUser(props.id);
+    user.fullname = user.nombres+' '+user.apellidos;
+    console.log(user);
     userSelected.value = user;
   }
 });
@@ -91,7 +96,7 @@ defineExpose({
         hint="Ingrese el nombre del usuario"
         emit-value
         map-options
-        option-label="first_name"
+        option-label="fullname"
         option-value="id"
         v-model="delegate"
         outlined
@@ -111,11 +116,10 @@ defineExpose({
             </q-item-section>
             <q-item-section>
               <q-item-label
-                >{{ scope.opt.first_name }}
-                {{ scope.opt.last_name }}</q-item-label
+                >{{scope.opt.fullname}}</q-item-label
               >
               <q-item-label caption
-                >Division: {{ scope.opt.iddivision_c }}</q-item-label
+                >Email: {{scope.opt.email_address}}</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -128,7 +132,7 @@ defineExpose({
           <q-card-section class="q-pt-xs">
             <div class="text-overline">Nombre</div>
             <div class="text-h5 q-mt-sm q-mb-xs">
-              {{ userSelected?.first_name }} {{ userSelected?.last_name }}
+              {{ userSelected?.fullname }}
             </div>
           </q-card-section>
         </q-card-section>
@@ -137,10 +141,7 @@ defineExpose({
 
         <q-card-actions>
           <q-btn flat round icon="person" />
-          <q-btn flat> {{ userSelected?.iddivision_c }} </q-btn>
-          <q-btn flat color="primary">
-            {{ userSelected?.idregional_c }}
-          </q-btn>
+          <span flat color="primary"> {{ userSelected?.email_address}} </span>
         </q-card-actions>
         <q-card-actions vertical align="left">
           <q-btn

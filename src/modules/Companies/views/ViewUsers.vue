@@ -27,7 +27,8 @@ const userColumns: QTableColumn[] = [
     required: true,
     label: 'Nombre',
     align: 'left',
-    field: (row) => `${row.first_name} ${row.last_name}`,
+    //field: (row) => `${row.first_name} ${row.last_name}`,
+    field: 'user_name',
     sortable: true,
   },
   {
@@ -35,7 +36,7 @@ const userColumns: QTableColumn[] = [
     required: true,
     label: 'División',
     align: 'left',
-    field: 'iddivision_c',
+    field: 'division',
     sortable: true,
   },
   {
@@ -51,7 +52,7 @@ const userColumns: QTableColumn[] = [
     required: true,
     label: 'Área de mercado',
     align: 'left',
-    field: 'idamercado_c',
+    field: 'a_mercado',
     sortable: true,
   },
 ];

@@ -9,6 +9,7 @@ import {
   getCompanyUsers,
   getOneCompany,
   updateCompany,
+  getCompanyChild
 } from '../services/useCompanyService';
 import type { ChildCompany, Company } from '../utils/types';
 
@@ -32,11 +33,13 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     phone_alternate: '',
     website: '',
     ownership: '',
-    assigned_user: '',
+    assigned_user_id: '',
     user_id_c: userCRM.id,
   });
 
   const childPayload = ref({} as ChildCompany);
+
+  //const data_table = ref([])
 
   //getters
   const cardInfo = computed(() => {
@@ -67,7 +70,8 @@ export const useCompaniesStore = defineStore('companies-store', () => {
   });
 
   const cardOwner = computed(() => {
-    return payload.value.assigned_user;
+    //console.log(payload.value.assigned_user_id);
+    return payload.value.assigned_user_id;
   });
 
   //actions
@@ -132,7 +136,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       loading.value = true;
       const response = await getOneCompany(id);
       payload.value = response;
-      console.log(response);
+      console.log(response.assigned_user_id);
       return response;
     } catch (error) {
       console.log(error);
@@ -144,12 +148,23 @@ export const useCompaniesStore = defineStore('companies-store', () => {
 
   const onGetChildCompanies = async (id: string) => {
     try {
+
       // obtener datos del servicio
       return childCompanies;
     } catch (error) {
       throw error;
     }
   };
+
+  const onGetListCompaniesChild = async (props: any) => {
+    try {
+      const data = await getCompanyChild(props.id);
+      return data;
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
+  }
 
   const onGetCompanyUsers = async (id: string) => {
     try {
@@ -185,6 +200,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       website: '',
       ownership: '',
       user_id_c: userCRM.id,
+      assigned_user_id:''
     };
   };
 
@@ -206,5 +222,6 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     onGetChildCompanies,
     onGetCompanyUsers,
     onGetCompanyDocuments,
+    onGetListCompaniesChild
   };
 });

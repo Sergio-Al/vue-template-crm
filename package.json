@@ -2,8 +2,8 @@
   "name": "frontend",
   "version": "0.0.1",
   "description": "Sistema de control y seguimiento de proyectos",
-  "productName": "Projects App",
-  "author": "JRafael <jrafael@hansa.com.bo>",
+  "productName": "Certificaciones App",
+  "author": "EMaquera <emaquera@hansa.com.bo>",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",

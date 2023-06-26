@@ -212,7 +212,7 @@ export interface Company {
   created_by?: string;
   comment?: string;
   address?: string;
-  assigned_user?: string;
+  assigned_user_id?: string;
   email1?: string;
   phone_alternate?: string;
   phone: string;

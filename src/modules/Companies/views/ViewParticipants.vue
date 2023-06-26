@@ -75,7 +75,7 @@ const {
   state: companies,
   isLoading,
 } = useAsyncState(async () => {
-  return await companyStore.onGetChildCompanies(props.id);
+  return await companyStore.onGetListCompaniesChild(props.id);
 }, []);
 </script>
 

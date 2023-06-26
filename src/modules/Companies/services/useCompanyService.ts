@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   axios_LB_01,
+  axios_LB_04,
   axios_NS_07,
   axios_PREFERENCES,
 } from 'src/conections/axiosCRM';
@@ -15,13 +16,24 @@ import {
 } from '../utils/types';
 
 import { userStore } from 'src/modules/Users/store/UserStore';
+import { GuestsRecordResponse, RecordOptionsModel, SearchUser } from 'src/components/types';
 
 const { userCRM } = userStore();
 
 export const getTableData = async (params: Params) => {
   try {
     // const { data } = await axios_NS_07.get('/empresas');
-    const { data } = await axios_NS_07.get('api/companies');
+    const { data } = await axios_NS_07.get('/empresas');
+    console.log(data);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCompanyChild = async (id: string) => {
+  try {
+    const { data } = await axios_NS_07.get(`/participacion/child/${id}}`);
     console.log(data);
     return data;
   } catch (error) {
@@ -72,16 +84,7 @@ export const createCompany = async (
   // oportunities: ClientData
 ) => {
   try {
-    // const dataSend = {
-    //   ...information,
-    //   ...financial,
-    //   ...clientinfo,
-    //   responsible: responsible,
-    //   comments: comment,
-    // };
-    // console.log(dataSend);
-    // const { data } = await axios_NS_07.post('/empresas', dataCompany);
-    const { data } = await axios_NS_07.post('/api/companies', dataCompany);
+    const { data } = await axios_NS_07.post('/empresas', dataCompany);
     return data;
   } catch (error) {
     throw error;
@@ -94,19 +97,11 @@ export const createChildCompany = async (
 ) => {
   try {
     // endpoint para empresas como participacion
-    const body = { ...dataCompany, parent_id_c: idParent } as ChildCompany;
+    const body = { ...dataCompany, hance_empresa_id_c: idParent } as ChildCompany;
 
-    // const { data } = await axios_NS_07.post('/empresas', body);
-    // return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getIndicators = async (id: string) => {
-  try {
-    const response = await axios_rep_01.get(`/projects/indicators/${id}`);
-    return response.data;
+    const { data } = await axios_NS_07.post('/participacion', body);
+    console.log(data);
+    return data;
   } catch (error) {
     throw error;
   }
@@ -114,7 +109,7 @@ export const getIndicators = async (id: string) => {
 
 export const getOneCompany = async (id: string) => {
   try {
-    const response = await axios_NS_07.get(`api/companies/${id}`);
+    const response = await axios_NS_07.get(`/empresas/${id}`);
     // const response = await axios_NS_07.get(`empresas/${id}`);
     console.log('service ', response);
     return response.data;
@@ -125,13 +120,13 @@ export const getOneCompany = async (id: string) => {
 
 export const getCompanyUsers = async (id: string) => {
   try {
-    const { data } = await axios_NS_07.get('api/users/', {
-      params: {
-        company_id: id,
-      },
-    });
-
-    return data;
+    const params = {
+      division: '04'
+    };
+    const { data } = await axios_LB_01.get(
+      `/users/division/amercado?params=${JSON.stringify(params)}`
+    );
+    return data.data;
   } catch (error) {
     return error;
   }
@@ -147,26 +142,6 @@ export const updateCompany = async (
     };
     const response = await axios_NS_07.patch(`/empresas/${id}`, dataSend);
     return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getMilestonesInProgress = async (id: string) => {
-  try {
-    const data = await axios_rep_01.get(
-      `/projects/milestones/inprogress/${id}`
-    );
-    return data.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getTasksInProgress = async (id: string) => {
-  try {
-    const data = await axios_rep_01.get(`/projects/tasks/inprogress/${id}`);
-    return data.data;
   } catch (error) {
     throw error;
   }
@@ -192,44 +167,6 @@ export const getContactsAccount = async (account_id: string) => {
   }
 };
 
-export const getWorkArasList = async (project_id: string) => {
-  try {
-    const { data } = await axios_rep_01.get(`/workareas/project/${project_id}`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const updateStatusProject = async (project_id: string, data: any) => {
-  try {
-    const resp = await axios_rep_01.patch(
-      `/project/status/${project_id}`,
-      data
-    );
-    return resp;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getGoalsList = async (project_id: string) => {
-  try {
-    const { data } = await axios_rep_01.get(`/goals/planning/${project_id}`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getPlanningsList = async (project_id: string) => {
-  try {
-    const { data } = await axios_rep_01.get(`/plannings/project/${project_id}`);
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
 
 export const deleteMassiveData = async (data: any) => {
   // console.log('delete massive');
@@ -253,70 +190,41 @@ export const updateMassiveData = async (data: any) => {
   }
 };
 
-export const get_avance_project = async (data_filter: any) => {
+export async function getUsers(
+  value: string,
+  options: RecordOptionsModel = {}
+): Promise<SearchUser[]> {
+  const {
+    module = '',
+    user_iddivision = '',
+    user_idamercado = '',
+    user_idgrupocliente = '',
+  } = options;
+  const formattedModule = module.charAt(0).toUpperCase() + module.slice(1);
+  const bodyOptions = {
+    value,
+    module: formattedModule,
+    user_iddivision,
+    user_idamercado,
+    user_idgrupocliente,
+  };
   try {
-    // const { data } = await axios_rep_01.get(
-    //   `/Project_Get_Avance/${id_proyect}`
-    // );
-    const params = {
-      filter: data_filter,
-    };
-    const { data } = await axios_rep_01.get(
-      `/Project_Get_Avance?params=${encodeURIComponent(JSON.stringify(params))}`
+    const { data } = await axios_LB_04.patch<GuestsRecordResponse>(
+      '/search-user-mitings/1/100/desc/{val}',
+      bodyOptions
     );
-    return data.data;
+    return data.search_users;
   } catch (error) {
     throw error;
   }
-};
+}
 
-export const get_avance_grafico = async (data_filter: any) => {
-  try {
-    const params = {
-      filter: data_filter,
-    };
-    const { data } = await axios_rep_01.get(
-      `/Project_Get_Grafico?params=${encodeURIComponent(
-        JSON.stringify(params)
-      )}`
-    );
-    return data.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getUsers = async (name: string) => {
-  //llamar a endpoint, obtener array de usuario con el nombre [name]
-  const { data } = await axios_NS_07.get('api/users', {
-    params: {
-      name,
-    },
-  });
-
-  return data;
-};
 
 export const getUser = async (id: string) => {
-  const { data } = await axios_NS_07.get(`api/users/${id}`);
+  const { data } = await axios_NS_07.get(`/user/${id}`);
   return data;
 };
 
-export const getActivitiesProyects = async (
-  id: string,
-  dateStart: string,
-  dateEnd: string
-) => {
-  try {
-    const response = await axios_rep_01.get(
-      `Get_list_Activities/${id}/${dateStart}/${dateEnd}`
-    );
-    // console.log('your response', response.data.data[0]);
-    return response.data.data;
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 export const assignUsersToCompany = async (id: string, userIds: string[]) => {
   const body = { id, users_id: userIds };

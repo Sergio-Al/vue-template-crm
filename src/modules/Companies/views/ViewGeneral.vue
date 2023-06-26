@@ -126,7 +126,7 @@ const onSubmit = async () => {
           ...cardContactData,
           comment: commentCreate.value,
           direccion_c: directionData?.address_street_generated_c,
-          assigned_user: assignedUser,
+          assigned_user_id: assignedUser,
         } as Company;
 
         // {
