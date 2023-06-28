@@ -56,7 +56,7 @@ defineExpose({
           v-model="inputData.razon_social_c"
           type="text"
           class="col-12 col-sm-12"
-          label="Razón Social"
+          label="Nombre Comercial"
           outlined
           dense
           :rules="[(val) => !!val || 'Campo requerido']"
@@ -95,7 +95,7 @@ defineExpose({
           v-model="inputData.razon_social_c"
           type="text"
           class="col-12 col-sm-12"
-          label="Razón Social"
+          label="Nombre Comercial"
           outlined
           dense
           readonly

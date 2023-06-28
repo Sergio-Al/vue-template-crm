@@ -119,7 +119,7 @@ const onSubmit = async (parentId: string) => {
           message: 'Guardando Información',
         });
 
-        console.log(cardInfoData, cardContactData);
+        // TODO: no envia id_responsable
 
         const body = {
           ...cardInfoData,

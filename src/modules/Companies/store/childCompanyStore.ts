@@ -37,7 +37,7 @@ export const useChildCompaniesStore = defineStore(
     const onCreateChildCompany = async (
       idParent: string,
       dataCompany: ChildCompany,
-      dataDocuments: any[]
+      //dataDocuments: any[]
     ) => {
       try {
         Loading.show({

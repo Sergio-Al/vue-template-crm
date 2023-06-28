@@ -7,6 +7,10 @@ import ChildCompanyDialog from '../components/Dialogs/ChildCompanyDialog.vue';
 
 import { useCompaniesStore } from '../store/companyStore';
 
+import { useChildCompaniesStore } from '../store/childCompanyStore';
+
+import { ChildCompany, Company } from '../utils/types';
+
 // import { childCompanies } from '../utils/dummyData';
 
 interface Props {
@@ -60,6 +64,8 @@ const columns: QTableColumn[] = [
   },
 ];
 
+const childCompanyStore = useChildCompaniesStore();
+
 const childCompanyDialogRef = ref<InstanceType<
   typeof ChildCompanyDialog
 > | null>(null);
@@ -76,6 +82,7 @@ const visitPage = (url: string) => {
   window.open(url, '_blank');
 };
 
+const localId = ref(props.id ?? '');
 //se dispara cuando carga el componente
 const {
   state: companies,

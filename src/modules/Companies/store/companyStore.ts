@@ -181,7 +181,8 @@ export const useCompaniesStore = defineStore('companies-store', () => {
   const onGetCompanyDocuments = async (id: string) => {
     try {
       // obtener documentos como array
-      return defaultData;
+      //return [defaultData];
+      return [];
     } catch (error) {
       throw error;
     }

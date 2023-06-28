@@ -16,7 +16,7 @@ const columns: QTableColumn[] = [
   {
     name: 'name',
     required: true,
-    label: 'Dessert (100g serving)',
+    label: 'Documento',
     align: 'left',
     field: (row) => row.name,
     format: (val) => `${val}`,
@@ -25,28 +25,18 @@ const columns: QTableColumn[] = [
   {
     name: 'calories',
     align: 'center',
-    label: 'Calories',
+    label: 'Descripcion',
     field: 'calories',
     sortable: true,
   },
-  { name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true },
-  { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
-  { name: 'protein', label: 'Protein (g)', field: 'protein' },
-  { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
+  { name: 'fat', label: 'Fecha Inicio Vigencia', field: 'fat', sortable: true },
+  { name: 'carbs', label: 'Fecha Fin Vigencia', field: 'carbs' },
   {
     name: 'calcium',
-    label: 'Calcium (%)',
+    label: 'Versión',
     field: 'calcium',
-    sortable: true,
-    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-  },
-  {
-    name: 'iron',
-    label: 'Iron (%)',
-    field: 'iron',
-    sortable: true,
-    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-  },
+    sortable: true
+  }
 ];
 
 //se dispara cuando carga el componente
