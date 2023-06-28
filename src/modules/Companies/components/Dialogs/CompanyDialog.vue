@@ -9,6 +9,7 @@ import ViewGeneral from '../../views/ViewGeneral.vue';
 import ViewParticipants from '../../views/ViewParticipants.vue';
 import ViewUsers from '../../views/ViewUsers.vue';
 import ViewDocuments from '../../views/ViewDocuments.vue';
+import { title } from 'process';
 </script>
 
 <script lang="ts" setup>
@@ -86,6 +87,12 @@ const saveCurrentForm = async () => {
 const onCloseDialog = () => {
   console.log('On close dialog');
   open.value = false;
+};
+
+const updateData = (idValue: string) => {
+  companyTableStore.reloadList();
+  id.value = idValue;
+  titleDialog.value = 'Detalles';
 };
 
 defineExpose({
@@ -184,7 +191,7 @@ defineExpose({
         <component
           :is="activeTabComponent"
           :id="id"
-          @submitComplete="companyTableStore.reloadList()"
+          @submitComplete="updateData"
           ref="generalFormRef"
         />
       </q-page>

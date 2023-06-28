@@ -14,9 +14,11 @@ const props = withDefaults(
     data: DirectionComponentModel;
     options: DirectionValueModel[];
     directionCRM3?: string;
+    hideExtraBanner?: boolean;
   }>(),
   {
     idLocal: '',
+    hideExtraBanner: false,
   }
 );
 
@@ -119,8 +121,13 @@ defineExpose({
     <template #read>
       <div class="q-pa-sm">
         <div>
-          <q-banner rounded dense class="bg-primary text-white">
-            <span>Direccion CRM 3</span> <br/>
+          <q-banner
+            v-if="!props.hideExtraBanner"
+            rounded
+            dense
+            class="bg-primary text-white"
+          >
+            <span>Direccion CRM 3</span> <br />
             {{ directionCRM3 || `-Sin Dirección-` }}
           </q-banner>
 

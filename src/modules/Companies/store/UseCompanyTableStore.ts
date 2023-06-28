@@ -12,7 +12,7 @@ import {
   getTablePreferences,
   saveTablePreferences,
   updateTablePreferences,
-  getCompanyChild
+  getCompanyChild,
 } from '../services/useCompanyService';
 import { axios_PREFERENCES } from 'src/conections/axiosCRM';
 import { Notification } from 'src/composables';
@@ -32,16 +32,11 @@ export const useCompanyTableStore = defineStore('company_table', {
       rowsNumber: 10,
     },
     data_filter: {
-      account: '',
       name: '',
-      pst_code: '',
-      aio_code: '',
-      status: '',
-      start_date: '',
-      end_date: '',
-      country: '',
-      state: '',
-      city: '',
+      direccion_c: '',
+      phone_office: '',
+      razon_social_c: '',
+      resolucion_ministerial_c: '',
       created_by: [],
       modified_by: [],
       assigned_to: [],
@@ -108,14 +103,7 @@ export const useCompanyTableStore = defineStore('company_table', {
         },
       ],
     },
-    visible_fields: [
-      'account',
-      'name',
-      'status',
-      'country',
-      'created_by',
-      'assigned_to',
-    ],
+    visible_fields: ['name', 'direccion_c', 'phone_office'],
     visible_columns: [
       'name',
       'razon_social_c',
@@ -293,16 +281,11 @@ export const useCompanyTableStore = defineStore('company_table', {
 
     async clearFilterData() {
       this.data_filter = {
-        account: '',
         name: '',
-        pst_code: '',
-        aio_code: '',
-        status: '',
-        start_date: '',
-        end_date: '',
-        country: '',
-        state: '',
-        city: '',
+        direccion_c: '',
+        phone_office: '',
+        razon_social_c: '',
+        resolucion_ministerial_c: '',
         created_by: [],
         modified_by: [],
         assigned_to: [],

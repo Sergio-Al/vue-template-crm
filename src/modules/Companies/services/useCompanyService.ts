@@ -26,9 +26,9 @@ const { userCRM } = userStore();
 
 export const getTableData = async (params: Params) => {
   try {
+    console.log(params);
     // const { data } = await axios_NS_07.get('/empresas');
     const { data } = await axios_NS_07.get('/empresas');
-    console.log(data);
     return data;
   } catch (error) {
     throw error;
@@ -37,8 +37,7 @@ export const getTableData = async (params: Params) => {
 
 export const getCompanyChild = async (id: string) => {
   try {
-    const { data } = await axios_NS_07.get(`/participacion/child/${id}}`);
-    console.log(data);
+    const { data } = await axios_NS_07.get(`/participacion/parent/${id}`);
     return data;
   } catch (error) {
     throw error;
@@ -160,6 +159,8 @@ export const getCompanyUsers = async (id: string) => {
     const { data } = await axios_LB_01.get(
       `/users/division/amercado?params=${JSON.stringify(params)}`
     );
+
+    // const data = await axios_NS_07.get('/users');
     return data.data;
   } catch (error) {
     return error;

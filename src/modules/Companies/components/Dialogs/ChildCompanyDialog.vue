@@ -89,6 +89,12 @@ const onCloseDialog = () => {
   open.value = false;
 };
 
+const updateData = (idValue: string) => {
+  id.value = idValue;
+  titleDialog.value = 'Detalles';
+  emits('change');
+};
+
 defineExpose({
   clearData,
   openDialogTab,
@@ -201,7 +207,7 @@ defineExpose({
           :is="activeTabComponent"
           :id="id"
           child
-          @submitComplete="emits('change')"
+          @submitComplete="updateData"
           ref="generalFormRef"
         />
       </q-page>

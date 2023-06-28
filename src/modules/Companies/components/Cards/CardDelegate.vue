@@ -4,6 +4,8 @@ import { ref, onMounted } from 'vue';
 import type { User } from '../../utils/types';
 import { getUser, getUsers } from '../../services/useCompanyService';
 
+import ViewCard from 'src/components/MainCard/ViewCard.vue';
+
 interface Props {
   id?: string;
   showSave?: boolean;
@@ -19,13 +21,15 @@ const props = withDefaults(defineProps<Props>(), {
 const emits = defineEmits<Emits>();
 
 const delegate = ref(null);
-const options = ref<User[] | undefined>(undefined);
+const users = ref<User[] | undefined>(undefined);
 const userSelected = ref<User | null>(null);
+
+const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 
 const assignInfo = (id: string) => {
   console.log(id);
-  if (!!options.value) {
-    const userToSelect = options.value.find((value) => value.id === id) as User;
+  if (!!users.value) {
+    const userToSelect = users.value.find((user) => user.id === id) as User;
 
     userSelected.value = userToSelect;
   }
@@ -38,15 +42,14 @@ const filterFn = async (
 ) => {
   update(async () => {
     if (val === '') {
-      if (!!options.value && options.value.length > 0) return;
-      options.value = [];
-      
+      if (!!users.value && users.value.length > 0) return;
+      users.value = [];
     } else {
       const term = val;
       const response = await getUsers(term);
-      
-      options.value = response;
-      console.log(options.value);
+
+      users.value = response;
+      console.log(users.value);
     }
   });
 };
@@ -61,13 +64,20 @@ const updateAssigned = () => {
   }
 };
 
+const assignUser = async (id: string) => {
+  const user = await getUser(id);
+  user.fullname = user.nombres + ' ' + user.apellidos;
+  console.log(user);
+  userSelected.value = user;
+};
+
+const restoreValues = () => {
+  if (props.id) assignUser(props.id);
+};
+
 onMounted(async () => {
   if (props.id) {
-    console.log('searching...');
-    const user = await getUser(props.id);
-    user.fullname = user.nombres+' '+user.apellidos;
-    console.log(user);
-    userSelected.value = user;
+    assignUser(props.id);
   }
 });
 
@@ -77,81 +87,109 @@ defineExpose({
 </script>
 
 <template>
-  <q-card class="col-12">
-    <q-card-section>
-      <q-icon name="info" size="sm" class="q-mr-sm" color="warning" />
-      Representante
-    </q-card-section>
-    <q-separator />
-    <q-card-section>
-      <q-select
-        use-input
-        hide-selected
-        fill-input
-        input-debounce="500"
-        label="Buscar usuario"
-        :options="options"
-        @filter="filterFn"
-        @filter-abort="abortFilterFn"
-        hint="Ingrese el nombre del usuario"
-        emit-value
-        map-options
-        option-label="fullname"
-        option-value="id"
-        v-model="delegate"
-        outlined
-        dense
-        hide-dropdown-icon
-        use-chips
-        @update:model-value="assignInfo"
-      >
-        <template #prepend>
-          <q-icon name="search" />
-        </template>
-
-        <template v-slot:option="scope">
-          <q-item v-bind="scope.itemProps">
-            <q-item-section avatar>
-              <q-icon name="person" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label
-                >{{scope.opt.fullname}}</q-item-label
-              >
-              <q-item-label caption
-                >Email: {{scope.opt.email_address}}</q-item-label
-              >
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-    </q-card-section>
-    <q-card-section v-if="!!props.id || !!delegate">
-      <q-card class="my-card" flat bordered>
-        <q-card-section horizontal>
-          <q-card-section class="q-pt-xs">
-            <div class="text-overline">Nombre</div>
-            <div class="text-h5 q-mt-sm q-mb-xs">
-              {{ userSelected?.fullname }}
-            </div>
+  <view-card-component
+    v-bind="$attrs"
+    :controls="!!props.id"
+    :initial-status="props.id ? 'read' : 'edit'"
+    icon-name="info"
+    ref="baseCardRef"
+    title="Representante"
+    @cancel-change="restoreValues"
+    @edit-change="restoreValues"
+  >
+    <template #read>
+      <q-card-section v-if="!!props.id || !!delegate">
+        <q-card class="my-card" flat bordered>
+          <q-card-section horizontal>
+            <q-card-section class="q-pt-xs">
+              <div class="text-overline">Nombre</div>
+              <div class="text-h5 q-mt-sm q-mb-xs">
+                {{ userSelected?.fullname }}
+              </div>
+            </q-card-section>
           </q-card-section>
-        </q-card-section>
 
-        <q-separator />
+          <q-separator />
 
-        <q-card-actions>
-          <q-btn flat round icon="person" />
-          <span flat color="primary"> {{ userSelected?.email_address}} </span>
-        </q-card-actions>
-        <q-card-actions vertical align="left">
-          <q-btn
-            v-if="!!props.id || props.showSave"
-            flat
-            label="Guardar"
-            @click="updateAssigned()"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-card-section>
-  </q-card>
+          <q-card-actions>
+            <q-btn flat round icon="person" />
+            <span flat color="primary">
+              {{ userSelected?.email_address }}
+            </span>
+          </q-card-actions>
+        </q-card>
+      </q-card-section>
+    </template>
+    <template #edit
+      ><q-card-section>
+        <q-select
+          use-input
+          hide-selected
+          fill-input
+          input-debounce="500"
+          label="Buscar usuario"
+          :options="users"
+          @filter="filterFn"
+          @filter-abort="abortFilterFn"
+          hint="Ingrese el nombre del usuario"
+          emit-value
+          map-options
+          option-label="fullname"
+          option-value="id"
+          v-model="delegate"
+          outlined
+          dense
+          hide-dropdown-icon
+          use-chips
+          @update:model-value="assignInfo"
+        >
+          <template #prepend>
+            <q-icon name="search" />
+          </template>
+
+          <template v-slot:option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section avatar>
+                <q-icon name="person" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ scope.opt.fullname }}</q-item-label>
+                <q-item-label caption
+                  >Email: {{ scope.opt.email_address }}</q-item-label
+                >
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </q-card-section>
+      <q-card-section v-if="!!props.id || !!delegate">
+        <q-card class="my-card" flat bordered>
+          <q-card-section horizontal>
+            <q-card-section class="q-pt-xs">
+              <div class="text-overline">Nombre</div>
+              <div class="text-h5 q-mt-sm q-mb-xs">
+                {{ userSelected?.fullname }}
+              </div>
+            </q-card-section>
+          </q-card-section>
+
+          <q-separator />
+
+          <q-card-actions>
+            <q-btn flat round icon="person" />
+            <span flat color="primary">
+              {{ userSelected?.email_address }}
+            </span>
+          </q-card-actions>
+          <q-card-actions vertical align="left">
+            <q-btn
+              v-if="!!props.id || props.showSave"
+              flat
+              label="Guardar"
+              @click="updateAssigned()"
+            />
+          </q-card-actions>
+        </q-card> </q-card-section
+    ></template>
+  </view-card-component>
 </template>

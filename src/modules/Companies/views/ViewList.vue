@@ -6,12 +6,9 @@ import { userStore } from 'src/modules/Users/store/UserStore';
 import CompanyDialog from '../components/Dialogs/CompanyDialog.vue';
 import { useCompanyTableStore } from '../store/UseCompanyTableStore';
 
-import {
-Filter,
-Pagination,
-base
-} from '../utils/types';
+import type { Filter, Pagination, base } from '../utils/types';
 
+import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
 
 //properties
 const props = withDefaults(
@@ -35,25 +32,20 @@ const { setVisibleColumn, getListCompanies, reloadList, setPagination } =
   useCompanyTableStore();
 
 //Refs
-// const filterAdvancedRef = ref<InstanceType<typeof AdvancedFilterTable> | null>(
-//   null
-// );
+const advancedFilterRef = ref<InstanceType<typeof AdvancedFilter> | null>(null);
 // const projectDialogRef = ref<InstanceType<typeof ProjectDialog> | null>(null);
 // const accountDialogRef = ref<InstanceType<typeof AccountDialog> | null>(null);
 
 // const updateMassiveRef = ref<InstanceType<
 //   typeof UpdateMassiveComponent
 // > | null>(null);
-const companyDialogRef = ref<InstanceType<typeof CompanyDialog> | null>(
-  null
-);
-
+const companyDialogRef = ref<InstanceType<typeof CompanyDialog> | null>(null);
 
 const onRequestTable = async (val: {
   pagination: Pagination;
   filter: Filter;
 }) => {
- // await setPagination(val.pagination);
+  // await setPagination(val.pagination);
   await getListCompanies(val);
 };
 
@@ -74,8 +66,8 @@ const onUpdateMultiple = (selected: base[]) => {
 
 const onSubmitDataFilter = () => {
   try {
-    // table.data_filter = filterAdvancedRef.value?.dataFilter;
-   // table.setFilterData();
+    table.data_filter = advancedFilterRef.value?.dataFilter;
+    table.setFilterData();
     table.reloadList();
   } catch (error) {
     throw error;
@@ -85,6 +77,7 @@ const onSubmitDataFilter = () => {
 const onClearDataFilter = () => {
   try {
     // filterAdvancedRef.value?.clearFilter();
+    console.log('here!!!');
     table.clearFilterData();
     table.setFilterData();
     table.reloadList();
@@ -106,8 +99,7 @@ const openDialog = () => {
   companyDialogRef.value?.openDialogTab();
 };
 
-
-const openItemSelected = (id: string, title:string) => {
+const openItemSelected = (id: string, title: string) => {
   companyDialogRef.value?.openDialogTab(id, title);
 };
 
@@ -128,7 +120,6 @@ const constructorComp = async (idUser?: string) => {
 </script>
 
 <template>
-
   <div :class="$q.platform.is.desktop ? 'q-pa-md' : 'q-pa-sm'">
     <table-component
       :rows="table.data_table.rows"
@@ -151,20 +142,26 @@ const constructorComp = async (idUser?: string) => {
       @update:props="onRequestTable"
       @clearFilter="onClearDataFilter"
       @openDialog="openDialog"
-
       v-if="true"
     >
       <template #rows="{ propsTable }">
         <q-tr :props="propsTable">
-          <q-td class="text-left" >
+          <q-td class="text-left">
             <q-checkbox v-model="propsTable.selected" flat dense />
           </q-td>
           <q-td key="name" :props="propsTable" :style="'width: 100px;'">
-            <span class="text-blue-9 cursor-pointer" @click="openItemSelected(propsTable.row.id,  propsTable.row.name)">
+            <span
+              class="text-blue-9 cursor-pointer"
+              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
+            >
               {{ propsTable.row.name }}
             </span>
           </q-td>
-          <q-td key="razon_social_c" :props="propsTable" :style="'width: 100px;'">
+          <q-td
+            key="razon_social_c"
+            :props="propsTable"
+            :style="'width: 100px;'"
+          >
             {{ propsTable.row.razon_social_c }}
           </q-td>
           <q-td key="direccion_c" :props="propsTable" :style="'width: 100px;'">
@@ -203,17 +200,12 @@ const constructorComp = async (idUser?: string) => {
         >
         </q-btn>
         <q-page-sticky :offset="[18, 0]" position="bottom-right" v-else>
-          <q-btn
-            fab
-            color="primary"
-            icon="add"
-            @click="openDialog()"
-          />
+          <q-btn fab color="primary" icon="add" @click="openDialog()" />
         </q-page-sticky>
       </template>
-      <template #updateContent>
-      </template>
+      <template #updateContent> </template>
       <template #filterContent>
+        <AdvancedFilter ref="advancedFilterRef" @submit-filter="() => {}" />
       </template>
     </table-component>
     <TableSkeleton v-else />

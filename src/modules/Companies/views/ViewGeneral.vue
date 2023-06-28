@@ -21,6 +21,7 @@ import { storeToRefs } from 'pinia';
 import { Company } from '../utils/types';
 import DirectionCard from 'src/components/MainCard/DirectionCard.vue';
 import CardDelegate from '../components/Cards/CardDelegate.vue';
+import CardComment from '../components/Cards/CardComment.vue';
 </script>
 <script lang="ts" setup>
 const props = defineProps<{
@@ -204,6 +205,7 @@ const emits = defineEmits<{
 
         <direction-card-component
           ref="directionCardComponentRef"
+          hide-extra-banner
           :id-local="localId"
           :data="cardAddress"
           :options="[]"
@@ -214,6 +216,7 @@ const emits = defineEmits<{
     <div class="col-12 col-md-6">
       <div class="row q-gutter-y-md">
         <CardDelegate
+          class="col-12"
           ref="cardDelegateRef"
           :id="cardOwner"
           :show-save="!!localId"
@@ -258,12 +261,13 @@ const emits = defineEmits<{
                   class="q-py-sm"
                   v-if="!!localId"
                 >
-                  <CommentsList
+                  <!-- <CommentsList
                     :id="localId"
                     :descCRM3="''"
                     :modulo="'Opportunities'"
                   >
-                  </CommentsList>
+                  </CommentsList> -->
+                  <CardComment />
                 </q-tab-panel>
                 <q-tab-panel
                   name="comentarios"
@@ -292,6 +296,17 @@ const emits = defineEmits<{
                   module="Opportunities"
                 ></ActivitiesComponent> -->
                   <div>Activities component</div>
+                </q-tab-panel>
+                <q-tab-panel name="historychanges">
+                  <q-card class="my-card">
+                    <q-card-section>
+                      <div class="text-h6">Historial de cambios</div>
+                      <div class="text-subtitle2">Empresa</div>
+                    </q-card-section>
+                    <q-card-section>
+                      Se mostrara el historial de cambios
+                    </q-card-section>
+                  </q-card>
                 </q-tab-panel>
               </q-tab-panels>
             </q-card-section>

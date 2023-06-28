@@ -156,9 +156,10 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     }
   };
 
-  const onGetListCompaniesChild = async (props: any) => {
+  const onGetListCompaniesChild = async (id: string) => {
     try {
-      const data = await getCompanyChild(props.id);
+      console.log(id);
+      const data = await getCompanyChild(id);
       return data;
     } catch (error) {
       console.log(error);

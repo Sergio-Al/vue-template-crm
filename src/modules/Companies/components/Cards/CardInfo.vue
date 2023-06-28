@@ -4,12 +4,7 @@ import { computed, defineAsyncComponent, ref } from 'vue';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 
-import { useCompany } from '../../composables';
 import { Company } from '../../utils/types';
-
-const AdvancedFilterCampaign = defineAsyncComponent(
-  () => import('src/modules/Prospects/components/AdvancedFilterCampaign.vue')
-);
 
 interface Props {
   id: string;
@@ -55,9 +50,7 @@ defineExpose({
           label="Nombre Legal de la Empresa"
           outlined
           dense
-          :rules="[
-            (val)=> !!val || 'Campo requerido'
-          ]"
+          :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
           v-model="inputData.razon_social_c"
@@ -66,9 +59,7 @@ defineExpose({
           label="Razón Social"
           outlined
           dense
-          :rules="[
-            (val)=> !!val || 'Campo requerido'
-          ]"
+          :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
           v-model="inputData.resolucion_ministerial_c"
@@ -99,7 +90,6 @@ defineExpose({
           outlined
           dense
           readonly
-        
         />
         <q-input
           v-model="inputData.razon_social_c"
@@ -109,7 +99,6 @@ defineExpose({
           outlined
           dense
           readonly
-        
         />
         <q-input
           v-model="inputData.resolucion_ministerial_c"

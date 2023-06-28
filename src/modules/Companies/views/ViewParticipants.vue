@@ -82,7 +82,8 @@ const {
   isLoading,
   execute,
 } = useAsyncState(async () => {
-  return await companyStore.onGetListCompaniesChild(props.id);
+  const parentId = props.id;
+  return await companyStore.onGetListCompaniesChild(parentId);
 }, []);
 </script>
 
@@ -135,13 +136,23 @@ const {
               </span>
             </div>
             <div v-else-if="col.name === 'ownership'">
-              <q-avatar
+              <q-chip
+                v-if="!col.value"
+                class="primary"
                 icon="person"
-                color="primary"
-                size="sm"
-                text-color="white"
+                outline
+                dense
+                label="No asignado"
               />
-              <span class="q-ml-sm">{{ col.value }}</span>
+              <div v-else>
+                <q-avatar
+                  icon="person"
+                  color="primary"
+                  size="sm"
+                  text-color="white"
+                />
+                <span class="q-ml-sm">{{ col.value }}</span>
+              </div>
             </div>
             <span v-else>{{ col.value }}</span>
           </q-td>
