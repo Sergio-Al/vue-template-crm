@@ -38,8 +38,8 @@ export const getTableData = async (params: Params) => {
 export const getCompanyChild = async (id: string) => {
   console.log(id);
   try {
-    const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
-    console.log(data);
+    const { data } = await axios_NS_07.get(`/participacion/parent/${id}`);
+    // const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
     return data;
   } catch (error) {
     throw error;
