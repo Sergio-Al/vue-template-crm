@@ -93,14 +93,15 @@ const onSubmit = async (parentId: string) => {
     const cardInfoData = cardInfoRef.value?.exposeData();
     const cardContactData = cardContactRef.value?.exposeData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
-
-    console.log(directionData);
+    const assignedUser = cardDelegateRef.value?.exposeData();
 
     if (!!cardInfoData || !!cardContactData) {
       try {
         const body = {
           ...cardInfoData,
           ...cardContactData,
+          direccion_c: directionData?.address_street_generated_c,
+          assigned_user_id: assignedUser || '',
         } as ChildCompany;
         await childCompanyStore.onUpdateChildCompany(localId.value, body);
         emits('submitComplete', localId.value);
@@ -201,6 +202,7 @@ const emits = defineEmits<{
             latitude: 0,
             longitude: 0,
           }"
+          hide-extra-banner
           :options="[]"
           class="col-12"
         />

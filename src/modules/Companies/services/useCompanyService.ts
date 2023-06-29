@@ -190,9 +190,14 @@ export const updateChildCompany = async (
       ...information,
     };
 
+    delete dataSend.id;
+    delete dataSend.parentCompany;
+
+    console.log(dataSend);
+
     // descomentar y poner el endpoint para actualizar participantes
-    // const response = await axios_NS_07.patch(`/empresas/${id}`, dataSend);
-    // return response.data;
+    const response = await axios_NS_07.patch(`/participacion/${id}`, dataSend);
+    return response.data;
   } catch (error) {
     throw error;
   }

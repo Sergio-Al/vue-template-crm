@@ -8,7 +8,7 @@ import { computed, ref } from 'vue';
 import { useCompaniesStore } from '../store/companyStore';
 import CommentsList from 'src/components/Comments/CommentsList.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
-// import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
+import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
 
 // module-components
 import CardDocuments from '../components/Cards/CardDocuments.vue';
@@ -96,15 +96,16 @@ const onSubmit = async () => {
     const cardInfoData = cardInfoRef.value?.exposeData();
     const cardContactData = cardContactRef.value?.exposeData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
-
-    console.log(directionData);
+    const assignedUser = cardDelegateRef.value?.exposeData();
 
     if (!!cardInfoData || !!cardContactData) {
       try {
         const body: Company = {
           ...cardInfoData,
           ...cardContactData,
-        };
+          direccion_c: directionData?.address_street_generated_c,
+          assigned_user_id: assignedUser,
+        } as Company;
         await companyStore.onUpdateCompany(localId.value, body);
         emits('submitComplete', localId.value);
         await execute();
@@ -293,7 +294,7 @@ const emits = defineEmits<{
                 <q-tab-panel name="Activities">
                   <!-- <ActivitiesComponent
                     :id="localId"
-                    :idUser="userCRM.id"
+                    :idUser="'1'"
                     module="HANCE_Certificaciones"
                   ></ActivitiesComponent> -->
                 </q-tab-panel>
