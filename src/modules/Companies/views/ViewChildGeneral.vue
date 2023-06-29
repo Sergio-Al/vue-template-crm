@@ -112,6 +112,7 @@ const onSubmit = async (parentId: string) => {
     const cardInfoData = cardInfoRef.value?.exposeData();
     const cardContactData = cardContactRef.value?.exposeData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
+    const assignedUser = cardDelegateRef.value?.exposeData();
 
     if (!!cardInfoData || !!cardContactData) {
       try {
@@ -125,6 +126,7 @@ const onSubmit = async (parentId: string) => {
           ...cardInfoData,
           ...cardContactData,
           direccion_c: directionData?.address_street_generated_c || '',
+          assigned_user_id: assignedUser || '',
         } as ChildCompany;
 
         const newCompany = await childCompanyStore.onCreateChildCompany(
@@ -205,9 +207,10 @@ const emits = defineEmits<{
     <div class="col-12 col-md-6">
       <div class="row q-gutter-y-md">
         <CardDelegate
+          class="col-12"
           ref="cardDelegateRef"
-          :id="childPayload ? childPayload.assigned_user_id : ''"
-          :show-save="!!localId"
+          :show-controls="!!localId"
+          :user-id="childPayload ? childPayload.assigned_user_id : ''"
           @update="updateAssigned"
         />
         <div class="q-gutter-y-md col-12">

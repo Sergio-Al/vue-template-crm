@@ -74,7 +74,6 @@ const selectUser = async (users: User[]) => {
 //se dispara cuando carga el componente
 const { state: users, isLoading } = useAsyncState(async () => {
   const response = await companyStore.onGetCompanyUsers(props.id);
-  console.log(response);
   return response;
 }, [] as User[]);
 </script>

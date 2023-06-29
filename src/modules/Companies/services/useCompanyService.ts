@@ -155,11 +155,11 @@ export const getCompanyUsers = async (id: string) => {
     const params = {
       division: '04',
     };
-    const { data } = await axios_LB_01.get(
-      `/users/division/amercado?params=${JSON.stringify(params)}`
-    );
+    // const { data } = await axios_LB_01.get(
+    //   `/users/division/amercado?params=${JSON.stringify(params)}`
+    // );
 
-    // const data = await axios_NS_07.get('/users');
+    const data = await axios_NS_07.get('/user');
     return data.data;
   } catch (error) {
     return error;
@@ -268,6 +268,17 @@ export async function getUsers(
     throw error;
   }
 }
+
+export const getUsers2 = async (name: string) => {
+  console.log('user');
+  const { data } = await axios_NS_07.get('user', {
+    params: {
+      name,
+    },
+  });
+
+  return data;
+};
 
 export const getUser = async (id: string) => {
   const { data } = await axios_NS_07.get(`/user/${id}`);

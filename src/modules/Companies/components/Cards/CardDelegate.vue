@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 import type { User } from '../../utils/types';
-import { getUser, getUsers } from '../../services/useCompanyService';
+import { getUser, getUsers, getUsers2 } from '../../services/useCompanyService';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 
 interface Props {
-  id?: string;
+  userId?: string;
   showSave?: boolean;
+  showControls?: boolean;
 }
 
 interface Emits {
@@ -17,6 +18,7 @@ interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   showSave: false,
+  showControls: true,
 });
 const emits = defineEmits<Emits>();
 
@@ -46,7 +48,7 @@ const filterFn = async (
       users.value = [];
     } else {
       const term = val;
-      const response = await getUsers(term);
+      const response = await getUsers2(term);
 
       users.value = response;
       console.log(users.value);
@@ -66,22 +68,23 @@ const updateAssigned = () => {
 
 const assignUser = async (id: string) => {
   const user = await getUser(id);
-  user.fullname = user.nombres + ' ' + user.apellidos;
+  // user.fullname = user.nombres + ' ' + user.apellidos;
   console.log(user);
   userSelected.value = user;
 };
 
 const restoreValues = () => {
-  if (props.id) assignUser(props.id);
+  if (props.userId) assignUser(props.userId);
 };
 
 onMounted(async () => {
-  if (props.id) {
-    assignUser(props.id);
+  if (props.userId) {
+    assignUser(props.userId);
   }
 });
 
 defineExpose({
+  isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: () => delegate.value,
 });
 </script>
@@ -89,8 +92,8 @@ defineExpose({
 <template>
   <view-card-component
     v-bind="$attrs"
-    :controls="!!props.id"
-    :initial-status="props.id ? 'read' : 'edit'"
+    :controls="props.showControls"
+    :initial-status="props.showControls ? 'read' : 'edit'"
     icon-name="info"
     ref="baseCardRef"
     title="Representante"
@@ -98,7 +101,7 @@ defineExpose({
     @edit-change="restoreValues"
   >
     <template #read>
-      <q-card-section v-if="!!props.id || !!delegate">
+      <q-card-section v-if="!!props.userId || !!delegate">
         <q-card class="my-card" flat bordered>
           <q-card-section horizontal>
             <q-card-section class="q-pt-xs">
@@ -114,10 +117,13 @@ defineExpose({
           <q-card-actions>
             <q-btn flat round icon="person" />
             <span flat color="primary">
-              {{ userSelected?.email_address }}
+              {{ userSelected?.idamercado_c }}
             </span>
           </q-card-actions>
         </q-card>
+      </q-card-section>
+      <q-card-section v-else>
+        <q-card flat class="text-grey-8"> Sin representante asignado</q-card>
       </q-card-section>
     </template>
     <template #edit
@@ -155,14 +161,14 @@ defineExpose({
               <q-item-section>
                 <q-item-label>{{ scope.opt.fullname }}</q-item-label>
                 <q-item-label caption
-                  >Email: {{ scope.opt.email_address }}</q-item-label
+                  >Email: {{ scope.opt.idamercado_c }}</q-item-label
                 >
               </q-item-section>
             </q-item>
           </template>
         </q-select>
       </q-card-section>
-      <q-card-section v-if="!!props.id || !!delegate">
+      <q-card-section v-if="!!props.userId || !!delegate">
         <q-card class="my-card" flat bordered>
           <q-card-section horizontal>
             <q-card-section class="q-pt-xs">
@@ -178,18 +184,19 @@ defineExpose({
           <q-card-actions>
             <q-btn flat round icon="person" />
             <span flat color="primary">
-              {{ userSelected?.email_address }}
+              {{ userSelected?.idamercado_c }}
             </span>
           </q-card-actions>
-          <q-card-actions vertical align="left">
+          <!-- <q-card-actions vertical align="left">
             <q-btn
-              v-if="!!props.id || props.showSave"
+              v-if="!!props.userId || props.showSave"
               flat
               label="Guardar"
               @click="updateAssigned()"
             />
-          </q-card-actions>
-        </q-card> </q-card-section
-    ></template>
+          </q-card-actions> -->
+        </q-card>
+      </q-card-section></template
+    >
   </view-card-component>
 </template>

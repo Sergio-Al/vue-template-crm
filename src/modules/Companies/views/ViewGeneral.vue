@@ -218,8 +218,8 @@ const emits = defineEmits<{
         <CardDelegate
           class="col-12"
           ref="cardDelegateRef"
-          :id="cardOwner"
-          :show-save="!!localId"
+          :show-controls="!!localId"
+          :user-id="cardOwner"
           @update="updateAssigned"
         />
         <div class="q-gutter-y-md col-12">
