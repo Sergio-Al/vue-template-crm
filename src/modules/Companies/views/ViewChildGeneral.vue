@@ -127,6 +127,7 @@ const onSubmit = async (parentId: string) => {
           ...cardInfoData,
           ...cardContactData,
           direccion_c: directionData?.address_street_generated_c || '',
+          comment: commentCreate.value,
           assigned_user_id: assignedUser || '',
         } as ChildCompany;
 
