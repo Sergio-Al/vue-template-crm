@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 // global-components
 
 import { useCompaniesStore } from '../store/companyStore';
-//import CommentsList from 'src/components/Comments/CommentsList.vue';
+import CommentsList from 'src/components/Comments/CommentsList.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
 // import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
 
@@ -54,6 +54,7 @@ const isSomeCardEditing = computed(() => {
     cardContactRef.value?.isEditing,
     cardInfoRef.value?.isEditing,
     directionCardComponentRef.value?.isEditing,
+    cardDelegateRef.value?.isEditing,
   ].some((value) => !!value);
 });
 
@@ -261,13 +262,13 @@ const emits = defineEmits<{
                   class="q-py-sm"
                   v-if="!!localId"
                 >
-                  <!-- <CommentsList
+                  <CommentsList
                     :id="localId"
-                    :descCRM3="''"
-                    :modulo="'Opportunities'"
+                    :descCRM3="'comentario prueba empresa'"
+                    :modulo="'HANCE_Certficaciones'"
                   >
-                  </CommentsList> -->
-                  <CardComment />
+                  </CommentsList>
+                  <!-- <CardComment /> -->
                 </q-tab-panel>
                 <q-tab-panel
                   name="comentarios"
@@ -291,11 +292,10 @@ const emits = defineEmits<{
                 </q-tab-panel>
                 <q-tab-panel name="Activities">
                   <!-- <ActivitiesComponent
-                  :id="localId"
-                  :idUser="userCRM.id"
-                  module="Opportunities"
-                ></ActivitiesComponent> -->
-                  <div>Activities component</div>
+                    :id="localId"
+                    :idUser="userCRM.id"
+                    module="HANCE_Certificaciones"
+                  ></ActivitiesComponent> -->
                 </q-tab-panel>
                 <q-tab-panel name="historychanges">
                   <q-card class="my-card">

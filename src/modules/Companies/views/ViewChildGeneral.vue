@@ -51,6 +51,7 @@ const isSomeCardEditing = computed(() => {
     cardContactRef.value?.isEditing,
     cardInfoRef.value?.isEditing,
     directionCardComponentRef.value?.isEditing,
+    cardDelegateRef.value?.isEditing,
   ].some((value) => !!value);
 });
 
@@ -254,8 +255,8 @@ const emits = defineEmits<{
                 >
                   <CommentsList
                     :id="localId"
-                    :descCRM3="''"
-                    :modulo="'Opportunities'"
+                    :descCRM3="'comentario prueba participacion'"
+                    :modulo="'HANCE_Certficaciones'"
                   >
                   </CommentsList>
                 </q-tab-panel>
