@@ -155,11 +155,11 @@ export const getCompanyUsers = async (id: string) => {
     const params = {
       division: '04',
     };
-    // const { data } = await axios_LB_01.get(
-    //   `/users/division/amercado?params=${JSON.stringify(params)}`
-    // );
+    const { data } = await axios_LB_01.get(
+      `/users/division/amercado?params=${JSON.stringify(params)}`
+    );
 
-    const data = await axios_NS_07.get('/user');
+    // const data = await axios_NS_07.get('/user');
     return data.data;
   } catch (error) {
     return error;
