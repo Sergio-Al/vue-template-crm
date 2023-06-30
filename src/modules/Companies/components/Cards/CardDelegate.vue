@@ -49,7 +49,6 @@ const filterFn = async (
     } else {
       const term = val;
       const response = await getUsers(term);
-
       users.value = response;
       console.log(users.value);
     }
