@@ -11,8 +11,7 @@ import {
   getTableData,
   getTablePreferences,
   saveTablePreferences,
-  updateTablePreferences,
-  getCompanyChild,
+  updateTablePreferences
 } from '../services/useCompanyService';
 import { axios_PREFERENCES } from 'src/conections/axiosCRM';
 import { Notification } from 'src/composables';
@@ -56,7 +55,7 @@ export const useCompanyTableStore = defineStore('company_table', {
         {
           name: 'name',
           align: 'left',
-          label: 'Nombre Legal de la Empresa',
+          label: 'Razón Social',
           field: 'name',
           sortable: true,
           visible: true,

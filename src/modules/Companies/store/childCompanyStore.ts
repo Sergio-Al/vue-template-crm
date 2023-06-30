@@ -39,9 +39,11 @@ export const useChildCompaniesStore = defineStore(
       dataCompany: ChildCompany,
       //dataDocuments: any[]
     ) => {
+      // console.log(dataCompany);
+      // return;
       try {
         Loading.show({
-          message: 'Guardando Info',
+          message: 'Guardando Información',
         });
         const response = await createChildCompany(idParent, dataCompany);
         return response;
@@ -64,7 +66,7 @@ export const useChildCompaniesStore = defineStore(
         return response;
       } catch (error) {
         console.log(error);
-        throw new Error('No se puede guardar el tipo de producto');
+        throw new Error('No se puede modificar la empresa participante');
       } finally {
         Loading.hide();
       }

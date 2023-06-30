@@ -22,12 +22,21 @@ const companyStore = useCompaniesStore();
 
 const columns: QTableColumn[] = [
   {
+    name: 'razon_social_c',
+    required: true,
+    label: 'Razón Social',
+    align: 'left',
+    field: 'razon_social_c',
+    //field: (row) => row.name,
+    //format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
     name: 'name',
     required: true,
-    label: 'Nombre',
+    label: 'Nombre Comercial',
     align: 'left',
-    field: (row) => row.name,
-    format: (val) => `${val}`,
+    field: 'name',
     sortable: true,
   },
   {
@@ -47,19 +56,19 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
   {
-    name: 'email1',
+    name: 'resolucion_ministerial_c',
     required: true,
     align: 'left',
-    label: 'Correo Electrónico',
-    field: 'email1',
+    label: 'Nro. de Resolución Ministerial',
+    field: 'resolucion_ministerial_c',
     sortable: true,
   },
   {
-    name: 'phone_alternate',
+    name: 'phone_office',
     required: true,
     align: 'left',
     label: 'Teléfono',
-    field: 'phone_alternate',
+    field: 'phone_office',
     sortable: true,
   },
 ];
@@ -133,10 +142,9 @@ const {
           </q-td>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <!-- colocar el mismo nombre de la columna del array de columnas -->
-
-            <div v-if="col.name === 'name'">
+            <div v-if="col.name === 'razon_social_c'">
               <span
-                class="text-primary"
+                class="text-primary cursor"
                 @click="openDialog(props.row.id, col.value)"
               >
                 {{ col.value }}
@@ -196,5 +204,8 @@ const {
 <style lang="scss">
 .fixed-height {
   min-height: inherit;
+}
+.cursor{
+  cursor: pointer;
 }
 </style>

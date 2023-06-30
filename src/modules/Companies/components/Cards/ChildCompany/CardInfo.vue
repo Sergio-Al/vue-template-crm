@@ -48,16 +48,16 @@ defineExpose({
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-input
-          v-model="inputData.name"
+          v-model="inputData.razon_social_c"
           type="text"
           class="col-12 col-sm-12"
-          label="Nombre Legal de la Empresa"
+          label="Razón Social"
           outlined
           dense
           :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
-          v-model="inputData.razon_social_c"
+          v-model="inputData.name"
           type="text"
           class="col-12 col-sm-12"
           label="Nombre Comercial"
@@ -87,19 +87,19 @@ defineExpose({
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-input
-          v-model="inputData.name"
+          v-model="inputData.razon_social_c"
           type="text"
           class="col-12 col-sm-12"
-          label="Nombre Legal de la Empresa"
+          label="Razón Social"
           outlined
           dense
           readonly
         />
         <q-input
-          v-model="inputData.razon_social_c"
+          v-model="inputData.name"
           type="text"
           class="col-12 col-sm-12"
-          label="Razón Social"
+          label="Nombre Comercial"
           outlined
           dense
           readonly

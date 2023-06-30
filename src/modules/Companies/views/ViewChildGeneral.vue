@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 // global-components
 
 import { useChildCompaniesStore } from '../store/childCompanyStore';
-//import CommentsList from 'src/components/Comments/CommentsList.vue';
+import CommentsList from 'src/components/Comments/CommentsList.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
 // import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
 
@@ -94,7 +94,10 @@ const onSubmit = async (parentId: string) => {
     const cardContactData = cardContactRef.value?.exposeData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
 
+    console.log(cardInfoData);
+    console.log(cardContactData);
     console.log(directionData);
+    return;
 
     if (!!cardInfoData || !!cardContactData) {
       try {
@@ -133,8 +136,7 @@ const onSubmit = async (parentId: string) => {
 
         const newCompany = await childCompanyStore.onCreateChildCompany(
           parentId,
-          body,
-          []
+          body
         );
 
         localId.value = newCompany.id;
@@ -203,6 +205,7 @@ const emits = defineEmits<{
           }"
           :options="[]"
           class="col-12"
+          hide-extra-banner
         />
       </div>
     </div>

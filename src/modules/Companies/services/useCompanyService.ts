@@ -26,7 +26,6 @@ const { userCRM } = userStore();
 
 export const getTableData = async (params: Params) => {
   try {
-    console.log(params);
     // const { data } = await axios_NS_07.get('/empresas');
     const { data } = await axios_NS_07.get('/empresas');
     return data;
@@ -38,8 +37,8 @@ export const getTableData = async (params: Params) => {
 export const getCompanyChild = async (id: string) => {
   console.log(id);
   try {
-    const { data } = await axios_NS_07.get(`/participacion/parent/${id}`);
-    // const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
+    // const { data } = await axios_NS_07.get(`/participacion/parent/${id}`);
+    const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
     return data;
   } catch (error) {
     throw error;
@@ -134,7 +133,7 @@ export const createChildCompany = async (
 
 export const getOneChildCompany = async (id: string) => {
   try {
-    const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
+    const { data } = await axios_NS_07.get(`/participacion/${id}`);
     return data;
   } catch (error) {}
 };
@@ -270,7 +269,6 @@ export async function getUsers(
 }
 
 export const getUsers2 = async (name: string) => {
-  console.log('user');
   const { data } = await axios_NS_07.get('user', {
     params: {
       name,

@@ -48,7 +48,7 @@ const filterFn = async (
       users.value = [];
     } else {
       const term = val;
-      const response = await getUsers2(term);
+      const response = await getUsers(term);
 
       users.value = response;
       console.log(users.value);
@@ -117,7 +117,7 @@ defineExpose({
           <q-card-actions>
             <q-btn flat round icon="person" />
             <span flat color="primary">
-              {{ userSelected?.idamercado_c }}
+              {{ userSelected?.email_address }}
             </span>
           </q-card-actions>
         </q-card>
@@ -161,7 +161,7 @@ defineExpose({
               <q-item-section>
                 <q-item-label>{{ scope.opt.fullname }}</q-item-label>
                 <q-item-label caption
-                  >Email: {{ scope.opt.idamercado_c }}</q-item-label
+                  >Email: {{ scope.opt.email_address }}</q-item-label
                 >
               </q-item-section>
             </q-item>
@@ -184,7 +184,7 @@ defineExpose({
           <q-card-actions>
             <q-btn flat round icon="person" />
             <span flat color="primary">
-              {{ userSelected?.idamercado_c }}
+              {{ userSelected?.email_address }}
             </span>
           </q-card-actions>
           <!-- <q-card-actions vertical align="left">

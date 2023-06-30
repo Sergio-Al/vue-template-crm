@@ -31,10 +31,28 @@ const userColumns: QTableColumn[] = [
     field: 'user_name',
     sortable: true,
   },
+   {
+    name: 'name',
+    required: true,
+    label: 'Título',
+    align: 'left',
+    //field: (row) => `${row.first_name} ${row.last_name}`,
+    field: 'user_name',
+    sortable: true,
+  },
+   {
+    name: 'name',
+    required: true,
+    label: 'Departamento',
+    align: 'left',
+    //field: (row) => `${row.first_name} ${row.last_name}`,
+    field: 'user_name',
+    sortable: true,
+  },
   {
     name: 'division',
     required: true,
-    label: 'División',
+    label: 'Correo',
     align: 'left',
     field: 'division',
     sortable: true,
@@ -42,7 +60,7 @@ const userColumns: QTableColumn[] = [
   {
     name: 'regional',
     required: true,
-    label: 'Regional',
+    label: 'Telefono',
     align: 'left',
     field: 'idregional_c',
     sortable: true,
@@ -50,7 +68,7 @@ const userColumns: QTableColumn[] = [
   {
     name: 'amercado',
     required: true,
-    label: 'Área de mercado',
+    label: 'Estado',
     align: 'left',
     field: 'a_mercado',
     sortable: true,
@@ -91,7 +109,7 @@ const { state: users, isLoading } = useAsyncState(async () => {
     >
       <template #top>
         <div class="column">
-          <span class="text-h6">Empleados de la empresa</span>
+          <span class="text-h6">Usuarios de la empresa</span>
           <span v-if="props.child" class="text-caption"
             >Empresa participante</span
           >

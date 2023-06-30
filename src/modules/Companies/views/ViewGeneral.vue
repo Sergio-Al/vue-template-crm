@@ -91,20 +91,21 @@ const onSubmit = async () => {
   // }
 
   // Verificar si existe un id por localId
-  if (!!localId.value) {
+if (!!localId.value) {
     // actualizar datos si existe localId
     const cardInfoData = cardInfoRef.value?.exposeData();
     const cardContactData = cardContactRef.value?.exposeData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
-
-    console.log(directionData);
+    const assignedUser = cardDelegateRef.value?.exposeData();
 
     if (!!cardInfoData || !!cardContactData) {
       try {
         const body: Company = {
           ...cardInfoData,
           ...cardContactData,
-        };
+          direccion_c: directionData?.address_street_generated_c,
+          assigned_user_id: assignedUser, 
+        } as Company;
         await companyStore.onUpdateCompany(localId.value, body);
         emits('submitComplete', localId.value);
         await execute();

@@ -49,11 +49,12 @@ const onRequestTable = async (val: {
   await getListCompanies(val);
 };
 
-const onDeleteMultiple = (selected: base[]) => {
+const onDeleteMultiple = async (selected: base[]) => {
   const items = selected.map((el: base) => {
     return { id: el.id };
   });
-  table.deleteMultiple(items);
+  await table.deleteMultiple(items);
+  table.reloadList();
 };
 
 const onUpdateMultiple = (selected: base[]) => {

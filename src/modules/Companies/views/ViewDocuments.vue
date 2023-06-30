@@ -29,6 +29,8 @@ const columns: QTableColumn[] = [
     field: 'calories',
     sortable: true,
   },
+  { name: 'fat', label: 'Categoría', field: 'fat', sortable: true },
+  { name: 'fat', label: 'Tipo', field: 'fat', sortable: true },
   { name: 'fat', label: 'Fecha Inicio Vigencia', field: 'fat', sortable: true },
   { name: 'carbs', label: 'Fecha Fin Vigencia', field: 'carbs' },
   {
