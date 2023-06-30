@@ -36,7 +36,7 @@ export const useChildCompaniesStore = defineStore(
 
     const onCreateChildCompany = async (
       idParent: string,
-      dataCompany: ChildCompany,
+      dataCompany: ChildCompany
       //dataDocuments: any[]
     ) => {
       try {

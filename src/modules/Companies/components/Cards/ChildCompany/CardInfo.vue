@@ -30,6 +30,13 @@ const restoreValues = () => {
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): ChildCompany => ({ ...inputData.value }),
+  exposeUpdateData: () =>
+    ({
+      name: inputData.value.name,
+      razon_social_c: inputData.value.razon_social_c,
+      resolucion_ministerial_c: inputData.value.resolucion_ministerial_c,
+      identificacion_fiscal_c: inputData.value.identificacion_fiscal_c,
+    } as ChildCompany),
 });
 </script>
 

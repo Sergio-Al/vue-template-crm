@@ -115,6 +115,13 @@ const constructorComp = async (idUser?: string) => {
   if (idUser) user.insertUser(idUser);
 };
 
+const directionFormat = (direction: string) => {
+  if (!!direction) {
+    return direction.replace('_gnrtd', '').replaceAll(',|', '');
+  }
+  return '';
+};
+
 (() => {
   constructorComp(props.idUser);
 })();
@@ -166,7 +173,7 @@ const constructorComp = async (idUser?: string) => {
             {{ propsTable.row.razon_social_c }}
           </q-td>
           <q-td key="direccion_c" :props="propsTable" :style="'width: 100px;'">
-            {{ propsTable.row.direccion_c }}
+            {{ directionFormat(propsTable.row.direccion_c) }}
           </q-td>
           <q-td key="resolucion_ministerial_c" :props="propsTable">
             {{ propsTable.row.resolucion_ministerial_c }}

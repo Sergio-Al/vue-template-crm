@@ -9,6 +9,8 @@ import { useCompaniesStore } from '../store/companyStore';
 
 import { useChildCompaniesStore } from '../store/childCompanyStore';
 
+import { deleteChildCompany } from '../services/useCompanyService';
+
 import { ChildCompany, Company } from '../utils/types';
 
 // import { childCompanies } from '../utils/dummyData';
@@ -80,6 +82,24 @@ const openDialog = (id?: string, title?: string) => {
 
 const visitPage = (url: string) => {
   window.open(url, '_blank');
+};
+
+const directionFormat = (direction: string) => {
+  if (!!direction) {
+    return direction.replace('_gnrtd', '').replaceAll(',|', '');
+  }
+  return '';
+};
+
+const deleteSubCompany = async (id: string) => {
+  try {
+    isLoading.value = true;
+    await deleteChildCompany(id);
+  } catch (error) {
+    console.log('error');
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const localId = ref(props.id ?? '');
@@ -161,7 +181,28 @@ const {
                 <span class="q-ml-sm">{{ col.value }}</span>
               </div>
             </div>
+            <div v-else-if="col.name === 'direccion_c'">
+              <div>
+                {{ directionFormat(col.value) }}
+              </div>
+            </div>
             <span v-else>{{ col.value }}</span>
+          </q-td>
+          <q-td auto-width>
+            <q-btn
+              @click="
+                () => {
+                  deleteSubCompany(props.row.id);
+                }
+              "
+              size="sm"
+              color="negative"
+              round
+              dense
+              icon="delete"
+            >
+              <q-tooltip>Eliminar</q-tooltip>
+            </q-btn>
           </q-td>
         </q-tr>
         <q-tr v-show="props.expand" :props="props">

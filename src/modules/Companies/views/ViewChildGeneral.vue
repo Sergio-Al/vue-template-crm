@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 // global-components
 
 import { useChildCompaniesStore } from '../store/childCompanyStore';
-//import CommentsList from 'src/components/Comments/CommentsList.vue';
+import CommentsList from 'src/components/Comments/CommentsList.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
 // import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
 
@@ -90,8 +90,8 @@ const onSubmit = async (parentId: string) => {
   // Verificar si existe un id por localId
   if (!!localId.value) {
     // actualizar datos si existe localId
-    const cardInfoData = cardInfoRef.value?.exposeData();
-    const cardContactData = cardContactRef.value?.exposeData();
+    const cardInfoData = cardInfoRef.value?.exposeUpdateData();
+    const cardContactData = cardContactRef.value?.exposeUpdateData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
     const assignedUser = cardDelegateRef.value?.exposeData();
 

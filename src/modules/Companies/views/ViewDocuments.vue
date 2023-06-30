@@ -4,6 +4,8 @@ import { QTableColumn } from 'quasar';
 
 import { useCompaniesStore } from '../store/companyStore';
 import { useAsyncState } from '@vueuse/core';
+import AddDocument from '../components/Dialogs/AddDocument.vue';
+import CardDocumentVersion from '../components/Dialogs/CardDocumentVersionDialog.vue';
 
 interface Props {
   id: string;
@@ -16,43 +18,103 @@ const companyStore = useCompaniesStore();
 const columns: QTableColumn[] = [
   {
     name: 'name',
-    required: true,
-    label: 'Documento',
     align: 'left',
-    field: (row) => row.name,
-    format: (val) => `${val}`,
+    label: 'Nombre',
+    field: 'name',
     sortable: true,
   },
   {
-    name: 'calories',
+    name: 'date_added',
+    align: 'left',
+    label: 'Fecha',
+    field: 'date_added',
+    sortable: true,
+  },
+  {
+    name: 'fileName',
+    align: 'left',
+    label: 'Documento Adjunto',
+    field: 'fileName',
+    sortable: true,
+  },
+  {
+    name: 'date_exp',
+    align: 'left',
+    label: 'Fecha de Caducidad',
+    field: 'date_exp',
+    sortable: true,
+  },
+  {
+    name: 'status',
+    align: 'left',
+    label: 'Estado',
+    field: 'status',
+    sortable: true,
+  },
+  {
+    name: 'assigned',
+    align: 'left',
+    label: 'Responsable',
+    field: 'assigned_user_id',
+    sortable: true,
+  },
+  {
+    name: 'options',
     align: 'center',
-    label: 'Descripcion',
-    field: 'calories',
-    sortable: true,
-  },
-  { name: 'fat', label: 'Fecha Inicio Vigencia', field: 'fat', sortable: true },
-  { name: 'carbs', label: 'Fecha Fin Vigencia', field: 'carbs' },
-  {
-    name: 'calcium',
-    label: 'Versión',
-    field: 'calcium',
+    label: 'Opciones',
+    field: 'options',
     sortable: true,
   },
 ];
+
+const documentDialog = ref<boolean>(false);
+const documentVersionDialog = ref<boolean>(false);
+const currentDocumentVersionId = ref<string>('');
+
+const openDialog = () => {
+  documentDialog.value = true;
+};
+
+const openDocumentVersionDialog = (id: string) => {
+  console.log(id);
+  currentDocumentVersionId.value = id;
+  documentVersionDialog.value = true;
+};
 
 //se dispara cuando carga el componente
 const { state: documents, isLoading } = useAsyncState(async () => {
   return await companyStore.onGetCompanyDocuments(props.id);
 }, []);
 
-const comment = ref<string>();
-const tab = ref('resp');
-const showAlert = ref(false);
-const alertAttrs = ref<any>({});
+const dummyData = [
+  {
+    id: 'ddfasfads',
+    name: 'nombre1',
+    date_added: '27/01/2023',
+    fileName: 'nombreDocumentos',
+    date_exp: '27/02/2023',
+    status: 'Revision',
+    assigned_user_id: 'assignedUserId',
+  },
+  {
+    id: 'otro',
+    name: 'nombre1',
+    date_added: '27/01/2023',
+    fileName: 'nombreDocumentos',
+    date_exp: '27/02/2023',
+    status: 'Revision',
+    assigned_user_id: 'assignedUserId',
+  },
+];
+
+// const comment = ref<string>();
+// const tab = ref('resp');
+// const showAlert = ref(false);
+// const alertAttrs = ref<any>({});
 </script>
 
 <template>
-  <q-card v-if="isLoading">
+  <!-- <q-card v-if="isLoading">
     <q-item>
       <q-item-section avatar>
         <q-skeleton type="QAvatar" />
@@ -228,16 +290,16 @@ const alertAttrs = ref<any>({});
         :rows="2"
       />
     </template>
-  </alert-component>
-  <!-- <div class="q-pa-md q-py-lg flex fixed-height">
+  </alert-component> -->
+  <div class="q-pa-md q-py-lg flex fixed-height">
     <q-table
       style="flex-grow: 1; width: inherit"
       flat
       bordered
-      :rows="documents"
+      :rows="dummyData"
       :columns="columns"
       :loading="isLoading"
-      row-key="name"
+      row-key="id"
     >
       <template #top>
         <div class="column">
@@ -247,7 +309,12 @@ const alertAttrs = ref<any>({});
           >
         </div>
         <q-space />
-        <q-btn color="primary" icon="add" label="Adicionar" @click="() => {}" />
+        <q-btn
+          color="primary"
+          icon="add"
+          label="Adicionar"
+          @click="openDialog"
+        />
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -271,7 +338,23 @@ const alertAttrs = ref<any>({});
             />
           </q-td>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.value }}
+            <div v-if="col.name === 'options'">
+              <q-btn
+                @click="
+                  () => {
+                    openDocumentVersionDialog(props.row.id);
+                  }
+                "
+                size="sm"
+                color="primary"
+                round
+                dense
+                icon="cloud_upload"
+              >
+                <q-tooltip>Ver versiones</q-tooltip>
+              </q-btn>
+            </div>
+            <span v-else>{{ col.value }}</span>
           </q-td>
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
@@ -283,7 +366,13 @@ const alertAttrs = ref<any>({});
         </q-tr>
       </template>
     </q-table>
-  </div> -->
+  </div>
+  <q-dialog v-model="documentDialog" persistent>
+    <AddDocument />
+  </q-dialog>
+  <q-dialog v-model="documentVersionDialog" persistent>
+    <CardDocumentVersion :id="currentDocumentVersionId" />
+  </q-dialog>
 </template>
 
 <style lang="scss">

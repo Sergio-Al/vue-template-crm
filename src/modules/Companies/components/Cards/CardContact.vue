@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
-import type { Contact } from '../../utils/types';
+import type { ChildCompany, Company, Contact } from '../../utils/types';
 
 interface Props {
   id: string;
@@ -32,7 +32,6 @@ defineExpose({
     @cancel-change="() => {}"
     @edit-change="() => {}"
   >
-
     <template #edit>
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-input
@@ -42,9 +41,7 @@ defineExpose({
           label="Sitio Web"
           outlined
           dense
-          :rules="[
-            (val)=> !!val || 'Campo requerido'
-          ]"
+          :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
           v-model="inputData.email1"
@@ -53,9 +50,7 @@ defineExpose({
           label="Correo Electrónico"
           outlined
           dense
-          :rules="[
-            (val)=> !!val || 'Campo requerido'
-          ]"
+          :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
           v-model="inputData.phone_office"
@@ -90,9 +85,7 @@ defineExpose({
           outlined
           dense
           readonly
-          :rules="[
-            (val)=> !!val || 'Campo requerido'
-          ]"
+          :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
           v-model="inputData.email1"
@@ -102,9 +95,7 @@ defineExpose({
           outlined
           dense
           readonly
-          :rules="[
-            (val)=> !!val || 'Campo requerido'
-          ]"
+          :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
           v-model="inputData.phone_office"

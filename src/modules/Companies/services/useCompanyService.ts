@@ -294,3 +294,11 @@ export const assignUsersToCompany = async (id: string, userIds: string[]) => {
   const body = { id, users_id: userIds };
   // iniciar peticion al backend con body
 };
+
+export const deleteChildCompany = async (id: string) => {
+  try {
+    await axios_NS_07.delete(`/child/${id}`);
+  } catch (error) {
+    throw error;
+  }
+};
