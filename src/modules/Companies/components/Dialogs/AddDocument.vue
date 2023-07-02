@@ -1,27 +1,95 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
+import { QExpansionItem, QTableColumn } from 'quasar';
 
-interface DocumentForm {
-  name: string;
-  date_added: string;
-  fileName: string;
-  date_exp: string;
-  status: string;
-  assigned_user_id: string;
+import CardAddDocument from '../Cards/CardAddDocument.vue';
+
+interface Props {
+  documentId?: string;
 }
 
-const data = ref({} as DocumentForm);
+const expansionItemRef = ref<InstanceType<typeof QExpansionItem> | null>();
+
+const props = withDefaults(defineProps<Props>(), {
+  documentId: '',
+});
 
 onMounted(() => {
   console.log('mounted');
+  if (!props.documentId) {
+    expansionItemRef.value?.show();
+  }
 });
+
+const columns: QTableColumn[] = [
+  {
+    name: 'name',
+    align: 'left',
+    label: 'Nombre',
+    field: 'name',
+    sortable: true,
+  },
+  {
+    name: 'version',
+    align: 'left',
+    label: 'Version',
+    field: 'version',
+    sortable: true,
+  },
+  {
+    name: 'date_added',
+    align: 'left',
+    label: 'Fecha',
+    field: 'date_added',
+    sortable: true,
+  },
+  {
+    name: 'description',
+    align: 'left',
+    label: 'Registro de cambio',
+    field: 'description',
+    sortable: true,
+  },
+  {
+    name: 'options',
+    align: 'center',
+    label: 'Opciones',
+    field: 'options',
+    sortable: true,
+  },
+];
+
+const dummyData = [
+  {
+    id: 'ddfasfads',
+    name: 'nombre1',
+    date_added: '27/01/2023',
+    fileName: 'nombreDocumentos',
+    date_exp: '27/02/2023',
+    status: 'Revision',
+    description: 'Segunda version del documento',
+    version: '2',
+    assigned_user_id: 'assignedUserId',
+  },
+  {
+    id: 'otro',
+    name: 'nombre1',
+    date_added: '27/01/2023',
+    fileName: 'nombreDocumentos',
+    date_exp: '27/02/2023',
+    version: '1',
+    description: 'Primera version del documento',
+    status: 'Revision',
+    assigned_user_id: 'assignedUserId',
+  },
+];
 </script>
 
 <template>
   <q-layout
     view="lHh LpR lff"
     container
-    :style="{ 'max-height': $q.screen.lt.sm ? '100vh' : '95vh' }"
+    :style="{ 'max-height': $q.screen.lt.sm ? '100vh' : '80vh' }"
     style="height: 900px; width: 50rem; max-width: 100vw"
     class="bg-grey-3"
   >
@@ -47,7 +115,7 @@ onMounted(() => {
       <q-separator />
     </q-header>
 
-    <q-footer bordered class="bg-white text-primary q-pa-sm" align="right">
+    <!-- <q-footer bordered class="bg-white text-primary q-pa-sm" align="right">
       <q-btn
         color="primary"
         icon="group_add"
@@ -55,55 +123,47 @@ onMounted(() => {
         v-close-popup
         @click="() => {}"
       />
-    </q-footer>
+    </q-footer> -->
 
     <q-page-container>
       <q-page class="q-pa-none">
-        <q-card class="q-pa-sm" style="min-width: fit-content">
-          <div class="row q-col-gutter-md q-px-md q-py-md">
-            <q-input
-              class="col-12 col-md-6"
-              v-model="data.name"
-              type="text"
-              outlined
-              dense
-              label="Nombre"
-            />
-            <q-input
-              class="col-12 col-md-6"
-              v-model="data.date_added"
-              type="text"
-              outlined
-              dense
-              label="Fecha"
-            />
-            <q-input
-              class="col-12 col-md-6"
-              v-model="data.status"
-              type="text"
-              outlined
-              dense
-              label="Estado"
-            />
-            <q-input
-              class="col-12 col-md-6"
-              v-model="data.assigned_user_id"
-              type="text"
-              outlined
-              dense
-              label="Responsable"
-            />
-            <span class="q-mt-sm"> Documento </span>
-            <q-uploader
-              class="col-12 q-mt-sm"
-              url="http://localhost:4444/upload"
-              color="primary"
-              flat
-              bordered
-              style="min-width: fit-content"
-            />
-          </div>
-        </q-card>
+        <q-expansion-item
+          ref="expansionItemRef"
+          expand-separator
+          icon="add"
+          label="Añadir documento"
+        >
+          <CardAddDocument />
+        </q-expansion-item>
+        <div v-if="!!props.documentId" class="q-mt-sm q-pa-sm">
+          <q-table
+            title="Versiones del documento"
+            :rows="dummyData"
+            hide-bottom
+            :columns="columns"
+            row-key="id"
+          >
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                  <div v-if="col.name === 'options'">
+                    <q-btn
+                      @click="() => {}"
+                      size="sm"
+                      color="negative"
+                      round
+                      dense
+                      icon="delete"
+                    >
+                      <q-tooltip>Eliminar</q-tooltip>
+                    </q-btn>
+                  </div>
+                  <span v-else>{{ col.value }}</span>
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
+        </div>
       </q-page>
 
       <q-page-scroller position="bottom">
