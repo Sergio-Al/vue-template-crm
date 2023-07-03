@@ -292,7 +292,7 @@ export const getUsers2 = async (name: string) => {
       name,
     },
   });
-
+  console.log(data);
   return data;
 };
 

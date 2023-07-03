@@ -98,7 +98,7 @@ const { state: users, isLoading } = useAsyncState(async () => {
   if (!!props.child && props.id) {
     // console.log('obteniendo usuarios con un parent id');
     // asignar y retornar de aqui
-    return await companyStore.onGetUsersFromChildCompany(props.id)
+    return await companyStore.onGetUsersFromChildCompany(props.id);
   }
   const response = await companyStore.onGetCompanyUsers(props.id);
   return response;

@@ -169,9 +169,9 @@ export const useCompaniesStore = defineStore('companies-store', () => {
 
   const onGetCompanyUsers = async (id: string) => {
     try {
-      // obtener array de usuarios
-      console.log(id);
+      // console.log(id);
       const users = await getCompanyUsers(id);
+      console.log(users);
       return users;
     } catch (error) {
       throw error;

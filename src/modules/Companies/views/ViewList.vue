@@ -125,6 +125,7 @@ const directionFormat = (direction: string) => {
 (() => {
   constructorComp(props.idUser);
 })();
+
 </script>
 
 <template>
