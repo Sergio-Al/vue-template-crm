@@ -32,6 +32,26 @@ export const useChildCompaniesStore = defineStore(
       return childPayload.value.assigned_user_id;
     });
 
+    const cardInfo = computed(() => {
+      return {
+        name: childPayload.value.name,
+        razon_social_c: childPayload.value.razon_social_c,
+        resolucion_ministerial_c: childPayload.value.resolucion_ministerial_c,
+        identificacion_fiscal_c: childPayload.value.identificacion_fiscal_c
+      };
+    });
+
+    const cardContact = computed(() => {
+      return {
+        website: childPayload.value.website,
+        email1: childPayload.value.email1,
+        phone_office: childPayload.value.phone_office,
+        phone_alternate: childPayload.value.phone_alternate,
+      };
+    });
+
+
+
     //actions
 
     const onCreateChildCompany = async (
@@ -117,6 +137,8 @@ export const useChildCompaniesStore = defineStore(
     return {
       //states
       childPayload,
+      cardInfo,
+      cardContact,
       //getter
       cardOwner,
       //actions

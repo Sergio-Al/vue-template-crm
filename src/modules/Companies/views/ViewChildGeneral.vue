@@ -28,7 +28,7 @@ const props = defineProps<{
 }>();
 
 const childCompanyStore = useChildCompaniesStore();
-const { childPayload } = storeToRefs(childCompanyStore);
+const { childPayload, cardInfo, cardContact } = storeToRefs(childCompanyStore);
 
 const tab = ref(props.id ? 'Activities' : 'comentarios');
 const localId = ref(props.id ?? '');
@@ -101,7 +101,7 @@ const onSubmit = async (parentId: string) => {
           ...cardInfoData,
           ...cardContactData,
           direccion_c: directionData?.address_street_generated_c,
-          assigned_user_id: assignedUser || '',
+          user_id_c: assignedUser || '',
         } as ChildCompany;
         await childCompanyStore.onUpdateChildCompany(localId.value, body);
         emits('submitComplete', localId.value);
@@ -152,7 +152,7 @@ const updateAssigned = async (id: string | null) => {
     console.log(id);
     if (!!id) {
       await childCompanyStore.onUpdateChildCompany(localId.value, {
-        assigned_user_id: id,
+        user_id_c: id,
       });
       await execute();
     }
@@ -179,13 +179,13 @@ const emits = defineEmits<{
     <div class="col-xs-12 col-sm-12 col-md-6">
       <div class="row q-gutter-y-md">
         <CardInfo
-          :data="childPayload"
+          :data="cardInfo"
           :id="localId"
           class="col-12"
           ref="cardInfoRef"
         />
         <CardContact
-          :data="childPayload"
+          :data="cardContact"
           :id="localId"
           class="col-12"
           ref="cardContactRef"
@@ -213,7 +213,7 @@ const emits = defineEmits<{
           class="col-12"
           ref="cardDelegateRef"
           :show-controls="!!localId"
-          :user-id="childPayload ? childPayload.assigned_user_id : ''"
+          :user-id="childPayload ? childPayload.user_id_c : ''"
           @update="updateAssigned"
         />
         <div class="q-gutter-y-md col-12">
