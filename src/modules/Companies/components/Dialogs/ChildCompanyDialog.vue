@@ -32,7 +32,7 @@ const tabsDefinition = [
   {
     name: 'users',
     component: ViewUsers,
-    label: 'Empleados',
+    label: 'Usuarios',
     enabledForCreation: false,
   },
   {
@@ -90,6 +90,7 @@ const onCloseDialog = () => {
 };
 
 const updateData = (idValue: string) => {
+  //companyTableStore.reloadList();
   id.value = idValue;
   titleDialog.value = 'Detalles';
   emits('change');

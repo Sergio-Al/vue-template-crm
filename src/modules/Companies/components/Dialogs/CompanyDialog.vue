@@ -24,7 +24,7 @@ const tabsDefinition = [
   {
     name: 'users',
     component: ViewUsers,
-    label: 'Empleados',
+    label: 'Usuarios',
     enabledForCreation: false,
   },
   {

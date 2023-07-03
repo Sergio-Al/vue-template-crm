@@ -134,8 +134,7 @@ const onSubmit = async (parentId: string) => {
 
         const newCompany = await childCompanyStore.onCreateChildCompany(
           parentId,
-          body,
-          []
+          body
         );
 
         localId.value = newCompany.id;

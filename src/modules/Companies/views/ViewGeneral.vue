@@ -91,7 +91,7 @@ const onSubmit = async () => {
   // }
 
   // Verificar si existe un id por localId
-  if (!!localId.value) {
+if (!!localId.value) {
     // actualizar datos si existe localId
     const cardInfoData = cardInfoRef.value?.exposeData();
     const cardContactData = cardContactRef.value?.exposeData();
@@ -104,7 +104,7 @@ const onSubmit = async () => {
           ...cardInfoData,
           ...cardContactData,
           direccion_c: directionData?.address_street_generated_c,
-          assigned_user_id: assignedUser,
+          assigned_user_id: assignedUser, 
         } as Company;
         await companyStore.onUpdateCompany(localId.value, body);
         emits('submitComplete', localId.value);
