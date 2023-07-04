@@ -49,7 +49,7 @@ export const getTablePreferences = async () => {
   try {
     const { data } = await axios_PREFERENCES.get(
       `/tables-users-preferences?filter=${JSON.stringify({
-        where: { module: 'Projects', user_id: userCRM.id },
+        where: { module: 'Companies', user_id: userCRM.id },
         limit: 1,
       })}`
     );

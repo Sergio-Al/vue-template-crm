@@ -99,8 +99,9 @@ const { state: users, isLoading } = useAsyncState(async () => {
     // asignar y retornar de aqui
     // return await companyStore.onGetUsersFromChildCompany(props.id)
   }
-  const response = await companyStore.onGetCompanyUsers(props.id);
-  return response;
+  // const response = await companyStore.onGetCompanyUsers(props.id);
+  // return response;
+  return [];
 }, [] as User[]);
 </script>
 
@@ -121,10 +122,12 @@ const { state: users, isLoading } = useAsyncState(async () => {
           <span v-if="child" class="text-caption">Empresa participante</span>
         </div>
         <q-space />
+        <q-btn v-if="!props.child" color="primary" icon="add" label="Nuevo" />
         <q-btn
+          v-if="!!props.child"
           color="primary"
           icon="add"
-          label="Nuevo"
+          label="Asignar"
           @click="() => (openDialog = true)"
         />
       </template>
