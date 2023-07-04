@@ -1,7 +1,16 @@
-import { axios_NS_07, axios_PREFERENCES } from 'src/conections/axiosCRM';
+import {
+  axios_LB_04,
+  axios_NS_07,
+  axios_PREFERENCES,
+} from 'src/conections/axiosCRM';
 
 import { userStore } from 'src/modules/Users/store/UserStore';
 import type { Certification, Params } from '../utils/types';
+import {
+  GuestsRecordResponse,
+  RecordOptionsModel,
+  SearchUser,
+} from 'src/components/types';
 
 const { userCRM } = userStore();
 
@@ -92,3 +101,32 @@ export const updateCertificationRequest = async (
 export const deleteCertificationRequest = async (id: string) => {
   return;
 };
+
+export async function getUsers(
+  value: string,
+  options: RecordOptionsModel = {}
+): Promise<SearchUser[]> {
+  const {
+    module = '',
+    user_iddivision = '',
+    user_idamercado = '',
+    user_idgrupocliente = '',
+  } = options;
+  const formattedModule = module.charAt(0).toUpperCase() + module.slice(1);
+  const bodyOptions = {
+    value,
+    module: formattedModule,
+    user_iddivision,
+    user_idamercado,
+    user_idgrupocliente,
+  };
+  try {
+    const { data } = await axios_LB_04.patch<GuestsRecordResponse>(
+      '/search-user-mitings/1/100/desc/{val}',
+      bodyOptions
+    );
+    return data.search_users;
+  } catch (error) {
+    throw error;
+  }
+}

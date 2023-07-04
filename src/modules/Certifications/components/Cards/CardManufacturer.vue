@@ -51,7 +51,11 @@ defineExpose({
           outlined
           dense
           :rules="[(val) => !!val || 'Campo requerido']"
-        />
+        >
+          <template v-slot:prepend>
+            <q-icon name="work" />
+          </template>
+        </q-input>
         <q-input
           v-model="inputData.id_profesional_acreditado"
           type="text"
@@ -60,7 +64,11 @@ defineExpose({
           outlined
           dense
           :rules="[(val) => !!val || 'Campo requerido']"
-        />
+        >
+          <template v-slot:prepend>
+            <q-icon name="person" />
+          </template>
+        </q-input>
         <q-input
           v-model="inputData.empresa_email"
           type="text"
@@ -68,7 +76,11 @@ defineExpose({
           label="Correo"
           outlined
           dense
-        />
+        >
+          <template v-slot:prepend>
+            <q-icon name="mail" />
+          </template>
+        </q-input>
         <q-input
           v-model="inputData.empresa_phone"
           type="text"
@@ -76,7 +88,11 @@ defineExpose({
           label="Teléfono"
           outlined
           dense
-        />
+        >
+          <template v-slot:prepend>
+            <q-icon name="call" />
+          </template>
+        </q-input>
       </div>
     </template>
     <template #read>

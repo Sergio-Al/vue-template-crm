@@ -56,13 +56,17 @@ defineExpose({
           label="Solicitante"
           outlined
           dense
-        />
+        >
+          <template v-slot:prepend>
+            <q-icon name="inventory" />
+          </template>
+        </q-input>
         <q-input
           v-for="(product, index) in products"
           :key="index"
           v-model="product.id"
           type="text"
-          label="Id Producto"
+          label="Código de Producto"
           readonly
           dense
           outlined
@@ -81,7 +85,11 @@ defineExpose({
           outlined
           dense
           readonly
-        />
+        >
+          <template v-slot:prepend>
+            <q-icon name="inventory" />
+          </template>
+        </q-input>
       </div>
     </template>
   </view-card-component>

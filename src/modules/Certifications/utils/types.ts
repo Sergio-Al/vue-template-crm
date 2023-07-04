@@ -75,3 +75,13 @@ export interface Filter extends Partial<Certification> {
   assigned_to?: string[];
   creation_date?: DateBase;
 }
+
+export interface User {
+  id: string;
+  first_name: string;
+  last_name: string;
+  iddivision_c: string;
+  idregional_c: string;
+  idamercado_c: string;
+  id_empresa_c: string;
+}
