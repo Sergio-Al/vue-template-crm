@@ -9,6 +9,12 @@
           dense outlined clearable @clear="buscarMenu = ''" />
       </div>
       <q-separator class="q-mb-sm" v-if="!template.miniSidebar" />
+      <p class="q-ml-lg">
+        <a href="/#/companies"  class="underline-none"><q-icon name="business" /> Empresas</a>
+      </p>
+      <p class="q-ml-lg">
+        <a href="/#/certifications"  class="underline-none"><q-icon name="shield" /> Certificaciones</a>
+      </p>
 
     </q-scroll-area>
     <div flat class="logo-metronic text-center absolute-top" :class="$q.dark.isActive ? 'bg-dark' : 'bg-custom'">
@@ -86,4 +92,8 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped></style>
+<style scoped>
+  .underline-none{
+    text-decoration: none;
+  }
+</style>

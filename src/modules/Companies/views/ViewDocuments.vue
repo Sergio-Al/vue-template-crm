@@ -125,7 +125,7 @@ const dummyData = [
         <div class="column">
           <span class="text-h6">Documentos de la empresa</span>
           <span v-if="props.child" class="text-caption"
-            >Empresa partipante</span
+            >Empresa participante</span
           >
         </div>
         <q-space />

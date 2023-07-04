@@ -106,9 +106,8 @@ const dummyData = [
         <q-icon
           :class="$q.screen.lt.sm ? '' : 'q-ml-sm'"
           size="lg"
-          name="group"
+          name="article"
         />
-
         <q-toolbar-title>Adicionar nuevo documento</q-toolbar-title>
         <q-btn flat round dense icon="close" v-close-popup />
       </q-toolbar>
@@ -133,7 +132,7 @@ const dummyData = [
           icon="add"
           label="Añadir documento"
         >
-          <CardAddDocument />
+        <CardAddDocument />
         </q-expansion-item>
         <div v-if="!!props.documentId" class="q-mt-sm q-pa-sm">
           <q-table
