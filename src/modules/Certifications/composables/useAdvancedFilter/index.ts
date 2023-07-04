@@ -25,7 +25,7 @@ export const useAdvancedFilter = () => {
   const { listPais, listRegion, getListPais, getListRegion } = usePais();
   const { listRegimenTributario, getListRegimenTributario } =
     useRegimenTributario();
-  const companyTableStore = useCertificationsTableStore();
+  const certificationsTableStore = useCertificationsTableStore();
   const { listDateRange, getListDateRange } = useDateRange();
 
   const literalDate = ref('');
@@ -381,7 +381,7 @@ export const useAdvancedFilter = () => {
     },
   ]);
 
-  const { data_filter: dataFilter } = storeToRefs(companyTableStore);
+  const { data_filter: dataFilter } = storeToRefs(certificationsTableStore);
 
   // watch(
   //   () => dataFilter.value?.industry,

@@ -16,7 +16,7 @@ import { Certification } from '../utils/types';
 
 const { userCRM } = userStore();
 
-export const useCompaniesStore = defineStore('certification-store', () => {
+export const useCertificationStore = defineStore('certification-store', () => {
   //states
   const loading = ref(false);
   const payload = ref({

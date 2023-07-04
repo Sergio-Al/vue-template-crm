@@ -5,6 +5,7 @@ import { useCertificationsTableStore } from '../store/useCertificationTableStore
 import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
 
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
+import CertificationDialog from '../components/Dialogs/CertificationDialog.vue';
 
 const table = useCertificationsTableStore();
 const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
@@ -12,7 +13,7 @@ const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
 
 const onSubmitDataFilter = () => {
   try {
-    // table.data_filter = advancedFilterRef.value?.dataFilter;
+    table.data_filter = advancedFilterRef.value?.dataFilter;
     table.setFilterData();
     table.reloadList();
   } catch (error) {
@@ -21,6 +22,10 @@ const onSubmitDataFilter = () => {
 };
 
 const advancedFilterRef = ref<InstanceType<typeof AdvancedFilter> | null>(null);
+const certificationDialogRef = ref<InstanceType<
+  typeof CertificationDialog
+> | null>(null);
+
 // const updateMassiveRef = ref<InstanceType<
 //   typeof UpdateMassiveComponent
 // > | null>(null);
@@ -67,12 +72,12 @@ const onClearDataFilter = () => {
   }
 };
 
-const openDialog = (title: string) => {
-  console.log('open dialog');
+const openDialog = () => {
+  certificationDialogRef.value?.openDialogTab();
 };
 
-const openItemSelected = (id: string) => {
-  console.log('open item selected');
+const openItemSelected = (id: string, title: string) => {
+  certificationDialogRef.value?.openDialogTab(id, title);
 };
 </script>
 
@@ -111,7 +116,17 @@ const openItemSelected = (id: string) => {
             :props="propsTable"
             :style="'width: 100px;'"
           >
-            {{ propsTable.row.nro_solicitud }}
+            <span
+              class="text-blue-9 cursor-pointer"
+              @click="
+                openItemSelected(
+                  propsTable.row.id,
+                  propsTable.row.nro_solicitud
+                )
+              "
+            >
+              {{ propsTable.row.nro_solicitud }}
+            </span>
           </q-td>
           <q-td key="etapa" :props="propsTable">
             {{ propsTable.row.etapa }}
@@ -143,7 +158,12 @@ const openItemSelected = (id: string) => {
             <q-checkbox flat v-model="propsTable.selected" dense />
             <span
               class="q-ml-md text-ellipsis text-blue-10 cursor-pointer"
-              @click="openItemSelected(propsTable.row.id)"
+              @click="
+                openItemSelected(
+                  propsTable.row.id,
+                  propsTable.row.nro_solicitud
+                )
+              "
             >
               {{ propsTable.row.nombre }}
             </span>
@@ -233,16 +253,11 @@ const openItemSelected = (id: string) => {
           color="primary"
           label="Nuevo"
           v-if="!$q.screen.xs"
-          @click="openDialog('Solicitud de Certificación')"
+          @click="openDialog()"
         >
         </q-btn>
         <q-page-sticky :offset="[18, 0]" position="bottom-right" v-else>
-          <q-btn
-            fab
-            color="primary"
-            icon="add"
-            @click="openDialog('Solicitud de Certificación')"
-          />
+          <q-btn fab color="primary" icon="add" @click="openDialog()" />
         </q-page-sticky>
       </template>
       <template #updateContent>
@@ -257,4 +272,5 @@ const openItemSelected = (id: string) => {
     </table-component>
     <TableSkeleton v-else />
   </div>
+  <CertificationDialog ref="certificationDialogRef" />
 </template>
