@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { QTableColumn } from 'quasar';
 
 import { availableUsers } from '../../utils/dummyData';
-import { getUsers } from '../../services/useCompanyService';
+import { getUsers, getUsers2 } from '../../services/useCompanyService';
 
 import type { User } from '../../utils/types';
 
@@ -45,13 +45,18 @@ const columns: QTableColumn[] = [
 const selectedUser = ref<string>('');
 const userFiltered = ref<string>('');
 const selected = ref<User[]>([]);
-const users = ref(availableUsers);
-
+//const users = ref(availableUsers);
+const users = ref([]);
 const isLoading = ref(false);
+
+(async () => {
+  users.value = await getUsers('');
+})();
 
 const searchUser = async () => {
   // llamar a servicio para buscar usuarios
   users.value = await getUsers(userFiltered.value);
+  console.log(users.value);
   return;
 };
 

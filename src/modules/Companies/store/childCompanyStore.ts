@@ -29,7 +29,7 @@ export const useChildCompaniesStore = defineStore(
 
     const cardOwner = computed(() => {
       //console.log(payload.value.assigned_user_id);
-      return childPayload.value.assigned_user_id;
+      return childPayload.value.user_id_c;
     });
 
     const cardInfo = computed(() => {
@@ -81,6 +81,7 @@ export const useChildCompaniesStore = defineStore(
         });
         console.log(id);
         console.log(data);
+        return;
 
         const response = await updateChildCompany(id, data);
         return response;

@@ -165,6 +165,19 @@ export const getCompanyUsers = async (id: string) => {
   }
 };
 
+export const getCompanyChildrenUsers = async (id: string) => {
+  try {
+    const { data } = await axios_NS_07.get(
+      `/participacion/child-users/36f3840a-b7d8-aa1b-75de-649995997c6e`
+    );
+    // const data = await axios_NS_07.get('/user');
+    console.log(data);
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const updateCompany = async (
   id: string,
   information: BasicInformation
@@ -279,7 +292,7 @@ export const getUsers2 = async (name: string) => {
       name,
     },
   });
-
+  console.log(data);
   return data;
 };
 
@@ -295,7 +308,7 @@ export const assignUsersToCompany = async (id: string, userIds: string[]) => {
 
 export const deleteChildCompany = async (id: string) => {
   try {
-    await axios_NS_07.delete(`/child/${id}`);
+    await axios_NS_07.delete(`/participacion/${id}`);
   } catch (error) {
     throw error;
   }
