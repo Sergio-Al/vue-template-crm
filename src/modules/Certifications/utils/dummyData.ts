@@ -95,3 +95,45 @@ export const manufacturerContactsData = [
     parentId: '2m',
   },
 ];
+
+export const productListData = [
+  {
+    id: '1p',
+    name: 'Agujas de fístula',
+    itemCodes: [
+      'AXXRY2EEYTY',
+      'AXDXRY2EEYY',
+      'AXX2RY2EEYY',
+      'AXXSRY2EEYY',
+      'AXXSRY2EEYY',
+      'AXXGRY2EEYY',
+      'AXXRGY2EEYY',
+    ],
+  },
+  {
+    id: '2p',
+    name: 'Producto 2',
+    itemCodes: [
+      'AXXRY2EEYTY',
+      'AXDXRY2EEYY',
+      'AXX2RY2EEYY',
+      'AXXSRY2EEYY',
+      'AXXSRY2EEYY',
+      'AXXGRY2EEYY',
+      'AXXRGY2EEYY',
+    ],
+  },
+  {
+    id: '1p',
+    name: 'Producto 3',
+    itemCodes: [
+      'AXXRY2EEYTY',
+      'AXDXRY2EEYY',
+      'AXX2RY2EEYY',
+      'AXXSRY2EEYY',
+      'AXXSRY2EEYY',
+      'AXXGRY2EEYY',
+      'AXXRGY2EEYY',
+    ],
+  },
+];

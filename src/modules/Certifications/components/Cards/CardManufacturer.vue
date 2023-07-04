@@ -88,7 +88,7 @@ defineExpose({
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-select
-          :hint="!!inputData.id_solicitante ? 'usuario Seleccionado' : ''"
+          :hint="!!inputData.id_empresa ? 'Empresa seleccionada' : ''"
           :options="manufacturersList"
           @filter-abort="abortFilterFn"
           @filter="filterFn"

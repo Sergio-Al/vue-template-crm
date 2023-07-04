@@ -67,6 +67,7 @@ export interface Certification {
   assigned_user_id: string;
   empresa_email: string;
   empresa_phone: string;
+  codigos_producto: string;
 }
 
 export interface Filter extends Partial<Certification> {
