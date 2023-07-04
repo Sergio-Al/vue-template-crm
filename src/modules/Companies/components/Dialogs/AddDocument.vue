@@ -32,14 +32,14 @@ const columns: QTableColumn[] = [
   {
     name: 'version',
     align: 'left',
-    label: 'Version',
+    label: 'Versión',
     field: 'version',
     sortable: true,
   },
   {
     name: 'date_added',
     align: 'left',
-    label: 'Fecha',
+    label: 'Fecha de Publicación',
     field: 'date_added',
     sortable: true,
   },
@@ -48,6 +48,13 @@ const columns: QTableColumn[] = [
     align: 'left',
     label: 'Registro de cambio',
     field: 'description',
+    sortable: true,
+  },
+  {
+    name: 'status',
+    align: 'left',
+    label: 'Estado',
+    field: 'status',
     sortable: true,
   },
   {
@@ -62,7 +69,7 @@ const columns: QTableColumn[] = [
 const dummyData = [
   {
     id: 'ddfasfads',
-    name: 'nombre1',
+    name: 'Version 2 Cert',
     date_added: '27/01/2023',
     fileName: 'nombreDocumentos',
     date_exp: '27/02/2023',
@@ -73,13 +80,13 @@ const dummyData = [
   },
   {
     id: 'otro',
-    name: 'nombre1',
+    name: 'Version 1 Cert',
     date_added: '27/01/2023',
     fileName: 'nombreDocumentos',
     date_exp: '27/02/2023',
     version: '1',
     description: 'Primera version del documento',
-    status: 'Revision',
+    status: 'Caducado',
     assigned_user_id: 'assignedUserId',
   },
 ];

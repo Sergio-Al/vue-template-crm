@@ -26,19 +26,19 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
   {
-    name: 'date_added',
-    align: 'left',
-    label: 'Fecha',
-    field: 'date_added',
-    sortable: true,
-  },
-  {
     name: 'fileName',
     align: 'left',
     label: 'Documento Adjunto',
     field: 'fileName',
     sortable: true,
   },
+    {
+      name: 'date_added',
+      align: 'left',
+      label: 'Fecha de Publicación',
+      field: 'date_added',
+      sortable: true,
+    },
   {
     name: 'date_exp',
     align: 'left',
@@ -54,10 +54,10 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
   {
-    name: 'assigned',
+    name: 'category',
     align: 'left',
-    label: 'Responsable',
-    field: 'assigned_user_id',
+    label: 'Categoría',
+    field: 'category',
     sortable: true,
   },
   {
@@ -91,21 +91,21 @@ const { state: documents, isLoading } = useAsyncState(async () => {
 const dummyData = [
   {
     id: 'ddfasfads',
-    name: 'nombre1',
+    name: 'Resolución Ministerial HANSA',
     date_added: '27/01/2023',
-    fileName: 'nombreDocumentos',
-    date_exp: '27/02/2023',
-    status: 'Revision',
-    assigned_user_id: 'assignedUserId',
+    fileName: 'Resolución Ministerial',
+    date_exp: '27/02/2025',
+    status: 'Activo',
+    category: 'Resgistro Sanitario',
   },
   {
     id: 'otro',
-    name: 'nombre1',
+    name: 'Certificado de Empresa Vigente',
     date_added: '27/01/2023',
-    fileName: 'nombreDocumentos',
-    date_exp: '27/02/2023',
-    status: 'Revision',
-    assigned_user_id: 'assignedUserId',
+    fileName: 'Certificado de Empresa Vigente 2023',
+    date_exp: '27/02/2024',
+    status: 'Activo',
+    category: 'Certificado de Comercialización',
   },
 ];
 </script>
@@ -187,7 +187,7 @@ const dummyData = [
             </iframe> -->
             <CardDocumentViewer />
             <div class="text-left">
-              This is expand slot for row above: {{ props.row.name }}.
+              Visualizador del documento: {{ props.row.name }}.
             </div>
           </q-td>
         </q-tr>
