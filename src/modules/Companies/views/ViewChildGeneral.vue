@@ -93,7 +93,7 @@ const onSubmit = async (parentId: string) => {
     const cardInfoData = cardInfoRef.value?.exposeUpdateData();
     const cardContactData = cardContactRef.value?.exposeUpdateData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
-    const assignedUser = cardDelegateRef.value?.exposeData();
+    const user_id_c = cardDelegateRef.value?.exposeData();
 
     if (!!cardInfoData || !!cardContactData) {
       try {
@@ -101,8 +101,9 @@ const onSubmit = async (parentId: string) => {
           ...cardInfoData,
           ...cardContactData,
           direccion_c: directionData?.address_street_generated_c,
-          user_id_c: assignedUser || '',
+          user_id_c: user_id_c || '',
         } as ChildCompany;
+
         await childCompanyStore.onUpdateChildCompany(localId.value, body);
         emits('submitComplete', localId.value);
         await execute();
@@ -114,7 +115,7 @@ const onSubmit = async (parentId: string) => {
     const cardInfoData = cardInfoRef.value?.exposeData();
     const cardContactData = cardContactRef.value?.exposeData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
-    const assignedUser = cardDelegateRef.value?.exposeData();
+    const user_id_c = cardDelegateRef.value?.exposeData();
 
     if (!!cardInfoData || !!cardContactData) {
       try {
@@ -122,14 +123,12 @@ const onSubmit = async (parentId: string) => {
           message: 'Guardando Información',
         });
 
-        // TODO: no envia id_responsable
-
         const body = {
           ...cardInfoData,
           ...cardContactData,
           direccion_c: directionData?.address_street_generated_c || '',
+          user_id_c: user_id_c || '',
           comment: commentCreate.value,
-          assigned_user_id: assignedUser || '',
         } as ChildCompany;
 
         const newCompany = await childCompanyStore.onCreateChildCompany(
