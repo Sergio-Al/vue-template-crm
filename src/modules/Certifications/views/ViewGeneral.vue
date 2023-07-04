@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { useAsyncState } from '@vueuse/core';
+import { useQuasar } from 'quasar';
 
 import CardApplicant from '../components/Cards/CardApplicant.vue';
 import CardManufacture from '../components/Cards/CardManufacturer.vue';
@@ -19,6 +20,7 @@ interface Emits {
 const props = defineProps<Props>();
 const emits = defineEmits<Emits>();
 
+const $q = useQuasar();
 const certificationStore = useCertificationStore();
 const tab = ref(props.id ? 'Activities' : 'comentarios');
 const localId = ref(props.id ?? '');
@@ -64,8 +66,16 @@ const onSubmit = async () => {
           await certificationStore.onCreateCertificationRequest(body);
         localId.value = newCertification.id;
         emits('submitComplete', localId.value);
+        $q.notify({
+          message: 'Se ha guardado correctamente',
+          color: 'positive',
+        });
         execute();
       } catch (error) {
+        $q.notify({
+          message: 'Ha ocurrido un error al guardar',
+          color: 'negative',
+        });
         console.log(error);
       }
     }

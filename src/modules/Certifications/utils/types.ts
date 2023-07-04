@@ -67,6 +67,7 @@ export interface Certification {
   assigned_user_id: string;
   empresa_email: string;
   empresa_phone: string;
+  codigos_producto: string;
 }
 
 export interface Filter extends Partial<Certification> {
@@ -74,4 +75,15 @@ export interface Filter extends Partial<Certification> {
   modified_by?: string[];
   assigned_to?: string[];
   creation_date?: DateBase;
+}
+
+export interface User {
+  id: string;
+  first_name: string;
+  last_name: string;
+  fullname: string;
+  iddivision_c: string;
+  idregional_c: string;
+  idamercado_c: string;
+  id_empresa_c: string;
 }
