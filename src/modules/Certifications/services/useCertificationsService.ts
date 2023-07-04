@@ -83,7 +83,10 @@ export const updateTablePreferences = async (id: string, data: any) => {
 export const createCertificationRequest = async (
   certfication: Certification
 ) => {
-  console.log(certfication);
+  console.log('Creacion de solicitud', certfication);
+  // const response = await axios_NS07('/certification', certification);
+  // return response;
+
   return;
 };
 
