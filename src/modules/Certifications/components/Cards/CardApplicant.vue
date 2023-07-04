@@ -176,7 +176,7 @@ defineExpose({
           v-model="inputData.idamercado_c"
           :options="amercado"
           type="text"
-          label="Grupo Cliente"
+          label="Área de mercado"
           option-value="value"
           option-label="label"
           emit-value

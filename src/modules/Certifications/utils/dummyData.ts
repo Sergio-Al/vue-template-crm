@@ -56,3 +56,42 @@ export const regional = [
     label: 'Santa Cruz',
   },
 ];
+
+export const manufacturers = [
+  {
+    id: '1m',
+    name: 'DIALIFE SRL',
+    email: 'dialife@company.com.bo',
+    phone: '5912233444',
+  },
+  {
+    id: '2m',
+    name: 'Fabricante2 SRL',
+    email: 'fabricante2@company.com.bo',
+    phone: '5912555444',
+  },
+  {
+    id: '3m',
+    name: 'fabricante3 SRL',
+    email: 'fabricante3@company.com.bo',
+    phone: '59126666444',
+  },
+];
+
+export const manufacturerContactsData = [
+  {
+    id: '11m',
+    name: 'Alejandra Suarez',
+    parentId: '1m',
+  },
+  {
+    id: '22m',
+    name: 'Carla Montenegro',
+    parentId: '1m',
+  },
+  {
+    id: '33m',
+    name: 'Daniel Guzman',
+    parentId: '2m',
+  },
+];

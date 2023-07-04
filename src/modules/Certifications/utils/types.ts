@@ -80,6 +80,7 @@ export interface User {
   id: string;
   first_name: string;
   last_name: string;
+  fullname: string;
   iddivision_c: string;
   idregional_c: string;
   idamercado_c: string;
