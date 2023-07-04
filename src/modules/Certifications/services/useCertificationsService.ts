@@ -74,6 +74,7 @@ export const updateTablePreferences = async (id: string, data: any) => {
 export const createCertificationRequest = async (
   certfication: Certification
 ) => {
+  console.log(certfication);
   return;
 };
 

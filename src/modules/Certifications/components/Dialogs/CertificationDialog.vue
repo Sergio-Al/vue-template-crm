@@ -3,12 +3,11 @@ import { AlertComponent } from 'src/components';
 import { Notification } from 'src/composables';
 import { useDialogTabs } from 'src/composables/Dialog/useDialog';
 import { computed, ref } from 'vue';
-import { useCompanyTableStore } from '../../store/UseCompanyTableStore';
-import { useCompaniesStore } from '../../store/companyStore';
+import { useCertificationsTableStore } from '../../store/useCertificationTableStore';
+import { useCertificationStore } from '../../store/certificationStore';
 import ViewGeneral from '../../views/ViewGeneral.vue';
-import ViewParticipants from '../../views/ViewParticipants.vue';
-import ViewUsers from '../../views/ViewUsers.vue';
-import ViewDocuments from '../../views/ViewDocuments.vue';
+import ViewDataGeneral from '../../views/ViewDataGeneral.vue';
+import ViewDataManufacturer from '../../views/ViewDataManufacturer.vue';
 </script>
 
 <script lang="ts" setup>
@@ -21,30 +20,23 @@ const tabsDefinition = [
     enabledForCreation: true,
   },
   {
-    name: 'users',
-    component: ViewUsers,
-    label: 'Usuarios',
+    name: 'dataGeneral',
+    component: ViewDataGeneral,
+    label: 'Datos Generales',
     enabledForCreation: false,
   },
   {
-    name: 'participants',
-    component: ViewParticipants,
-    label: 'Participación como',
+    name: 'dataManufacturer',
+    component: ViewDataManufacturer,
+    label: 'Datos del fabricante',
     enabledForCreation: false,
-  },
-
-  {
-    name: 'documents',
-    component: ViewDocuments,
-    label: 'Documentos',
-    enabledForCreation: true,
   },
 ];
 
 const showCloseAlert = ref(false);
 
-const companyStore = useCompaniesStore();
-const companyTableStore = useCompanyTableStore();
+const certificationStore = useCertificationStore();
+const certificationTableStore = useCertificationsTableStore();
 
 //* Composable values
 const {
@@ -58,7 +50,7 @@ const {
   openDialogTab,
   resetValues,
 } = useDialogTabs(tabsDefinition, {
-  titleDialog: 'Nueva Empresa',
+  titleDialog: 'Solicitud de Certificación',
   iconDialog: 'pen',
 });
 
@@ -71,7 +63,7 @@ const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
 const clearData = () => {
   console.log('cleaning data');
   id.value = '';
-  companyStore.clearData();
+  certificationStore.clearData();
   resetValues();
 };
 
@@ -89,7 +81,7 @@ const onCloseDialog = () => {
 };
 
 const updateData = (idValue: string) => {
-  companyTableStore.reloadList();
+  certificationTableStore.reloadList();
   id.value = idValue;
   titleDialog.value = 'Detalles';
 };
@@ -165,7 +157,7 @@ defineExpose({
         align="justify"
         dense
         narrow-indicator
-        v-if="tabsDefinition.length > 1"
+        v-if="!!id"
       >
         <q-tab
           v-for="(tab, index) in tabsDefinition"
