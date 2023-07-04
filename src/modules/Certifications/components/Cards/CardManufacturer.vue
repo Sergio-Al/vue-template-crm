@@ -140,7 +140,7 @@ defineExpose({
                   >Email: {{ scope.opt.email }}</q-item-label
                 >
                 <q-item-label caption
-                  >Email: {{ scope.opt.phone }}</q-item-label
+                  >Teléfono: {{ scope.opt.phone }}</q-item-label
                 >
               </q-item-section>
             </q-item>
