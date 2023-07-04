@@ -183,7 +183,6 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       // obtener array de usuarios
       console.log(id);
       const users = await getCompanyChildrenUsers(id);
-      console.log(users);
       return users;
       //return [];
     } catch (error) {

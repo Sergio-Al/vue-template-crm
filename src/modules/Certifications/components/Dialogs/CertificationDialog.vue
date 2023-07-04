@@ -122,7 +122,7 @@ defineExpose({
         class="header-dialog"
         :class="$q.dark.isActive ? 'bg-dark' : 'bg-primary'"
       >
-        <q-icon name="paid" class="q-ml-md" color="white" size="md"></q-icon>
+        <q-icon name="shield" class="q-ml-md" color="white" size="md"></q-icon>
 
         <q-toolbar-title
           class="header-dialog"

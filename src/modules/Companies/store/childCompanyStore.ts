@@ -79,9 +79,6 @@ export const useChildCompaniesStore = defineStore(
         Loading.show({
           message: 'Modificando informacion',
         });
-        console.log(id);
-        console.log(data);
-        return;
 
         const response = await updateChildCompany(id, data);
         return response;
