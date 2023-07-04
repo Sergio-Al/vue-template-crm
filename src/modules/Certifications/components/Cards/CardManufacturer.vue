@@ -154,7 +154,7 @@ defineExpose({
           :options="manufacturerContacts"
           type="text"
           label="Contacto"
-          option-value="value"
+          option-value="id"
           option-label="name"
           emit-value
           map-options

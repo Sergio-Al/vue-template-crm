@@ -69,7 +69,7 @@ defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): Certification => ({
     ...inputData.value,
-    cod_productos: productCodes.value.join(','),
+    cod_productos: productCodes.value.map((code) => code.id).join(',') || '',
   }),
 });
 </script>
