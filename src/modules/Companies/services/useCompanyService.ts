@@ -168,7 +168,7 @@ export const getCompanyUsers = async (id: string) => {
 export const getCompanyChildrenUsers = async (id: string) => {
   try {
     const { data } = await axios_NS_07.get(
-      `/participacion/child-users/36f3840a-b7d8-aa1b-75de-649995997c6e`
+      `/participacion/child-users/${id}`
     );
     // const data = await axios_NS_07.get('/user');
     console.log(data);

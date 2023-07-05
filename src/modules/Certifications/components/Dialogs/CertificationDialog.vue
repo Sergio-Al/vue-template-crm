@@ -16,7 +16,7 @@ const tabsDefinition = [
   {
     name: 'general',
     component: ViewGeneral,
-    label: 'General',
+    label: 'Solicitud',
     enabledForCreation: true,
   },
   {
@@ -28,7 +28,7 @@ const tabsDefinition = [
   {
     name: 'dataManufacturer',
     component: ViewDataManufacturer,
-    label: 'Datos del fabricante',
+    label: 'Datos del Fabricante',
     enabledForCreation: false,
   },
 ];
@@ -122,7 +122,7 @@ defineExpose({
         class="header-dialog"
         :class="$q.dark.isActive ? 'bg-dark' : 'bg-primary'"
       >
-        <q-icon name="paid" class="q-ml-md" color="white" size="md"></q-icon>
+        <q-icon name="shield" class="q-ml-md" color="white" size="md"></q-icon>
 
         <q-toolbar-title
           class="header-dialog"
@@ -157,7 +157,7 @@ defineExpose({
         align="justify"
         dense
         narrow-indicator
-        v-if="!!id"
+        v-if="tabsDefinition.length > 1"
       >
         <q-tab
           v-for="(tab, index) in tabsDefinition"
