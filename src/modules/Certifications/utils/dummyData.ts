@@ -29,31 +29,66 @@ export const amercado = [
 export const divisions = [
   {
     id: '1',
-    value: '03_A',
-    label: 'División automotriz',
+    value: '01',
+    label: 'Industria y Construcción',
   },
   {
     id: '2',
-    value: '02_A',
-    label: 'Soluciones médicas',
+    value: '02',
+    label: 'Consumo y Farma',
   },
+  {
+    id: '2',
+    value: '03',
+    label: 'Automotriz',
+  },
+  {
+    id: '3',
+    value: '04',
+    label: 'Soluciones Médicas',
+  },
+  {
+    id: '4',
+    value: '06',
+    label: 'Proyectos y Servicios',
+  },
+  {
+    id: '5',
+    value: '99',
+    label: 'Administración y Finanzas',
+  }
 ];
 
 export const regional = [
   {
     id: '1',
-    value: '04_A',
+    value: '01_01',
     label: 'La Paz',
   },
   {
     id: '2',
-    value: '02_A',
-    label: 'Cochabamba',
+    value: '02_02',
+    label: 'Santa Cruz',
   },
   {
     id: '3',
-    value: '03_A',
-    label: 'Santa Cruz',
+    value: '03_03',
+    label: 'Cochabamba',
+  },
+  {
+    id: '4',
+    value: '01_07',
+    label: 'Oruro',
+  },
+  {
+    id: '5',
+    value: '01_04',
+    label: 'Potosi',
+  },
+  {
+    id: '6',
+    value: '03_07',
+    label: 'Sucre',
   },
 ];
 

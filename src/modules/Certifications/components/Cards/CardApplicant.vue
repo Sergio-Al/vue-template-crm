@@ -17,6 +17,7 @@ interface Props {
 
 const props = defineProps<Props>();
 const $q = useQuasar();
+
 //const { userCRM, getCompany } = useCompany();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
@@ -41,9 +42,9 @@ const filterFn = async (
       users.value = [];
     } else {
       const term = val;
-      // const response = await getUsers(term);
-      // users.value = response;
-      users.value = [{ id: '1', fullname: 'Dan dd' }];
+      const response = await getUsers(term);
+      users.value = response;
+      //users.value = [{ id: '1', fullname: 'Dan dd' }];
       console.log(users.value);
     }
   });
@@ -173,23 +174,6 @@ defineExpose({
           class="col-12 col-sm-6"
           outlined
           dense
-          v-model="inputData.idamercado_c"
-          :options="amercado"
-          type="text"
-          label="Área de mercado"
-          option-value="value"
-          option-label="label"
-          emit-value
-          map-options
-        >
-          <template v-slot:prepend>
-            <q-icon name="storefront" />
-          </template>
-        </q-select>
-        <q-select
-          class="col-12 col-sm-6"
-          outlined
-          dense
           v-model="inputData.iddivision_c"
           :options="divisions"
           type="text"
@@ -201,6 +185,23 @@ defineExpose({
         >
           <template v-slot:prepend>
             <q-icon name="store" />
+          </template>
+        </q-select>
+         <q-select
+          class="col-12 col-sm-6"
+          outlined
+          dense
+          v-model="inputData.idamercado_c"
+          :options="amercado"
+          type="text"
+          label="Área de mercado"
+          option-value="value"
+          option-label="label"
+          emit-value
+          map-options
+        >
+          <template v-slot:prepend>
+            <q-icon name="storefront" />
           </template>
         </q-select>
         <q-select
