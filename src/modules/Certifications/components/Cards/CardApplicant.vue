@@ -3,7 +3,7 @@ import { computed, ref, onMounted } from 'vue';
 import { useQuasar, QPopupProxy } from 'quasar';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
-import { getUsers } from '../../services/useCertificationsService';
+import { getUsers, getUser } from '../../services/useCertificationsService';
 
 import { Certification, User } from '../../utils/types';
 
@@ -61,8 +61,15 @@ const abortFilterFn = () => {
   // console.log('delayed filter aborted')
 };
 
-onMounted(() => {
-  // buscar solicitante y asignar a users[]
+onMounted(async () => {
+  // buscar solicitante y asignar a users[] (options)
+  if (!!inputData.value.id_solicitante) {
+    if (!!props.id) {
+      const response = await getUser(inputData.value.id_solicitante);
+      console.log(response);
+      users.value = [response];
+    }
+  }
 });
 
 defineExpose({
@@ -225,22 +232,52 @@ defineExpose({
     <template #read>
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-input
-          v-model="inputData.id_solicitante"
-          type="text"
+        <q-select
+          :hint="!!inputData.id_solicitante ? 'usuario Seleccionado' : ''"
+          :options="users"
+          @filter-abort="abortFilterFn"
+          @filter="filterFn"
           class="col-12 col-sm-12"
-          label="Solicitante"
-          outlined
           dense
+          emit-value
+          fill-input
+          hide-dropdown-icon
+          hide-selected
+          input-debounce="500"
+          label="Solicitante"
+          map-options
+          option-label="fullname"
+          option-value="id"
+          outlined
+          use-chips
+          use-input
+          v-model="inputData.id_solicitante"
           readonly
         >
-          <template v-slot:prepend>
+          <template #prepend>
             <q-icon name="person" />
           </template>
-        </q-input>
+
+          <template #no-option>
+            <span class="text-grey-8 q-pa-lg">Sin opciones</span>
+          </template>
+
+          <template #option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section avatar>
+                <q-icon name="person" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ scope.opt.fullname }}</q-item-label>
+                <q-item-label caption
+                  >Email: {{ scope.opt.email_address }}</q-item-label
+                >
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
         <q-input
           v-model="inputData.date_entered"
-          type="text"
           class="col-12 col-sm-6"
           label="Fecha"
           outlined
@@ -251,45 +288,60 @@ defineExpose({
             <q-icon name="event" />
           </template>
         </q-input>
-        <q-input
-          v-model="inputData.idamercado_c"
-          type="text"
+        <q-select
           class="col-12 col-sm-6"
-          label="Área de mercado"
           outlined
           dense
+          v-model="inputData.idamercado_c"
+          :options="amercado"
+          type="text"
+          label="Área de mercado"
+          option-value="value"
+          option-label="label"
+          emit-value
+          map-options
           readonly
         >
           <template v-slot:prepend>
             <q-icon name="storefront" />
           </template>
-        </q-input>
-        <q-input
-          v-model="inputData.iddivision_c"
-          type="text"
+        </q-select>
+        <q-select
           class="col-12 col-sm-6"
-          label="División"
           outlined
           dense
+          v-model="inputData.iddivision_c"
+          :options="divisions"
+          type="text"
+          label="División"
+          option-value="value"
+          option-label="label"
+          emit-value
+          map-options
           readonly
         >
           <template v-slot:prepend>
             <q-icon name="store" />
           </template>
-        </q-input>
-        <q-input
-          v-model="inputData.idregional_c"
-          type="text"
+        </q-select>
+        <q-select
           class="col-12 col-sm-6"
-          label="Regional"
           outlined
           dense
+          v-model="inputData.idregional_c"
+          :options="regional"
+          type="text"
+          label="Regional"
+          option-value="value"
+          option-label="label"
+          emit-value
+          map-options
           readonly
         >
           <template v-slot:prepend>
             <q-icon name="flag" />
           </template>
-        </q-input>
+        </q-select>
       </div>
     </template>
   </view-card-component>

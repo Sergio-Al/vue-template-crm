@@ -12,7 +12,14 @@ import {
   SearchUser,
 } from 'src/components/types';
 
-import { certicationsList } from '../utils/dummyData';
+import {
+  certicationsList,
+  user,
+  certification,
+  manufacturer,
+  manufacturerContact,
+  product,
+} from '../utils/dummyData';
 
 const { userCRM } = userStore();
 
@@ -94,7 +101,9 @@ export const createCertificationRequest = async (
 };
 
 export const getCertificationRequest = async (id: string) => {
-  return;
+  // const response = await axios_NS07('/certification', certification);
+  // return response;
+  return certification;
 };
 
 export const updateCertificationRequest = async (
@@ -106,6 +115,15 @@ export const updateCertificationRequest = async (
 
 export const deleteCertificationRequest = async (id: string) => {
   return;
+};
+
+export const getUser = async (id: string) => {
+  try {
+    // const response = await axios_NS07('user/id');
+    // return response
+
+    return user;
+  } catch (error) {}
 };
 
 export async function getUsers(
@@ -136,3 +154,21 @@ export async function getUsers(
     throw error;
   }
 }
+
+export const getManufacturer = async (id: string) => {
+  // const response = await axios_NS07(`/manufacturer/${id}`)
+  // return response;
+  return manufacturer;
+};
+
+export const getManufacturerContact = async (id: string) => {
+  // const response = await axios_NS07(`/manufacturer-contact/${id}`)
+  // return response;
+  return manufacturerContact;
+};
+
+export const getProduct = async (id: string) => {
+  // const response = await axios_NS07(`/product/${id}`)
+  // return response;
+  return product;
+};

@@ -57,6 +57,13 @@ export const regional = [
   },
 ];
 
+export const manufacturer = {
+  id: '1m',
+  name: 'DIALIFE SRL',
+  email: 'dialife@company.com.bo',
+  phone: '5912233444',
+};
+
 export const manufacturers = [
   {
     id: '1m',
@@ -78,6 +85,12 @@ export const manufacturers = [
   },
 ];
 
+export const manufacturerContact = {
+  id: '11m',
+  name: 'Alejandra Suarez',
+  parentId: '1m',
+};
+
 export const manufacturerContactsData = [
   {
     id: '11m',
@@ -95,6 +108,20 @@ export const manufacturerContactsData = [
     parentId: '2m',
   },
 ];
+
+export const product = {
+  id: '1p',
+  name: 'Agujas de fístula',
+  itemCodes: [
+    'AXXRY2EEYTY',
+    'AXDXRY2EEYY',
+    'AXX2RY2EEYY',
+    'AXXSRY2EEYY',
+    'AXXSRY2EEYY',
+    'AXXGRY2EEYY',
+    'AXXRGY2EEYY',
+  ],
+};
 
 export const productListData = [
   {
@@ -198,3 +225,38 @@ export const certicationsList = [
     tipo_tramite: 'Inscripcion',
   },
 ];
+
+export const certification = {
+  id: '1',
+  aprobacion: '1',
+  assigned_user_id: '1',
+  cod_productos: '1',
+  codigos_producto: '1',
+  comentario_creacion: '1',
+  comentario_observacion: '1',
+  date_aprox_cert: '1',
+  date_certif: '1',
+  date_entered: '05/07/2023',
+  date_register_misa: '1',
+  empresa_email: 'company@gmail.com',
+  empresa_phone: '+59133344534',
+  estado: 'No autorizada',
+  etapa: 'Nueva',
+  grupocliente_c: '1',
+  id_empresa: '1m',
+  id_producto: '1p',
+  id_profesional_acreditado: '11m',
+  id_solicitante: '1',
+  id_tipo_producto: '1',
+  idamercado_c: '02_A',
+  iddivision_c: '03_A',
+  idregional_c: '04_A',
+  nro_solicitud: '1030/2023',
+  observacion: '1',
+  tipo_tramite: 'Inscripción',
+};
+
+export const user = {
+  id: '1',
+  fullname: 'Armando Ortega',
+};
