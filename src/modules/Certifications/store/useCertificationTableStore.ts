@@ -69,7 +69,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         },
         {
           name: 'etapa',
-          align: 'left',
+          align: 'center',
           label: 'Etapa',
           field: 'etapa',
           sortable: true,
@@ -84,6 +84,14 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           visible: true,
         },
         {
+          name: 'delegate',
+          align: 'left',
+          label: 'Responsable',
+          field: 'id_profesional_acreditado',
+          sortable: true,
+          visible: true,
+        },
+        {
           name: 'id_producto',
           align: 'left',
           label: 'Producto',
@@ -93,7 +101,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         },
         {
           name: 'id_tipo_producto',
-          align: 'left',
+          align: 'center',
           label: 'Tipo de producto',
           field: 'id_tipo_producto',
           sortable: true,
@@ -101,7 +109,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         },
         {
           name: 'aprobacion',
-          align: 'left',
+          align: 'center',
           label: 'Cumplimiento de requisitos',
           field: 'aprobacion',
           sortable: true,
@@ -109,7 +117,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         },
         {
           name: 'id',
-          align: 'left',
+          align: 'center',
           label: 'Certificación',
           field: 'id',
           sortable: true,
@@ -131,6 +139,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
       'etapa',
       'tipo_tramite',
       'id_producto',
+      'delegate',
       'id_tipo_producto',
       'aprobacion',
       'id',
