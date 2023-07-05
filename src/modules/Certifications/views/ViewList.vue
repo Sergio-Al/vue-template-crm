@@ -72,6 +72,16 @@ const onClearDataFilter = () => {
   }
 };
 
+const setEtapaColor = (etapa: string): string => {
+  const colorMap: { [key: string]: string } = {
+    Nueva: 'orange',
+    Revision: 'blue',
+    Finalizada: 'green',
+  };
+
+  return colorMap[etapa] || 'grey';
+};
+
 const openDialog = () => {
   certificationDialogRef.value?.openDialogTab();
 };
@@ -129,22 +139,77 @@ const openItemSelected = (id: string, title: string) => {
             </span>
           </q-td>
           <q-td key="etapa" :props="propsTable">
-            {{ propsTable.row.etapa }}
+            <div class="column">
+              <div>
+                <q-badge
+                  :color="setEtapaColor(propsTable.row.etapa)"
+                  :label="propsTable.row.etapa"
+                />
+              </div>
+              <span class="text-caption">{{
+                propsTable.row.date_entered
+              }}</span>
+              <span class="text-caption"
+                >Estado: {{ propsTable.row.estado }}</span
+              >
+            </div>
           </q-td>
+
           <q-td key="tipo_tramite" :props="propsTable">
             {{ propsTable.row.tipo_tramite }}
           </q-td>
+          <q-td key="delegate" :props="propsTable">
+            <div class="row items-center">
+              <div class="col-2">
+                <q-avatar
+                  size="24px"
+                  font-size="24px"
+                  color="primary"
+                  text-color="white"
+                  icon="person"
+                />
+              </div>
+              <div class="column q-pl-sm ellipsis col-10">
+                <span class="ellipsis-item">
+                  Responsable {{ propsTable.row.id_profesional_acreditado }}
+                </span>
+                <span class="ellipsis-item text-caption">
+                  titulo de responsable{{
+                    propsTable.row.id_profesional_acreditado
+                  }}
+                </span>
+              </div>
+            </div>
+          </q-td>
           <q-td key="id_producto" :props="propsTable">
-            {{ propsTable.row.id_producto }}
+            <div class="column">
+              <span>
+                {{ propsTable.row.id_producto }}
+              </span>
+              <span class="text-caption">Fabricante 0</span>
+            </div>
           </q-td>
           <q-td key="id_tipo_producto" :props="propsTable">
-            {{ propsTable.row.id_tipo_producto }}
+            <div class="column">
+              <span>
+                {{ propsTable.row.id_tipo_producto }}
+              </span>
+              <span class="text-caption">Cantidad de requisitos: 0</span>
+            </div>
           </q-td>
           <q-td key="aprobacion" :props="propsTable">
-            {{ propsTable.row.aprobacion }}
+            <div class="column">
+              <span> {{ propsTable.row.aprobacion }}% </span>
+            </div>
           </q-td>
           <q-td key="id" :props="propsTable">
-            {{ propsTable.row.id }}
+            <div class="column">
+              <span> Cod Misa: {{ propsTable.row.id }} </span>
+              <span> Nro de Ruta: {{ propsTable.row.id }} </span>
+              <span v-if="true" class="text-green">
+                Nro Cert: {{ propsTable.row.id }}
+              </span>
+            </div>
           </q-td>
         </q-tr>
       </template>
@@ -274,3 +339,11 @@ const openItemSelected = (id: string, title: string) => {
   </div>
   <CertificationDialog ref="certificationDialogRef" />
 </template>
+
+<style lang="scss" scoped>
+.ellipsis-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>

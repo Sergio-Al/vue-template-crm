@@ -12,6 +12,8 @@ import {
   SearchUser,
 } from 'src/components/types';
 
+import { certicationsList } from '../utils/dummyData';
+
 const { userCRM } = userStore();
 
 export const updateMassiveData = async (data: any) => {
@@ -35,7 +37,8 @@ export const deleteMassiveData = async (data: any) => {
 
 export const getTableData = async (params: Params) => {
   try {
-    const { data } = await axios_NS_07.get('/certifications');
+    // const { data } = await axios_NS_07.get('/certifications');
+    const data = certicationsList;
     return data;
   } catch (error) {
     throw error;
