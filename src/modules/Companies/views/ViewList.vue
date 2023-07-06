@@ -54,7 +54,7 @@ const onDeleteMultiple = async (selected: base[]) => {
     return { id: el.id };
   });
   await table.deleteMultiple(items);
-  table.reloadList();
+  //await table.reloadList();
 };
 
 const onUpdateMultiple = (selected: base[]) => {
