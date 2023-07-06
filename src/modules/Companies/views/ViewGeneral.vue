@@ -21,7 +21,6 @@ import { storeToRefs } from 'pinia';
 import { Company } from '../utils/types';
 import DirectionCard from 'src/components/MainCard/DirectionCard.vue';
 import CardDelegate from '../components/Cards/CardDelegate.vue';
-import CardComment from '../components/Cards/CardComment.vue';
 </script>
 <script lang="ts" setup>
 const props = defineProps<{
@@ -91,7 +90,7 @@ const onSubmit = async () => {
   // }
 
   // Verificar si existe un id por localId
-if (!!localId.value) {
+  if (!!localId.value) {
     // actualizar datos si existe localId
     const cardInfoData = cardInfoRef.value?.exposeData();
     const cardContactData = cardContactRef.value?.exposeData();
@@ -104,7 +103,7 @@ if (!!localId.value) {
           ...cardInfoData,
           ...cardContactData,
           direccion_c: directionData?.address_street_generated_c,
-          assigned_user_id: assignedUser, 
+          assigned_user_id: assignedUser,
         } as Company;
         await companyStore.onUpdateCompany(localId.value, body);
         emits('submitComplete', localId.value);

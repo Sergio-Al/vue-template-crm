@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 
 import { Certification } from '../../utils/types';
+import {
+  getManufacturer,
+  getManufacturerContact,
+} from '../../services/useCertificationsService';
 
 // eliminar dummyData al capturar del backend
 import { manufacturers, manufacturerContactsData } from '../../utils/dummyData';
 
 interface Props {
   id: string;
-  data: Certification;
+  data: Partial<Certification>;
 }
 
 const props = defineProps<Props>();
@@ -67,9 +71,26 @@ const restoreValues = () => {
   if (props.data) inputData.value = { ...props.data };
 };
 
+onMounted(async () => {
+  if (!!props.id) {
+    if (!!inputData.value.id_empresa) {
+      const manufacturerSelected = await getManufacturer(
+        inputData.value.id_empresa
+      );
+      manufacturersList.value = [manufacturerSelected];
+    }
+    if (!!inputData.value.id_profesional_acreditado) {
+      const contact = await getManufacturerContact(
+        inputData.value.id_profesional_acreditado
+      );
+      manufacturerContacts.value = [contact];
+    }
+  }
+});
+
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
-  exposeData: (): Certification => ({ ...inputData.value }),
+  exposeData: (): Partial<Certification> => ({ ...inputData.value }),
 });
 </script>
 
@@ -192,24 +213,70 @@ defineExpose({
     <template #read>
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-input
-          v-model="inputData.id_empresa"
-          type="text"
-          class="col-12 col-sm-12"
-          label="Nombre"
-          outlined
-          dense
-          readonly
-        />
-        <q-input
-          v-model="inputData.id_profesional_acreditado"
-          type="text"
+        <q-select
+          :hint="!!inputData.id_empresa ? 'Empresa seleccionada' : ''"
+          :options="manufacturersList"
           class="col-12 col-sm-6"
-          label="Contacto"
+          dense
+          emit-value
+          fill-input
+          hide-dropdown-icon
+          hide-selected
+          input-debounce="500"
+          label="Nombre"
+          map-options
+          option-label="name"
+          option-value="id"
+          outlined
+          use-chips
+          use-input
+          v-model="inputData.id_empresa"
+          readonly
+        >
+          <template #prepend>
+            <q-icon name="work" />
+          </template>
+
+          <template #no-option>
+            <span class="text-grey-8 q-pa-lg">Sin opciones</span>
+          </template>
+
+          <template #option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section avatar>
+                <q-icon name="work" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ scope.opt.name }}</q-item-label>
+                <q-item-label caption
+                  >Email: {{ scope.opt.email }}</q-item-label
+                >
+                <q-item-label caption
+                  >Teléfono: {{ scope.opt.phone }}</q-item-label
+                >
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+        <q-select
+          class="col-12 col-sm-6"
           outlined
           dense
+          v-model="inputData.id_profesional_acreditado"
+          :options="manufacturerContacts"
+          type="text"
+          label="Contacto"
+          option-value="id"
+          option-label="name"
+          emit-value
+          map-options
+          hide-dropdown-icon
           readonly
-        />
+        >
+          <template v-slot:prepend>
+            <q-icon name="person" />
+          </template>
+        </q-select>
         <q-input
           v-model="inputData.empresa_email"
           type="text"
@@ -218,7 +285,11 @@ defineExpose({
           outlined
           dense
           readonly
-        />
+        >
+          <template v-slot:prepend>
+            <q-icon name="mail" />
+          </template>
+        </q-input>
         <q-input
           v-model="inputData.empresa_phone"
           type="text"
@@ -227,7 +298,11 @@ defineExpose({
           outlined
           dense
           readonly
-        />
+        >
+          <template v-slot:prepend>
+            <q-icon name="call" />
+          </template>
+        </q-input>
       </div>
     </template>
   </view-card-component>

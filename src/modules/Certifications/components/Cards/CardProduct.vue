@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 
 import { Certification } from '../../utils/types';
 
+import { getProduct } from '../../services/useCertificationsService';
 import { productListData } from '../../utils/dummyData';
 
 interface Props {
@@ -64,6 +65,17 @@ const assignProductInfo = (id: string) => {
 const abortFilterFn = () => {
   // console.log('delayed filter aborted')
 };
+
+onMounted(async () => {
+  if (!!props.id) {
+    if (!!inputData.value.id_producto) {
+      const product = await getProduct(inputData.value.id_producto);
+      productList.value = [product];
+      productCodes.value = product.itemCodes.map((code) => ({ id: code }));
+      console.log(productCodes.value);
+    }
+  }
+});
 
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
@@ -158,19 +170,56 @@ defineExpose({
     <template #read>
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-input
-          v-model="inputData.id_producto"
-          type="text"
+        <q-select
+          :hint="!!inputData.id_producto ? 'Producto seleccionado' : ''"
+          :options="productList"
           class="col-12 col-sm-12"
-          label="Solicitante"
-          outlined
           dense
+          emit-value
+          fill-input
+          hide-dropdown-icon
+          hide-selected
+          input-debounce="500"
+          label="Nombre"
+          map-options
+          option-label="name"
+          option-value="id"
+          outlined
+          use-chips
+          use-input
+          v-model="inputData.id_producto"
           readonly
         >
-          <template v-slot:prepend>
+          <template #prepend>
             <q-icon name="inventory" />
           </template>
-        </q-input>
+          <template #no-option>
+            <span class="text-grey-8 q-pa-lg">Sin opciones</span>
+          </template>
+
+          <template #option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section avatar>
+                <q-icon name="work" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ scope.opt.name }}</q-item-label>
+                <q-item-label caption>Producto</q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+        <q-input
+          v-for="(product, index) in productCodes"
+          :key="index"
+          v-model="product.id"
+          type="text"
+          label="Código a Registrar"
+          readonly
+          dense
+          outlined
+          class="col-6"
+        />
       </div>
     </template>
   </view-card-component>

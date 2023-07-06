@@ -3,6 +3,10 @@ import { ref, computed } from 'vue';
 import { useAsyncState } from '@vueuse/core';
 import { useQuasar } from 'quasar';
 
+import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
+import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
+import CommentsList from 'src/components/Comments/CommentsList.vue';
+
 import CardApplicant from '../components/Cards/CardApplicant.vue';
 import CardManufacture from '../components/Cards/CardManufacturer.vue';
 import CardProduct from '../components/Cards/CardProduct.vue';
@@ -84,6 +88,7 @@ const onSubmit = async () => {
 
 const { isLoading, execute } = useAsyncState(async () => {
   if (!!localId.value) {
+    console.log('here!!!');
     return await certificationStore.onGetCertificationRequest(localId.value);
   }
 }, {});
@@ -106,19 +111,19 @@ defineExpose({
       <div class="row q-gutter-y-md">
         <CardApplicant
           :id="localId"
-          :data="{}"
+          :data="certificationStore.cardApplicant"
           class="col-12"
           ref="cardAplicantRef"
         />
         <CardManufacture
           :id="localId"
-          :data="{}"
+          :data="certificationStore.cardManufacturer"
           class="col-12"
           ref="cardManufactureRef"
         />
         <CardProduct
           :id="localId"
-          :data="{}"
+          :data="certificationStore.cardProduct"
           class="col-12"
           ref="cardProductRef"
         />

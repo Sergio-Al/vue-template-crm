@@ -1,3 +1,4 @@
+import { amercado } from './../utils/dummyData';
 import { defineStore } from 'pinia';
 
 import { Loading } from 'quasar';
@@ -44,9 +45,49 @@ export const useCertificationStore = defineStore('certification-store', () => {
     comentario_observacion: '',
     id_empresa: '',
     assigned_user_id: '',
+    empresa_email: '',
+    empresa_phone: '',
   });
 
   //getters
+  const cardApplicant = computed(() => {
+    const {
+      id_solicitante,
+      date_entered,
+      idamercado_c,
+      iddivision_c,
+      idregional_c,
+    } = payload.value;
+
+    return {
+      id_solicitante,
+      date_entered,
+      iddivision_c,
+      idamercado_c,
+      idregional_c,
+    };
+  });
+
+  const cardManufacturer = computed(() => {
+    const {
+      id_empresa,
+      id_profesional_acreditado,
+      empresa_email,
+      empresa_phone,
+    } = payload.value;
+    return {
+      id_empresa,
+      id_profesional_acreditado,
+      empresa_email,
+      empresa_phone,
+    };
+  });
+
+  const cardProduct = computed(() => {
+    const { id_producto } = payload.value;
+
+    return { id_producto, productCodes: 'AARRDDX,AADFSDFE,SEFESFSEF,SSEFFEDF' };
+  });
   // const cardInfo = computed(() => {
   //   return {
   //     name: payload.value.name,
@@ -97,8 +138,9 @@ export const useCertificationStore = defineStore('certification-store', () => {
   const onGetCertificationRequest = async (id: string) => {
     try {
       loading.value = true;
-      await getCertificationRequest(id);
-      // return response
+      const response = await getCertificationRequest(id);
+      payload.value = response;
+      return response;
     } catch (error) {
       throw error;
     } finally {
@@ -170,6 +212,9 @@ export const useCertificationStore = defineStore('certification-store', () => {
     //states
     payload,
     //getter
+    cardApplicant,
+    cardManufacturer,
+    cardProduct,
     cardOwner,
     //actions
     onCreateCertificationRequest,
