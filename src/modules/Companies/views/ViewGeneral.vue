@@ -200,6 +200,7 @@ const emits = defineEmits<{
         <CardDelegate
           class="col-12"
           ref="cardDelegateRef"
+          :id="localId"
           :show-controls="!!localId"
           :user-id="cardOwner"
           @update="updateAssigned"

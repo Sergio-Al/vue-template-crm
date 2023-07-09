@@ -322,6 +322,13 @@ export const assignUsersToCompany = async (id: string, userIds: string[]) => {
   return data;
 };
 
+export const deleteUserFromCompany = async (id: string, userId: string) => {
+  const { data } = await axios_NS_07.patch(`user/${id}`, {
+    companyIdEmpresa: '-1',
+  });
+  return data;
+};
+
 export const deleteChildCompany = async (id: string) => {
   try {
     await axios_NS_07.delete(`/participacion/${id}`);

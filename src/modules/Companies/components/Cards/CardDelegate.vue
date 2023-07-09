@@ -6,7 +6,10 @@ import { getUser, getUsers, getUsers2 } from '../../services/useCompanyService';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 
+import { useCompaniesStore } from '../../store/companyStore';
+
 interface Props {
+  id?: string;
   userId?: string;
   showSave?: boolean;
   showControls?: boolean;
@@ -22,7 +25,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emits = defineEmits<Emits>();
 
+const companyStore = useCompaniesStore();
 const delegate = ref(null);
+const defaultUsers = ref<User[] | undefined>(undefined);
 const users = ref<User[] | undefined>(undefined);
 const userSelected = ref<User | null>(null);
 
@@ -45,12 +50,15 @@ const filterFn = async (
   update(async () => {
     if (val === '') {
       if (!!users.value && users.value.length > 0) return;
-      users.value = [];
+      users.value = defaultUsers.value;
     } else {
       const term = val;
       const response = await getUsers(term);
+      if (response.length === 0) {
+        users.value = defaultUsers.value;
+        return;
+      }
       users.value = response;
-      console.log(users.value);
     }
   });
 };
@@ -72,6 +80,13 @@ const assignUser = async (id: string) => {
   userSelected.value = user;
 };
 
+const assignDefaultUsers = async () => {
+  if (!!props.id) {
+    defaultUsers.value = await companyStore.onGetCompanyUsers(props.id);
+    users.value = defaultUsers.value;
+  }
+};
+
 const restoreValues = () => {
   if (props.userId) assignUser(props.userId);
 };
@@ -80,6 +95,7 @@ onMounted(async () => {
   if (props.userId) {
     assignUser(props.userId);
   }
+  assignDefaultUsers();
 });
 
 defineExpose({
@@ -99,6 +115,17 @@ defineExpose({
     @cancel-change="restoreValues"
     @edit-change="restoreValues"
   >
+    <template #headerFieldRead>
+      <q-avatar
+        v-if="!props.userId"
+        size="sm"
+        color="warning"
+        text-color="white"
+        icon="warning"
+      >
+        <q-tooltip> Se debe de asignar a un representante </q-tooltip>
+      </q-avatar>
+    </template>
     <template #read>
       <q-card-section v-if="!!props.userId || !!delegate">
         <q-card class="my-card" flat bordered>
@@ -134,15 +161,17 @@ defineExpose({
           input-debounce="500"
           label="Buscar usuario"
           :options="users"
+          @blur="assignDefaultUsers"
           @filter="filterFn"
           @filter-abort="abortFilterFn"
-          hint="Ingrese el nombre del usuario"
+          :hint="!props.id ? '' : 'Seleccione el usuario'"
           emit-value
           map-options
           option-label="fullname"
           option-value="id"
           v-model="delegate"
           outlined
+          :disable="!props.id"
           dense
           hide-dropdown-icon
           use-chips
@@ -164,6 +193,22 @@ defineExpose({
                 >
               </q-item-section>
             </q-item>
+          </template>
+
+          <template #append>
+            <q-btn
+              v-if="
+                !defaultUsers || (!!defaultUsers && defaultUsers.length === 0)
+              "
+              color="warning"
+              icon="warning"
+              round
+              size="sm"
+            >
+              <q-tooltip>
+                Debe asignar al menos un usuario a la empresa
+              </q-tooltip>
+            </q-btn>
           </template>
         </q-select>
       </q-card-section>
