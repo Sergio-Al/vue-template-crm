@@ -28,6 +28,9 @@ export const getTableData = async (params: Params) => {
   try {
     // const { data } = await axios_NS_07.get('/empresas');
     const { data } = await axios_NS_07.get(`/empresas?params=${JSON.stringify(params)}`);
+    console.log(data);
+    
+    //const { data } = await axios_NS_07.get(`/empresas`, {params});
     return data;
   } catch (error) {
     throw error;
