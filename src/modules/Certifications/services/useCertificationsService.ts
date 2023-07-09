@@ -43,9 +43,10 @@ export const deleteMassiveData = async (data: any) => {
 };
 
 export const getTableData = async (params: Params) => {
+  console.log(params);
   try {
-    // const { data } = await axios_NS_07.get('/certifications');
-    const data = certicationsList;
+    const { data } = await axios_NS_07.get(`/certificacion?params=${JSON.stringify(params)}`);
+    console.log(data);
     return data;
   } catch (error) {
     throw error;

@@ -27,7 +27,10 @@ const { userCRM } = userStore();
 export const getTableData = async (params: Params) => {
   try {
     // const { data } = await axios_NS_07.get('/empresas');
-    const { data } = await axios_NS_07.get('/empresas');
+    const { data } = await axios_NS_07.get(`/empresas?params=${JSON.stringify(params)}`);
+    console.log(data);
+    
+    //const { data } = await axios_NS_07.get(`/empresas`, {params});
     return data;
   } catch (error) {
     throw error;
@@ -243,7 +246,7 @@ export const deleteMassiveData = async (data: any) => {
     data.items.forEach(async (element: any) => {
       await axios_NS_07.delete(`empresas/${element.id}`);
     });
-    return;
+    //return;
   } catch (error) {
     throw error;
   }
