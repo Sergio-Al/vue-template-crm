@@ -64,39 +64,42 @@ const { isLoading, execute } = useAsyncState(async () => {
   }
 }, {});
 
-// const validateCards = async () => {
-//   const validCards: (boolean | undefined)[] = [];
-//   if (infoCardRef.value?.isEditing) {
-//     const infoCardValidation = await infoCardRef.value.validateInputs();
-//     validCards.push(infoCardValidation);
-//   }
-//   if (!localId.value) {
-//     const firstCommentValidation = await commentRef.value?.validate();
-//     validCards.push(firstCommentValidation);
-//   }
-//   return validCards.every((card) => !!card);
-// };
+const validateCards = async () => {
+  const validCards: (boolean | undefined)[] = [];
+  if (cardInfoRef.value?.isEditing) {
+    const infoCardValidation = await cardInfoRef.value.validateInputs();
+    validCards.push(infoCardValidation);
+  }
+  if (cardContactRef.value?.isEditing) {
+    const cardContactValidation = await cardContactRef.value.validateInputs();
+    validCards.push(cardContactValidation);
+  }
+  if (!localId.value) {
+    const firstCommentValidation = await commentRef.value?.validate();
+    validCards.push(firstCommentValidation);
+  }
+  return validCards.every((card) => !!card);
+};
 
 const onSubmit = async () => {
   // Validar datos...
-  // const areCardsValid = await validateCards();
-  // if (!areCardsValid) {
-  //   $q.notify({
-  //     type: 'warning',
-  //     message: 'Error de validación',
-  //     caption: 'Algunos campos necesitan ser llenados',
-  //   });
-  //   return;
-  // }
+  const areCardsValid = await validateCards();
+  if (!areCardsValid) {
+    $q.notify({
+      type: 'warning',
+      message: 'Error de validación',
+      caption: 'Algunos campos necesitan ser llenados',
+    });
+    return;
+  }
 
-  // Verificar si existe un id por localId
+  const cardInfoData = cardInfoRef.value?.exposeData();
+  const cardContactData = cardContactRef.value?.exposeData();
+  const directionData = directionCardComponentRef.value?.captureCurrentData();
+  const assignedUser = cardDelegateRef.value?.exposeData();
+
   if (!!localId.value) {
     // actualizar datos si existe localId
-    const cardInfoData = cardInfoRef.value?.exposeData();
-    const cardContactData = cardContactRef.value?.exposeData();
-    const directionData = directionCardComponentRef.value?.captureCurrentData();
-    const assignedUser = cardDelegateRef.value?.exposeData();
-
     if (!!cardInfoData || !!cardContactData) {
       try {
         const body: Company = {
@@ -113,11 +116,6 @@ const onSubmit = async () => {
       }
     }
   } else {
-    const cardInfoData = cardInfoRef.value?.exposeData();
-    const cardContactData = cardContactRef.value?.exposeData();
-    const directionData = directionCardComponentRef.value?.captureCurrentData();
-    const assignedUser = cardDelegateRef.value?.exposeData();
-
     if (!!cardInfoData || !!cardContactData) {
       try {
         Loading.show({
@@ -130,23 +128,6 @@ const onSubmit = async () => {
           direccion_c: directionData?.address_street_generated_c,
           assigned_user_id: assignedUser,
         } as Company;
-
-        // {
-        //   address: 'Av/ asdfdas,| Z/ asdfsd,| C/ asdfsda,| #. asdfdsa_gnrtd',
-        //   assigned_user: null,
-        //   comment: 'asdfdsf',
-        //   email1: 'asdfdsa',
-        //   identificacion_fiscal_c: 'asdfasd',
-        //   name: 'dfds',
-        //   phone_alternate: 'asdfdsa',
-        //   phone_office: 'sadfsad',
-        //   razon_social_c: 'sdfdsa',
-        //   resolucion_ministerial_c: 'asdfdsa',
-        //   user_id_c: undefined,
-        //   website: 'asdfads',
-        // }
-        console.log(body);
-
         const newCompany = await companyStore.onCreateCompany(body, []);
         localId.value = newCompany.id;
         emits('submitComplete', localId.value);
@@ -291,11 +272,11 @@ const emits = defineEmits<{
                   </q-input>
                 </q-tab-panel>
                 <q-tab-panel name="Activities">
-                  <!-- <ActivitiesComponent
+                  <ActivitiesComponent
                     :id="localId"
                     :idUser="'1'"
                     module="HANCE_Certificaciones"
-                  ></ActivitiesComponent> -->
+                  ></ActivitiesComponent>
                 </q-tab-panel>
                 <q-tab-panel name="historychanges">
                   <q-card class="my-card">
@@ -307,6 +288,12 @@ const emits = defineEmits<{
                       Se mostrara el historial de cambios
                     </q-card-section>
                   </q-card>
+                </q-tab-panel>
+                <q-tab-panel name="historychanges" v-if="!!localId">
+                  <ViewChangecontrol :id="localId"></ViewChangecontrol>
+                </q-tab-panel>
+                <q-tab-panel name="historychanges" v-else>
+                  <ViewChangecontrol :id="'0'"></ViewChangecontrol>
                 </q-tab-panel>
               </q-tab-panels>
             </q-card-section>

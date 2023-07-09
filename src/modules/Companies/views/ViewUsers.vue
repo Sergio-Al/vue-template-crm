@@ -43,7 +43,7 @@ const userColumns: QTableColumn[] = [
     field: 'email',
     sortable: true,
   },
-   {
+  {
     name: 'cargo',
     required: true,
     label: 'Cargo',
@@ -52,7 +52,7 @@ const userColumns: QTableColumn[] = [
     field: 'cargo',
     sortable: true,
   },
-   {
+  {
     name: 'division',
     required: true,
     label: 'Division',
@@ -83,18 +83,27 @@ const userColumns: QTableColumn[] = [
 const selectUser = async (users: User[]) => {
   const userIds = users.map((user) => user.id);
 
-  $q.notify({
-    type: 'positive',
-    message: `company ${props.id} user with id ${userIds} selected`,
-  });
-
   // llamar a servicio para asignar usuarios a empresa
   // body
-  // await assignUsersToCompany(props.id, usersIds);
+  try {
+    await assignUsersToCompany(props.id, userIds);
+    $q.notify({
+      type: 'positive',
+      message: 'Se han asignado nuevos usuarios a la empresa',
+    });
+
+    execute();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 //se dispara cuando carga el componente
-const { state: users, isLoading } = useAsyncState(async () => {
+const {
+  state: users,
+  isLoading,
+  execute,
+} = useAsyncState(async () => {
   if (!!props.child && props.id) {
     // console.log('obteniendo usuarios con un parent id');
     return await companyStore.onGetUsersFromChildCompany(props.id);
@@ -122,9 +131,8 @@ const { state: users, isLoading } = useAsyncState(async () => {
           <span v-if="child" class="text-caption">Empresa participante</span>
         </div>
         <q-space />
-        <q-btn v-if="!props.child" color="primary" icon="add" label="Nuevo" />
+        <!-- <q-btn v-if="!props.child" color="primary" icon="add" label="Nuevo" /> -->
         <q-btn
-          v-if="!!props.child"
           color="primary"
           icon="add"
           label="Asignar"
@@ -176,7 +184,9 @@ const { state: users, isLoading } = useAsyncState(async () => {
       </template>
     </q-table>
   </div>
-  <SelectUser v-model="openDialog" @select-user="selectUser" />
+  <q-dialog v-model="openDialog" :maximized="$q.screen.lt.sm">
+    <SelectUser @select-user="selectUser" :users="users" />
+  </q-dialog>
 </template>
 
 <style lang="scss">
