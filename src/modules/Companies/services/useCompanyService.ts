@@ -157,11 +157,11 @@ export const getCompanyUsers = async (id: string) => {
     const params = {
       division: '04',
     };
-    const { data } = await axios_LB_01.get(
-      `/users/division/amercado?params=${JSON.stringify(params)}`
-    );
+    // const { data } = await axios_LB_01.get(
+    //   `/users/division/amercado?params=${JSON.stringify(params)}`
+    // );
 
-    // const data = await axios_NS_07.get('/user');
+    const data = await axios_NS_07.get(`/user?company_id=${id}`);
     return data.data;
   } catch (error) {
     return error;
@@ -170,9 +170,7 @@ export const getCompanyUsers = async (id: string) => {
 
 export const getCompanyChildrenUsers = async (id: string) => {
   try {
-    const { data } = await axios_NS_07.get(
-      `/participacion/child-users/${id}`
-    );
+    const { data } = await axios_NS_07.get(`/participacion/child-users/${id}`);
     // const data = await axios_NS_07.get('/user');
     console.log(data);
     return data;
@@ -279,11 +277,22 @@ export async function getUsers(
     user_idgrupocliente,
   };
   try {
-    const { data } = await axios_LB_04.patch<GuestsRecordResponse>(
-      '/search-user-mitings/1/100/desc/{val}',
-      bodyOptions
-    );
-    return data.search_users;
+    // const { data } = await axios_LB_04.patch<GuestsRecordResponse>(
+    //   '/search-user-mitings/1/100/desc/{val}',
+    //   bodyOptions
+    // );
+    // return data.search_users;
+
+    if (!!value) {
+      const { data } = await axios_NS_07.get<SearchUser[]>('/user', {
+        params: {
+          name: value,
+        },
+      });
+      return data;
+    }
+    const { data } = await axios_NS_07.get<SearchUser[]>('/user');
+    return data;
   } catch (error) {
     throw error;
   }
@@ -305,8 +314,22 @@ export const getUser = async (id: string) => {
 };
 
 export const assignUsersToCompany = async (id: string, userIds: string[]) => {
-  const body = { id, users_id: userIds };
   // iniciar peticion al backend con body
+  const { data } = await axios_NS_07.patch(
+    `user/multiple/${userIds.join(',')}`,
+    {
+      companyIdEmpresa: id,
+    }
+  );
+
+  return data;
+};
+
+export const deleteUserFromCompany = async (id: string, userId: string) => {
+  const { data } = await axios_NS_07.patch(`user/${id}`, {
+    companyIdEmpresa: '-1',
+  });
+  return data;
 };
 
 export const deleteChildCompany = async (id: string) => {

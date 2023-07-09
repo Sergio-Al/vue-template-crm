@@ -11,7 +11,7 @@ import {
   getTableData,
   getTablePreferences,
   saveTablePreferences,
-  updateTablePreferences
+  updateTablePreferences,
 } from '../services/useCompanyService';
 import { axios_PREFERENCES } from 'src/conections/axiosCRM';
 import { Notification } from 'src/composables';
@@ -86,6 +86,14 @@ export const useCompanyTableStore = defineStore('company_table', {
           visible: true,
         },
         {
+          name: 'website',
+          align: 'left',
+          label: 'Sitio web',
+          field: 'website',
+          sortable: true,
+          visible: true,
+        },
+        {
           name: 'phone_office',
           align: 'left',
           label: 'Teléfono',
@@ -109,6 +117,7 @@ export const useCompanyTableStore = defineStore('company_table', {
       'razon_social_c',
       'direccion_c',
       'resolucion_ministerial_c',
+      'website',
       'phone_office',
       'ownership',
     ],

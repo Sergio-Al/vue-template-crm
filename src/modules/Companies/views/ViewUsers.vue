@@ -1,14 +1,17 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useQuasar, QTableColumn } from 'quasar';
 
 import { useCompaniesStore } from '../store/companyStore';
 import { useAsyncState } from '@vueuse/core';
 
 import SelectUser from '../components/Dialogs/SelectUser.vue';
-import type { User } from '../utils/types';
+import type { Company, User } from '../utils/types';
 
-import { assignUsersToCompany } from '../services/useCompanyService';
+import {
+  assignUsersToCompany,
+  deleteUserFromCompany,
+} from '../services/useCompanyService';
 
 interface Props {
   id: string;
@@ -43,7 +46,7 @@ const userColumns: QTableColumn[] = [
     field: 'email',
     sortable: true,
   },
-   {
+  {
     name: 'cargo',
     required: true,
     label: 'Cargo',
@@ -52,7 +55,7 @@ const userColumns: QTableColumn[] = [
     field: 'cargo',
     sortable: true,
   },
-   {
+  {
     name: 'division',
     required: true,
     label: 'Division',
@@ -77,24 +80,62 @@ const userColumns: QTableColumn[] = [
     field: 'employee_status',
     sortable: true,
   },
+  {
+    name: 'options',
+    required: true,
+    label: 'Opciones',
+    align: 'center',
+    field: 'options',
+    sortable: true,
+  },
 ];
 
 // event functions
 const selectUser = async (users: User[]) => {
   const userIds = users.map((user) => user.id);
 
-  $q.notify({
-    type: 'positive',
-    message: `company ${props.id} user with id ${userIds} selected`,
-  });
-
   // llamar a servicio para asignar usuarios a empresa
   // body
-  // await assignUsersToCompany(props.id, usersIds);
+  try {
+    await assignUsersToCompany(props.id, userIds);
+    $q.notify({
+      type: 'positive',
+      message: 'Se han asignado nuevos usuarios a la empresa',
+    });
+
+    execute();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const assignAsDelegate = async (userId: string) => {
+  try {
+    await companyStore.onUpdateCompany(props.id, {
+      assigned_user_id: userId,
+    } as Company);
+    await companyStore.onGetCompany(props.id);
+    execute();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deleteRelation = async (id: string, userId: string) => {
+  try {
+    await deleteUserFromCompany(id, userId);
+    execute();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 //se dispara cuando carga el componente
-const { state: users, isLoading } = useAsyncState(async () => {
+const {
+  state: users,
+  isLoading,
+  execute,
+} = useAsyncState(async () => {
   if (!!props.child && props.id) {
     // console.log('obteniendo usuarios con un parent id');
     return await companyStore.onGetUsersFromChildCompany(props.id);
@@ -122,9 +163,8 @@ const { state: users, isLoading } = useAsyncState(async () => {
           <span v-if="child" class="text-caption">Empresa participante</span>
         </div>
         <q-space />
-        <q-btn v-if="!props.child" color="primary" icon="add" label="Nuevo" />
+        <!-- <q-btn v-if="!props.child" color="primary" icon="add" label="Nuevo" /> -->
         <q-btn
-          v-if="!!props.child"
           color="primary"
           icon="add"
           label="Asignar"
@@ -140,19 +180,23 @@ const { state: users, isLoading } = useAsyncState(async () => {
         </q-tr>
       </template>
 
-      <template v-slot:body="props">
-        <q-tr :props="props">
+      <template v-slot:body="propsBody">
+        <q-tr :props="propsBody">
           <q-td auto-width>
             <q-btn
               size="sm"
               color="accent"
               round
               dense
-              @click="props.expand = !props.expand"
-              :icon="props.expand ? 'remove' : 'add'"
+              @click="propsBody.expand = !propsBody.expand"
+              :icon="propsBody.expand ? 'remove' : 'add'"
             />
           </q-td>
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
+          <q-td
+            v-for="col in propsBody.cols"
+            :key="col.name"
+            :props="propsBody"
+          >
             <div v-if="col.name === 'name'">
               <q-avatar
                 size="sm"
@@ -163,20 +207,51 @@ const { state: users, isLoading } = useAsyncState(async () => {
               />
               <span>{{ col.value }}</span>
             </div>
+            <div class="q-gutter-sm" v-else-if="col.name === 'options'">
+              <q-btn
+                v-if="!companyStore.cardOwner"
+                color="primary"
+                icon="assignment_add"
+                round
+                size="sm"
+                @click="
+                  () => {
+                    assignAsDelegate(propsBody.row.id);
+                  }
+                "
+              >
+                <q-tooltip> Asignar como representante </q-tooltip>
+              </q-btn>
+              <q-btn
+                color="negative"
+                icon="delete"
+                round
+                size="sm"
+                @click="
+                  () => {
+                    deleteRelation(props.id, propsBody.row.id);
+                  }
+                "
+              >
+                <q-tooltip> Eliminar </q-tooltip>
+              </q-btn>
+            </div>
             <span v-else>{{ col.value }}</span>
           </q-td>
         </q-tr>
-        <q-tr v-show="props.expand" :props="props">
+        <q-tr v-show="propsBody.expand" :props="propsBody">
           <q-td colspan="100%">
             <div class="text-left">
-              This is expand slot for row above: {{ props.row.first_name }}.
+              This is expand slot for row above: {{ propsBody.row.first_name }}.
             </div>
           </q-td>
         </q-tr>
       </template>
     </q-table>
   </div>
-  <SelectUser v-model="openDialog" @select-user="selectUser" />
+  <q-dialog v-model="openDialog" :maximized="$q.screen.lt.sm">
+    <SelectUser @select-user="selectUser" :users="users" />
+  </q-dialog>
 </template>
 
 <style lang="scss">

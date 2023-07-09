@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { QInput, useQuasar } from 'quasar';
+import { computed, ref } from 'vue';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 
@@ -15,15 +15,26 @@ const props = defineProps<Props>();
 const $q = useQuasar();
 //const { userCRM, getCompany } = useCompany();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
+const razonSocialInputRef = ref<InstanceType<typeof QInput> | null>(null);
+const nameInputRef = ref<InstanceType<typeof QInput> | null>(null);
 
 const inputData = ref({ ...props.data });
 
 //* Methods
+const validateInputs = async () => {
+  const validatedFields = await Promise.all([
+    razonSocialInputRef.value?.validate(),
+    nameInputRef.value?.validate(),
+  ]);
+  return validatedFields.every((field) => !!field);
+};
+
 const restoreValues = () => {
   if (props.data) inputData.value = { ...props.data };
 };
 
 defineExpose({
+  validateInputs,
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): Company => ({ ...inputData.value }),
 });
@@ -44,6 +55,7 @@ defineExpose({
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-input
+          ref="razonSocialInputRef"
           v-model="inputData.razon_social_c"
           type="text"
           class="col-12 col-sm-12"
@@ -53,6 +65,7 @@ defineExpose({
           :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
+          ref="nameInputRef"
           v-model="inputData.name"
           type="text"
           class="col-12 col-sm-12"

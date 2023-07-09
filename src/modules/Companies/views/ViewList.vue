@@ -9,6 +9,7 @@ import { useCompanyTableStore } from '../store/UseCompanyTableStore';
 import type { Filter, Pagination, base } from '../utils/types';
 
 import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
+import MassiveUpdateDialog from '../components/Dialogs/MassiveUpdateDialog.vue';
 
 //properties
 const props = withDefaults(
@@ -36,9 +37,9 @@ const advancedFilterRef = ref<InstanceType<typeof AdvancedFilter> | null>(null);
 // const projectDialogRef = ref<InstanceType<typeof ProjectDialog> | null>(null);
 // const accountDialogRef = ref<InstanceType<typeof AccountDialog> | null>(null);
 
-// const updateMassiveRef = ref<InstanceType<
-//   typeof UpdateMassiveComponent
-// > | null>(null);
+const massiveUpdateDialogRef = ref<InstanceType<
+  typeof MassiveUpdateDialog
+> | null>(null);
 const companyDialogRef = ref<InstanceType<typeof CompanyDialog> | null>(null);
 
 const onRequestTable = async (val: {
@@ -65,8 +66,8 @@ const onUpdateMultiple = (selected: base[]) => {
   const items = selected.map((el: base) => {
     return { id: el.id };
   });
-  // const data = <UpdateMassiveModel>updateMassiveRef.value?.getData();
-  // table.updateMultiple(data, items);
+  const data = massiveUpdateDialogRef.value?.data;
+  table.updateMultiple(data, items);
 };
 
 const onSubmitDataFilter = () => {
@@ -109,12 +110,10 @@ const openItemSelected = (id: string, title: string) => {
   companyDialogRef.value?.openDialogTab(id, title);
 };
 
-onMounted(async () => {
-  //isReady.value = false;
-  //await getUserConfig();
-  //isReady.value = true;
-  //if (props.moduleId) openItemSelected(props.moduleId);
-});
+const openLink = (link: string) => {
+  if (!link) return;
+  window.open(`https://${link}`, '_blank');
+};
 
 const constructorComp = async (idUser?: string) => {
   if (idUser) user.insertUser(idUser);
@@ -127,10 +126,16 @@ const directionFormat = (direction: string) => {
   return '';
 };
 
+onMounted(async () => {
+  //isReady.value = false;
+  //await getUserConfig();
+  //isReady.value = true;
+  //if (props.moduleId) openItemSelected(props.moduleId);
+});
+
 (() => {
   constructorComp(props.idUser);
 })();
-
 </script>
 
 <template>
@@ -184,6 +189,20 @@ const directionFormat = (direction: string) => {
           <q-td key="resolucion_ministerial_c" :props="propsTable">
             {{ propsTable.row.resolucion_ministerial_c }}
           </q-td>
+          <q-td key="website" :props="propsTable">
+            <q-chip
+              class="primary"
+              icon="web"
+              label="Visitar"
+              clickable
+              :disable="!propsTable.row.website"
+              @click="() => openLink(propsTable.row.website)"
+            >
+              <q-tooltip v-if="!!propsTable.row.website">
+                {{ propsTable.row.website }}
+              </q-tooltip>
+            </q-chip>
+          </q-td>
           <q-td key="phone_office" :props="propsTable">
             {{ propsTable.row.phone_office }}
           </q-td>
@@ -217,7 +236,9 @@ const directionFormat = (direction: string) => {
           <q-btn fab color="primary" icon="add" @click="openDialog()" />
         </q-page-sticky>
       </template>
-      <template #updateContent> </template>
+      <template #updateContent>
+        <MassiveUpdateDialog ref="massiveUpdateDialogRef" />
+      </template>
       <template #filterContent>
         <AdvancedFilter ref="advancedFilterRef" @submit-filter="() => {}" />
       </template>
