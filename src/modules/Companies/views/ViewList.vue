@@ -55,7 +55,11 @@ const onDeleteMultiple = async (selected: base[]) => {
     return { id: el.id };
   });
   await table.deleteMultiple(items);
-  table.reloadList();
+
+  setTimeout(() => {
+    table.reloadList();
+  }, 1000);
+  //table.reloadList();
 };
 
 const onUpdateMultiple = (selected: base[]) => {
@@ -67,6 +71,7 @@ const onUpdateMultiple = (selected: base[]) => {
 };
 
 const onSubmitDataFilter = () => {
+  console.log('busqueda');
   try {
     table.data_filter = advancedFilterRef.value?.dataFilter;
     console.log(table.data_filter);
@@ -79,9 +84,9 @@ const onSubmitDataFilter = () => {
 
 const onClearDataFilter = () => {
   try {
-    // filterAdvancedRef.value?.clearFilter();
-    console.log('here!!!');
+    //filterAdvancedRef.value?.clearFilter();
     table.clearFilterData();
+    console.log('here');
     table.setFilterData();
     table.reloadList();
   } catch (error) {
@@ -148,7 +153,7 @@ onMounted(async () => {
       :loading="table.loading"
       :defaultRows="false"
       :style="'height: 95dvh'"
-      searchPlaceholder="Busqueda por: Razon_social, nro_resolucion_min,"
+      searchPlaceholder="Busqueda por: Nombre Comercial, Nro de Resolución Ministerial y Teléfono"
       @visibleColumns="setVisibleColumn"
       @submitFilter="onSubmitDataFilter"
       @updateMultiple="onUpdateMultiple"

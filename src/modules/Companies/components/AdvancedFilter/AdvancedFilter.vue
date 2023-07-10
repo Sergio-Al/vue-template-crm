@@ -24,7 +24,6 @@ onMounted(() => {
 /**Filter Methods */
 const onSubmit = () => {
   emit('submitFilter');
-  // console.log('UTILIZANDO EL ENTER');
 };
 
 const clearFilter = () => {

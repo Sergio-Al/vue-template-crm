@@ -8,12 +8,16 @@ import { getUsers, getUser } from '../../services/useCertificationsService';
 import { Certification, User } from '../../utils/types';
 
 // obtener data del repositorio de mongoDB y borrar este import
-import { amercado, divisions, regional } from '../../utils/dummyData';
+import { useDivAreaMercado, useDivision, useGrupoCliente, useRegionales } from 'src/composables/useLanguage';
+//import { amercado, divisions, regional } from '../../utils/dummyData';
 
 interface Props {
   id: string;
   data: Certification;
 }
+
+const { getListDivisiones, listDivisiones } = useDivision();
+const { getRegionales, listRegionales} = useRegionales();
 
 const props = defineProps<Props>();
 const $q = useQuasar();
@@ -62,6 +66,10 @@ const abortFilterFn = () => {
   // console.log('delayed filter aborted')
 };
 
+const listDivision = ref([]);
+const listAreaMercado = ref([]);
+const listRegional = ref([]);
+
 onMounted(async () => {
   // buscar solicitante y asignar a users[] (options)
   if (!!inputData.value.id_solicitante) {
@@ -71,6 +79,13 @@ onMounted(async () => {
       users.value = [response];
     }
   }
+  await getListDivisiones();
+  listDivision.value = listDivisiones.value;
+  listAreaMercado.value = await useDivAreaMercado(inputData.value.iddivision_c);
+  await getRegionales();  
+  const aux = await listRegionales.value.find((element:any)=>(element.cod_pais == 'BO'));
+  listRegional.value = aux.regiones;
+  console.log(listRegional.value);
 });
 
 defineExpose({
@@ -182,7 +197,7 @@ defineExpose({
           outlined
           dense
           v-model="inputData.iddivision_c"
-          :options="divisions"
+          :options="listDivision"
           type="text"
           label="División"
           option-value="value"
@@ -199,7 +214,7 @@ defineExpose({
           outlined
           dense
           v-model="inputData.idamercado_c"
-          :options="amercado"
+          :options="listAreaMercado"
           type="text"
           label="Área de mercado"
           option-value="value"
@@ -216,7 +231,7 @@ defineExpose({
           outlined
           dense
           v-model="inputData.idregional_c"
-          :options="regional"
+          :options="listRegional"
           type="text"
           label="Regional"
           option-value="value"
@@ -294,7 +309,7 @@ defineExpose({
           outlined
           dense
           v-model="inputData.idamercado_c"
-          :options="amercado"
+          :options="listAreaMercado"
           type="text"
           label="Área de mercado"
           option-value="value"
@@ -312,7 +327,7 @@ defineExpose({
           outlined
           dense
           v-model="inputData.iddivision_c"
-          :options="divisions"
+          :options="listDivision"
           type="text"
           label="División"
           option-value="value"
@@ -330,7 +345,7 @@ defineExpose({
           outlined
           dense
           v-model="inputData.idregional_c"
-          :options="regional"
+          :options="listRegional"
           type="text"
           label="Regional"
           option-value="value"

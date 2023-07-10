@@ -55,7 +55,7 @@ const onUpdateDataTable = async () => {
 };
 
 const onRequestTable = async (val: { pagination: any; filter: any }) => {
-  console.log('request data table');
+  //console.log('request data table');
   await setPagination(val.pagination);
   await getListCertifications(val);
 };
