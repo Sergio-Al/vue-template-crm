@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { QTableColumn } from 'quasar';
+import { useAsyncState } from '@vueuse/core';
 
 import { availableUsers } from '../../utils/dummyData';
 import { getUsers, getUsers2 } from '../../services/useCompanyService';
@@ -9,6 +10,7 @@ import type { User } from '../../utils/types';
 
 interface Props {
   users?: User[];
+  parentId?: string;
 }
 
 interface Emits {
@@ -54,23 +56,18 @@ const columns: QTableColumn[] = [
   },
 ];
 
-const selectedUser = ref<string>('');
 const userFiltered = ref<string>('');
 const selected = ref<User[]>(props.users || []);
 //const users = ref(availableUsers);
-const users = ref([]);
-const isLoading = ref(false);
 
-(async () => {
-  users.value = await getUsers('');
-})();
-
-const searchUser = async () => {
-  // llamar a servicio para buscar usuarios
-  users.value = await getUsers(userFiltered.value);
-  console.log(users.value);
-  return;
-};
+const {
+  state: users,
+  isLoading,
+  execute,
+} = useAsyncState(async () => {
+  if (props.parentId) console.log(props.parentId);
+  return await getUsers(userFiltered.value);
+}, []);
 </script>
 
 <template>
@@ -128,7 +125,11 @@ const searchUser = async () => {
             <div class="row q-col-gutter-md">
               <div>
                 <q-form
-                  @submit="() => searchUser()"
+                  @submit="
+                    () => {
+                      execute();
+                    }
+                  "
                   class="q-gutter-md row items-center justify-between"
                 >
                   <q-input

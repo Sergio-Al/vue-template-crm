@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useQuasar, QTableColumn } from 'quasar';
 
 import { useCompaniesStore } from '../store/companyStore';
@@ -10,12 +10,15 @@ import type { Company, User } from '../utils/types';
 
 import {
   assignUsersToCompany,
+  assignUsersToChildCompany,
   deleteUserFromCompany,
 } from '../services/useCompanyService';
+import { useChildCompaniesStore } from '../store/childCompanyStore';
 
 interface Props {
   id: string;
   child?: boolean;
+  parentId?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -23,6 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const companyStore = useCompaniesStore();
+const childCompanyStore = useChildCompaniesStore();
 const $q = useQuasar();
 
 const openDialog = ref<boolean>(false);
@@ -90,6 +94,14 @@ const userColumns: QTableColumn[] = [
   },
 ];
 
+const isDelegateMissing = computed(() => {
+  if (props.child) {
+    return !childCompanyStore.childPayload.user_id_c;
+  } else {
+    return !companyStore.cardOwner;
+  }
+});
+
 // event functions
 const selectUser = async (users: User[]) => {
   const userIds = users.map((user) => user.id);
@@ -97,7 +109,11 @@ const selectUser = async (users: User[]) => {
   // llamar a servicio para asignar usuarios a empresa
   // body
   try {
-    await assignUsersToCompany(props.id, userIds);
+    if (props.child) {
+      await assignUsersToChildCompany(props.id, userIds);
+    } else {
+      await assignUsersToCompany(props.id, userIds);
+    }
     $q.notify({
       type: 'positive',
       message: 'Se han asignado nuevos usuarios a la empresa',
@@ -111,10 +127,17 @@ const selectUser = async (users: User[]) => {
 
 const assignAsDelegate = async (userId: string) => {
   try {
-    await companyStore.onUpdateCompany(props.id, {
-      assigned_user_id: userId,
-    } as Company);
-    await companyStore.onGetCompany(props.id);
+    if (props.child) {
+      await childCompanyStore.onUpdateChildCompany(props.id, {
+        user_id_c: userId,
+      });
+      await childCompanyStore.onGetChildCompany(props.id);
+    } else {
+      await companyStore.onUpdateCompany(props.id, {
+        assigned_user_id: userId,
+      } as Company);
+      await companyStore.onGetCompany(props.id);
+    }
     execute();
   } catch (error) {
     console.log(error);
@@ -123,7 +146,13 @@ const assignAsDelegate = async (userId: string) => {
 
 const deleteRelation = async (id: string, userId: string) => {
   try {
-    await deleteUserFromCompany(id, userId);
+    if (props.child) {
+      await childCompanyStore.onUpdateChildCompany(id, {
+        deleteUsers: [userId],
+      });
+    } else {
+      await deleteUserFromCompany(id, userId);
+    }
     execute();
   } catch (error) {
     console.log(error);
@@ -163,8 +192,9 @@ const {
           <span v-if="child" class="text-caption">Empresa participante</span>
         </div>
         <q-space />
-        <!-- <q-btn v-if="!props.child" color="primary" icon="add" label="Nuevo" /> -->
+        <q-btn v-if="!props.child" color="primary" icon="add" label="Nuevo" />
         <q-btn
+          v-else
           color="primary"
           icon="add"
           label="Asignar"
@@ -209,7 +239,7 @@ const {
             </div>
             <div class="q-gutter-sm" v-else-if="col.name === 'options'">
               <q-btn
-                v-if="!companyStore.cardOwner"
+                v-if="isDelegateMissing"
                 color="primary"
                 icon="assignment_add"
                 round
@@ -250,7 +280,11 @@ const {
     </q-table>
   </div>
   <q-dialog v-model="openDialog" :maximized="$q.screen.lt.sm">
-    <SelectUser @select-user="selectUser" :users="users" />
+    <SelectUser
+      @select-user="selectUser"
+      :users="users"
+      :parent-id="childCompanyStore.childPayload.hance_empresa_id_c"
+    />
   </q-dialog>
 </template>
 
