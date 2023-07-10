@@ -2,6 +2,7 @@
 import {
   axios_LB_01,
   axios_LB_04,
+  axios_LB_05,
   axios_NS_07,
   axios_PREFERENCES,
 } from 'src/conections/axiosCRM';
@@ -153,15 +154,19 @@ export const getOneCompany = async (id: string) => {
 
 export const getCompanyUsers = async (id: string) => {
   try {
-    const params = {
-      division: '04',
-    };
+    // const params = {
+    //   division: '04',
+    // };
     // const { data } = await axios_LB_01.get(
     //   `/users/division/amercado?params=${JSON.stringify(params)}`
     // );
 
-    const data = await axios_NS_07.get(`/user?company_id=${id}`);
-    return data.data;
+    const { data } = await axios_NS_07.get(
+      `empresas/list-users/${id}`
+    )
+
+    // const data = await axios_NS_07.get(`/user?company_id=${id}`);
+    return data;
 
     //TODO: Mostrar a los usuarios de la empresa, devolver informacino paginada
   } catch (error) {
@@ -322,7 +327,6 @@ export const assignUsersToCompany = async (id: string, userIds: string[]) => {
       companyIdEmpresa: id,
     }
   );
-
   return data;
 };
 
@@ -337,6 +341,30 @@ export const deleteChildCompany = async (id: string) => {
   try {
     await axios_NS_07.delete(`/participacion/${id}`);
   } catch (error) {
+    throw error;
+  }
+};
+
+export const getCategoryDocuments = async () => {
+  try{
+    const { data } = await axios_LB_05.get(
+      '/lang-es-document-category-doms'
+    );
+    return data;
+  }
+  catch(error){
+    throw error;
+  }
+};
+
+export const getTypeDocuments = async () => {
+  try{
+    const { data } = await axios_LB_05.get(
+      '/lang-es-document-template-type-doms'
+    );
+    return data;
+  }
+  catch(error){
     throw error;
   }
 };
