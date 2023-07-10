@@ -22,7 +22,7 @@ interface DocumentForm {
   date_exp: string;
   status: string;
   assigned_user_id: string;
-  category:string;
+  category:any;
   type:string;
 }
 
@@ -44,10 +44,8 @@ const status_doc = [ 'Activo', 'Archivado', 'Borrador', 'Caducado', 'En Revisió
 //const types_doc = ['2.1.1 Fotocopia de Representación Legal', '2.1.2 Certificado de Libre Venta'];
 const types_doc = ref([]);
 
-const data = ref({} as DocumentForm);
+const data = ref({category: ''} as DocumentForm);
 const headerId = ref<string>('');
-
-  
 
 const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
@@ -61,25 +59,14 @@ const toBase64 = (file: File) =>
     categories_doc.value = await companyStore.onGetCategoryDocuments();
     //console.log(categories_doc.value);
     types_doc.value = await companyStore.onGetTypeDocuments();
-    console.log(types_doc.value);
   });
 
   const types_filter = computed(() => {
-    // return [
-    //   {
-    //     id:'123123',
-    //     value:1,
-    //     label:'primero'
-    //   },
-    //   {
-    //     id:'123123',
-    //     value:2,
-    //     label:'dos'
-    //   }
-    // ]
-    const dataConcat = data.value.category+'_';
-    return types_doc.value.filter((r:any) => r.value.toLowerCase().includes(dataConcat.toLowerCase()));
-
+    const dataConcat = data.value.category.value + '_';
+      if (types_doc.value.length === 0) return [];
+      return types_doc.value.filter((r: any) =>
+        r.value.toLowerCase().includes(dataConcat.toLowerCase())
+      );
   });
 
 const uploadFiles = async (file: File[]) => {
@@ -156,7 +143,7 @@ const onSubmit = async () => {
       />
       <q-input
         class="col-12 col-md-6"
-        v-model="data.data_added"
+        v-model="data.date_added"
         type="date"
         outlined
         dense

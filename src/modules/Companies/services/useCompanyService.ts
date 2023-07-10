@@ -65,7 +65,8 @@ export const getTablePreferences = async () => {
 export const saveTablePreferences = async (data: any) => {
   try {
     const res = await axios_PREFERENCES.post('/tables-users-preferences', {
-      module: 'Projects',
+      //module: 'Projects',
+      module: 'Certifications',
       user_id: userCRM.id,
       pagination: data.pagination,
       visible_columns: data.visible_columns,
@@ -165,10 +166,8 @@ export const getCompanyUsers = async (id: string) => {
       `empresas/list-users/${id}`
     )
 
-    // const data = await axios_NS_07.get(`/user?company_id=${id}`);
     return data;
 
-    //TODO: Mostrar a los usuarios de la empresa, devolver informacino paginada
   } catch (error) {
     return error;
   }
@@ -268,6 +267,9 @@ export async function getUsers(
   value: string,
   options: RecordOptionsModel = {}
 ): Promise<SearchUser[]> {
+  console.log(value);
+  console.log(options);
+
   const {
     module = '',
     user_iddivision = '',
@@ -297,21 +299,28 @@ export async function getUsers(
       });
       return data;
     }
-    const { data } = await axios_NS_07.get<SearchUser[]>('/user');
+    const { data } = await axios_NS_07.get(
+      `empresas/list-users/${id}`
+    )
     return data;
   } catch (error) {
     throw error;
   }
 }
 
-export const getUsers2 = async (name: string) => {
-  const { data } = await axios_NS_07.get('user', {
-    params: {
-      name,
-    },
-  });
-  console.log(data);
-  return data;
+export const getUsersFilter = async (id: string, params:any) => {
+  try{
+    const { data } = await axios_NS_07.get(`/empresas/list-users/${id}`, {
+      params: {
+        name:params.value,
+      },
+    });
+    //console.log(data);
+    return data;
+  }
+  catch (e) {
+    throw new Error;
+  }
 };
 
 export const getUser = async (id: string) => {
