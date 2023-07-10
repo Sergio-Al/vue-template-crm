@@ -159,7 +159,7 @@ const {
     >
       <template #top>
         <div class="column">
-          <span class="text-h6">Empleados de la empresa</span>
+          <span class="text-h6">Usuarios de la empresa</span>
           <span v-if="child" class="text-caption">Empresa participante</span>
         </div>
         <q-space />
