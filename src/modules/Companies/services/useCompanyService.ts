@@ -2,6 +2,7 @@
 import {
   axios_LB_01,
   axios_LB_04,
+  axios_LB_05,
   axios_NS_07,
   axios_PREFERENCES,
 } from 'src/conections/axiosCRM';
@@ -64,7 +65,8 @@ export const getTablePreferences = async () => {
 export const saveTablePreferences = async (data: any) => {
   try {
     const res = await axios_PREFERENCES.post('/tables-users-preferences', {
-      module: 'Projects',
+      //module: 'Projects',
+      module: 'Certifications',
       user_id: userCRM.id,
       pagination: data.pagination,
       visible_columns: data.visible_columns,
@@ -153,17 +155,19 @@ export const getOneCompany = async (id: string) => {
 
 export const getCompanyUsers = async (id: string) => {
   try {
-    const params = {
-      division: '04',
-    };
+    // const params = {
+    //   division: '04',
+    // };
     // const { data } = await axios_LB_01.get(
     //   `/users/division/amercado?params=${JSON.stringify(params)}`
     // );
 
-    const data = await axios_NS_07.get(`/user?company_id=${id}`);
-    return data.data;
+    const { data } = await axios_NS_07.get(
+      `empresas/list-users/${id}`
+    )
 
-    //TODO: Mostrar a los usuarios de la empresa, devolver informacino paginada
+    return data;
+
   } catch (error) {
     return error;
   }
@@ -263,6 +267,9 @@ export async function getUsers(
   value: string,
   options: RecordOptionsModel = {}
 ): Promise<SearchUser[]> {
+  console.log(value);
+  console.log(options);
+
   const {
     module = '',
     user_iddivision = '',
@@ -292,21 +299,28 @@ export async function getUsers(
       });
       return data;
     }
-    const { data } = await axios_NS_07.get<SearchUser[]>('/user');
+    const { data } = await axios_NS_07.get(
+      `empresas/list-users/${id}`
+    )
     return data;
   } catch (error) {
     throw error;
   }
 }
 
-export const getUsers2 = async (name: string) => {
-  const { data } = await axios_NS_07.get('user', {
-    params: {
-      name,
-    },
-  });
-  console.log(data);
-  return data;
+export const getUsersFilter = async (id: string, params:any) => {
+  try{
+    const { data } = await axios_NS_07.get(`/empresas/list-users/${id}`, {
+      params: {
+        name:params.value,
+      },
+    });
+    //console.log(data);
+    return data;
+  }
+  catch (e) {
+    throw new Error;
+  }
 };
 
 export const getUser = async (id: string) => {
@@ -322,7 +336,6 @@ export const assignUsersToCompany = async (id: string, userIds: string[]) => {
       companyIdEmpresa: id,
     }
   );
-
   return data;
 };
 
@@ -337,6 +350,30 @@ export const deleteChildCompany = async (id: string) => {
   try {
     await axios_NS_07.delete(`/participacion/${id}`);
   } catch (error) {
+    throw error;
+  }
+};
+
+export const getCategoryDocuments = async () => {
+  try{
+    const { data } = await axios_LB_05.get(
+      '/lang-es-document-category-doms'
+    );
+    return data;
+  }
+  catch(error){
+    throw error;
+  }
+};
+
+export const getTypeDocuments = async () => {
+  try{
+    const { data } = await axios_LB_05.get(
+      '/lang-es-document-template-type-doms'
+    );
+    return data;
+  }
+  catch(error){
     throw error;
   }
 };

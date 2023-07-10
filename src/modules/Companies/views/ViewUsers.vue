@@ -10,7 +10,7 @@ import type { Company, User } from '../utils/types';
 
 import {
   assignUsersToCompany,
-  assignUsersToChildCompany,
+  //assignUsersToChildCompany,
   deleteUserFromCompany,
 } from '../services/useCompanyService';
 import { useChildCompaniesStore } from '../store/childCompanyStore';
@@ -110,7 +110,7 @@ const selectUser = async (users: User[]) => {
   // body
   try {
     if (props.child) {
-      await assignUsersToChildCompany(props.id, userIds);
+      //await assignUsersToChildCompany(props.id, userIds);
     } else {
       await assignUsersToCompany(props.id, userIds);
     }
