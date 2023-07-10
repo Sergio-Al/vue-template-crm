@@ -27,11 +27,8 @@ const { userCRM } = userStore();
 export const getTableData = async (params: Params) => {
   try {
     // const { data } = await axios_NS_07.get('/empresas');
-    const { data } = await axios_NS_07.get(
-      `/empresas?params=${JSON.stringify(params)}`
-    );
-    console.log(data);
-
+    const { data } = await axios_NS_07.get(`/empresas?params=${JSON.stringify(params)}`);
+    
     //const { data } = await axios_NS_07.get(`/empresas`, {params});
     return data;
   } catch (error) {
@@ -165,6 +162,8 @@ export const getCompanyUsers = async (id: string) => {
 
     const data = await axios_NS_07.get(`/user?company_id=${id}`);
     return data.data;
+
+    //TODO: Mostrar a los usuarios de la empresa, devolver informacino paginada
   } catch (error) {
     return error;
   }

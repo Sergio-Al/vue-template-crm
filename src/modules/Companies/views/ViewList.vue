@@ -47,6 +47,7 @@ const onRequestTable = async (val: {
   filter: Filter;
 }) => {
   // await setPagination(val.pagination);
+  console.log(val);
   await getListCompanies(val);
 };
 
@@ -71,7 +72,7 @@ const onUpdateMultiple = (selected: base[]) => {
 };
 
 const onSubmitDataFilter = () => {
-  console.log('busqueda');
+  //console.log('busqueda');
   try {
     table.data_filter = advancedFilterRef.value?.dataFilter;
     console.log(table.data_filter);

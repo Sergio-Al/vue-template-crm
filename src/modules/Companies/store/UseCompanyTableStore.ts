@@ -31,7 +31,6 @@ export const useCompanyTableStore = defineStore('company_table', {
       rowsNumber: 10,
     },
     data_filter: {
-      fastFilter: '',
       name: '',
       direccion_c: '',
       phone_office: '',
@@ -289,7 +288,6 @@ export const useCompanyTableStore = defineStore('company_table', {
 
     async clearFilterData() {
       this.data_filter = {
-        fastFilter: '',
         name: '',
         direccion_c: '',
         phone_office: '',

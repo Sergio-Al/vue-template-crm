@@ -99,6 +99,7 @@ export interface Filter {
   modified_by?: string[];
   assigned_to?: string[];
   creation_date?: DateBase;
+  fast_filter?:string;
 }
 export interface Params {
   page: number;
