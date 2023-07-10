@@ -211,6 +211,8 @@ const emits = defineEmits<{
         <CardDelegate
           class="col-12"
           ref="cardDelegateRef"
+          child
+          :id="localId"
           :show-controls="!!localId"
           :user-id="childPayload ? childPayload.user_id_c : ''"
           @update="updateAssigned"

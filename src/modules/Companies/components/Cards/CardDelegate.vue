@@ -7,12 +7,14 @@ import { getUser, getUsers, getUsers2 } from '../../services/useCompanyService';
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 
 import { useCompaniesStore } from '../../store/companyStore';
+import { useChildCompaniesStore } from '../../store/childCompanyStore';
 
 interface Props {
   id?: string;
   userId?: string;
   showSave?: boolean;
   showControls?: boolean;
+  child?: boolean;
 }
 
 interface Emits {
@@ -22,11 +24,13 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   showSave: false,
   showControls: true,
+  child: false,
 });
 const emits = defineEmits<Emits>();
 
 const companyStore = useCompaniesStore();
-const delegate = ref(null);
+const childCompanyStore = useChildCompaniesStore();
+const delegate = ref(props.userId || null);
 const defaultUsers = ref<User[] | undefined>(undefined);
 const users = ref<User[] | undefined>(undefined);
 const userSelected = ref<User | null>(null);
@@ -81,6 +85,13 @@ const assignUser = async (id: string) => {
 };
 
 const assignDefaultUsers = async () => {
+  if (props.child && !!props.id) {
+    defaultUsers.value = await companyStore.onGetUsersFromChildCompany(
+      props.id
+    );
+    users.value = defaultUsers.value;
+    return;
+  }
   if (!!props.id) {
     defaultUsers.value = await companyStore.onGetCompanyUsers(props.id);
     users.value = defaultUsers.value;

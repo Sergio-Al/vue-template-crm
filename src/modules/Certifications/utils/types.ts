@@ -40,6 +40,42 @@ export interface UpdateMassiveModel {
   status?: string;
 }
 
+export interface CertificationDB {
+  id: string;
+  name: string;
+  date_entered: string;
+  date_modified: string;
+  modified_user_id: string;
+  created_by: string;
+  description: string;
+  deleted: string;
+  assigned_user_id: string;
+  etapa_c: string;
+  estado_c: string;
+  tipo_tramite_c: string;
+  user_id_c: string;
+  iddivision_c: string;
+  idamercado_c: string;
+  idregional_c: string;
+  producto_c: string;
+  referencia_prods: string;
+  cod_productos_c: string;
+  tipo_producto_c: string;
+  comentario_solicitud_c: string;
+  estado_aprobacion_c: string;
+  user_id1_c: string;
+  hance_empresa_id_c: string;
+  date_register_misa_c: string;
+  date_planning_cert_c: string;
+  cod_misa_c: string;
+  nro_ruta_c: string;
+  date_real_cert_c: string;
+  fabricante_c: string;
+  contact_fabricante_c: string;
+  telefono_fabricante_c: string;
+  correo_fabricante_c: string;
+}
+
 export interface Certification {
   id: string;
   nro_solicitud: string;

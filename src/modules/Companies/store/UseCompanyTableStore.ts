@@ -228,7 +228,6 @@ export const useCompanyTableStore = defineStore('company_table', {
           items: selectItems,
         };
         await deleteMassiveData(dataSend);
-        await this.reloadList();
         Notification(
           'positive',
           'check_circle',

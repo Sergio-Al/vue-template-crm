@@ -35,10 +35,12 @@ export const getTableData = async (params: Params) => {
 };
 
 export const getCompanyChild = async (id: string) => {
-  console.log(id);
   try {
-    // const { data } = await axios_NS_07.get(`/participacion/parent/${id}`);
-    const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
+    // local-dev endpoint
+    const { data } = await axios_NS_07.get(`/participacion/parent/${id}`);
+
+    // hansa-ns endpoint
+    // const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
     return data;
   } catch (error) {
     throw error;
@@ -133,7 +135,11 @@ export const createChildCompany = async (
 
 export const getOneChildCompany = async (id: string) => {
   try {
-    const { data } = await axios_NS_07.get(`/participacion/${id}`);
+    // local-dev endpoint
+    const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
+
+    // hansa-ns endpoint
+    // const { data } = await axios_NS_07.get(`/participacion/${id}`);
     return data;
   } catch (error) {}
 };
@@ -154,11 +160,14 @@ export const getCompanyUsers = async (id: string) => {
     const params = {
       division: '04',
     };
+
+    // hansa-ns endpoint
     // const { data } = await axios_LB_01.get(
     //   `/users/division/amercado?params=${JSON.stringify(params)}`
     // );
 
-    const data = await axios_NS_07.get(`/user?company_id=${id}`);
+    // local-dev endpoint
+    const data = await axios_NS_07.get('/user');
     return data.data;
   } catch (error) {
     return error;
@@ -167,10 +176,15 @@ export const getCompanyUsers = async (id: string) => {
 
 export const getCompanyChildrenUsers = async (id: string) => {
   try {
-    const { data } = await axios_NS_07.get(`/participacion/child-users/${id}`);
+    // local-dev endpoint
+    const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
+    return data.users || [];
+
+    // hansa-ns endpoint
+    // const { data } = await axios_NS_07.get(`/participacion/child-users/${id}`);
     // const data = await axios_NS_07.get('/user');
-    console.log(data);
-    return data;
+    // console.log(data);
+    // return data;
   } catch (error) {
     return error;
   }
@@ -238,10 +252,19 @@ export const deleteMassiveData = async (data: any) => {
   // console.log(data);
   // return;
   try {
-    data.items.forEach(async (element: any) => {
-      await axios_NS_07.delete(`empresas/${element.id}`);
+    console.log(data);
+    // local dev endpoint
+    const { data: resp } = await axios_NS_07.post('/empresas/massive-remove', {
+      companyIds: data.items.map((item: { id: string }) => item.id),
     });
-    return;
+    console.log(resp);
+    return resp;
+
+    //hansa-ns endpoint
+    // data.items.forEach(async (element: any) => {
+    //   await axios_NS_07.delete(`empresas/${element.id}`);
+    // });
+    // return;
   } catch (error) {
     throw error;
   }
@@ -320,6 +343,20 @@ export const assignUsersToCompany = async (id: string, userIds: string[]) => {
   );
 
   return data;
+};
+
+export const assignUsersToChildCompany = async (
+  id: string,
+  userIds: string[]
+) => {
+  try {
+    const { data } = await axios_NS_07.patch(`/participacion/${id}`, {
+      userIds: userIds,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const deleteUserFromCompany = async (id: string, userId: string) => {
