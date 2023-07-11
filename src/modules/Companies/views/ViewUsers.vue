@@ -10,7 +10,7 @@ import type { Company, User } from '../utils/types';
 
 import {
   assignUsersToCompany,
-  assignUsersToChildCompany,
+  //assignUsersToChildCompany,
   deleteUserFromCompany,
 } from '../services/useCompanyService';
 import { useChildCompaniesStore } from '../store/childCompanyStore';
@@ -110,7 +110,7 @@ const selectUser = async (users: User[]) => {
   // body
   try {
     if (props.child) {
-      await assignUsersToChildCompany(props.id, userIds);
+      //await assignUsersToChildCompany(props.id, userIds);
     } else {
       await assignUsersToCompany(props.id, userIds);
     }
@@ -188,7 +188,7 @@ const {
     >
       <template #top>
         <div class="column">
-          <span class="text-h6">Empleados de la empresa</span>
+          <span class="text-h6">Usuarios de la empresa</span>
           <span v-if="child" class="text-caption">Empresa participante</span>
         </div>
         <q-space />

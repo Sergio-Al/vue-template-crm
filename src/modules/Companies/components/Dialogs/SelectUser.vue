@@ -4,7 +4,7 @@ import { QTableColumn } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 
 import { availableUsers } from '../../utils/dummyData';
-import { getUsers, getUsers2 } from '../../services/useCompanyService';
+import { getUsers, getUsersFilter } from '../../services/useCompanyService';
 
 import type { User } from '../../utils/types';
 
@@ -27,7 +27,16 @@ const columns: QTableColumn[] = [
     required: true,
     label: 'Nombre',
     align: 'left',
-    field: (row) => `${row.first_name} ${row.last_name}`,
+    //field: (row) => `${row.first_name} ${row.last_name}`,
+    field: 'user_name',
+    sortable: true,
+  },
+  {
+    name: 'email',
+    required: true,
+    label: 'Email',
+    align: 'left',
+    field: 'email',
     sortable: true,
   },
   {
@@ -35,23 +44,31 @@ const columns: QTableColumn[] = [
     required: true,
     label: 'División',
     align: 'left',
-    field: 'iddivision_c',
+    field: 'division',
     sortable: true,
   },
   {
-    name: 'regional',
+    name: 'a_mercado',
     required: true,
-    label: 'Regional',
+    label: 'Área de Mercado',
     align: 'left',
-    field: 'idregional_c',
+    field: 'a_mercado',
     sortable: true,
   },
   {
-    name: 'amercado',
+    name: 'cargo',
     required: true,
-    label: 'Área de mercado',
+    label: 'Cargo',
     align: 'left',
-    field: 'idamercado_c',
+    field: 'cargo',
+    sortable: true,
+  },
+  {
+    name: 'status',
+    required: true,
+    label: 'Estado',
+    align: 'left',
+    field: 'employee_status',
     sortable: true,
   },
 ];
@@ -66,7 +83,7 @@ const {
   execute,
 } = useAsyncState(async () => {
   if (props.parentId) console.log(props.parentId);
-  return await getUsers(userFiltered.value);
+  return await getUsersFilter(props.parentId, userFiltered);
 }, []);
 </script>
 

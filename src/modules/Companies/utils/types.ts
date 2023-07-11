@@ -99,6 +99,7 @@ export interface Filter {
   modified_by?: string[];
   assigned_to?: string[];
   creation_date?: DateBase;
+  fast_filter?:string;
 }
 export interface Params {
   page: number;
@@ -237,7 +238,7 @@ export interface ChildCompany {
 }
 
 export interface User {
-  id: string;
+  id?: string;
   first_name: string;
   last_name: string;
   iddivision_c: string;
