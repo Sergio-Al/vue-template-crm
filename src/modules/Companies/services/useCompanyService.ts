@@ -28,8 +28,10 @@ const { userCRM } = userStore();
 export const getTableData = async (params: Params) => {
   try {
     // const { data } = await axios_NS_07.get('/empresas');
-    const { data } = await axios_NS_07.get(`/empresas?params=${JSON.stringify(params)}`);
-    
+    const { data } = await axios_NS_07.get(
+      `/empresas?params=${JSON.stringify(params)}`
+    );
+
     //const { data } = await axios_NS_07.get(`/empresas`, {params});
     return data;
   } catch (error) {
@@ -162,12 +164,9 @@ export const getCompanyUsers = async (id: string) => {
     //   `/users/division/amercado?params=${JSON.stringify(params)}`
     // );
 
-    const { data } = await axios_NS_07.get(
-      `empresas/list-users/${id}`
-    )
+    const { data } = await axios_NS_07.get(`empresas/list-users/${id}`);
 
     return data;
-
   } catch (error) {
     return error;
   }
@@ -299,27 +298,24 @@ export async function getUsers(
       });
       return data;
     }
-    const { data } = await axios_NS_07.get(
-      `empresas/list-users/${id}`
-    )
+    const { data } = await axios_NS_07.get(`empresas/list-users/${id}`);
     return data;
   } catch (error) {
     throw error;
   }
 }
 
-export const getUsersFilter = async (id: string, params:any) => {
-  try{
+export const getUsersFilter = async (id: string, params: any) => {
+  try {
     const { data } = await axios_NS_07.get(`/empresas/list-users/${id}`, {
       params: {
-        name:params.value,
+        name: params.value,
       },
     });
     //console.log(data);
     return data;
-  }
-  catch (e) {
-    throw new Error;
+  } catch (e) {
+    throw new Error();
   }
 };
 
@@ -354,26 +350,36 @@ export const deleteChildCompany = async (id: string) => {
   }
 };
 
-export const getCategoryDocuments = async () => {
-  try{
-    const { data } = await axios_LB_05.get(
-      '/lang-es-document-category-doms'
-    );
+export const assignUsersToChildCompany = async (
+  id: string,
+  userIds: string[]
+) => {
+  try {
+    const { data } = await axios_NS_07.patch(`/participacion/${id}`, {
+      userIds: userIds,
+    });
     return data;
+  } catch (error) {
+    throw error;
   }
-  catch(error){
+};
+
+export const getCategoryDocuments = async () => {
+  try {
+    const { data } = await axios_LB_05.get('/lang-es-document-category-doms');
+    return data;
+  } catch (error) {
     throw error;
   }
 };
 
 export const getTypeDocuments = async () => {
-  try{
+  try {
     const { data } = await axios_LB_05.get(
       '/lang-es-document-template-type-doms'
     );
     return data;
-  }
-  catch(error){
+  } catch (error) {
     throw error;
   }
 };
