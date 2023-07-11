@@ -27,10 +27,15 @@ interface DocumentForm {
   type: string;
 }
 
+interface Props {
+  headerId?: '';
+}
+
 interface Emits {
   (e: 'update', id: string): void;
 }
 
+const props = withDefaults(defineProps<Props>(), { headerId: '' });
 const emits = defineEmits<Emits>();
 
 const $q = useQuasar();
@@ -84,40 +89,29 @@ const uploadFiles = async (file: File[]) => {
   dataFormatCRM3;
 
   try {
-    const fileToUpload = (await toBase64(file[0])) as string; // Guardando el archivo en BASE64
-
-    const dataSend = {
-      Ext: file[0].name.split('.').pop(),
-      Name: file[0].name,
-      user_id: userCRM.id,
-      File: fileToUpload.replace(/^data:(.*,)?/, ''),
-      id_header: headerId,
-    };
-
-    const data = dataFormatCRM3Basic('project_upload_photos', {
-      data: dataSend,
-    }); // enviando peticion al endpoint en PHP CRM 3
-
-    await axiosCRM3.post('', data);
-  } catch (error) {
-    throw error;
-  }
-};
-
-const onSubmit = async () => {
-  try {
     $q.loading.show({
       message: 'Guardando información',
     });
+    // const fileToUpload = (await toBase64(file[0])) as string; // Guardando el archivo en BASE64
 
-    console.log('formulario', data);
+    const dataSend = {
+      category_id: data.value,
+      iddivision_c: userCRM.iddivision,
+      division_c: userCRM.division,
+      regional_c: userCRM.regional,
+      user_id: userCRM.id,
+      header: props.headerId,
+    };
 
-    // Servicio para guardar informacion del documento (formulario)
-    // const response =  await createDocumentInfo(data);
-    // header.value =  response.data.id;
-    headerId.value = '1'; // '1' es un id falso
-    uploadFileRef.value?.upload();
-    emits('update', '1'); // '1' es un id falso
+    const body = dataFormatCRM3Basic(
+      'project_upload_photos',
+      {
+        data: dataSend,
+      },
+      file[0]
+    ); // enviando peticion al endpoint en PHP CRM 3
+
+    await axiosCRM3.post('', body);
   } catch (error) {
     $q.notify({
       type: 'negative',
@@ -126,6 +120,11 @@ const onSubmit = async () => {
   } finally {
     $q.loading.hide();
   }
+};
+
+const onSubmit = async () => {
+  uploadFileRef.value?.upload();
+  emits('update', '1'); // '1' es un id falso
 };
 </script>
 
