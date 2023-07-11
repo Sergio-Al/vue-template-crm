@@ -131,32 +131,32 @@ const openItemSelected = (id: string, title: string) => {
               @click="
                 openItemSelected(
                   propsTable.row.id,
-                  propsTable.row.nro_solicitud
+                  propsTable.row.name
                 )
               "
             >
-              {{ propsTable.row.nro_solicitud }}
+              {{ propsTable.row.name }}
             </span>
           </q-td>
           <q-td key="etapa" :props="propsTable">
             <div class="column">
               <div>
                 <q-badge
-                  :color="setEtapaColor(propsTable.row.etapa)"
-                  :label="propsTable.row.etapa"
+                  :color="setEtapaColor(propsTable.row.etapa_c)"
+                  :label="propsTable.row.etapa_c"
                 />
               </div>
               <span class="text-caption">{{
-                propsTable.row.date_entered
+                propsTable.row.fecha_creacion
               }}</span>
               <span class="text-caption"
-                >Estado: {{ propsTable.row.estado }}</span
+                >Estado: {{ propsTable.row.estado_c }}</span
               >
             </div>
           </q-td>
 
           <q-td key="tipo_tramite" :props="propsTable">
-            {{ propsTable.row.tipo_tramite }}
+            {{ propsTable.row.tipo_tramite_c }}
           </q-td>
           <q-td key="delegate" :props="propsTable">
             <div class="row items-center">
@@ -171,11 +171,11 @@ const openItemSelected = (id: string, title: string) => {
               </div>
               <div class="column q-pl-sm ellipsis col-10">
                 <span class="ellipsis-item">
-                  Responsable {{ propsTable.row.id_profesional_acreditado }}
+                  NOMBRE RESP{{ propsTable.row.solicitante }}
                 </span>
                 <span class="ellipsis-item text-caption">
-                  titulo de responsable{{
-                    propsTable.row.id_profesional_acreditado
+                  CARGO{{
+                    propsTable.row.solicitante
                   }}
                 </span>
               </div>
@@ -184,7 +184,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="id_producto" :props="propsTable">
             <div class="column">
               <span>
-                {{ propsTable.row.id_producto }}
+                {{ propsTable.row.product_c }}
               </span>
               <span class="text-caption">Fabricante 0</span>
             </div>
@@ -192,7 +192,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="id_tipo_producto" :props="propsTable">
             <div class="column">
               <span>
-                {{ propsTable.row.id_tipo_producto }}
+                {{ propsTable.row.id_tipo_producto_c }}
               </span>
               <span class="text-caption">Cantidad de requisitos: 0</span>
             </div>
@@ -226,11 +226,11 @@ const openItemSelected = (id: string, title: string) => {
               @click="
                 openItemSelected(
                   propsTable.row.id,
-                  propsTable.row.nro_solicitud
+                  propsTable.row.name
                 )
               "
             >
-              {{ propsTable.row.nombre }}
+              {{ propsTable.row.name }}
             </span>
             <q-space />
             <!-- <q-btn icon="more_vert" dense flat size="sm" /> -->
