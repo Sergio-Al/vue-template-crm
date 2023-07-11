@@ -5,12 +5,14 @@ import { QExpansionItem, QTableColumn } from 'quasar';
 import CardAddDocument from '../Cards/CardAddDocument.vue';
 
 interface Props {
+  id?: string;
   documentId?: string;
 }
 
 const expansionItemRef = ref<InstanceType<typeof QExpansionItem> | null>();
 
 const props = withDefaults(defineProps<Props>(), {
+  id: '',
   documentId: '',
 });
 
@@ -139,7 +141,7 @@ const dummyData = [
           icon="add"
           label="Añadir documento"
         >
-        <CardAddDocument />
+          <CardAddDocument :header-id="props.id" />
         </q-expansion-item>
         <div v-if="!!props.documentId" class="q-mt-sm q-pa-sm">
           <q-table

@@ -32,13 +32,13 @@ const columns: QTableColumn[] = [
     field: 'fileName',
     sortable: true,
   },
-    {
-      name: 'date_added',
-      align: 'left',
-      label: 'Fecha de Publicación',
-      field: 'date_added',
-      sortable: true,
-    },
+  {
+    name: 'date_added',
+    align: 'left',
+    label: 'Fecha de Publicación',
+    field: 'date_added',
+    sortable: true,
+  },
   {
     name: 'date_exp',
     align: 'left',
@@ -195,10 +195,10 @@ const dummyData = [
     </q-table>
   </div>
   <q-dialog v-model="documentDialog" persistent>
-    <AddDocument />
+    <AddDocument :id="props.id" />
   </q-dialog>
   <q-dialog v-model="documentVersionDialog" persistent>
-    <AddDocument :document-id="currentDocumentVersionId" />
+    <AddDocument :id="props.id" :document-id="currentDocumentVersionId" />
   </q-dialog>
 </template>
 

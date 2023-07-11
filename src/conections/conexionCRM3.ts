@@ -11,11 +11,12 @@ export const dataFormatCRM3 = (method: string, data: any, file: File) => {
   return formData;
 };
 
-export const dataFormatCRM3Basic = (method: string, data: any) => {
+export const dataFormatCRM3Basic = (method: string, data: any, file?: File) => {
   const formData = new FormData();
   formData.append('method', method);
   formData.append('input_type', 'JSON');
   formData.append('response_type', 'JSON');
   formData.append('rest_data', JSON.stringify(data));
+  if (file) formData.append('file', file);
   return formData;
 };
