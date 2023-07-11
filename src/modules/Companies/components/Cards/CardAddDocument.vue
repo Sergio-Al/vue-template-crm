@@ -28,7 +28,7 @@ interface DocumentForm {
 }
 
 interface Props {
-  headerId?: '';
+  headerId?: string;
 }
 
 interface Emits {
@@ -95,10 +95,10 @@ const uploadFiles = async (file: File[]) => {
     // const fileToUpload = (await toBase64(file[0])) as string; // Guardando el archivo en BASE64
 
     const dataSend = {
-      category_id: data.value,
-      iddivision_c: userCRM.iddivision,
-      division_c: userCRM.division,
-      regional_c: userCRM.regional,
+      category_id: data.value.category,
+      iddivision_c: userCRM.iddivision || '',
+      division_c: userCRM.division || '',
+      regional_c: userCRM.regional || '',
       user_id: userCRM.id,
       header: props.headerId,
     };
