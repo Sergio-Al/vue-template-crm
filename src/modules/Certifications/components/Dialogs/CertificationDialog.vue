@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 import { useCertificationsTableStore } from '../../store/useCertificationTableStore';
 import { useCertificationStore } from '../../store/certificationStore';
 import ViewGeneral from '../../views/ViewGeneral.vue';
-import ViewDataGeneral from '../../views/ViewDataGeneral.vue';
+import ViewGeneralData from '../../views/ViewGeneralData.vue';
 import ViewDataManufacturer from '../../views/ViewDataManufacturer.vue';
 </script>
 
@@ -21,7 +21,7 @@ const tabsDefinition = [
   },
   {
     name: 'dataGeneral',
-    component: ViewDataGeneral,
+    component: ViewGeneralData,
     label: 'Datos Generales',
     enabledForCreation: false,
   },

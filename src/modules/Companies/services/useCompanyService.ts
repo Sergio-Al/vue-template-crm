@@ -27,12 +27,12 @@ const { userCRM } = userStore();
 export const getTableData = async (params: Params) => {
   try {
     // const { data } = await axios_NS_07.get('/empresas');
-    const { data } = await axios_NS_07.get(
-      `/empresas?params=${JSON.stringify(params)}`
-    );
-    console.log(data);
+    // const { data } = await axios_NS_07.get(
+    //   `/empresas?params=${JSON.stringify(params)}`
+    // );
+    // console.log(data);
 
-    //const { data } = await axios_NS_07.get(`/empresas`, {params});
+    const { data } = await axios_NS_07.get('/empresas');
     return data;
   } catch (error) {
     throw error;
@@ -337,6 +337,20 @@ export const deleteUserFromCompany = async (id: string, userId: string) => {
 export const deleteChildCompany = async (id: string) => {
   try {
     await axios_NS_07.delete(`/participacion/${id}`);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const assignUsersToChildCompany = async (
+  id: string,
+  userIds: string[]
+) => {
+  try {
+    const { data } = await axios_NS_07.patch(`/participacion/${id}`, {
+      userIds: userIds,
+    });
+    return data;
   } catch (error) {
     throw error;
   }

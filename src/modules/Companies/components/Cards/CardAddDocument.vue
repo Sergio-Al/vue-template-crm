@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useQuasar, QUploader } from 'quasar';
 
 import { useAsyncState } from '@vueuse/core';
@@ -12,6 +12,7 @@ import {
 import { userStore } from 'src/modules/Users/store/UserStore';
 import { axiosCRM3 } from 'src/conections/axiosPRY';
 import { selectedRepeatedKey } from '../../../Accounts/utils/ProvideKeys';
+import { types } from 'util';
 
 interface DocumentForm {
   name: string;
@@ -20,6 +21,7 @@ interface DocumentForm {
   date_exp: string;
   status: string;
   assigned_user_id: string;
+  category: string;
 }
 
 interface Emits {
@@ -33,9 +35,30 @@ const { userCRM } = userStore();
 const uploadFileRef = ref<InstanceType<typeof QUploader> | null>();
 
 //const options = [ 'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'];
-const status_doc = [ 'Activo', 'Archivado', 'Borrador', 'Caducado', 'En Revisión', 'FAQ', 'Pendiente'];
-const categories_doc = ['Base de Conocimiento', 'Certificado de Comercialización', 'Contrato', 'Documento para cobranza', 'File de cliente', 'Garante', 'Inventario', 'Mercado', 'Registro Sanitario'];
-const types_doc = ['2.1.1 Fotocopia de Representación Legal', '2.1.2 Certificado de Libre Venta'];
+const status_doc = [
+  'Activo',
+  'Archivado',
+  'Borrador',
+  'Caducado',
+  'En Revisión',
+  'FAQ',
+  'Pendiente',
+];
+const categories_doc = [
+  'Base de Conocimiento',
+  'Certificado de Comercialización',
+  'Contrato',
+  'Documento para cobranza',
+  'File de cliente',
+  'Garante',
+  'Inventario',
+  'Mercado',
+  'Registro Sanitario',
+];
+const types_doc = ref([
+  '2.1.1 Fotocopia de Representación Legal',
+  '2.1.2 Certificado de Libre Venta',
+]);
 
 const data = ref({} as DocumentForm);
 const headerId = ref<string>('');
@@ -135,15 +158,15 @@ const onSubmit = async () => {
         dense
         label="Fecha de caducidad"
       />
-      <q-select 
+      <q-select
         class="col-12 col-md-6"
-        outlined 
-        v-model="data.category" 
+        outlined
+        v-model="data.category"
         :options="categories_doc"
-        dense 
-        label="Categoría" 
+        dense
+        label="Categoría"
       />
-       <q-select
+      <q-select
         class="col-12 col-md-6"
         v-model="data.type"
         type="text"
