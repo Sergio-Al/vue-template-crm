@@ -105,7 +105,7 @@ const uploadFiles = async (file: File[]) => {
     };
 
     const body = dataFormatCRM3Basic(
-      'project_upload_photos',
+      'certif_upload_empresa',
       {
         data: dataSend,
       },

@@ -170,20 +170,20 @@ onMounted(async () => {
           <q-td class="text-left">
             <q-checkbox v-model="propsTable.selected" flat dense />
           </q-td>
-          <q-td key="name" :props="propsTable" :style="'width: 100px;'">
+          <q-td key="razon_social_c" :props="propsTable" :style="'width: 100px;'">
             <span
               class="text-blue-9 cursor-pointer"
-              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
+              @click="openItemSelected(propsTable.row.id, propsTable.row.razon_social_c)"
             >
-              {{ propsTable.row.name }}
+              {{ propsTable.row.razon_social_c }}
             </span>
           </q-td>
           <q-td
-            key="razon_social_c"
+            key="name"
             :props="propsTable"
             :style="'width: 100px;'"
           >
-            {{ propsTable.row.razon_social_c }}
+            {{ propsTable.row.name }}
           </q-td>
           <q-td key="direccion_c" :props="propsTable" :style="'width: 100px;'">
             {{ directionFormat(propsTable.row.direccion_c) }}
