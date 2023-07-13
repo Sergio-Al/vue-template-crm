@@ -32,6 +32,13 @@ const columns: QTableColumn[] = [
     field: 'fileName',
     sortable: true,
   },
+   {
+    name: 'version',
+    align: 'left',
+    label: 'Ultima Versión',
+    field: 'version',
+    sortable: true,
+  },
   {
     name: 'date_added',
     align: 'left',
@@ -63,7 +70,7 @@ const columns: QTableColumn[] = [
   {
     name: 'options',
     align: 'center',
-    label: 'Opciones',
+    label: 'Versiones',
     field: 'options',
     sortable: true,
   },
@@ -97,6 +104,7 @@ const dummyData = [
     date_exp: '27/02/2025',
     status: 'Activo',
     category: 'Resgistro Sanitario',
+    version:1
   },
   {
     id: 'otro',
@@ -106,6 +114,7 @@ const dummyData = [
     date_exp: '27/02/2024',
     status: 'Activo',
     category: 'Certificado de Comercialización',
+    version:1
   },
 ];
 </script>
