@@ -24,7 +24,7 @@ interface DocumentForm {
   status: string;
   assigned_user_id: string;
   category: any;
-  type: string;
+  type: any;
 }
 
 interface Props {
@@ -95,7 +95,8 @@ const uploadFiles = async (file: File[]) => {
     // const fileToUpload = (await toBase64(file[0])) as string; // Guardando el archivo en BASE64
 
     const dataSend = {
-      category_id: data.value.category,
+      category_id: data.value.category.value,
+      template_type: data.value.type.value,
       iddivision_c: userCRM.iddivision || '',
       division_c: userCRM.division || '',
       regional_c: userCRM.regional || '',
@@ -109,14 +110,14 @@ const uploadFiles = async (file: File[]) => {
         data: dataSend,
       },
       file[0]
-    ); // enviando peticion al endpoint en PHP CRM 3
-
+    );
     await axiosCRM3.post('', body);
   } catch (error) {
-    $q.notify({
-      type: 'negative',
-      message: 'Error al guardar el archivo',
-    });
+    console.log('se guardó el documento');
+    // $q.notify({
+    //   type: 'negative',
+    //   message: 'Error al guardar el archivo',
+    // });
   } finally {
     $q.loading.hide();
   }
@@ -195,7 +196,7 @@ const onSubmit = async () => {
       />
     </div>
     <q-card-actions vertical align="left">
-      <q-btn label="Guardar" color="primary" @click="onSubmit" />
+      <q-btn v-close-popup label="Guardar" color="primary" @click="onSubmit" />
     </q-card-actions>
   </q-card>
 </template>
