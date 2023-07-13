@@ -1,14 +1,23 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { CertificationDB } from '../../utils/types';
 
 interface Props {
-  id: string;
+  id?: string;
 }
 
-const inputData = ref({} as CertificationDB);
+interface ManufacturerData {
+  fabricante: string;
+  contacto: string;
+  direccion: string;
+  pais: string;
+  telefono: string;
+  email: string;
+  license: string;
+}
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), { id: '' });
+
+const inputData = ref({} as ManufacturerData);
 </script>
 <template>
   <view-card-component
@@ -21,31 +30,9 @@ const props = defineProps<Props>();
     <template #edit>
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-input
-          v-model="inputData.user_id_c"
+          v-model="inputData.fabricante"
           class="col-12 col-sm-6"
-          label="Solicitante"
-          outlined
-          dense
-        >
-          <template v-slot:prepend>
-            <q-icon name="person" />
-          </template>
-        </q-input>
-        <q-input
-          v-model="inputData.date_entered"
-          class="col-12 col-sm-6"
-          label="Fecha"
-          outlined
-          dense
-        >
-          <template v-slot:prepend>
-            <q-icon name="event" />
-          </template>
-        </q-input>
-        <q-input
-          v-model="inputData.hance_empresa_id_c"
-          class="col-12"
-          label="Participación como"
+          label="Nombre del fabricante"
           outlined
           dense
         >
@@ -54,63 +41,69 @@ const props = defineProps<Props>();
           </template>
         </q-input>
         <q-input
-          v-model="inputData.hance_empresa_id_c"
+          v-model="inputData.contacto"
           class="col-12 col-sm-6"
-          label="Razón social"
+          label="Contacto"
           outlined
           dense
-          readonly
         >
           <template v-slot:prepend>
-            <q-icon name="work" />
+            <q-icon name="contact_phone" />
           </template>
         </q-input>
         <q-input
-          v-model="inputData.hance_empresa_id_c"
+          v-model="inputData.direccion"
           class="col-12 col-sm-6"
-          label="Resolución ministerial"
-          outlined
-          dense
-          readonly
-        >
-          <template v-slot:prepend>
-            <q-icon name="lightbulb" />
-          </template>
-        </q-input>
-        <q-input
-          v-model="inputData.hance_empresa_id_c"
-          class="col-12"
           label="Dirección"
           outlined
           dense
-          readonly
         >
           <template v-slot:prepend>
             <q-icon name="location_on" />
           </template>
         </q-input>
-
         <q-input
-          v-model="inputData.user_id1_c"
+          v-model="inputData.pais"
           class="col-12 col-sm-6"
-          label="Personal acreditado"
+          label="País"
           outlined
           dense
         >
           <template v-slot:prepend>
-            <q-icon name="school" />
+            <q-icon name="flag" />
           </template>
         </q-input>
         <q-input
-          v-model="inputData.user_id1_c"
+          v-model="inputData.telefono"
           class="col-12 col-sm-6"
-          label="Nro de matrícula"
+          label="Teléfono"
           outlined
           dense
-          readonly
         >
           <template v-slot:prepend>
-            <q-icon name="badge" />
+            <q-icon name="call" />
+          </template>
+        </q-input>
+        <q-input
+          v-model="inputData.email"
+          class="col-12 col-sm-6"
+          label="Correo Electronico"
+          outlined
+          dense
+        >
+          <template v-slot:prepend>
+            <q-icon name="mail" />
+          </template>
+        </q-input>
+        <q-input
+          v-model="inputData.license"
+          class="col-12"
+          label="Licencia de"
+          outlined
+          dense
+        >
+          <template v-slot:prepend>
+            <q-icon name="policy" />
           </template>
         </q-input>
       </div>
@@ -118,31 +111,9 @@ const props = defineProps<Props>();
     <template #read>
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-input
-          v-model="inputData.user_id_c"
+          v-model="inputData.fabricante"
           class="col-12 col-sm-6"
-          label="Solicitante"
-          outlined
-          dense
-        >
-          <template v-slot:prepend>
-            <q-icon name="person" />
-          </template>
-        </q-input>
-        <q-input
-          v-model="inputData.date_entered"
-          class="col-12 col-sm-6"
-          label="Fecha"
-          outlined
-          dense
-        >
-          <template v-slot:prepend>
-            <q-icon name="event" />
-          </template>
-        </q-input>
-        <q-input
-          v-model="inputData.hance_empresa_id_c"
-          class="col-12"
-          label="Participación como"
+          label="Nombre del fabricante"
           outlined
           dense
         >
@@ -151,63 +122,69 @@ const props = defineProps<Props>();
           </template>
         </q-input>
         <q-input
-          v-model="inputData.hance_empresa_id_c"
+          v-model="inputData.contacto"
           class="col-12 col-sm-6"
-          label="Razón social"
+          label="Contacto"
           outlined
           dense
-          readonly
         >
           <template v-slot:prepend>
-            <q-icon name="work" />
+            <q-icon name="contact_phone" />
           </template>
         </q-input>
         <q-input
-          v-model="inputData.hance_empresa_id_c"
+          v-model="inputData.direccion"
           class="col-12 col-sm-6"
-          label="Resolución ministerial"
-          outlined
-          dense
-          readonly
-        >
-          <template v-slot:prepend>
-            <q-icon name="lightbulb" />
-          </template>
-        </q-input>
-        <q-input
-          v-model="inputData.hance_empresa_id_c"
-          class="col-12"
           label="Dirección"
           outlined
           dense
-          readonly
         >
           <template v-slot:prepend>
             <q-icon name="location_on" />
           </template>
         </q-input>
-
         <q-input
-          v-model="inputData.user_id1_c"
+          v-model="inputData.pais"
           class="col-12 col-sm-6"
-          label="Personal acreditado"
+          label="País"
           outlined
           dense
         >
           <template v-slot:prepend>
-            <q-icon name="school" />
+            <q-icon name="flag" />
           </template>
         </q-input>
         <q-input
-          v-model="inputData.user_id1_c"
+          v-model="inputData.telefono"
           class="col-12 col-sm-6"
-          label="Nro de matrícula"
+          label="Teléfono"
           outlined
           dense
-          readonly
         >
           <template v-slot:prepend>
-            <q-icon name="badge" />
+            <q-icon name="call" />
+          </template>
+        </q-input>
+        <q-input
+          v-model="inputData.email"
+          class="col-12 col-sm-6"
+          label="Correo Electronico"
+          outlined
+          dense
+        >
+          <template v-slot:prepend>
+            <q-icon name="mail" />
+          </template>
+        </q-input>
+        <q-input
+          v-model="inputData.license"
+          class="col-12"
+          label="Licencia de"
+          outlined
+          dense
+        >
+          <template v-slot:prepend>
+            <q-icon name="policy" />
           </template>
         </q-input>
       </div>
