@@ -238,7 +238,7 @@ export interface ChildCompany {
 }
 
 export interface User {
-  id: string;
+  id?: string;
   first_name: string;
   last_name: string;
   iddivision_c: string;

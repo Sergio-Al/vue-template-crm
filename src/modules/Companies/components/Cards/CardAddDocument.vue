@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useQuasar, QUploader } from 'quasar';
 
 import { useAsyncState } from '@vueuse/core';
+
+import { useCompaniesStore } from '../../store/companyStore';
 
 import {
   dataFormatCRM3,
@@ -12,32 +14,51 @@ import {
 import { userStore } from 'src/modules/Users/store/UserStore';
 import { axiosCRM3 } from 'src/conections/axiosPRY';
 import { selectedRepeatedKey } from '../../../Accounts/utils/ProvideKeys';
+import { types } from 'util';
 
 interface DocumentForm {
-  name: string;
-  date_added: string;
+  description: string;
   fileName: string;
-  date_exp: string;
-  status: string;
   assigned_user_id: string;
+  category: any;
+  type: any;
+  status_id:string;
+  active_date:any;
+  exp_date:any;
+}
+
+interface Props {
+  headerId?: string;
 }
 
 interface Emits {
   (e: 'update', id: string): void;
 }
 
+const props = withDefaults(defineProps<Props>(), { headerId: '' });
 const emits = defineEmits<Emits>();
 
 const $q = useQuasar();
 const { userCRM } = userStore();
 const uploadFileRef = ref<InstanceType<typeof QUploader> | null>();
 
-//const options = [ 'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'];
-const status_doc = [ 'Activo', 'Archivado', 'Borrador', 'Caducado', 'En Revisión', 'FAQ', 'Pendiente'];
-const categories_doc = ['Base de Conocimiento', 'Certificado de Comercialización', 'Contrato', 'Documento para cobranza', 'File de cliente', 'Garante', 'Inventario', 'Mercado', 'Registro Sanitario'];
-const types_doc = ['2.1.1 Fotocopia de Representación Legal', '2.1.2 Certificado de Libre Venta'];
+const companyStore = useCompaniesStore();
 
-const data = ref({} as DocumentForm);
+//const options = [ 'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'];
+const categories_doc = ref([]);
+const status_doc = [
+  'Activo',
+  'Archivado',
+  'Borrador',
+  'Caducado',
+  'En Revisión',
+  'FAQ',
+  'Pendiente',
+];
+//const types_doc = ['2.1.1 Fotocopia de Representación Legal', '2.1.2 Certificado de Libre Venta'];
+const types_doc = ref([]);
+
+const data = ref({ category: '' } as DocumentForm);
 const headerId = ref<string>('');
 
 const toBase64 = (file: File) =>
@@ -48,54 +69,68 @@ const toBase64 = (file: File) =>
     reader.onerror = reject;
   });
 
+onMounted(async () => {
+  categories_doc.value = await companyStore.onGetCategoryDocuments();
+  //console.log(categories_doc.value);
+  types_doc.value = await companyStore.onGetTypeDocuments();
+});
+
+const types_filter = computed(() => {
+  const dataConcat = data.value.category.value + '_';
+  if (types_doc.value.length === 0) return [];
+  return types_doc.value.filter((r: any) =>
+    r.value.toLowerCase().includes(dataConcat.toLowerCase())
+  );
+});
+
 const uploadFiles = async (file: File[]) => {
-  console.log(file);
+  //console.log(file);
 
   dataFormatCRM3;
 
   try {
-    const fileToUpload = (await toBase64(file[0])) as string; // Guardando el archivo en BASE64
+    $q.loading.show({
+      message: 'Guardando información',
+    });
+    // const fileToUpload = (await toBase64(file[0])) as string; // Guardando el archivo en BASE64
 
     const dataSend = {
-      Ext: file[0].name.split('.').pop(),
-      Name: file[0].name,
+      description: data.value.description,
+      category_id: data.value.category.value,
+      template_type: data.value.type.value,
+      iddivision_c: userCRM.iddivision || '',
+      division_c: userCRM.division || '',
+      regional_c: userCRM.regional || '',
       user_id: userCRM.id,
-      File: fileToUpload.replace(/^data:(.*,)?/, ''),
-      id_header: headerId,
+      header: props.headerId,
+      status_id:data.value.status_id,
+      active_date:data.value.active_date,
+      exp_date:data.value.exp_date,
     };
 
-    const data = dataFormatCRM3Basic('project_upload_photos', {
-      data: dataSend,
-    }); // enviando peticion al endpoint en PHP CRM 3
-
-    await axiosCRM3.post('', data);
+    const body = dataFormatCRM3Basic(
+      'certif_upload_empresa',
+      {
+        data: dataSend,
+      },
+      file[0]
+    );
+    console.log(dataSend);
+    await axiosCRM3.post('', body);
   } catch (error) {
-    throw error;
+    console.log('se guardó el documento');
+    // $q.notify({
+    //   type: 'negative',
+    //   message: 'Error al guardar el archivo',
+    // });
+  } finally {
+    $q.loading.hide();
   }
 };
 
 const onSubmit = async () => {
-  try {
-    $q.loading.show({
-      message: 'Guardando información',
-    });
-
-    console.log('formulario', data);
-
-    // Servicio para guardar informacion del documento (formulario)
-    // const response =  await createDocumentInfo(data);
-    // header.value =  response.data.id;
-    headerId.value = '1'; // '1' es un id falso
-    uploadFileRef.value?.upload();
-    emits('update', '1'); // '1' es un id falso
-  } catch (error) {
-    $q.notify({
-      type: 'negative',
-      message: 'Error al guardar el archivo',
-    });
-  } finally {
-    $q.loading.hide();
-  }
+  uploadFileRef.value?.upload();
+  emits('update', '1'); // '1' es un id falso
 };
 </script>
 
@@ -104,7 +139,7 @@ const onSubmit = async () => {
     <div class="row q-col-gutter-md q-px-md q-py-md">
       <q-input
         class="col-12 col-md-6"
-        v-model="data.name"
+        v-model="data.description"
         type="text"
         outlined
         dense
@@ -112,7 +147,7 @@ const onSubmit = async () => {
       />
       <q-select
         class="col-12 col-md-6"
-        v-model="data.status"
+        v-model="data.status_id"
         :options="status_doc"
         type="text"
         outlined
@@ -121,7 +156,7 @@ const onSubmit = async () => {
       />
       <q-input
         class="col-12 col-md-6"
-        v-model="data.data_added"
+        v-model="data.active_date"
         type="date"
         outlined
         dense
@@ -129,27 +164,29 @@ const onSubmit = async () => {
       />
       <q-input
         class="col-12 col-md-6"
-        v-model="data.date_exp"
+        v-model="data.exp_date"
         type="date"
         outlined
         dense
         label="Fecha de caducidad"
       />
-      <q-select 
+      <q-select
         class="col-12 col-md-6"
-        outlined 
-        v-model="data.category" 
+        outlined
+        v-model="data.category"
         :options="categories_doc"
-        dense 
-        label="Categoría" 
+        dense
+        label="Categoría"
       />
-       <q-select
+      <q-select
         class="col-12 col-md-6"
         v-model="data.type"
         type="text"
-        :options="types_doc"
+        :options="types_filter"
         outlined
         dense
+        option-value="value"
+        option-label="label"
         label="Tipo"
       />
       <q-uploader
@@ -164,7 +201,7 @@ const onSubmit = async () => {
       />
     </div>
     <q-card-actions vertical align="left">
-      <q-btn label="Guardar" color="primary" @click="onSubmit" />
+      <q-btn v-close-popup label="Guardar" color="primary" @click="onSubmit" />
     </q-card-actions>
   </q-card>
 </template>

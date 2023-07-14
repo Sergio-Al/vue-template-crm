@@ -10,13 +10,15 @@ import {
   getOneCompany,
   updateCompany,
   getCompanyChild,
-  getOneChildCompany,
-  getCompanyChildrenUsers
+  //getOneChildCompany,
+  getCompanyChildrenUsers,
+  getCompanyDocuments
 } from '../services/useCompanyService';
 import type { ChildCompany, Company } from '../utils/types';
 
 //! Borrar datos falsos si no se usan
 import { childCompanies, defaultData, users } from '../utils/dummyData';
+import { getCategoryDocuments, getTypeDocuments } from '../services/useCompanyService';
 
 const { userCRM } = userStore();
 
@@ -171,7 +173,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     try {
       // console.log(id);
       const users = await getCompanyUsers(id);
-      console.log(users);
+      //console.log(users);
       return users;
     } catch (error) {
       throw error;
@@ -193,8 +195,27 @@ export const useCompaniesStore = defineStore('companies-store', () => {
   const onGetCompanyDocuments = async (id: string) => {
     try {
       // obtener documentos como array
-      //return [defaultData];
-      return [];
+      const documents = await getCompanyDocuments(id)
+      return documents;
+      //return [];
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const onGetCategoryDocuments = async () => {
+    try {
+      const categories = await getCategoryDocuments();
+      return categories;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const onGetTypeDocuments = async () => {
+    try {
+      const types = await getTypeDocuments();
+      return types;
     } catch (error) {
       throw error;
     }
@@ -237,6 +258,8 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     onGetCompanyUsers,
     onGetCompanyDocuments,
     onGetListCompaniesChild,
-    onGetUsersFromChildCompany
+    onGetUsersFromChildCompany,
+    onGetCategoryDocuments,
+    onGetTypeDocuments
   };
 });

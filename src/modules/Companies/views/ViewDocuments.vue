@@ -8,6 +8,7 @@ import AddDocument from '../components/Dialogs/AddDocument.vue';
 import CardDocumentVersion from '../components/Dialogs/CardDocumentVersionDialog.vue';
 import CardDocumentViewer from '../components/Cards/CardDocumentViewer.vue';
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
+import { CompanyDocument } from '../utils/types';
 
 interface Props {
   id: string;
@@ -19,51 +20,59 @@ const companyStore = useCompaniesStore();
 
 const columns: QTableColumn[] = [
   {
-    name: 'name',
-    align: 'left',
-    label: 'Nombre',
-    field: 'name',
-    sortable: true,
-  },
-  {
-    name: 'fileName',
-    align: 'left',
-    label: 'Documento Adjunto',
-    field: 'fileName',
-    sortable: true,
-  },
-    {
-      name: 'date_added',
-      align: 'left',
-      label: 'Fecha de Publicación',
-      field: 'date_added',
-      sortable: true,
-    },
-  {
-    name: 'date_exp',
-    align: 'left',
-    label: 'Fecha de Caducidad',
-    field: 'date_exp',
-    sortable: true,
-  },
-  {
-    name: 'status',
-    align: 'left',
-    label: 'Estado',
-    field: 'status',
-    sortable: true,
-  },
-  {
-    name: 'category',
+    name: 'categoria_doc',
     align: 'left',
     label: 'Categoría',
-    field: 'category',
+    field: 'categoria_doc',
     sortable: true,
   },
+  {
+    name: 'tipo_doc',
+    align: 'left',
+    label: 'Tipo',
+    field: 'tipo_doc',
+    sortable: true,
+  },
+  {
+    name: 'nombre_doc',
+    align: 'left',
+    label: 'Nombre',
+    field: 'nombre_doc',
+    sortable: true,
+  },
+   {
+    name: 'version',
+    align: 'left',
+    label: 'Versión',
+    field: 'version',
+    sortable: true,
+  },
+  {
+    name: 'active_date',
+    align: 'left',
+    label: 'Fecha de Publicación',
+    field: 'active_date',
+    sortable: true,
+  },
+  {
+    name: 'exp_date',
+    align: 'left',
+    label: 'Fecha de Caducidad',
+    field: 'exp_date',
+    sortable: true,
+  },
+  {
+    name: 'status_id',
+    align: 'left',
+    label: 'Estado',
+    field: 'status_id',
+    sortable: true,
+  },
+
   {
     name: 'options',
     align: 'center',
-    label: 'Opciones',
+    label: 'Versiones',
     field: 'options',
     sortable: true,
   },
@@ -84,30 +93,38 @@ const openDocumentVersionDialog = (id: string) => {
 };
 
 //se dispara cuando carga el componente
-const { state: documents, isLoading } = useAsyncState(async () => {
-  return await companyStore.onGetCompanyDocuments(props.id);
-}, []);
+const { state: documents, isLoading, execute } = useAsyncState(async () => {
+  //console.log('holoo');
+  let a = await companyStore.onGetCompanyDocuments(props.id);
+  console.log(a);
+  return a;
+  //console.log(a);
+}, [] as CompanyDocument[]);
 
-const dummyData = [
-  {
-    id: 'ddfasfads',
-    name: 'Resolución Ministerial HANSA',
-    date_added: '27/01/2023',
-    fileName: 'Resolución Ministerial',
-    date_exp: '27/02/2025',
-    status: 'Activo',
-    category: 'Resgistro Sanitario',
-  },
-  {
-    id: 'otro',
-    name: 'Certificado de Empresa Vigente',
-    date_added: '27/01/2023',
-    fileName: 'Certificado de Empresa Vigente 2023',
-    date_exp: '27/02/2024',
-    status: 'Activo',
-    category: 'Certificado de Comercialización',
-  },
-];
+// const dummyData = [
+//   {
+//     id: 'ddfasfads',
+//     name: 'Resolución Ministerial HANSA',
+//     date_added: '27/01/2023',
+//     fileName: 'Resolución Ministerial',
+//     date_exp: '27/02/2025',
+//     status: 'Activo',
+//     category: 'Registro Sanitario',
+//     type_template:'Fotocopia de Resolución Ministerial',
+//     version:1
+//   },
+//   {
+//     id: 'otro',
+//     name: 'Certificado de Empresa Vigente',
+//     date_added: '27/01/2023',
+//     fileName: 'Certificado de Empresa Vigente 2023',
+//     date_exp: '27/02/2024',
+//     status: 'Activo',
+//     category: 'Registro Sanitario',
+//     type_template:'Certificado de Empresa Vigente',
+//     version:1
+//   },
+// ];
 </script>
 
 <template>
@@ -116,7 +133,7 @@ const dummyData = [
       style="flex-grow: 1; width: inherit"
       flat
       bordered
-      :rows="dummyData"
+      :rows="documents"
       :columns="columns"
       :loading="isLoading"
       row-key="id"
@@ -187,7 +204,7 @@ const dummyData = [
             </iframe> -->
             <CardDocumentViewer />
             <div class="text-left">
-              Visualizador del documento: {{ props.row.name }}.
+              Visualizador del documento: {{ props.row.description }}.
             </div>
           </q-td>
         </q-tr>
@@ -195,10 +212,10 @@ const dummyData = [
     </q-table>
   </div>
   <q-dialog v-model="documentDialog" persistent>
-    <AddDocument />
+    <AddDocument :id="props.id" />
   </q-dialog>
   <q-dialog v-model="documentVersionDialog" persistent>
-    <AddDocument :document-id="currentDocumentVersionId" />
+    <AddDocument :id="props.id" :document-id="currentDocumentVersionId" />
   </q-dialog>
 </template>
 

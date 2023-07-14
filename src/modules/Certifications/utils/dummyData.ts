@@ -56,7 +56,7 @@ export const divisions = [
     id: '5',
     value: '99',
     label: 'Administración y Finanzas',
-  }
+  },
 ];
 
 export const regional = [
@@ -295,3 +295,18 @@ export const user = {
   id: '1',
   fullname: 'Armando Ortega',
 };
+
+export const manufacturerDocuments = [
+  {
+    name: 'documento de prueba 1',
+    fileName: 'documentTest.pdf',
+    expiration_date: '22/07/2023',
+    size: '2Mb',
+  },
+  {
+    name: 'documento de prueba 2 (vencido)',
+    fileName: 'documentTest2.pdf',
+    expiration_date: '22/06/2023',
+    size: '2Mb',
+  },
+];
