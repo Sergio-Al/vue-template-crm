@@ -99,7 +99,7 @@ export interface Filter {
   modified_by?: string[];
   assigned_to?: string[];
   creation_date?: DateBase;
-  fast_filter?:string;
+  fast_filter?: string;
 }
 export interface Params {
   page: number;
@@ -253,6 +253,22 @@ export interface CompanyDocument {
   category_id: string;
   status_id: string;
   company_id?: string;
+}
+
+export interface Document {
+  id?: string;
+  name: string;
+  date_added: string;
+  fileName: string;
+  date_exp: string;
+  status: string;
+  iddivision_c: string;
+  assigned_user_id: string;
+  version: string;
+  regional: string;
+  document_type: string;
+  category: any;
+  type: any;
 }
 
 export interface Contact {

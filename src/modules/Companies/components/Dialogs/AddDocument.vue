@@ -3,10 +3,12 @@ import { ref, onMounted } from 'vue';
 import { QExpansionItem, QTableColumn } from 'quasar';
 
 import CardAddDocument from '../Cards/CardAddDocument.vue';
+import type { Document } from '../../utils/types';
 
 interface Props {
   id?: string;
   documentId?: string;
+  documentData?: Document;
 }
 
 const expansionItemRef = ref<InstanceType<typeof QExpansionItem> | null>();
@@ -14,12 +16,13 @@ const expansionItemRef = ref<InstanceType<typeof QExpansionItem> | null>();
 const props = withDefaults(defineProps<Props>(), {
   id: '',
   documentId: '',
+  documentData: () => ({} as Document),
 });
 
 onMounted(() => {
   console.log('mounted');
-  if (!props.documentId) {
-    expansionItemRef.value?.show();
+  expansionItemRef.value?.show();
+  if (!!props.documentId) {
   }
 });
 
@@ -141,37 +144,11 @@ const dummyData = [
           icon="add"
           label="Añadir documento"
         >
-          <CardAddDocument :header-id="props.id" />
+          <CardAddDocument
+            :header-id="props.id"
+            :default-data="props.documentData"
+          />
         </q-expansion-item>
-        <div v-if="!!props.documentId" class="q-mt-sm q-pa-sm">
-          <q-table
-            title="Versiones del documento"
-            :rows="dummyData"
-            hide-bottom
-            :columns="columns"
-            row-key="id"
-          >
-            <template v-slot:body="props">
-              <q-tr :props="props">
-                <q-td v-for="col in props.cols" :key="col.name" :props="props">
-                  <div v-if="col.name === 'options'">
-                    <q-btn
-                      @click="() => {}"
-                      size="sm"
-                      color="negative"
-                      round
-                      dense
-                      icon="delete"
-                    >
-                      <q-tooltip>Eliminar</q-tooltip>
-                    </q-btn>
-                  </div>
-                  <span v-else>{{ col.value }}</span>
-                </q-td>
-              </q-tr>
-            </template>
-          </q-table>
-        </div>
       </q-page>
 
       <q-page-scroller position="bottom">

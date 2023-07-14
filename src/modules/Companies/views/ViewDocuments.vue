@@ -5,9 +5,12 @@ import { QTableColumn } from 'quasar';
 import { useCompaniesStore } from '../store/companyStore';
 import { useAsyncState } from '@vueuse/core';
 import AddDocument from '../components/Dialogs/AddDocument.vue';
-import CardDocumentVersion from '../components/Dialogs/CardDocumentVersionDialog.vue';
 import CardDocumentViewer from '../components/Cards/CardDocumentViewer.vue';
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
+
+import type { Document } from '../utils/types';
+
+import { documentTableList } from '../utils/dummyData';
 
 interface Props {
   id: string;
@@ -72,42 +75,24 @@ const columns: QTableColumn[] = [
 const documentDialog = ref<boolean>(false);
 const documentVersionDialog = ref<boolean>(false);
 const currentDocumentVersionId = ref<string>('');
+const documentSelected = ref<Document>({} as Document);
 
 const openDialog = () => {
   documentDialog.value = true;
 };
 
-const openDocumentVersionDialog = (id: string) => {
+const openDocumentVersionDialog = (id: string, data: Document) => {
   console.log(id);
   currentDocumentVersionId.value = id;
   documentVersionDialog.value = true;
+  documentSelected.value = data;
 };
 
 //se dispara cuando carga el componente
 const { state: documents, isLoading } = useAsyncState(async () => {
-  return await companyStore.onGetCompanyDocuments(props.id);
+  // return await companyStore.onGetCompanyDocuments(props.id);
+  return documentTableList;
 }, []);
-
-const dummyData = [
-  {
-    id: 'ddfasfads',
-    name: 'Resolución Ministerial HANSA',
-    date_added: '27/01/2023',
-    fileName: 'Resolución Ministerial',
-    date_exp: '27/02/2025',
-    status: 'Activo',
-    category: 'Resgistro Sanitario',
-  },
-  {
-    id: 'otro',
-    name: 'Certificado de Empresa Vigente',
-    date_added: '27/01/2023',
-    fileName: 'Certificado de Empresa Vigente 2023',
-    date_exp: '27/02/2024',
-    status: 'Activo',
-    category: 'Certificado de Comercialización',
-  },
-];
 </script>
 
 <template>
@@ -116,7 +101,7 @@ const dummyData = [
       style="flex-grow: 1; width: inherit"
       flat
       bordered
-      :rows="dummyData"
+      :rows="documents"
       :columns="columns"
       :loading="isLoading"
       row-key="id"
@@ -162,7 +147,7 @@ const dummyData = [
               <q-btn
                 @click="
                   () => {
-                    openDocumentVersionDialog(props.row.id);
+                    openDocumentVersionDialog(props.row.id, props.row);
                   }
                 "
                 size="sm"
@@ -171,7 +156,7 @@ const dummyData = [
                 dense
                 icon="cloud_upload"
               >
-                <q-tooltip>Ver versiones</q-tooltip>
+                <q-tooltip>Adicionar Version</q-tooltip>
               </q-btn>
             </div>
             <span v-else>{{ col.value }}</span>
@@ -185,8 +170,12 @@ const dummyData = [
               frameborder="0"
             >
             </iframe> -->
-            <CardDocumentViewer />
-            <div class="text-left">
+            <CardDocumentViewer
+              :id="props.row.id"
+              :category="props.row.category"
+              :type="props.row.type"
+            />
+            <div class="q-pt-smtext-left">
               Visualizador del documento: {{ props.row.name }}.
             </div>
           </q-td>
@@ -198,7 +187,11 @@ const dummyData = [
     <AddDocument :id="props.id" />
   </q-dialog>
   <q-dialog v-model="documentVersionDialog" persistent>
-    <AddDocument :id="props.id" :document-id="currentDocumentVersionId" />
+    <AddDocument
+      :id="props.id"
+      :document-id="currentDocumentVersionId"
+      :document-data="documentSelected"
+    />
   </q-dialog>
 </template>
 
