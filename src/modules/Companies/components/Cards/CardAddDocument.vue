@@ -17,14 +17,14 @@ import { selectedRepeatedKey } from '../../../Accounts/utils/ProvideKeys';
 import { types } from 'util';
 
 interface DocumentForm {
-  name: string;
-  date_added: string;
+  description: string;
   fileName: string;
-  date_exp: string;
-  status: string;
   assigned_user_id: string;
   category: any;
   type: any;
+  status_id:string;
+  active_date:any;
+  exp_date:any;
 }
 
 interface Props {
@@ -84,7 +84,7 @@ const types_filter = computed(() => {
 });
 
 const uploadFiles = async (file: File[]) => {
-  console.log(file);
+  //console.log(file);
 
   dataFormatCRM3;
 
@@ -95,6 +95,7 @@ const uploadFiles = async (file: File[]) => {
     // const fileToUpload = (await toBase64(file[0])) as string; // Guardando el archivo en BASE64
 
     const dataSend = {
+      description: data.value.description,
       category_id: data.value.category.value,
       template_type: data.value.type.value,
       iddivision_c: userCRM.iddivision || '',
@@ -102,6 +103,9 @@ const uploadFiles = async (file: File[]) => {
       regional_c: userCRM.regional || '',
       user_id: userCRM.id,
       header: props.headerId,
+      status_id:data.value.status_id,
+      active_date:data.value.active_date,
+      exp_date:data.value.exp_date,
     };
 
     const body = dataFormatCRM3Basic(
@@ -111,6 +115,7 @@ const uploadFiles = async (file: File[]) => {
       },
       file[0]
     );
+    console.log(dataSend);
     await axiosCRM3.post('', body);
   } catch (error) {
     console.log('se guardó el documento');
@@ -134,7 +139,7 @@ const onSubmit = async () => {
     <div class="row q-col-gutter-md q-px-md q-py-md">
       <q-input
         class="col-12 col-md-6"
-        v-model="data.name"
+        v-model="data.description"
         type="text"
         outlined
         dense
@@ -142,7 +147,7 @@ const onSubmit = async () => {
       />
       <q-select
         class="col-12 col-md-6"
-        v-model="data.status"
+        v-model="data.status_id"
         :options="status_doc"
         type="text"
         outlined
@@ -151,7 +156,7 @@ const onSubmit = async () => {
       />
       <q-input
         class="col-12 col-md-6"
-        v-model="data.date_added"
+        v-model="data.active_date"
         type="date"
         outlined
         dense
@@ -159,7 +164,7 @@ const onSubmit = async () => {
       />
       <q-input
         class="col-12 col-md-6"
-        v-model="data.date_exp"
+        v-model="data.exp_date"
         type="date"
         outlined
         dense
