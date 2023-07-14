@@ -10,7 +10,7 @@ import {
   getOneCompany,
   updateCompany,
   getCompanyChild,
-  getOneChildCompany,
+  //getOneChildCompany,
   getCompanyChildrenUsers,
   getCompanyDocuments
 } from '../services/useCompanyService';
@@ -195,8 +195,8 @@ export const useCompaniesStore = defineStore('companies-store', () => {
   const onGetCompanyDocuments = async (id: string) => {
     try {
       // obtener documentos como array
-      const documents = await getCompanyDocuments(id); 
-      //return [defaultData];
+      const documents = await getCompanyDocuments(id)
+      return documents;
       //return [];
     } catch (error) {
       throw error;
