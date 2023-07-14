@@ -374,15 +374,6 @@ export const assignUsersToChildCompany = async (
   }
 };
 
-export const getCompanyDocuments = async(id:string)=>{
-  try{
-    //const { data } = await axios_NS_07.get()
-  }
-  catch(error){
-    throw error;
-  }
-};
-
 export const getCategoryDocuments = async () => {
   try {
     const { data } = await axios_LB_05.get('/lang-es-document-category-doms');

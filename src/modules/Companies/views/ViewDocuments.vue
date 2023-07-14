@@ -5,10 +5,13 @@ import { QTableColumn } from 'quasar';
 import { useCompaniesStore } from '../store/companyStore';
 import { useAsyncState } from '@vueuse/core';
 import AddDocument from '../components/Dialogs/AddDocument.vue';
-import CardDocumentVersion from '../components/Dialogs/CardDocumentVersionDialog.vue';
 import CardDocumentViewer from '../components/Cards/CardDocumentViewer.vue';
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import { CompanyDocument } from '../utils/types';
+
+import type { Document } from '../utils/types';
+
+import { documentTableList } from '../utils/dummyData';
 
 interface Props {
   id: string;
@@ -81,25 +84,28 @@ const columns: QTableColumn[] = [
 const documentDialog = ref<boolean>(false);
 const documentVersionDialog = ref<boolean>(false);
 const currentDocumentVersionId = ref<string>('');
+const documentSelected = ref<Document>({} as Document);
 
 const openDialog = () => {
   documentDialog.value = true;
 };
 
-const openDocumentVersionDialog = (id: string) => {
+const openDocumentVersionDialog = (id: string, data: Document) => {
   console.log(id);
   currentDocumentVersionId.value = id;
   documentVersionDialog.value = true;
+  documentSelected.value = data;
 };
 
 //se dispara cuando carga el componente
 const { state: documents, isLoading, execute } = useAsyncState(async () => {
   //console.log('holoo');
-  let a = await companyStore.onGetCompanyDocuments(props.id);
-  console.log(a);
-  return a;
+  return documentTableList;
+  // let a = await companyStore.onGetCompanyDocuments(props.id);
+  // console.log(a);
+  // return a;
   //console.log(a);
-}, [] as CompanyDocument[]);
+}, []);
 
 // const dummyData = [
 //   {
@@ -125,6 +131,7 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
 //     version:1
 //   },
 // ];
+
 </script>
 
 <template>
@@ -179,7 +186,7 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
               <q-btn
                 @click="
                   () => {
-                    openDocumentVersionDialog(props.row.id);
+                    openDocumentVersionDialog(props.row.id, props.row);
                   }
                 "
                 size="sm"
@@ -188,7 +195,7 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
                 dense
                 icon="cloud_upload"
               >
-                <q-tooltip>Ver versiones</q-tooltip>
+                <q-tooltip>Adicionar Version</q-tooltip>
               </q-btn>
             </div>
             <span v-else>{{ col.value }}</span>
@@ -202,9 +209,13 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
               frameborder="0"
             >
             </iframe> -->
-            <CardDocumentViewer />
-            <div class="text-left">
-              Visualizador del documento: {{ props.row.description }}.
+            <CardDocumentViewer
+              :id="props.row.id"
+              :category="props.row.category"
+              :type="props.row.type"
+            />
+            <div class="q-pt-smtext-left">
+              Visualizador del documento: {{ props.row.name }}.
             </div>
           </q-td>
         </q-tr>
@@ -215,7 +226,11 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
     <AddDocument :id="props.id" />
   </q-dialog>
   <q-dialog v-model="documentVersionDialog" persistent>
-    <AddDocument :id="props.id" :document-id="currentDocumentVersionId" />
+    <AddDocument
+      :id="props.id"
+      :document-id="currentDocumentVersionId"
+      :document-data="documentSelected"
+    />
   </q-dialog>
 </template>
 

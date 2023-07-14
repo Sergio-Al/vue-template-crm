@@ -9,7 +9,7 @@ export const companies: Company[] = [
     created_by: 'adsfads',
     comment: 'comentario',
     address: 'Av Bolivia',
-    assigned_user: '1',
+    assigned_user_id: '1',
     id: 'b7977d14-d177-4420-870d-23e42d3b2827',
     name: 'Voonte',
     direccion_c: '73 Northland Alley',
@@ -608,5 +608,142 @@ export const defaultData = [
     sodium: 54,
     calcium: '12%',
     iron: '6%',
+  },
+];
+
+export const regionalList = [
+  {
+    id: '1',
+    label: 'La Paz',
+    value: '01_LP',
+  },
+  {
+    id: '2',
+    label: 'Cochabamba',
+    value: '01_CB',
+  },
+  {
+    id: '3',
+    label: 'Santa Cruz',
+    value: '01_SC',
+  },
+];
+
+export const divisionList = [
+  {
+    id: '1',
+    label: 'Soluciones Médicas',
+    value: '04',
+  },
+  {
+    id: '2',
+    label: 'Automotriz',
+    value: '03',
+  },
+  {
+    id: '3',
+    label: 'Proyectos',
+    value: '06',
+  },
+];
+
+export const documentTypeList = [
+  {
+    id: '1',
+    label: 'Público',
+    value: 'publico',
+  },
+  {
+    id: '2',
+    label: 'Privado',
+    value: 'privado',
+  },
+];
+
+export const documentTableList = [
+  {
+    id: 'ddfasfads',
+    name: 'Resolución Ministerial HANSA',
+    date_added: '27/01/2023',
+    fileName: 'Resolución Ministerial',
+    date_exp: '27/02/2025',
+    status: 'Activo',
+    category: 'Resgistro Sanitario',
+    document_type: 'revision',
+    version: '3',
+  },
+  {
+    id: 'otro',
+    name: 'Certificado de Empresa Vigente',
+    date_added: '27/01/2023',
+    fileName: 'Certificado de Empresa Vigente 2023',
+    date_exp: '27/02/2024',
+    status: 'Activo',
+    category: 'Certificado de Comercialización',
+    document_type: 'revision',
+    version: '2',
+  },
+];
+
+export const documentList = [
+  {
+    id: '1',
+    name: 'documento1',
+    date_added: '22/07/2023',
+    fileName: 'documento.pdf',
+    date_exp: '22/07/2025',
+    status: 'active',
+    iddivision_c: '03',
+    assigned_user_id: '1',
+    version: '1',
+    regional: '04_LP',
+    document_type: 'revision',
+    category: 'categoria',
+    type: 'revision_type',
+  },
+  {
+    id: '2',
+    name: 'documento2',
+    date_added: '22/07/2023',
+    fileName: 'documento2.pdf',
+    date_exp: '22/07/2025',
+    status: 'active',
+    iddivision_c: '03',
+    assigned_user_id: '1',
+    version: '1',
+    regional: '04_LP',
+    document_type: 'revision',
+    category: 'categoria',
+    type: 'revision_type',
+  },
+  {
+    id: '3',
+    name: 'documento3',
+    date_added: '22/07/2023',
+    fileName: 'documento.pdf',
+    date_exp: '22/07/2025',
+    status: 'active',
+    iddivision_c: '03',
+    assigned_user_id: '1',
+    version: '1',
+    regional: '04_LP',
+    document_type: 'revision',
+    category: 'categoria',
+    type: 'revision_type',
+  },
+  {
+    id: '4',
+    name: 'documento4',
+    date_added: '22/07/2023',
+    fileName: 'documento.pdf',
+    date_exp: '22/07/2025',
+    status: 'active',
+    iddivision_c: '03',
+    assigned_user_id: '1',
+    version: '1',
+    regional: '04_LP',
+    document_type: 'revision',
+    category: 'categoria',
+    type: 'revision_type',
   },
 ];
