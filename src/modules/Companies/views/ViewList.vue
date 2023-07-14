@@ -175,7 +175,7 @@ onMounted(async () => {
               class="text-blue-9 cursor-pointer"
               @click="openItemSelected(propsTable.row.id, propsTable.row.razon_social_c)"
             >
-              {{ propsTable.row.name }}
+              {{ propsTable.row.razon_social_c }}
             </span>
           </q-td>
           <q-td

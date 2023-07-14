@@ -41,7 +41,8 @@ export const getTableData = async (params: Params) => {
 
 export const getCompanyDocuments = async(id:string)=>{
     try{
-      //const { data } = await axios_NS_07.get()
+      const { data } = await axios_NS_07.get(`empresas/documents/${id}`)
+      return data;
     }
     catch(error){
       throw error;
