@@ -364,8 +364,8 @@ export const assignUsersToChildCompany = async (
   userIds: string[]
 ) => {
   try {
-    const { data } = await axios_NS_07.patch(`/participacion/${id}`, {
-      userIds: userIds,
+    const { data } = await axios_NS_07.post(`/participacion/asignar/${id}`, {
+      userIds,
     });
     return data;
   } catch (error) {

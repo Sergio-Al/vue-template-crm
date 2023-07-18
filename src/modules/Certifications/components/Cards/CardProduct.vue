@@ -136,15 +136,12 @@ defineExpose({
           outlined
           use-chips
           use-input
-          v-model="inputData.id_producto"
+          v-model="inputData.id_producto_c"
           @update:model-value="assignProductInfo"
         >
-          <template #prepend>
-            <q-icon name="inventory" />
-          </template>
           <template #append>
             <q-btn
-              v-if="!!inputData.id_producto"
+              v-if="!!inputData.id_producto_c"
               color="primary"
               size="sm"
               rounded
@@ -206,7 +203,7 @@ defineExpose({
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-select
-          :hint="!!inputData.id_producto ? 'Producto seleccionado' : ''"
+          :hint="!!inputData.id_producto_c ? 'Producto seleccionado' : ''"
           :options="productList"
           class="col-12 col-sm-12"
           dense
@@ -222,7 +219,7 @@ defineExpose({
           outlined
           use-chips
           use-input
-          v-model="inputData.id_producto"
+          v-model="inputData.id_producto_c"
           readonly
         >
           <template #prepend>

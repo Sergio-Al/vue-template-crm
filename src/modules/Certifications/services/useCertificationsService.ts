@@ -102,19 +102,17 @@ export const updateTablePreferences = async (id: string, data: any) => {
 };
 
 export const createCertificationRequest = async (
-  certfication: Certification
+  solicitud_certification: Certification
 ) => {
-  console.log('Creacion de solicitud', certfication);
-  // const response = await axios_NS07('/certification', certification);
-  // return response;
-
-  return;
+  console.log('Creacion de solicitud', solicitud_certification);
+  const {data} = await axios_NS_07.post('/solicitud', solicitud_certification);
+  return data;
 };
 
 export const getCertificationRequest = async (id: string) => {
-  // const response = await axios_NS07('/certification', certification);
-  // return response;
-  return certification;
+  const response = await axios_NS_07.get(`/solicitud/${id}`);
+  return response;
+  // return certification;
 };
 
 export const updateCertificationRequest = async (

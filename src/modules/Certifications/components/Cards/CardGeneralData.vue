@@ -27,9 +27,6 @@ const props = defineProps<Props>();
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="person" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.date_entered"
@@ -38,9 +35,6 @@ const props = defineProps<Props>();
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="event" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.hance_empresa_id_c"
@@ -49,9 +43,6 @@ const props = defineProps<Props>();
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="work" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.hance_empresa_id_c"
@@ -61,9 +52,6 @@ const props = defineProps<Props>();
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="work" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.hance_empresa_id_c"
@@ -73,9 +61,6 @@ const props = defineProps<Props>();
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="lightbulb" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.hance_empresa_id_c"
@@ -85,9 +70,6 @@ const props = defineProps<Props>();
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="location_on" />
-          </template>
         </q-input>
 
         <q-input
@@ -97,9 +79,6 @@ const props = defineProps<Props>();
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="school" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.user_id1_c"
@@ -109,9 +88,6 @@ const props = defineProps<Props>();
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="badge" />
-          </template>
         </q-input>
       </div>
     </template>
@@ -124,9 +100,6 @@ const props = defineProps<Props>();
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="person" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.date_entered"
@@ -135,9 +108,6 @@ const props = defineProps<Props>();
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="event" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.hance_empresa_id_c"
@@ -146,9 +116,6 @@ const props = defineProps<Props>();
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="work" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.hance_empresa_id_c"
@@ -158,9 +125,6 @@ const props = defineProps<Props>();
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="work" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.hance_empresa_id_c"
@@ -170,9 +134,6 @@ const props = defineProps<Props>();
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="lightbulb" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.hance_empresa_id_c"
@@ -182,9 +143,6 @@ const props = defineProps<Props>();
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="location_on" />
-          </template>
         </q-input>
 
         <q-input
@@ -194,9 +152,6 @@ const props = defineProps<Props>();
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="school" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.user_id1_c"
@@ -206,9 +161,6 @@ const props = defineProps<Props>();
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="badge" />
-          </template>
         </q-input>
       </div>
     </template>

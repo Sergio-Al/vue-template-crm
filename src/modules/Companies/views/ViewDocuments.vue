@@ -100,10 +100,10 @@ const openDocumentVersionDialog = (id: string, data: Document) => {
 //se dispara cuando carga el componente
 const { state: documents, isLoading, execute } = useAsyncState(async () => {
   //console.log('holoo');
-  return documentTableList;
-  // let a = await companyStore.onGetCompanyDocuments(props.id);
-  // console.log(a);
-  // return a;
+  //return documentTableList;
+  let a = await companyStore.onGetCompanyDocuments(props.id);
+  console.log(a);
+  return a;
   //console.log(a);
 }, []);
 
@@ -214,9 +214,6 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
               :category="props.row.category"
               :type="props.row.type"
             />
-            <div class="q-pt-smtext-left">
-              Visualizador del documento: {{ props.row.name }}.
-            </div>
           </q-td>
         </q-tr>
       </template>

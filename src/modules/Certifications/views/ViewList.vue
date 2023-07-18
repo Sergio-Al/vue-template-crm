@@ -177,7 +177,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="id_producto" :props="propsTable">
             <div class="column">
               <span>
-                {{ propsTable.row.product_c }}
+                {{ propsTable.row.producto_c }}
               </span>
               <span class="text-caption">Fabricante 0</span>
             </div>
