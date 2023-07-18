@@ -10,7 +10,7 @@ import type { Company, User } from '../utils/types';
 
 import {
   assignUsersToCompany,
-  //assignUsersToChildCompany,
+  assignUsersToChildCompany,
   deleteUserFromCompany,
 } from '../services/useCompanyService';
 import { useChildCompaniesStore } from '../store/childCompanyStore';
@@ -105,20 +105,20 @@ const isDelegateMissing = computed(() => {
 // event functions
 const selectUser = async (users: User[]) => {
   const userIds = users.map((user) => user.id);
+  console.log(userIds);
 
   // llamar a servicio para asignar usuarios a empresa
   // body
   try {
     if (props.child) {
-      //await assignUsersToChildCompany(props.id, userIds);
+      await assignUsersToChildCompany(props.id, userIds);
     } else {
-      await assignUsersToCompany(props.id, userIds);
+      // await assignUsersToCompany(props.id, userIds);
     }
     $q.notify({
       type: 'positive',
       message: 'Se han asignado nuevos usuarios a la empresa',
     });
-
     execute();
   } catch (error) {
     console.log(error);

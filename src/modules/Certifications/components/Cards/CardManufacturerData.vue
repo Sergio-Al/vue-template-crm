@@ -36,9 +36,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="work" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.contacto"
@@ -47,9 +44,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="contact_phone" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.direccion"
@@ -58,9 +52,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="location_on" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.pais"
@@ -69,9 +60,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="flag" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.telefono"
@@ -80,9 +68,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="call" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.email"
@@ -91,9 +76,7 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="mail" />
-          </template>
+
         </q-input>
         <q-input
           v-model="inputData.license"
@@ -102,9 +85,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="policy" />
-          </template>
         </q-input>
       </div>
     </template>
@@ -117,9 +97,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="work" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.contacto"
@@ -128,9 +105,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="contact_phone" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.direccion"
@@ -139,9 +113,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="location_on" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.pais"
@@ -150,9 +121,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="flag" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.telefono"
@@ -161,9 +129,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="call" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.email"
@@ -172,9 +137,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="mail" />
-          </template>
         </q-input>
         <q-input
           v-model="inputData.license"
@@ -183,9 +145,6 @@ const inputData = ref({} as ManufacturerData);
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="policy" />
-          </template>
         </q-input>
       </div>
     </template>

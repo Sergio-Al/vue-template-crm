@@ -27,6 +27,7 @@ const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
 
 const inputData = ref({ ...props.data });
+inputData.value.iddivision_c = '04';
 
 const users = ref<User[] | undefined>(undefined);
 
@@ -59,7 +60,7 @@ const closeDate = () => {
 };
 
 const removeSolicitante = () => {
-  inputData.value.id_solicitante = '';
+  inputData.value.user_id_c = '';
 };
 
 const abortFilterFn = () => {
@@ -72,9 +73,9 @@ const listRegional = ref([]);
 
 onMounted(async () => {
   // buscar solicitante y asignar a users[] (options)
-  if (!!inputData.value.id_solicitante) {
+  if (!!inputData.value.user_id_c) {
     if (!!props.id) {
-      const response = await getUser(inputData.value.id_solicitante);
+      const response = await getUser(inputData.value.user_id_c);
       console.log(response);
       users.value = [response];
     }
@@ -109,7 +110,7 @@ defineExpose({
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-select
-          :hint="!!inputData.id_solicitante ? 'usuario Seleccionado' : ''"
+          :hint="!!inputData.user_id_c ? 'usuario Seleccionado' : ''"
           :options="users"
           @filter-abort="abortFilterFn"
           @filter="filterFn"
@@ -127,14 +128,11 @@ defineExpose({
           outlined
           use-chips
           use-input
-          v-model="inputData.id_solicitante"
+          v-model="inputData.user_id_c"
         >
-          <template #prepend>
-            <q-icon name="person" />
-          </template>
           <template #append>
             <q-btn
-              v-if="!!inputData.id_solicitante"
+              v-if="!!inputData.user_id_c"
               color="primary"
               size="sm"
               rounded
@@ -170,27 +168,8 @@ defineExpose({
           outlined
           dense
           :rules="[(value: string) => !!value || 'Campo requerido']"
+          type="date"
         >
-          <template v-slot:prepend>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-                ref="dateRef"
-              >
-                <q-date
-                  @update:model-value="closeDate"
-                  v-model="inputData.date_entered"
-                  mask="DD/MM/YYYY"
-                >
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
         </q-input>
         <q-select
           class="col-12 col-sm-6"
@@ -205,9 +184,7 @@ defineExpose({
           emit-value
           map-options
         >
-          <template v-slot:prepend>
-            <q-icon name="store" />
-          </template>
+          
         </q-select>
          <q-select
           class="col-12 col-sm-6"
@@ -222,9 +199,7 @@ defineExpose({
           emit-value
           map-options
         >
-          <template v-slot:prepend>
-            <q-icon name="storefront" />
-          </template>
+         
         </q-select>
         <q-select
           class="col-12 col-sm-6"
@@ -239,9 +214,7 @@ defineExpose({
           emit-value
           map-options
         >
-          <template v-slot:prepend>
-            <q-icon name="flag" />
-          </template>
+
         </q-select>
       </div>
     </template>
@@ -249,7 +222,7 @@ defineExpose({
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-select
-          :hint="!!inputData.id_solicitante ? 'usuario Seleccionado' : ''"
+          :hint="!!inputData.user_id_c ? 'usuario Seleccionado' : ''"
           :options="users"
           @filter-abort="abortFilterFn"
           @filter="filterFn"
@@ -267,12 +240,9 @@ defineExpose({
           outlined
           use-chips
           use-input
-          v-model="inputData.id_solicitante"
+          v-model="inputData.user_id_c"
           readonly
         >
-          <template #prepend>
-            <q-icon name="person" />
-          </template>
 
           <template #no-option>
             <span class="text-grey-8 q-pa-lg">Sin opciones</span>
@@ -300,9 +270,6 @@ defineExpose({
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="event" />
-          </template>
         </q-input>
         <q-select
           class="col-12 col-sm-6"
@@ -318,9 +285,7 @@ defineExpose({
           map-options
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="storefront" />
-          </template>
+
         </q-select>
         <q-select
           class="col-12 col-sm-6"
@@ -336,9 +301,7 @@ defineExpose({
           map-options
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="store" />
-          </template>
+
         </q-select>
         <q-select
           class="col-12 col-sm-6"
@@ -354,9 +317,7 @@ defineExpose({
           map-options
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="flag" />
-          </template>
+
         </q-select>
       </div>
     </template>
