@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useAsyncState } from '@vueuse/core';
 import { useQuasar } from 'quasar';
 
@@ -20,6 +20,7 @@ interface Props {
 
 interface Emits {
   (e: 'submitComplete', id: string): void;
+  (e: 'updateView', value: string): void;
 }
 const props = defineProps<Props>();
 const emits = defineEmits<Emits>();
@@ -92,6 +93,10 @@ const { isLoading, execute } = useAsyncState(async () => {
     return await certificationStore.onGetCertificationRequest(localId.value);
   }
 }, {});
+
+onMounted(() => {
+  emits('updateView', '');
+});
 
 defineExpose({
   isSomeCardEditing: computed(() => {

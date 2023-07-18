@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue';
 import { useQuasar, QPopupProxy } from 'quasar';
+import moment from 'moment';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 import { getUsers, getUser } from '../../services/useCertificationsService';
@@ -8,7 +9,12 @@ import { getUsers, getUser } from '../../services/useCertificationsService';
 import { Certification, User } from '../../utils/types';
 
 // obtener data del repositorio de mongoDB y borrar este import
-import { useDivAreaMercado, useDivision, useGrupoCliente, useRegionales } from 'src/composables/useLanguage';
+import {
+  useDivAreaMercado,
+  useDivision,
+  useGrupoCliente,
+  useRegionales,
+} from 'src/composables/useLanguage';
 //import { amercado, divisions, regional } from '../../utils/dummyData';
 
 interface Props {
@@ -17,7 +23,7 @@ interface Props {
 }
 
 const { getListDivisiones, listDivisiones } = useDivision();
-const { getRegionales, listRegionales} = useRegionales();
+const { getRegionales, listRegionales } = useRegionales();
 
 const props = defineProps<Props>();
 const $q = useQuasar();
@@ -26,7 +32,9 @@ const $q = useQuasar();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
 
-const inputData = ref({ ...props.data });
+const inputData = ref({
+  ...props.data,
+});
 
 const users = ref<User[] | undefined>(undefined);
 
@@ -82,8 +90,10 @@ onMounted(async () => {
   await getListDivisiones();
   listDivision.value = listDivisiones.value;
   listAreaMercado.value = await useDivAreaMercado(inputData.value.iddivision_c);
-  await getRegionales();  
-  const aux = await listRegionales.value.find((element:any)=>(element.cod_pais == 'BO'));
+  await getRegionales();
+  const aux = await listRegionales.value.find(
+    (element: any) => element.cod_pais == 'BO'
+  );
   listRegional.value = aux.regiones;
   console.log(listRegional.value);
 });
@@ -209,7 +219,7 @@ defineExpose({
             <q-icon name="store" />
           </template>
         </q-select>
-         <q-select
+        <q-select
           class="col-12 col-sm-6"
           outlined
           dense

@@ -104,6 +104,7 @@ export interface Certification {
   empresa_email: string;
   empresa_phone: string;
   codigos_producto: string;
+  contact_id: string;
 }
 
 export interface Filter extends Partial<Certification> {
@@ -122,4 +123,64 @@ export interface User {
   idregional_c: string;
   idamercado_c: string;
   id_empresa_c: string;
+}
+
+export interface Manufacturer {
+  id: string;
+  annual_revenue: string;
+  archivo_c: string;
+  assigned_user_id?: string;
+  billing_address_city: string;
+  billing_address_country: string;
+  billing_address_postalcode: string;
+  billing_address_state: string;
+  billing_address_street: string;
+  created_by?: string;
+  date_entered: string;
+  date_modified: string;
+  deleted?: string;
+  description?: string;
+  employees: string;
+  hanp_proveedores_type?: string;
+  idgrupo_c: string;
+  idproveedor_c: string;
+  industry: string;
+  modified_user_id: string;
+  name: string;
+  nit_ci_c: string;
+  ownership: string;
+  phone_alternate: string;
+  phone_fax: string;
+  phone_office: string;
+  rating: string;
+  shipping_address_city: string;
+  shipping_address_country: string;
+  shipping_address_postalcode: string;
+  shipping_address_state: string;
+  shipping_address_street: string;
+  ticker_symbol: string;
+  website: string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  date_entered: string;
+  date_modified: string;
+  modified_user_id: string;
+  created_by: string;
+  description: string;
+  deleted: string;
+  assigned_user_id: string;
+  iddivision_c: string;
+  idamercado_c: string;
+  idregional_c: string;
+  idgrupocliente_c: string;
+  marca_c: string;
+  habilitar_c: string;
+  descripcion_basica_html_c: string;
+  caracteristicas_text_c: string;
+  atributos_aux_c: string;
+  img_aux_c: string;
+  aos_product_categories_id_c: string;
 }

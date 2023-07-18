@@ -1,3 +1,5 @@
+import { Certification, Manufacturer, Product } from './types';
+
 export const amercado = [
   {
     id: '1',
@@ -261,9 +263,9 @@ export const certicationsList = [
   },
 ];
 
-export const certification = {
+export const certification: Certification = {
   id: '1',
-  aprobacion: '1',
+  aprobacion: '0',
   assigned_user_id: '1',
   cod_productos: '1',
   codigos_producto: '1',
@@ -289,6 +291,7 @@ export const certification = {
   nro_solicitud: '1030/2023',
   observacion: '1',
   tipo_tramite: 'Inscripción',
+  contact_id: '1',
 };
 
 export const user = {
@@ -310,3 +313,267 @@ export const manufacturerDocuments = [
     size: '2Mb',
   },
 ];
+
+export const manufacturerData: Manufacturer = {
+  id: '1',
+  name: 'Embol SRL',
+  nit_ci_c: '3343242324',
+  phone_office: '22334433',
+  website: 'www.embol.com.bo',
+  billing_address_street: 'Av/ Union #34',
+  annual_revenue: '',
+  archivo_c: '',
+  assigned_user_id: '',
+  billing_address_city: '',
+  billing_address_country: '',
+  billing_address_postalcode: '',
+  billing_address_state: '',
+  created_by: '',
+  date_entered: '',
+  date_modified: '',
+  deleted: '',
+  description: '',
+  employees: '',
+  hanp_proveedores_type: '',
+  idgrupo_c: '',
+  idproveedor_c: '',
+  industry: '',
+  modified_user_id: '',
+  ownership: '',
+  phone_alternate: '',
+  phone_fax: '',
+  rating: '',
+  shipping_address_city: '',
+  shipping_address_country: '',
+  shipping_address_postalcode: '',
+  shipping_address_state: '',
+  shipping_address_street: '',
+  ticker_symbol: '',
+};
+
+export const manufacturerPromise = (): Promise<Manufacturer> => {
+  return new Promise((resolve, reject) => {
+    // Simulate an asynchronous operation
+    setTimeout(() => {
+      const result = manufacturerData;
+      resolve(result);
+    }, 2000); // Simulating a 2-second delay
+  });
+};
+
+export const manufacturerFiltered: Manufacturer[] = [
+  {
+    id: '1',
+    name: 'Embol SRL',
+    nit_ci_c: '3343242324',
+    phone_office: '22334433',
+    website: 'www.embol.com.bo',
+    billing_address_street: 'Av/ Union #34',
+    annual_revenue: '',
+    archivo_c: '',
+    assigned_user_id: '',
+    billing_address_city: '',
+    billing_address_country: '',
+    billing_address_postalcode: '',
+    billing_address_state: '',
+    created_by: '',
+    date_entered: '',
+    date_modified: '',
+    deleted: '',
+    description: '',
+    employees: '',
+    hanp_proveedores_type: '',
+    idgrupo_c: '',
+    idproveedor_c: '',
+    industry: '',
+    modified_user_id: '',
+    ownership: '',
+    phone_alternate: '',
+    phone_fax: '',
+    rating: '',
+    shipping_address_city: '',
+    shipping_address_country: '',
+    shipping_address_postalcode: '',
+    shipping_address_state: '',
+    shipping_address_street: '',
+    ticker_symbol: '',
+  },
+  {
+    id: '2',
+    name: 'Genius SRL',
+    nit_ci_c: '2243242324',
+    phone_office: '22534433',
+    website: 'www.genius.com.bo',
+    billing_address_street: 'Av/ Libertad #34',
+    annual_revenue: '',
+    archivo_c: '',
+    assigned_user_id: '',
+    billing_address_city: '',
+    billing_address_country: '',
+    billing_address_postalcode: '',
+    billing_address_state: '',
+    created_by: '',
+    date_entered: '',
+    date_modified: '',
+    deleted: '',
+    description: '',
+    employees: '',
+    hanp_proveedores_type: '',
+    idgrupo_c: '',
+    idproveedor_c: '',
+    industry: '',
+    modified_user_id: '',
+    ownership: '',
+    phone_alternate: '',
+    phone_fax: '',
+    rating: '',
+    shipping_address_city: '',
+    shipping_address_country: '',
+    shipping_address_postalcode: '',
+    shipping_address_state: '',
+    shipping_address_street: '',
+    ticker_symbol: '',
+  },
+  {
+    id: '3',
+    name: 'ProHealth SRL',
+    nit_ci_c: '3343242324',
+    phone_office: '22334433',
+    website: 'www.prohealt.com.bo',
+    billing_address_street: 'Av/ Uruguay #34',
+    annual_revenue: '',
+    archivo_c: '',
+    assigned_user_id: '',
+    billing_address_city: '',
+    billing_address_country: '',
+    billing_address_postalcode: '',
+    billing_address_state: '',
+    created_by: '',
+    date_entered: '',
+    date_modified: '',
+    deleted: '',
+    description: '',
+    employees: '',
+    hanp_proveedores_type: '',
+    idgrupo_c: '',
+    idproveedor_c: '',
+    industry: '',
+    modified_user_id: '',
+    ownership: '',
+    phone_alternate: '',
+    phone_fax: '',
+    rating: '',
+    shipping_address_city: '',
+    shipping_address_country: '',
+    shipping_address_postalcode: '',
+    shipping_address_state: '',
+    shipping_address_street: '',
+    ticker_symbol: '',
+  },
+];
+
+export const productsFiltered: Product[] = [
+  {
+    id: '1',
+    name: 'Agujas de fistula',
+    date_entered: '',
+    date_modified: '',
+    modified_user_id: '',
+    created_by: '',
+    description: 'agujas especiales',
+    deleted: '',
+    assigned_user_id: '',
+    iddivision_c: '',
+    idamercado_c: '',
+    idregional_c: '',
+    idgrupocliente_c: '',
+    marca_c: '',
+    habilitar_c: '',
+    descripcion_basica_html_c: '',
+    caracteristicas_text_c: '',
+    atributos_aux_c: '',
+    img_aux_c: '',
+    aos_product_categories_id_c: '',
+  },
+  {
+    id: '2',
+    name: 'Producto 2',
+    date_entered: '',
+    date_modified: '',
+    modified_user_id: '',
+    created_by: '',
+    description: 'producto 2',
+    deleted: '',
+    assigned_user_id: '',
+    iddivision_c: '',
+    idamercado_c: '',
+    idregional_c: '',
+    idgrupocliente_c: '',
+    marca_c: '',
+    habilitar_c: '',
+    descripcion_basica_html_c: '',
+    caracteristicas_text_c: '',
+    atributos_aux_c: '',
+    img_aux_c: '',
+    aos_product_categories_id_c: '',
+  },
+  {
+    id: '3',
+    name: 'Producto 3',
+    date_entered: '',
+    date_modified: '',
+    modified_user_id: '',
+    created_by: '',
+    description: 'producto 3',
+    deleted: '',
+    assigned_user_id: '',
+    iddivision_c: '',
+    idamercado_c: '',
+    idregional_c: '',
+    idgrupocliente_c: '',
+    marca_c: '',
+    habilitar_c: '',
+    descripcion_basica_html_c: '',
+    caracteristicas_text_c: '',
+    atributos_aux_c: '',
+    img_aux_c: '',
+    aos_product_categories_id_c: '',
+  },
+];
+
+export const productData = (): Product => {
+  const product: Product = {
+    id: '1',
+    name: 'Agujas de fistula',
+    date_entered: '',
+    date_modified: '',
+    modified_user_id: '',
+    created_by: '',
+    description: 'agujas especiales',
+    deleted: '',
+    assigned_user_id: '',
+    iddivision_c: '',
+    idamercado_c: '',
+    idregional_c: '',
+    idgrupocliente_c: '',
+    marca_c: '',
+    habilitar_c: '',
+    descripcion_basica_html_c: '',
+    caracteristicas_text_c: '',
+    atributos_aux_c: '',
+    img_aux_c: '',
+    aos_product_categories_id_c: '',
+  };
+
+  return product;
+};
+
+export const productPromise = (): Promise<Product> => {
+  return new Promise((resolve, reject) => {
+    // Simulate an asynchronous operation
+    setTimeout(() => {
+      const result = productData();
+      resolve(result);
+    }, 2000); // Simulating a 2-second delay
+  });
+};
