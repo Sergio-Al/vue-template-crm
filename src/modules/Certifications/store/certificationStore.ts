@@ -126,8 +126,11 @@ export const useCertificationStore = defineStore('certification-store', () => {
       Loading.show({
         message: 'Guardando información',
       });
-      await createCertificationRequest(data);
-      // return response;
+      console.log('data desde store');
+      console.log(data);
+      const response = await createCertificationRequest(data);
+      console.log(response);
+      return response;
     } catch (error) {
       throw error;
     } finally {

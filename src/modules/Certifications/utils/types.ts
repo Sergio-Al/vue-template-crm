@@ -78,18 +78,26 @@ export interface CertificationDB {
 
 export interface Certification {
   id: string;
-  nro_solicitud: string;
-  etapa: string;
-  estado: string;
-  tipo_tramite: string;
-  id_solicitante: string;
+  name: string;
+  etapa_c: string;
+  estado_c: string;
+  tipo_tramite_c: string;
+  user_id_c: string;
+  date_entered: string;
+  fabricante_c:string;
+  producto_c:string;
+  id_producto_c:string;
+  id_fabricante_c:string;
+  id_contacto_fabricante_c:string;
+  contacto_fabricante_c:string;
+  telefono_fabricante_c:string;
+  correo_fabricante_c:string;
   id_producto: string;
-  id_tipo_producto: string;
   iddivision_c: string;
   idamercado_c: string;
   idregional_c: string;
+  id_tipo_producto: string;
   grupocliente_c: string;
-  date_entered: string;
   cod_productos: string;
   comentario_creacion: string;
   aprobacion: string;
@@ -100,9 +108,7 @@ export interface Certification {
   observacion: string;
   comentario_observacion: string;
   id_empresa: string;
-  assigned_user_id: string;
-  empresa_email: string;
-  empresa_phone: string;
+  user_id1_c: string;
   codigos_producto: string;
 }
 
@@ -111,6 +117,7 @@ export interface Filter extends Partial<Certification> {
   modified_by?: string[];
   assigned_to?: string[];
   creation_date?: DateBase;
+  fastFilter?:string;
 }
 
 export interface User {

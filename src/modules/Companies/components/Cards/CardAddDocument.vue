@@ -5,6 +5,7 @@ import { useQuasar, QUploader } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 
 import { useCompaniesStore } from '../../store/companyStore';
+import { useAreaMercado, useDivision, useGrupoCliente, useRegionales } from 'src/composables/useLanguage';
 
 import {
   dataFormatCRM3,
@@ -28,7 +29,7 @@ import type { Document } from '../../utils/types';
 
 import {
   regionalList,
-  divisionList,
+  //divisionList,
   documentTypeList,
 } from '../../utils/dummyData';
 
@@ -49,6 +50,7 @@ const { userCRM } = userStore();
 const uploadFileRef = ref<InstanceType<typeof QUploader> | null>();
 
 const companyStore = useCompaniesStore();
+const { getListDivisiones, listDivisiones } = useDivision();
 
 //const options = [ 'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'];
 const categories_doc = ref([]);
@@ -64,8 +66,11 @@ const status_doc = [
 //const types_doc = ['2.1.1 Fotocopia de Representación Legal', '2.1.2 Certificado de Libre Venta'];
 const types_doc = ref([]);
 
-const data = ref({ category: '', version: '1' } as Document);
+const data = ref({ category: '', version: '' } as Document);
 const headerId = ref<string>('');
+
+const divisionList = ref([]);
+const amercadoList = ref([]);
 
 const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
@@ -82,6 +87,20 @@ const types_filter = computed(() => {
     r.value.toLowerCase().includes(dataConcat.toLowerCase())
   );
 });
+
+const amercadoListFilter = computed(() => {
+  // const dataConcat = data.value.category.value + '_';
+  // if (types_doc.value.length === 0) return [];
+ //return [];
+  // return types_doc.value.filter((r: any) =>
+  //   r.value.toLowerCase().includes(dataConcat.toLowerCase())
+  // );
+  const a = useAreaMercado('04')
+  console.log(a)
+  return [];
+  //return divisionList.value;
+});
+
 
 const defaultExists = computed(() => {
   return !!props.defaultData && Object.keys(props.defaultData).length > 0;
@@ -102,10 +121,12 @@ const uploadFiles = async (file: File[]) => {
       category_id: data.value.category?.value || '',
       template_type: data.value.type?.value || '',
       iddivision_c: data.value.iddivision_c || '',
-      division_c:
-        divisionList.find((div) => div.value === data.value.iddivision_c)
-          ?.label || '',
-      regional_c: data.value.regional,
+      //division_c:
+        // divisionList.find((div) => div.value === data.value.iddivision_c)
+        //   ?.label || '',
+      idamercado_c: data.value.idamercado_c || '',
+      //amercado_c:listAreaMercado.find(amer => amer.value === data.value.idamercado_c)
+       //   ?.label || '',
       user_id: userCRM.id,
       header: props.headerId,
       status_id:data.value.status_id,
@@ -148,8 +169,10 @@ onMounted(async () => {
     };
   }
   categories_doc.value = await companyStore.onGetCategoryDocuments();
-  //console.log(categories_doc.value);
   types_doc.value = await companyStore.onGetTypeDocuments();
+  await getListDivisiones();
+  divisionList.value = listDivisiones.value;
+  //amercadoList.value = await useDivAreaMercado(data.value.iddivision_c);
 });
 </script>
 
@@ -157,22 +180,14 @@ onMounted(async () => {
   <q-card class="q-pa-sm" style="min-width: fit-content">
     <div class="row q-col-gutter-md q-px-md q-py-md">
       <q-input
-        class="col-12 col-md-6"
+        class="col-12 col-md-12"
         v-model="data.description"
         type="text"
         outlined
         dense
         label="Nombre del Documento"
       />
-      <q-select
-        class="col-12 col-md-6"
-        v-model="data.status_id"
-        :options="status_doc"
-        type="text"
-        outlined
-        dense
-        label="Estado"
-      />
+
       <q-input
         class="col-12 col-md-6"
         v-model="data.active_date"
@@ -189,33 +204,23 @@ onMounted(async () => {
         dense
         label="Fecha de caducidad"
       />
-      <q-input
-        class="col-12 col-md-6"
-        v-model="data.version"
-        type="number"
-        outlined
-        dense
-        label="Versión"
-        readonly
-        :disable="defaultExists"
-      />
       <q-select
         class="col-12 col-md-6"
+        v-model="data.status_id"
+        :options="status_doc"
+        type="text"
         outlined
-        v-model="data.category"
-        :options="categories_doc"
         dense
-        label="Categoría"
-        :disable="defaultExists"
+        label="Estado"
       />
       <q-select
         class="col-12 col-sm-6"
         outlined
         dense
-        v-model="data.regional"
-        :options="regionalList"
+        v-model="data.document_type"
+        :options="documentTypeList"
         type="text"
-        label="Regional"
+        label="Tipo de documento"
         option-value="value"
         option-label="label"
         emit-value
@@ -238,14 +243,23 @@ onMounted(async () => {
         class="col-12 col-sm-6"
         outlined
         dense
-        v-model="data.document_type"
-        :options="documentTypeList"
+        v-model="data.idamercado_c"
+        :options="amercadoListFilter"
         type="text"
-        label="Tipo de documento"
+        label="Área de Mercado"
         option-value="value"
         option-label="label"
         emit-value
         map-options
+      />
+      <q-select
+        class="col-12 col-md-6"
+        outlined
+        v-model="data.category"
+        :options="categories_doc"
+        dense
+        label="Categoría"
+        :disable="defaultExists"
       />
       <q-select
         class="col-12 col-md-6"

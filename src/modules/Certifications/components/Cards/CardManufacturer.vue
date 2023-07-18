@@ -55,8 +55,8 @@ const abortFilterFn = () => {
 
 const assignManufacturerInfo = (id: string) => {
   const manufacturer = manufacturers.find((m) => m.id === id);
-  inputData.value.empresa_email = manufacturer?.email || '';
-  inputData.value.empresa_phone = manufacturer?.phone || '';
+  inputData.value.correo_fabricante_c = manufacturer?.email || '';
+  inputData.value.telefono_fabricante_c = manufacturer?.phone || '';
   // en otro caso buscar por servicio
   manufacturerContacts.value = manufacturerContactsData.filter(
     (contact) => contact.parentId === id
@@ -64,7 +64,7 @@ const assignManufacturerInfo = (id: string) => {
 };
 
 const removeManufacturer = () => {
-  inputData.value.id_empresa = '';
+  inputData.value.id_fabricante_c = '';
 };
 
 const restoreValues = () => {
@@ -73,9 +73,9 @@ const restoreValues = () => {
 
 onMounted(async () => {
   if (!!props.id) {
-    if (!!inputData.value.id_empresa) {
+    if (!!inputData.value.id_fabricante_c) {
       const manufacturerSelected = await getManufacturer(
-        inputData.value.id_empresa
+        inputData.value.id_fabricante_c
       );
       manufacturersList.value = [manufacturerSelected];
     }
@@ -109,7 +109,7 @@ defineExpose({
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-select
-          :hint="!!inputData.id_empresa ? 'Empresa seleccionada' : ''"
+          :hint="!!inputData.id_fabricante_c ? 'Empresa Fabricante seleccionada' : ''"
           :options="manufacturersList"
           @filter-abort="abortFilterFn"
           @filter="filterFn"
@@ -127,15 +127,12 @@ defineExpose({
           outlined
           use-chips
           use-input
-          v-model="inputData.id_empresa"
+          v-model="inputData.id_fabricante_c"
           @update:model-value="assignManufacturerInfo"
         >
-          <template #prepend>
-            <q-icon name="work" />
-          </template>
           <template #append>
             <q-btn
-              v-if="!!inputData.id_empresa"
+              v-if="!!inputData.id_fabricante_c"
               color="primary"
               size="sm"
               rounded
@@ -171,7 +168,7 @@ defineExpose({
           class="col-12 col-sm-6"
           outlined
           dense
-          v-model="inputData.id_profesional_acreditado"
+          v-model="inputData.id_contacto_fabricante_c"
           :options="manufacturerContacts"
           type="text"
           label="Contacto"
@@ -180,33 +177,24 @@ defineExpose({
           emit-value
           map-options
         >
-          <template v-slot:prepend>
-            <q-icon name="person" />
-          </template>
         </q-select>
         <q-input
-          v-model="inputData.empresa_email"
+          v-model="inputData.correo_fabricante_c"
           type="text"
           class="col-12 col-sm-6"
           label="Correo"
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="mail" />
-          </template>
         </q-input>
         <q-input
-          v-model="inputData.empresa_phone"
+          v-model="inputData.telefono_fabricante_c"
           type="text"
           class="col-12 col-sm-6"
           label="Teléfono"
           outlined
           dense
         >
-          <template v-slot:prepend>
-            <q-icon name="call" />
-          </template>
         </q-input>
       </div>
     </template>
@@ -214,7 +202,7 @@ defineExpose({
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-select
-          :hint="!!inputData.id_empresa ? 'Empresa seleccionada' : ''"
+          :hint="!!inputData.id_fabricante_c ? 'Empresa seleccionada' : ''"
           :options="manufacturersList"
           class="col-12 col-sm-6"
           dense
@@ -230,7 +218,7 @@ defineExpose({
           outlined
           use-chips
           use-input
-          v-model="inputData.id_empresa"
+          v-model="inputData.id_fabricante_c"
           readonly
         >
           <template #prepend>
@@ -262,7 +250,7 @@ defineExpose({
           class="col-12 col-sm-6"
           outlined
           dense
-          v-model="inputData.id_profesional_acreditado"
+          v-model="inputData.id_contacto_fabricante_c"
           :options="manufacturerContacts"
           type="text"
           label="Contacto"
@@ -273,12 +261,9 @@ defineExpose({
           hide-dropdown-icon
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="person" />
-          </template>
         </q-select>
         <q-input
-          v-model="inputData.empresa_email"
+          v-model="inputData.correo_fabricante_c"
           type="text"
           class="col-12 col-sm-6"
           label="Correo"
@@ -286,12 +271,9 @@ defineExpose({
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="mail" />
-          </template>
         </q-input>
         <q-input
-          v-model="inputData.empresa_phone"
+          v-model="inputData.telefono_fabricante_c"
           type="text"
           class="col-12 col-sm-6"
           label="Teléfono"
@@ -299,9 +281,6 @@ defineExpose({
           dense
           readonly
         >
-          <template v-slot:prepend>
-            <q-icon name="call" />
-          </template>
         </q-input>
       </div>
     </template>

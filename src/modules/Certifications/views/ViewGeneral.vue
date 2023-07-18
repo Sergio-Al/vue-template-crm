@@ -45,6 +45,9 @@ const onSubmit = async () => {
     if (!!cardApplicant || !!cardManufacture || !!cardProduct) {
       try {
         const body = { ...cardApplicant, ...cardManufacture, ...cardProduct };
+
+        console.log(body);
+        return;
         const newCertification =
           await certificationStore.onUpdateCertificationRequest(
             localId.value,
