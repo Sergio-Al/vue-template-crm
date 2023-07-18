@@ -3,6 +3,9 @@ import { useQuasar } from 'quasar';
 import { computed, ref, onMounted } from 'vue';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
+import CardRelationManufacturer from './CardRelationManufacturer.vue';
+import ContactRelationCard from 'src/modules/Leads/components/Cards/ContactRelationCard.vue';
+import CardRelationManufacturerAlt from './CardRelationManufacturerAlt.vue';
 
 import { Certification } from '../../utils/types';
 import {
@@ -18,10 +21,16 @@ interface Props {
   data: Partial<Certification>;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  data: () => ({ id_empresa: '' }),
+});
+
 const $q = useQuasar();
 //const { userCRM, getCompany } = useCompany();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
+const cardRelationManufacturerRef = ref<InstanceType<
+  typeof CardRelationManufacturer
+> | null>(null);
 
 const inputData = ref({ ...props.data });
 
@@ -71,6 +80,10 @@ const restoreValues = () => {
   if (props.data) inputData.value = { ...props.data };
 };
 
+const reset = () => {
+  // cardRelationManufacturerRef.value?.reset();
+};
+
 onMounted(async () => {
   if (!!props.id) {
     if (!!inputData.value.id_fabricante_c) {
@@ -108,8 +121,32 @@ defineExpose({
     <template #edit>
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-select
-          :hint="!!inputData.id_fabricante_c ? 'Empresa Fabricante seleccionada' : ''"
+        <div class="col-12">
+          <CardRelationManufacturer
+            ref="cardRelationManufacturerRef"
+            v-model:id="inputData.id_empresa"
+            module-name="Fabricante"
+            edit-mode
+            error-message="Se necesita un fabricante"
+          />
+          <!-- <CardRelationManufacturerAlt
+            v-model:id="inputData.id_empresa"
+            module-name="Fabricante"
+            @update:id="assignData"
+          /> -->
+        </div>
+        <div class="col-12">
+          <ContactRelationCard
+            ref="contactRelationCardRef"
+            v-model:id="inputData.contact_id"
+            module-name="Contacto"
+            edit-mode
+            @update:id="reset"
+            error-message="Se necesita un contacto"
+          />
+        </div>
+        <!-- <q-select
+          :hint="!!inputData.id_empresa ? 'Empresa seleccionada' : ''"
           :options="manufacturersList"
           @filter-abort="abortFilterFn"
           @filter="filterFn"
@@ -163,8 +200,8 @@ defineExpose({
               </q-item-section>
             </q-item>
           </template>
-        </q-select>
-        <q-select
+        </q-select> -->
+        <!-- <q-select
           class="col-12 col-sm-6"
           outlined
           dense
@@ -177,7 +214,10 @@ defineExpose({
           emit-value
           map-options
         >
-        </q-select>
+          <template v-slot:prepend>
+            <q-icon name="person" />
+          </template>
+        </q-select> -->
         <q-input
           v-model="inputData.correo_fabricante_c"
           type="text"

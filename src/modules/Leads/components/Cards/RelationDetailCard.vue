@@ -8,7 +8,8 @@ const ContactDialog = defineAsyncComponent(
   () => import('src/modules/Contacts/components/Dialogs/ContactDialog.vue')
 );
 const OpportunityDialog = defineAsyncComponent(
-  () => import('src/modules/Opportunities/components/Dialogs/OpportunityDialog.vue')
+  () =>
+    import('src/modules/Opportunities/components/Dialogs/OpportunityDialog.vue')
 );
 const ProspectDialog = defineAsyncComponent(
   () => import('src/modules/Prospects/components/Dialogs/ProspectDialog.vue')
@@ -22,7 +23,9 @@ const ReservasDialog = defineAsyncComponent(
 
 const accountDialogRef = ref<InstanceType<typeof AccountDialog> | null>(null);
 const contactDialogRef = ref<InstanceType<typeof ContactDialog> | null>(null);
-const oportunityDialogRef = ref<InstanceType<typeof OpportunityDialog> | null>(null);
+const oportunityDialogRef = ref<InstanceType<typeof OpportunityDialog> | null>(
+  null
+);
 const quotesDialogRef = ref<InstanceType<typeof GeneralDialog> | null>(null);
 const prospectDialogRef = ref<InstanceType<typeof ProspectDialog> | null>(null);
 const reserveDialogRef = ref<InstanceType<typeof ReservasDialog> | null>(null);
@@ -72,6 +75,14 @@ const openReservasDialog = async (id?: string) => {
   await reserveDialogRef.value?.openDialogReserveTab(id ? id : '');
 };
 
+const openFabricanteDialog = async (id?: string) => {
+  console.log('Abriendo dialog fabricante');
+};
+
+const openProductoDialog = async (id?: string) => {
+  console.log('Abriendo dialog fabricante');
+};
+
 const updateModule = () => {
   console.log('updateModule.....');
   emits('moduleUpdated');
@@ -88,17 +99,23 @@ const updateModule = () => {
 
         <q-item-section v-if="noData">
           <q-item-label caption class="text-weight-bold" lines="1">
-            <q-icon :name="icon" class="q-mr-sm" />{{ moduleName }}</q-item-label
+            <q-icon :name="icon" class="q-mr-sm" />{{
+              moduleName
+            }}</q-item-label
           >
           <q-item-label class="text-grey-7">
             <q-icon name="warning" />
             <span class="text-weight-thin"> No Seleccionado </span>
           </q-item-label>
-          <span v-if="props.error" class="text-caption">{{ props.errorMessage }}</span>
+          <span v-if="props.error" class="text-caption">{{
+            props.errorMessage
+          }}</span>
         </q-item-section>
         <q-item-section v-else>
           <q-item-label class="text-weight-bold" caption lines="1">
-            <q-icon :name="icon" class="q-mr-sm" />{{ moduleName }}</q-item-label
+            <q-icon :name="icon" class="q-mr-sm" />{{
+              moduleName
+            }}</q-item-label
           >
 
           <q-item-label v-if="moduleName == 'Cuenta'">
@@ -146,6 +163,22 @@ const updateModule = () => {
             <a
               class="text-bold cursor-pointer flex items-center text-primary"
               @click="() => openReservasDialog(id)"
+            >
+              {{ title }}
+            </a>
+          </q-item-label>
+          <q-item-label v-else-if="moduleName == 'Fabricante'">
+            <a
+              class="text-bold cursor-pointer flex items-center text-primary"
+              @click="() => openFabricanteDialog(id)"
+            >
+              {{ title }}
+            </a>
+          </q-item-label>
+          <q-item-label v-else-if="moduleName == 'Producto'">
+            <a
+              class="text-bold cursor-pointer flex items-center text-primary"
+              @click="() => openProductoDialog(id)"
             >
               {{ title }}
             </a>

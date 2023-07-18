@@ -2,12 +2,14 @@
 import { AlertComponent } from 'src/components';
 import { Notification } from 'src/composables';
 import { useDialogTabs } from 'src/composables/Dialog/useDialog';
-import { computed, ref } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import { useCertificationsTableStore } from '../../store/useCertificationTableStore';
 import { useCertificationStore } from '../../store/certificationStore';
 import ViewGeneral from '../../views/ViewGeneral.vue';
 import ViewGeneralData from '../../views/ViewGeneralData.vue';
 import ViewDataManufacturer from '../../views/ViewDataManufacturer.vue';
+import { Certification } from '../../utils/types';
+import { getCertificationRequest } from '../../services/useCertificationsService';
 </script>
 
 <script lang="ts" setup>
@@ -54,11 +56,13 @@ const {
   iconDialog: 'pen',
 });
 
+const certificationData = ref({} as Certification);
+const loadingInfo = ref(false);
+const currentView = ref('');
 //* reference variables
 const generalFormRef = ref<InstanceType<typeof ViewGeneral> | null>(null);
 //* computed variables
 const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
-
 //* methods
 const clearData = () => {
   console.log('cleaning data');
@@ -86,6 +90,38 @@ const updateData = (idValue: string) => {
   titleDialog.value = 'Detalles';
 };
 
+const assignCurrentView = (page: string) => {
+  currentView.value = page;
+};
+
+watch(id, async (id: string) => {
+  if (!id) {
+    try {
+      loadingInfo.value = true;
+      const response = await getCertificationRequest(id);
+      console.log(response);
+      certificationData.value = response;
+    } catch (error) {
+    } finally {
+      loadingInfo.value = false;
+    }
+  }
+});
+
+onMounted(async () => {
+  if (!id.value) {
+    try {
+      loadingInfo.value = true;
+      const response = await getCertificationRequest(id.value);
+      console.log(response);
+      certificationData.value = response;
+    } catch (error) {
+    } finally {
+      loadingInfo.value = false;
+    }
+  }
+});
+
 defineExpose({
   clearData,
   openDialogTab,
@@ -96,7 +132,7 @@ defineExpose({
   <dialog-component
     size-dialog="dialog-xl"
     v-model="open"
-    :footerDisabled="!isEditing"
+    :footerDisabled="false"
     :headerDisabled="false"
     :iconDialog="iconDialog"
     :persistent="false"
@@ -164,7 +200,7 @@ defineExpose({
           :key="index"
           :name="tab.name"
           :label="tab.label"
-          :disable="!tab.enabledForCreation && !id"
+          disable
         >
         </q-tab>
       </q-tabs>
@@ -183,11 +219,63 @@ defineExpose({
           :is="activeTabComponent"
           :id="id"
           @submitComplete="updateData"
+          @update-view="assignCurrentView"
           ref="generalFormRef"
         />
       </q-page>
     </template>
-    <template #footer v-if="isEditing">
+
+    <template #footer v-if="loadingInfo">
+      <span class="text-primary">Cargando Información</span>
+    </template>
+
+    <template
+      #footer
+      v-else-if="!!currentView && currentView === 'ManufacturerData'"
+    >
+      <q-btn color="primary" class="q-mr-md" @click="saveCurrentForm"
+        >Finalizar</q-btn
+      >
+    </template>
+
+    <template
+      #footer
+      v-else-if="!!currentView && currentView === 'GeneralData'"
+    >
+      <q-btn
+        color="primary"
+        class="q-mr-md"
+        @click="
+          () => {
+            activeTabName = 'dataManufacturer';
+            swapCurrentTab('dataManufacturer');
+          }
+        "
+        >Continuar</q-btn
+      >
+    </template>
+
+    <template
+      #footer
+      v-else-if="
+        !!id &&
+        Object.keys(certificationData).length > 0 &&
+        !+certificationData.aprobacion
+      "
+    >
+      <q-btn
+        color="primary"
+        class="q-mr-md"
+        @click="
+          () => {
+            (activeTabName = 'dataGeneral'), swapCurrentTab('dataGeneral');
+          }
+        "
+        >Aceptar</q-btn
+      >
+      <q-btn color="negative" v-close-popup>Rechazar</q-btn></template
+    >
+    <template #footer v-else-if="isEditing">
       <q-btn color="primary" class="q-mr-md" @click="saveCurrentForm"
         >Guardar</q-btn
       >

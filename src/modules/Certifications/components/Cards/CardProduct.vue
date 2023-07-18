@@ -3,6 +3,7 @@ import { useQuasar } from 'quasar';
 import { computed, ref, onMounted } from 'vue';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
+import CardRelationProduct from './CardRelationProduct.vue';
 
 import { Certification } from '../../utils/types';
 
@@ -66,6 +67,14 @@ const abortFilterFn = () => {
   // console.log('delayed filter aborted')
 };
 
+const addProduct = () => {
+  productCodes.value.unshift({ id: '' });
+};
+
+const removeProductByIndex = (index: number) => {
+  productCodes.value.splice(index, 1);
+};
+
 onMounted(async () => {
   if (!!props.id) {
     if (!!inputData.value.id_producto) {
@@ -100,7 +109,15 @@ defineExpose({
     <template #edit>
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-select
+        <div class="col-12">
+          <CardRelationProduct
+            v-model:id="inputData.id_producto"
+            module-name="Producto"
+            edit-mode
+            error-message="Se necesita un producto"
+          />
+        </div>
+        <!-- <q-select
           :hint="!!inputData.id_producto ? 'Producto seleccionado' : ''"
           :options="productList"
           @filter-abort="abortFilterFn"
@@ -150,18 +167,36 @@ defineExpose({
               </q-item-section>
             </q-item>
           </template>
-        </q-select>
+        </q-select> -->
+        <div class="col-12">
+          <q-btn
+            color="primary"
+            icon="add"
+            label="Añadir nuevo producto"
+            dense
+            @click="addProduct"
+          />
+        </div>
         <q-input
           v-for="(product, index) in productCodes"
           :key="index"
           v-model="product.id"
           type="text"
           label="Código a Registrar"
-          readonly
           dense
           outlined
-          class="col-6"
-        />
+          class="col-12"
+        >
+          <template #prepend>
+            <q-btn
+              color="negative"
+              icon="remove"
+              size="sm"
+              round
+              @click="removeProductByIndex(index)"
+            />
+          </template>
+        </q-input>
       </div>
     </template>
     <template #read>

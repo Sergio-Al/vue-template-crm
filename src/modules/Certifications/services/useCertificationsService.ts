@@ -5,7 +5,12 @@ import {
 } from 'src/conections/axiosCRM';
 
 import { userStore } from 'src/modules/Users/store/UserStore';
-import type { Certification, Params } from '../utils/types';
+import type {
+  Certification,
+  Manufacturer,
+  Params,
+  Product,
+} from '../utils/types';
 import {
   GuestsRecordResponse,
   RecordOptionsModel,
@@ -19,6 +24,8 @@ import {
   manufacturer,
   manufacturerContact,
   product,
+  manufacturerFiltered,
+  productsFiltered,
 } from '../utils/dummyData';
 
 const { userCRM } = userStore();
@@ -45,7 +52,10 @@ export const deleteMassiveData = async (data: any) => {
 export const getTableData = async (params: Params) => {
   console.log(params);
   try {
-    const { data } = await axios_NS_07.get(`/certificacion?params=${JSON.stringify(params)}`);
+    return certicationsList;
+    const { data } = await axios_NS_07.get(
+      `/certificacion?params=${JSON.stringify(params)}`
+    );
     console.log(data);
     return data;
   } catch (error) {
@@ -170,4 +180,14 @@ export const getProduct = async (id: string) => {
   // const response = await axios_NS07(`/product/${id}`)
   // return response;
   return product;
+};
+
+export const getManufacturers = async (params: Partial<Manufacturer>) => {
+  console.log(params);
+  return manufacturerFiltered;
+};
+
+export const getProducts = async (params: Partial<Product>) => {
+  console.log(params);
+  return productsFiltered;
 };

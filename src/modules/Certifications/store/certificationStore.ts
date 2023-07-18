@@ -4,6 +4,7 @@ import { defineStore } from 'pinia';
 import { Loading } from 'quasar';
 import { userStore } from 'src/modules/Users/store/UserStore';
 import { computed, ref } from 'vue';
+import moment from 'moment';
 import {
   createCertificationRequest,
   getCertificationRequest,
@@ -33,7 +34,7 @@ export const useCertificationStore = defineStore('certification-store', () => {
     idamercado_c: '',
     idregional_c: '',
     grupocliente_c: '',
-    date_entered: '',
+    date_entered: moment().format('DD/MM/YYYY'),
     cod_productos: '',
     comentario_creacion: '',
     aprobacion: '',
@@ -196,7 +197,7 @@ export const useCertificationStore = defineStore('certification-store', () => {
       idamercado_c: '',
       idregional_c: '',
       grupocliente_c: '',
-      date_entered: '',
+      date_entered: moment().format('DD/MM/YYYY'),
       cod_productos: '',
       comentario_creacion: '',
       aprobacion: '',

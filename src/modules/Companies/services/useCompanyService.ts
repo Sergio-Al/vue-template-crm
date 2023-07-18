@@ -27,10 +27,10 @@ const { userCRM } = userStore();
 
 export const getTableData = async (params: Params) => {
   try {
-    // const { data } = await axios_NS_07.get('/empresas');
-    const { data } = await axios_NS_07.get(
-      `/empresas?params=${JSON.stringify(params)}`
-    );
+    const { data } = await axios_NS_07.get('/empresas');
+    // const { data } = await axios_NS_07.get(
+    //   `/empresas?params=${JSON.stringify(params)}`
+    // );
 
     //const { data } = await axios_NS_07.get(`/empresas`, {params});
     return data;
@@ -39,16 +39,15 @@ export const getTableData = async (params: Params) => {
   }
 };
 
-export const getCompanyDocuments = async(id:string)=>{
-    try{
-      const { data } = await axios_NS_07.get(`empresas/documents/${id}`)
-      return data;
-    }
-    catch(error){
-      throw error;
-    }
-  };
-  
+export const getCompanyDocuments = async (id: string) => {
+  try {
+    const { data } = await axios_NS_07.get(`empresas/documents/${id}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getCompanyChild = async (id: string) => {
   console.log(id);
   try {
@@ -382,7 +381,6 @@ export const getCategoryDocuments = async () => {
     throw error;
   }
 };
-
 
 export const getTypeDocuments = async () => {
   try {

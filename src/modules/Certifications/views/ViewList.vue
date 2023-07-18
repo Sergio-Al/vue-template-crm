@@ -128,14 +128,9 @@ const openItemSelected = (id: string, title: string) => {
           >
             <span
               class="text-blue-9 cursor-pointer"
-              @click="
-                openItemSelected(
-                  propsTable.row.id,
-                  propsTable.row.name
-                )
-              "
+              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
-              {{ propsTable.row.name }}
+              Nro: {{ propsTable.row.name }}
             </span>
           </q-td>
           <q-td key="etapa" :props="propsTable">
@@ -174,9 +169,7 @@ const openItemSelected = (id: string, title: string) => {
                   NOMBRE RESP{{ propsTable.row.solicitante }}
                 </span>
                 <span class="ellipsis-item text-caption">
-                  CARGO{{
-                    propsTable.row.solicitante
-                  }}
+                  CARGO{{ propsTable.row.solicitante }}
                 </span>
               </div>
             </div>
@@ -223,12 +216,7 @@ const openItemSelected = (id: string, title: string) => {
             <q-checkbox flat v-model="propsTable.selected" dense />
             <span
               class="q-ml-md text-ellipsis text-blue-10 cursor-pointer"
-              @click="
-                openItemSelected(
-                  propsTable.row.id,
-                  propsTable.row.name
-                )
-              "
+              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
               {{ propsTable.row.name }}
             </span>
