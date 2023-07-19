@@ -97,7 +97,11 @@ const openDocumentVersionDialog = (id: string, data: Document) => {
 };
 
 //se dispara cuando carga el componente
-const { state: documents, isLoading, execute } = useAsyncState(async () => {
+const {
+  state: documents,
+  isLoading,
+  execute,
+} = useAsyncState(async () => {
   //console.log('holoo');
   //return documentTableList;
   let a = await companyStore.onGetCompanyDocuments(props.id);
@@ -130,7 +134,6 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
 //     version:1
 //   },
 // ];
-
 </script>
 
 <template>
@@ -199,91 +202,51 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
             </div>
             <span v-else>{{ col.value }}</span>
           </q-td>-->
-          <q-td
-            key="nombre_doc"
-            :props="props"
-            :style="'width: 150px;'"
-          >
-          <!--<span
+          <q-td key="nombre_doc" :props="props" :style="'width: 150px;'">
+            <!--<span
               class="text-blue-9 cursor-pointer"
               @click="openItemSelected(props.row.id, props.row.nombre_doc)"
             >
               {{ props.row.nombre_doc }}
             </span>-->
-            <span
-              class="text-blue-9 cursor-pointer"
-            >
-            {{ props.row.nombre_doc }}
+            <span class="text-blue-9 cursor-pointer">
+              {{ props.row.nombre_doc }}
             </span>
           </q-td>
-          <q-td
-            key="categoria_doc"
-            :props="props"
-            :style="'width: 150px;'"
-          >
+          <q-td key="categoria_doc" :props="props" :style="'width: 150px;'">
             <p class="q-my-sm">
               {{ props.row.categoria_doc }}
             </p>
-            <p class="text-caption q-my-sm">
-              Tipo: {{ props.row.tipo_doc }}
-            </p>
+            <p class="text-caption q-my-sm">Tipo: {{ props.row.tipo_doc }}</p>
           </q-td>
-          <q-td
-            key="division"
-            :props="props"
-            :style="'width: 150px;'"
-          >
+          <q-td key="division" :props="props" :style="'width: 150px;'">
             <p class="q-my-sm">
               {{ props.row.division_c }}
             </p>
-            <p class="text-caption q-my-sm">
-              A. Mercado: Desconocido
-            </p>
+            <p class="text-caption q-my-sm">A. Mercado: Desconocido</p>
           </q-td>
-          <q-td
-            key="active_date"
-            :props="props"
-            :style="'width: 150px;'"
-          >
-            <p class="q-my-sm">
-              F. Inicio: {{ props.row.active_date }}
-            </p>
+          <q-td key="active_date" :props="props" :style="'width: 150px;'">
+            <p class="q-my-sm">F. Inicio: {{ props.row.active_date }}</p>
             <p class="text-caption q-my-sm">
               F. Culminación: {{ props.row.exp_date }}
             </p>
           </q-td>
-          <q-td
-            key="status_id"
-            :props="props"
-            :style="'width: 150px;'"
-          >
-            <span
-            >
-            {{ props.row.status_id }}
+          <q-td key="status_id" :props="props" :style="'width: 150px;'">
+            <span>
+              {{ props.row.status_id }}
             </span>
           </q-td>
-          <q-td
-            key="tipo"
-            :props="props"
-            :style="'width: 150px;'"
-          >
-            <span
-            >
-            {{ props.row.tipo }}
+          <q-td key="tipo" :props="props" :style="'width: 150px;'">
+            <span>
+              {{ props.row.tipo }}
             </span>
           </q-td>
-          <q-td
-            key="responsable"
-            :props="props"
-            :style="'width: 150px;'"
-          >
-            <p
-            >
-            {{ props.row.responsable }}
+          <q-td key="responsable" :props="props" :style="'width: 150px;'">
+            <p>
+              {{ props.row.responsable }}
             </p>
-            <p class="text-caption"
-            >
-            Fecha de Registro: {{ props.row.fecha_creacion }}
+            <p class="text-caption">
+              Fecha de Registro: {{ props.row.fecha_creacion }}
             </p>
           </q-td>
         </q-tr>
@@ -297,6 +260,7 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
             </iframe> -->
             <CardDocumentViewer
               :id="props.row.id"
+              :data="props.row"
               :category="props.row.category"
               :type="props.row.type"
             />
