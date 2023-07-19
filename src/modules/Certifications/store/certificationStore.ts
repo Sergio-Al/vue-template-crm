@@ -143,7 +143,8 @@ export const useCertificationStore = defineStore('certification-store', () => {
     try {
       loading.value = true;
       const response = await getCertificationRequest(id);
-      payload.value = response;
+      //console.log(response);
+      payload.value = response.data;
       return response;
     } catch (error) {
       throw error;
