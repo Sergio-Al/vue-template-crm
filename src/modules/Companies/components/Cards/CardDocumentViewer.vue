@@ -7,6 +7,8 @@ import { documentList } from '../../utils/dummyData';
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import { useAsyncState } from '@vueuse/core';
 
+import { useCompaniesStore } from '../../store/companyStore';
+
 interface Props {
   id: string;
   category: string;
@@ -20,13 +22,18 @@ const documentPath = ref('upload/0');
 const link = ref('');
 const link2 = ref('');
 
+const companyStore = useCompaniesStore();
+
 const previewDocument = (fileName: string) => {
-  // documentPath.value = `${HANSACRM3_URL}/index.php?entryPoint=download&id=${fileName}&type=Documents&view_doc=view`;
-  documentPath.value = `public/img/${fileName}`;
+  documentPath.value = `${HANSACRM3_URL}/index.php?entryPoint=download&id=${fileName}&type=Documents&view_doc=view`;
+  //documentPath.value = `public/img/${fileName}`;
 };
 
 onMounted(() => {
   console.log('mounted document viewer');
+  //console.log(props.id);
+  //documents = await onGetVersions()
+  //TODO: obtener listado de versiones
 });
 
 const {
@@ -36,7 +43,10 @@ const {
 } = useAsyncState(async () => {
   // const response = await axios_NS_07.get(`/document-history/${id}/${category}-${type}`);
   // return response;
-  return documentList;
+  const response = await companyStore.onGetVersions(props.id);
+  console.log(response);
+  return response;
+  //return documentList;
 }, [] as Document[]);
 </script>
 <template>
@@ -58,22 +68,22 @@ const {
                     class="q-my-sm"
                     clickable
                     active-class="my-menu-link"
-                    :active="link === row.id"
-                    @click="previewDocument(row.fileName)"
+                    :active="link === row.id_doc_version"
+                    @click="previewDocument(row.id_doc_version)"
                   >
                     <q-item-section avatar>
                       <q-icon name="description" color="primary" />
                     </q-item-section>
                     <q-item-section>
-                      <q-item-label>{{ row.name }}</q-item-label>
-                      <q-item-label caption lines="1" class="text-black">{{
-                        row.category
+                      <q-item-label>{{ row.doc_nombre }}</q-item-label>
+                      <q-item-label caption lines="1" class="text-black">Versión: {{
+                        row.version
                       }}</q-item-label>
                       <q-item-label caption lines="1"
-                        >Publicación: {{ row.date_added }}</q-item-label
+                        >Fecha de Creación: {{ row.fecha_creacion }}</q-item-label
                       >
                       <q-item-label caption lines="1"
-                        >Vencimiento: {{ row.date_exp }}</q-item-label
+                        >Responsable: {{ row.nombre_usuario }}</q-item-label
                       >
                     </q-item-section>
                   </q-item>
@@ -87,24 +97,24 @@ const {
               <template v-for="(row, index) in documents" :key="index">
                 <q-item class="q-my-sm" clickable active-class="my-menu-link">
                   <q-item-section avatar>
-                    <a :href="link2 + row.id">
+                    <a :href="link2 + row.id_doc_version">
                       <img src="pdf.png" style="width: 30px; height: 35px" />
                     </a>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label
-                      ><a :href="link2 + row.id">{{
-                        row.name
+                      ><a :href="link2 + row.id_doc_version">{{
+                        row.doc_nombre
                       }}</a></q-item-label
                     >
-                    <q-item-label caption lines="1" class="text-black">{{
-                      row.category
+                    <q-item-label caption lines="1" class="text-black">Versión {{
+                      row.version
                     }}</q-item-label>
                     <q-item-label caption lines="1"
-                      >Publicación: {{ row.date_added }}</q-item-label
+                      >Fecha de Creación: {{ row.fecha_creacion }}</q-item-label
                     >
                     <q-item-label caption lines="1"
-                      >Vencimiento: {{ row.date_exp }}</q-item-label
+                      >Responsable: {{ row.nombre_usuario }}</q-item-label
                     >
                   </q-item-section>
                   <q-item-section side>

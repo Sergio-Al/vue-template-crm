@@ -52,11 +52,11 @@ export const deleteMassiveData = async (data: any) => {
 export const getTableData = async (params: Params) => {
   console.log(params);
   try {
-    return certicationsList;
+    //return certicationsList;
     const { data } = await axios_NS_07.get(
       `/certificacion?params=${JSON.stringify(params)}`
     );
-    console.log(data);
+    //console.log(data);
     return data;
   } catch (error) {
     throw error;
@@ -111,6 +111,7 @@ export const createCertificationRequest = async (
 
 export const getCertificationRequest = async (id: string) => {
   const response = await axios_NS_07.get(`/solicitud/${id}`);
+  //console.log(response);
   return response;
   // return certification;
 };

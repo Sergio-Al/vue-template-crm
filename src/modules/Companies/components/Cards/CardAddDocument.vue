@@ -66,11 +66,11 @@ const status_doc = [
 //const types_doc = ['2.1.1 Fotocopia de Representación Legal', '2.1.2 Certificado de Libre Venta'];
 const types_doc = ref([]);
 
-const data = ref({ category: '', version: '' } as Document);
+const data = ref({ category: '', version: '', iddivision_c:'04', active_date: new Date().toISOString().substring(0,10)  } as Document);
 const headerId = ref<string>('');
 
 const divisionList = ref([]);
-const amercadoList = ref([]);
+//const amercadoList = ref([]);
 
 const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
@@ -88,17 +88,10 @@ const types_filter = computed(() => {
   );
 });
 
-const amercadoListFilter = computed(() => {
-  // const dataConcat = data.value.category.value + '_';
-  // if (types_doc.value.length === 0) return [];
- //return [];
-  // return types_doc.value.filter((r: any) =>
-  //   r.value.toLowerCase().includes(dataConcat.toLowerCase())
-  // );
-  const a = useAreaMercado('04')
-  console.log(a)
-  return [];
-  //return divisionList.value;
+const amercadoList = computed(() => {
+  const result:any = divisionList.value.filter((element:any)=>(element.cod_div == data.value.iddivision_c));
+  const aux = {...result[0]}
+  return aux.amercado;
 });
 
 
@@ -127,7 +120,7 @@ const uploadFiles = async (file: File[]) => {
       idamercado_c: data.value.idamercado_c || '',
       //amercado_c:listAreaMercado.find(amer => amer.value === data.value.idamercado_c)
        //   ?.label || '',
-      user_id: userCRM.id,
+      user_id_c: userCRM.id,
       header: props.headerId,
       status_id:data.value.status_id,
       active_date:data.value.active_date,
@@ -156,7 +149,7 @@ const uploadFiles = async (file: File[]) => {
 
 const onSubmit = async () => {
   uploadFileRef.value?.upload();
-  emits('update', '1'); // '1' es un id falso
+  emits('update', '1'); // '1' es un id falso divisionList
 };
 
 onMounted(async () => {
@@ -172,6 +165,8 @@ onMounted(async () => {
   types_doc.value = await companyStore.onGetTypeDocuments();
   await getListDivisiones();
   divisionList.value = listDivisiones.value;
+
+  console.log(data.value);
   //amercadoList.value = await useDivAreaMercado(data.value.iddivision_c);
 });
 </script>
@@ -194,7 +189,7 @@ onMounted(async () => {
         type="date"
         outlined
         dense
-        label="Fecha de Publicación"
+        label="Fecha de Inicio"
       />
       <q-input
         class="col-12 col-md-6"
@@ -202,7 +197,7 @@ onMounted(async () => {
         type="date"
         outlined
         dense
-        label="Fecha de caducidad"
+        label="Fecha de Caducidad"
       />
       <q-select
         class="col-12 col-md-6"
@@ -234,7 +229,7 @@ onMounted(async () => {
         :options="divisionList"
         type="text"
         label="División"
-        option-value="value"
+        option-value="cod_div"
         option-label="label"
         emit-value
         map-options
@@ -244,10 +239,10 @@ onMounted(async () => {
         outlined
         dense
         v-model="data.idamercado_c"
-        :options="amercadoListFilter"
+        :options="amercadoList"
         type="text"
         label="Área de Mercado"
-        option-value="value"
+        option-value="cod_amercado"
         option-label="label"
         emit-value
         map-options

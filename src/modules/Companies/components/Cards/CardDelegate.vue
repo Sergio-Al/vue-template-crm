@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 
 import type { User } from '../../utils/types';
-import { getUser, getUsers } from '../../services/useCompanyService';
+import { getUser, getUsers, getVersions } from '../../services/useCompanyService';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 

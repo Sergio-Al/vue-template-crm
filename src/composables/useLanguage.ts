@@ -38,9 +38,6 @@ const useAreaMercado = async (iddivision: string) => {
   } catch (error) {
     throw error;
   }
-  finally(){
-    console.log('finalizó')
-  }
 };
 
 const useDivision = () => {

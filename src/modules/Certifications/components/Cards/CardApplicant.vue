@@ -33,7 +33,7 @@ const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
 
 const inputData = ref({ ...props.data });
-  inputData.value.iddivision_c = '04';
+inputData.value.iddivision_c = '04';
 
 const users = ref<User[] | undefined>(undefined);
 
@@ -73,8 +73,8 @@ const abortFilterFn = () => {
   // console.log('delayed filter aborted')
 };
 
-const listDivision = ref([]);
-const listAreaMercado = ref([]);
+const divisionList = ref([]);
+//let listAreaMercado = ref({});
 const listRegional = ref([]);
 
 onMounted(async () => {
@@ -87,14 +87,30 @@ onMounted(async () => {
     }
   }
   await getListDivisiones();
-  listDivision.value = listDivisiones.value;
-  listAreaMercado.value = await useDivAreaMercado(inputData.value.iddivision_c);
+  divisionList.value = listDivisiones.value;
+  //listAreaMercado.value = await useDivAreaMercado(inputData.value.iddivision_c);
   await getRegionales();
   const aux = await listRegionales.value.find(
     (element: any) => element.cod_pais == 'BO'
   );
   listRegional.value = aux.regiones;
   console.log(listRegional.value);
+});
+
+const amercadoList = computed(() => {
+  // if (types_doc.value.length === 0) return [];
+  // return types_doc.value.filter((r: any) =>
+  //   r.value.toLowerCase().includes(dataConcat.toLowerCase())
+  // );
+  // divisionList
+  //console.log('division seleccionada' +inputData.value.iddivision_c);
+  //console.log('listado de divisiones' +divisionList.value);
+  //inputData.value.idamercado_c = '';
+  const result:any = divisionList.value.filter((element:any)=>(element.cod_div == inputData.value.iddivision_c));
+  const aux = {...result[0]}
+  //console.log(a.value[0].amercado);
+  return aux.amercado;
+  //return a;
 });
 
 defineExpose({
@@ -184,10 +200,10 @@ defineExpose({
           outlined
           dense
           v-model="inputData.iddivision_c"
-          :options="listDivision"
+          :options="divisionList"
           type="text"
           label="División"
-          option-value="value"
+          option-value="cod_div"
           option-label="label"
           emit-value
           map-options
@@ -199,10 +215,10 @@ defineExpose({
           outlined
           dense
           v-model="inputData.idamercado_c"
-          :options="listAreaMercado"
+          :options="amercadoList"
           type="text"
           label="Área de mercado"
-          option-value="value"
+          option-value="cod_amercado"
           option-label="label"
           emit-value
           map-options
@@ -284,7 +300,7 @@ defineExpose({
           outlined
           dense
           v-model="inputData.idamercado_c"
-          :options="listAreaMercado"
+          :options="amercadoList"
           type="text"
           label="Área de mercado"
           option-value="value"
@@ -300,7 +316,7 @@ defineExpose({
           outlined
           dense
           v-model="inputData.iddivision_c"
-          :options="listDivision"
+          :options="divisionList"
           type="text"
           label="División"
           option-value="value"
