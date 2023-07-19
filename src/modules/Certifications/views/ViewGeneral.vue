@@ -38,6 +38,8 @@ const cardManufactureRef = ref<InstanceType<typeof CardManufacture> | null>(
 const cardProductRef = ref<InstanceType<typeof CardProduct> | null>(null);
 
 const onSubmit = async () => {
+  console.log(cardAplicantRef.value.exposeData());
+  return;
   const cardApplicant = cardAplicantRef.value.exposeData();
   const cardManufacture = cardManufactureRef.value.exposeData();
   const cardProduct = cardProductRef.value.exposeData();

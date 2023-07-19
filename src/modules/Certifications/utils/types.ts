@@ -93,9 +93,9 @@ export interface Certification {
   telefono_fabricante_c:string;
   correo_fabricante_c:string;
   id_producto: string;
-  iddivision_c: string;
-  idamercado_c: string;
-  idregional_c: string;
+  iddivision_c: any;
+  idamercado_c: any;
+  idregional_c: any;
   id_tipo_producto: string;
   grupocliente_c: string;
   cod_productos: string;

@@ -122,7 +122,7 @@ const openItemSelected = (id: string, title: string) => {
             <q-checkbox v-model="propsTable.selected" flat dense />
           </q-td>
           <q-td
-            key="nro_solicitud"
+            key="name"
             :props="propsTable"
             :style="'width: 100px;'"
           >
@@ -133,7 +133,7 @@ const openItemSelected = (id: string, title: string) => {
               Nro: {{ propsTable.row.name }}
             </span>
           </q-td>
-          <q-td key="etapa" :props="propsTable">
+          <q-td key="etapa_c" :props="propsTable">
             <div class="column">
               <div>
                 <q-badge
@@ -150,10 +150,10 @@ const openItemSelected = (id: string, title: string) => {
             </div>
           </q-td>
 
-          <q-td key="tipo_tramite" :props="propsTable">
+          <q-td key="tipo_tramite_c" :props="propsTable">
             {{ propsTable.row.tipo_tramite_c }}
           </q-td>
-          <q-td key="delegate" :props="propsTable">
+          <q-td key="solicitante" :props="propsTable">
             <div class="row items-center">
               <div class="col-2">
                 <q-avatar
@@ -166,41 +166,36 @@ const openItemSelected = (id: string, title: string) => {
               </div>
               <div class="column q-pl-sm ellipsis col-10">
                 <span class="ellipsis-item">
-                  NOMBRE RESP{{ propsTable.row.solicitante }}
+                  {{ propsTable.row.solicitante }}
                 </span>
                 <span class="ellipsis-item text-caption">
-                  CARGO{{ propsTable.row.solicitante }}
+                  {{ propsTable.row.cargo }}
                 </span>
               </div>
             </div>
           </q-td>
-          <q-td key="id_producto" :props="propsTable">
+          <q-td key="producto_c" :props="propsTable">
             <div class="column">
               <span>
                 {{ propsTable.row.producto_c }}
               </span>
-              <span class="text-caption">Fabricante 0</span>
+              <span class="text-caption">Fabricante {{propsTable.row.fabricante_c}}</span>
             </div>
           </q-td>
-          <q-td key="id_tipo_producto" :props="propsTable">
+          <q-td key="tipo_producto_c" :props="propsTable">
             <div class="column">
               <span>
-                {{ propsTable.row.id_tipo_producto_c }}
+                {{ propsTable.row.tipo_producto_c }}
               </span>
-              <span class="text-caption">Cantidad de requisitos: 0</span>
-            </div>
-          </q-td>
-          <q-td key="aprobacion" :props="propsTable">
-            <div class="column">
-              <span> {{ propsTable.row.aprobacion }}% </span>
+              <span class="text-caption">Cantidad de requisitos: 10</span>
             </div>
           </q-td>
           <q-td key="id" :props="propsTable">
             <div class="column">
-              <span> Cod Misa: {{ propsTable.row.id }} </span>
-              <span> Nro de Ruta: {{ propsTable.row.id }} </span>
+              <span> Cod Misa: {{ propsTable.row.cod_misa_c }} </span>
+              <span> Nro de Ruta: {{ propsTable.row.nro_ruta_c }} </span>
               <span v-if="true" class="text-green">
-                Nro Cert: {{ propsTable.row.id }}
+                Nro Cert: {{ propsTable.row.nro_cert }}
               </span>
             </div>
           </q-td>

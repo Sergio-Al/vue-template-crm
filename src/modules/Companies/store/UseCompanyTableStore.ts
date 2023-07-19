@@ -153,7 +153,7 @@ export const useCompanyTableStore = defineStore('company_table', {
           rowsPerPage: rowsPerPage,
           sortBy: sortBy,
           order: descending ? 'desc' : 'asc',
-          filter: filter,
+          filter,
         };
         const data = await getTableData(params);
         this.data_table.rows = data;

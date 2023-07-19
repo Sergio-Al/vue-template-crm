@@ -12,7 +12,8 @@ import {
   getCompanyChild,
   //getOneChildCompany,
   getCompanyChildrenUsers,
-  getCompanyDocuments
+  getCompanyDocuments,
+  getVersions
 } from '../services/useCompanyService';
 import type { ChildCompany, Company } from '../utils/types';
 
@@ -221,6 +222,17 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     }
   };
 
+  const onGetVersions = async(id:string)=>{
+    try{
+      const versions = await getVersions(id);
+      //console.log(versions);
+      return versions;
+    }
+    catch(e){
+      throw new Error(e)
+    }
+  }
+
   const clearData = () => {
     payload.value = {
       id: '',
@@ -260,6 +272,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     onGetListCompaniesChild,
     onGetUsersFromChildCompany,
     onGetCategoryDocuments,
-    onGetTypeDocuments
+    onGetTypeDocuments,
+    onGetVersions
   };
 });

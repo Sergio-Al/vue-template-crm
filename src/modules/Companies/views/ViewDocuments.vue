@@ -23,6 +23,13 @@ const companyStore = useCompaniesStore();
 
 const columns: QTableColumn[] = [
   {
+    name: 'nombre_doc',
+    align: 'left',
+    label: 'Nombre',
+    field: 'nombre_doc',
+    sortable: true,
+  },
+  {
     name: 'categoria_doc',
     align: 'left',
     label: 'Categoría',
@@ -30,38 +37,17 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
   {
-    name: 'tipo_doc',
+    name: 'division',
     align: 'left',
-    label: 'Tipo',
-    field: 'tipo_doc',
-    sortable: true,
-  },
-  {
-    name: 'nombre_doc',
-    align: 'left',
-    label: 'Nombre',
-    field: 'nombre_doc',
-    sortable: true,
-  },
-   {
-    name: 'version',
-    align: 'left',
-    label: 'Versión',
-    field: 'version',
+    label: 'División',
+    field: 'division',
     sortable: true,
   },
   {
     name: 'active_date',
     align: 'left',
-    label: 'Fecha de Publicación',
+    label: 'Vigencia',
     field: 'active_date',
-    sortable: true,
-  },
-  {
-    name: 'exp_date',
-    align: 'left',
-    label: 'Fecha de Caducidad',
-    field: 'exp_date',
     sortable: true,
   },
   {
@@ -71,14 +57,27 @@ const columns: QTableColumn[] = [
     field: 'status_id',
     sortable: true,
   },
-
   {
-    name: 'options',
-    align: 'center',
-    label: 'Versiones',
-    field: 'options',
+    name: 'tipo',
+    align: 'left',
+    label: 'Tipo de Documento',
+    field: 'tipo',
     sortable: true,
   },
+  {
+    name: 'responsable',
+    align: 'left',
+    label: 'Responsable',
+    field: 'responsable',
+    sortable: true,
+  },
+  // {
+  //   name: 'options',
+  //   align: 'center',
+  //   label: 'Versiones',
+  //   field: 'options',
+  //   sortable: true,
+  // },
 ];
 
 const documentDialog = ref<boolean>(false);
@@ -181,7 +180,7 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
               :icon="props.expand ? 'remove' : 'add'"
             />
           </q-td>
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
+          <!--<q-td v-for="col in props.cols" :key="col.name" :props="props">
             <div v-if="col.name === 'options'">
               <q-btn
                 @click="
@@ -199,6 +198,93 @@ const { state: documents, isLoading, execute } = useAsyncState(async () => {
               </q-btn>
             </div>
             <span v-else>{{ col.value }}</span>
+          </q-td>-->
+          <q-td
+            key="nombre_doc"
+            :props="props"
+            :style="'width: 150px;'"
+          >
+          <!--<span
+              class="text-blue-9 cursor-pointer"
+              @click="openItemSelected(props.row.id, props.row.nombre_doc)"
+            >
+              {{ props.row.nombre_doc }}
+            </span>-->
+            <span
+              class="text-blue-9 cursor-pointer"
+            >
+            {{ props.row.nombre_doc }}
+            </span>
+          </q-td>
+          <q-td
+            key="categoria_doc"
+            :props="props"
+            :style="'width: 150px;'"
+          >
+            <p class="q-my-sm">
+              {{ props.row.categoria_doc }}
+            </p>
+            <p class="text-caption q-my-sm">
+              Tipo: {{ props.row.tipo_doc }}
+            </p>
+          </q-td>
+          <q-td
+            key="division"
+            :props="props"
+            :style="'width: 150px;'"
+          >
+            <p class="q-my-sm">
+              {{ props.row.division_c }}
+            </p>
+            <p class="text-caption q-my-sm">
+              A. Mercado: Desconocido
+            </p>
+          </q-td>
+          <q-td
+            key="active_date"
+            :props="props"
+            :style="'width: 150px;'"
+          >
+            <p class="q-my-sm">
+              F. Inicio: {{ props.row.active_date }}
+            </p>
+            <p class="text-caption q-my-sm">
+              F. Culminación: {{ props.row.exp_date }}
+            </p>
+          </q-td>
+          <q-td
+            key="status_id"
+            :props="props"
+            :style="'width: 150px;'"
+          >
+            <span
+            >
+            {{ props.row.status_id }}
+            </span>
+          </q-td>
+          <q-td
+            key="tipo"
+            :props="props"
+            :style="'width: 150px;'"
+          >
+            <span
+            >
+            {{ props.row.tipo }}
+            </span>
+          </q-td>
+          <q-td
+            key="responsable"
+            :props="props"
+            :style="'width: 150px;'"
+          >
+            <p
+            >
+            {{ props.row.responsable }}
+            </p>
+            <p class="text-caption"
+            >
+            Fecha de Registro: {{ props.row.fecha_creacion }}
+            </p>
           </q-td>
         </q-tr>
         <q-tr v-if="props.expand" :props="props">

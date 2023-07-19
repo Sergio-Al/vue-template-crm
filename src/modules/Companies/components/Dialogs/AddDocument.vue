@@ -71,30 +71,30 @@ const columns: QTableColumn[] = [
   },
 ];
 
-const dummyData = [
-  {
-    id: 'ddfasfads',
-    name: 'Version 2 Cert',
-    date_added: '27/01/2023',
-    fileName: 'nombreDocumentos',
-    date_exp: '27/02/2023',
-    status: 'Revision',
-    description: 'Segunda version del documento',
-    version: '2',
-    assigned_user_id: 'assignedUserId',
-  },
-  {
-    id: 'otro',
-    name: 'Version 1 Cert',
-    date_added: '27/01/2023',
-    fileName: 'nombreDocumentos',
-    date_exp: '27/02/2023',
-    version: '1',
-    description: 'Primera version del documento',
-    status: 'Caducado',
-    assigned_user_id: 'assignedUserId',
-  },
-];
+// const dummyData = [
+//   {
+//     id: 'ddfasfads',
+//     name: 'Version 2 Cert',
+//     date_added: '27/01/2023',
+//     fileName: 'nombreDocumentos',
+//     date_exp: '27/02/2023',
+//     status: 'Revision',
+//     description: 'Segunda version del documento',
+//     version: '2',
+//     assigned_user_id: 'assignedUserId',
+//   },
+//   {
+//     id: 'otro',
+//     name: 'Version 1 Cert',
+//     date_added: '27/01/2023',
+//     fileName: 'nombreDocumentos',
+//     date_exp: '27/02/2023',
+//     version: '1',
+//     description: 'Primera version del documento',
+//     status: 'Caducado',
+//     assigned_user_id: 'assignedUserId',
+//   },
+// ];
 </script>
 
 <template>
