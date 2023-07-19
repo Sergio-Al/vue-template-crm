@@ -261,15 +261,15 @@ export interface Document {
   fileName: string;
   status_id: string;
   iddivision_c: any;
-  idamercado_c:any;
+  idamercado_c: any;
   assigned_user_id: string;
   version: string;
   document_type: string;
   category: any;
   type: any;
-  active_date:string;
-  exp_date:string;
-  description:string;
+  active_date: string;
+  exp_date: string;
+  description: string;
 }
 
 export interface Contact {

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
+import CardAddVersion from './CardAddVersion.vue';
+
 import type { Document } from '../../utils/types';
 
 import { documentList } from '../../utils/dummyData';
@@ -13,6 +15,7 @@ interface Props {
   id: string;
   category: string;
   type: string;
+  data: Document;
 }
 
 const props = defineProps<Props>();
@@ -21,6 +24,7 @@ const loading = ref(false);
 const documentPath = ref('upload/0');
 const link = ref('');
 const link2 = ref('');
+const newVersionDialog = ref(false);
 
 const companyStore = useCompaniesStore();
 
@@ -54,6 +58,16 @@ const {
     <q-card-section>
       <div class="row">
         <div class="col-12 col-md-4 q-pa-md">
+          <div class="row q-pb-md">
+            <q-btn
+              class="col-12"
+              color="primary"
+              full-width
+              icon="add"
+              label="Adicionar nueva version"
+              @click="newVersionDialog = true"
+            />
+          </div>
           <div
             v-if="documents.length > 0 && !$q.screen.xs"
             col-3
@@ -76,11 +90,12 @@ const {
                     </q-item-section>
                     <q-item-section>
                       <q-item-label>{{ row.doc_nombre }}</q-item-label>
-                      <q-item-label caption lines="1" class="text-black">Versión: {{
-                        row.version
-                      }}</q-item-label>
+                      <q-item-label caption lines="1" class="text-black"
+                        >Versión: {{ row.version }}</q-item-label
+                      >
                       <q-item-label caption lines="1"
-                        >Fecha de Creación: {{ row.fecha_creacion }}</q-item-label
+                        >Fecha de Creación:
+                        {{ row.fecha_creacion }}</q-item-label
                       >
                       <q-item-label caption lines="1"
                         >Responsable: {{ row.nombre_usuario }}</q-item-label
@@ -107,9 +122,9 @@ const {
                         row.doc_nombre
                       }}</a></q-item-label
                     >
-                    <q-item-label caption lines="1" class="text-black">Versión {{
-                      row.version
-                    }}</q-item-label>
+                    <q-item-label caption lines="1" class="text-black"
+                      >Versión {{ row.version }}</q-item-label
+                    >
                     <q-item-label caption lines="1"
                       >Fecha de Creación: {{ row.fecha_creacion }}</q-item-label
                     >
@@ -178,4 +193,7 @@ const {
       label-style="font-size: 1.1em"
     />
   </q-card>
+  <q-dialog v-model="newVersionDialog" persistent>
+    <CardAddVersion :id-document="props.id" :data="props.data" />
+  </q-dialog>
 </template>
