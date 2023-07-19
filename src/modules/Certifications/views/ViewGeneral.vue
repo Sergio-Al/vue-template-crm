@@ -95,6 +95,7 @@ const onSubmit = async () => {
 const { isLoading, execute } = useAsyncState(async () => {
   if (!!localId.value) {
     console.log('here!!!');
+    //console.log(localId.value);
     return await certificationStore.onGetCertificationRequest(localId.value);
   }
 }, {});
