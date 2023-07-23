@@ -16,6 +16,7 @@ interface Props {
   category: string;
   type: string;
   data: Document;
+  child: boolean;
 }
 
 const props = defineProps<Props>();
@@ -35,9 +36,6 @@ const previewDocument = (fileName: string) => {
 
 onMounted(() => {
   console.log('mounted document viewer');
-  //console.log(props.id);
-  //documents = await onGetVersions()
-  //TODO: obtener listado de versiones
 });
 
 const {
@@ -89,7 +87,7 @@ const {
                       <q-icon name="description" color="primary" />
                     </q-item-section>
                     <q-item-section>
-                      <q-item-label>{{ row.doc_nombre }}</q-item-label>
+                      <q-item-label>{{ row.filename }}</q-item-label>
                       <q-item-label caption lines="1" class="text-black"
                         >Versión: {{ row.version }}</q-item-label
                       >
@@ -194,6 +192,6 @@ const {
     />
   </q-card>
   <q-dialog v-model="newVersionDialog" persistent>
-    <CardAddVersion :id-document="props.id" :data="props.data" />
+    <CardAddVersion :id-document="props.id" :data="props.data" :child="props.child" />
   </q-dialog>
 </template>

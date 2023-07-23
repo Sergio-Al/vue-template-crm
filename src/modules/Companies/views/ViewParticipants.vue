@@ -2,16 +2,13 @@
 import { ref } from 'vue';
 import { QTableColumn } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
-
 import ChildCompanyDialog from '../components/Dialogs/ChildCompanyDialog.vue';
-
 import { useCompaniesStore } from '../store/companyStore';
-
 import { useChildCompaniesStore } from '../store/childCompanyStore';
-
 import { deleteChildCompany } from '../services/useCompanyService';
 
-import { ChildCompany, Company } from '../utils/types';
+import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
+
 
 // import { childCompanies } from '../utils/dummyData';
 
@@ -21,6 +18,8 @@ interface Props {
 
 const props = defineProps<Props>();
 const companyStore = useCompaniesStore();
+const showConfirmed = ref(false);
+const idSubCompanyDelete = ref();
 
 const columns: QTableColumn[] = [
   {
@@ -77,6 +76,21 @@ const columns: QTableColumn[] = [
 
 const childCompanyStore = useChildCompaniesStore();
 
+// const deleteCompanyChildConfirm = (companyId:string)=>{
+//   showConfirmed.value = true;
+//   deleteSubCompany(props.row.id);
+// }
+
+const propsCreateAlert = {
+  title: 'Alerta de confirmación',
+  icon: 'person',
+  iconSize: 'md',
+  message: '',
+  iconColor: 'red',
+  btnColor: 'red',
+  btnText: 'Si, estoy seguro',
+};
+
 const childCompanyDialogRef = ref<InstanceType<
   typeof ChildCompanyDialog
 > | null>(null);
@@ -100,15 +114,24 @@ const directionFormat = (direction: string) => {
   return '';
 };
 
-const deleteSubCompany = async (id: string) => {
+const deleteSubCompany = async () => {
   try {
     isLoading.value = true;
-    await deleteChildCompany(id);
+    await deleteChildCompany(idSubCompanyDelete.value);
+    reloadList();
   } catch (error) {
     console.log('error');
   } finally {
     isLoading.value = false;
   }
+};
+
+const reloadList = async ()=>{
+  await execute();
+}
+
+const onCancelRelation = () => {
+  console.log('se cancelo');
 };
 
 const localId = ref(props.id ?? '');
@@ -198,10 +221,10 @@ const {
           </q-td>
           <q-td auto-width>
             <q-btn
-              @click="
-                () => {
-                  deleteSubCompany(props.row.id);
-                }
+              @click="()=>{
+                showConfirmed = true;
+                idSubCompanyDelete = props.row.id;
+              }
               "
               size="sm"
               color="negative"
@@ -211,7 +234,18 @@ const {
             >
               <q-tooltip>Eliminar</q-tooltip>
             </q-btn>
+            <AlertComponent
+              v-model="showConfirmed"
+              v-bind="propsCreateAlert"
+              @confirm="deleteSubCompany"
+              @denegate="onCancelRelation"
+            >
+              <template #body>
+                <span> ¿Está seguro de eliminar la empresa participación ? </span>
+              </template>
+            </AlertComponent>
           </q-td>
+    
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
           <q-td colspan="100%">

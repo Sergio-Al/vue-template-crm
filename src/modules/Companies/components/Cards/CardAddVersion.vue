@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { QUploader, useQuasar } from 'quasar';
 
 import { userStore } from 'src/modules/Users/store/UserStore';
@@ -10,6 +10,7 @@ import { dataFormatCRM3Basic } from 'src/conections/conexionCRM3';
 interface Props {
   idDocument: string;
   data: Document;
+  child: boolean
 }
 
 interface Emits {
@@ -24,6 +25,10 @@ const uploadFileRef = ref<InstanceType<typeof QUploader> | null>();
 const $q = useQuasar();
 const { userCRM } = userStore();
 
+onMounted(async () => {
+  //console.log(props.child);
+});
+
 const data = ref({
   ...props.data,
   active_date: new Date().toISOString().substring(0, 10), // fecha actual
@@ -37,28 +42,30 @@ const uploadFiles = async (file: File[]) => {
     });
 
     const dataSend = {
-      category_id: data.value.category?.value || '',
-      template_type: data.value.type?.value || '',
-      iddivision_c: data.value.iddivision_c || '',
-      idamercado_c: data.value.idamercado_c || '',
       user_id_c: userCRM.id,
-      header: props.idDocument,
-      status_id: data.value.status_id,
-      active_date: data.value.active_date,
-      exp_date: data.value.exp_date,
+      document_id: props.idDocument,
+      date_entered: data.value.active_date,
+      revision:data.value.version,
+      change_log:data.value.description
     };
 
+    //const method = props.child?'certif_upload_version_empresa':'certif_upload_version_participacion';
+    const method = 'certif_upload_version_empresa';
+
     const body = dataFormatCRM3Basic(
-      'certif_upload_empresa',
+      method,
       {
         data: dataSend,
       },
       file[0]
     );
-    console.log(dataSend);
+
     await axiosCRM3.post('', body);
-  } catch (error) {
     console.log('se guardó el documento');
+    //cerrar el dialog
+  } catch (error) {
+    //console.log('se guardó el documento');
+    throw error;
   } finally {
     $q.loading.hide();
     emits('update');
@@ -72,7 +79,7 @@ const onSubmit = async () => {
 
 <template>
   <q-card class="q-pa-sm" style="min-width: fit-content">
-    <q-card-section class="text-h6"> Adicionar documento </q-card-section>
+    <q-card-section class="text-h6"> Subir nueva versión </q-card-section>
     <div class="row q-col-gutter-md q-px-md q-py-md">
       <q-input
         class="col-12 col-md-6"
@@ -113,7 +120,7 @@ const onSubmit = async () => {
 
     <q-card-actions align="center">
       <q-btn label="Cancelar" color="negative" v-close-popup />
-      <q-btn label="Adicionar" color="primary" @click="onSubmit" />
+      <q-btn label="Adicionar" color="primary" v-close-popup @click="onSubmit" />
     </q-card-actions>
   </q-card>
 </template>

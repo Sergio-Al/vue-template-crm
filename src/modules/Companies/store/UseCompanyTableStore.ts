@@ -44,14 +44,6 @@ export const useCompanyTableStore = defineStore('company_table', {
     data_table: {
       rows: [],
       columns: [
-        // {
-        //   name: 'id_empresa',
-        //   align: 'left',
-        //   label: 'id Empresa',
-        //   field: 'id_empresa',
-        //   sortable: true,
-        //   visible: true,
-        // },
         {
           name: 'razon_social_c',
           align: 'left',
@@ -101,10 +93,10 @@ export const useCompanyTableStore = defineStore('company_table', {
           visible: true,
         },
         {
-          name: 'ownership',
+          name: 'representante',
           align: 'left',
           label: 'Representante Legal',
-          field: 'ownership',
+          field: 'representante',
           sortable: true,
           visible: true,
         },
@@ -118,7 +110,7 @@ export const useCompanyTableStore = defineStore('company_table', {
       'resolucion_ministerial_c',
       'website',
       'phone_office',
-      'ownership',
+      'representante',
     ],
   }),
   actions: {

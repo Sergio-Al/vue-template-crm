@@ -74,13 +74,24 @@ const onClearDataFilter = () => {
 
 const setEtapaColor = (etapa: string): string => {
   const colorMap: { [key: string]: string } = {
-    Nueva: 'orange',
-    Revision: 'blue',
+    Nueva : 'orange',
+    Revisión: 'blue',
     Finalizada: 'green',
   };
 
-  return colorMap[etapa] || 'grey';
+  return colorMap[etapa] || 'blue';
 };
+
+const setTipoColor = (tipo:string):string => {
+  const colorMap: { [key: string]: string } = {
+    DISPOSITIVO : 'green',
+    EQUIPO: 'blue',
+    MEDICAMENTO: 'orange',
+    COSMÉTICO: 'purple',
+  };
+
+  return colorMap[tipo] || 'grey';
+}
 
 const openDialog = () => {
   certificationDialogRef.value?.openDialogTab();
@@ -127,7 +138,7 @@ const openItemSelected = (id: string, title: string) => {
             :style="'width: 100px;'"
           >
             <span
-              class="text-blue-9 cursor-pointer"
+              class="text-primary text-weight-bold text-break cursor-pointer"
               @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
               Nro: {{ propsTable.row.name }}
@@ -141,12 +152,12 @@ const openItemSelected = (id: string, title: string) => {
                   :label="propsTable.row.etapa_c"
                 />
               </div>
+              <span class="text-caption">
+                <span class="text-weight-bold">Estado:</span> {{ propsTable.row.estado_c }}
+              </span>
               <span class="text-caption">{{
-                propsTable.row.fecha_creacion
+                propsTable.row.fecha_creacion.substring(0,10)
               }}</span>
-              <span class="text-caption"
-                >Estado: {{ propsTable.row.estado_c }}</span
-              >
             </div>
           </q-td>
 
@@ -155,7 +166,7 @@ const openItemSelected = (id: string, title: string) => {
           </q-td>
           <q-td key="solicitante" :props="propsTable">
             <div class="row items-center">
-              <div class="col-2">
+              <div class="col-1">
                 <q-avatar
                   size="24px"
                   font-size="24px"
@@ -164,11 +175,11 @@ const openItemSelected = (id: string, title: string) => {
                   icon="person"
                 />
               </div>
-              <div class="column q-pl-sm ellipsis col-10">
+              <div class="column q-pl-sm ellipsis col-11">
                 <span class="ellipsis-item">
                   {{ propsTable.row.solicitante }}
                 </span>
-                <span class="ellipsis-item text-caption">
+                <span class="ellipsis-item text-grey">
                   {{ propsTable.row.cargo }}
                 </span>
               </div>
@@ -179,25 +190,23 @@ const openItemSelected = (id: string, title: string) => {
               <span>
                 {{ propsTable.row.producto_c }}
               </span>
-              <span class="text-caption">Fabricante {{propsTable.row.fabricante_c}}</span>
+              <span class="text-caption"><span class="text-weight-bold">Fabricante</span> {{propsTable.row.fabricante_c}}</span>
             </div>
           </q-td>
           <q-td key="tipo_producto_c" :props="propsTable">
-            <div class="column">
-              <span>
-                {{ propsTable.row.tipo_producto_c }}
-              </span>
-              <span class="text-caption">Cantidad de requisitos: 10</span>
-            </div>
+            <q-badge outline :color="setTipoColor(propsTable.row.tipo_producto_c)">{{ propsTable.row.tipo_producto_c }}</q-badge>
+            <br>
+              <span class="text-caption"><span class="text-weight-bold">Cant. de requisitos:</span> 10</span>
+          </q-td>
+          <q-td key="cumplimiento_req" :props="propsTable">
+            <span class="text-weight-bold">100 %</span>
           </q-td>
           <q-td key="id" :props="propsTable">
             <div class="column">
-              <span> Cod Misa: {{ propsTable.row.cod_misa_c }} </span>
-              <span> Nro de Ruta: {{ propsTable.row.nro_ruta_c }} </span>
-              <span v-if="true" class="text-green">
-                Nro Cert: {{ propsTable.row.nro_cert }}
-              </span>
+              <span> <span class="text-weight-bold">Cod Misa:</span> {{ propsTable.row.cod_misa_c }} </span>
+              <span> <span class="text-weight-bold">Nro de Ruta:</span> {{ propsTable.row.nro_ruta_c }} </span>
             </div>
+            <q-badge dark color="green" class="q-px-md"><span class="text-weight-bold q-mr-sm">Nro. Cert.</span>{{ propsTable.row.nro_cert }}</q-badge>
           </q-td>
         </q-tr>
       </template>
@@ -329,4 +338,11 @@ const openItemSelected = (id: string, title: string) => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.text-break {
+    width:300px;
+    line-break: auto;
+    white-space: normal;
+    font-size: 1.1em;
+  }
 </style>

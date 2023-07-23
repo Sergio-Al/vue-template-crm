@@ -145,6 +145,7 @@ const assignAsDelegate = async (userId: string) => {
 };
 
 const deleteRelation = async (id: string, userId: string) => {
+  //TODO: quitar el id empresa en el registro de usuario
   try {
     if (props.child) {
       await childCompanyStore.onUpdateChildCompany(id, {

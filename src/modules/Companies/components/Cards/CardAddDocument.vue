@@ -5,7 +5,7 @@ import { useQuasar, QUploader } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 
 import { useCompaniesStore } from '../../store/companyStore';
-import { useAreaMercado, useDivision, useGrupoCliente, useRegionales } from 'src/composables/useLanguage';
+import {  useDivision } from 'src/composables/useLanguage';
 
 import {
   dataFormatCRM3,
@@ -15,27 +15,12 @@ import {
 import { userStore } from 'src/modules/Users/store/UserStore';
 import { axiosCRM3 } from 'src/conections/axiosPRY';
 import type { Document } from '../../utils/types';
-
-// interface DocumentForm {
-//   description: string;
-//   fileName: string;
-//   assigned_user_id: string;
-//   category: any;
-//   type: any;
-//   status_id:string;
-//   active_date:any;
-//   exp_date:any;
-// }
-
-import {
-  regionalList,
-  //divisionList,
-  documentTypeList,
-} from '../../utils/dummyData';
+import { documentTypeList } from '../../utils/dummyData';
 
 interface Props {
   headerId?: string;
   defaultData?: Document;
+  headerChild?:boolean;
 }
 
 interface Emits {
@@ -67,7 +52,7 @@ const status_doc = [
 const types_doc = ref([]);
 
 const data = ref({ category: '', version: '', iddivision_c:'04', active_date: new Date().toISOString().substring(0,10)  } as Document);
-const headerId = ref<string>('');
+//const headerId = ref<string>('');
 
 const divisionList = ref([]);
 //const amercadoList = ref([]);
@@ -100,8 +85,6 @@ const defaultExists = computed(() => {
 });
 
 const uploadFiles = async (file: File[]) => {
-  //console.log(file);
-
   dataFormatCRM3;
 
   try {
@@ -114,27 +97,25 @@ const uploadFiles = async (file: File[]) => {
       category_id: data.value.category?.value || '',
       template_type: data.value.type?.value || '',
       iddivision_c: data.value.iddivision_c || '',
-      //division_c:
-        // divisionList.find((div) => div.value === data.value.iddivision_c)
-        //   ?.label || '',
+      description:data.value.description,
+      documento_c:data.value.document_type,
       idamercado_c: data.value.idamercado_c || '',
-      //amercado_c:listAreaMercado.find(amer => amer.value === data.value.idamercado_c)
-       //   ?.label || '',
-      user_id_c: userCRM.id,
-      header: props.headerId,
+      user_id: userCRM.id,
+      header: props.headerId, //id de la empresa
       status_id:data.value.status_id,
       active_date:data.value.active_date,
-      exp_date:data.value.exp_date,
+      exp_date:data.value.exp_date
     };
 
-    const body = dataFormatCRM3Basic(
-      'certif_upload_empresa',
-      {
-        data: dataSend,
-      },
-      file[0]
-    );
-    console.log(dataSend);
+    const method = props.headerChild?'certif_upload_participacion':'certif_upload_empresa';
+
+      const body = dataFormatCRM3Basic(
+        method,
+        {
+          data: dataSend,
+        },
+        file[0]
+      );
     await axiosCRM3.post('', body);
   } catch (error) {
     console.log('se guardó el documento');
@@ -154,7 +135,7 @@ const onSubmit = async () => {
 
 onMounted(async () => {
   if (defaultExists.value) {
-    console.log('with data');
+    //console.log('with data');
     data.value = {
       ...data.value,
       ...props.defaultData,
@@ -166,9 +147,11 @@ onMounted(async () => {
   await getListDivisiones();
   divisionList.value = listDivisiones.value;
 
-  console.log(data.value);
+  //console.log(data.value);
+  console.log(props);
   //amercadoList.value = await useDivAreaMercado(data.value.iddivision_c);
 });
+
 </script>
 
 <template>

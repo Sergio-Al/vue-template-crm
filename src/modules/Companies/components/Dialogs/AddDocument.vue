@@ -8,6 +8,7 @@ import type { Document } from '../../utils/types';
 interface Props {
   id?: string;
   documentId?: string;
+  child?:boolean;
   documentData?: Document;
 }
 
@@ -15,6 +16,7 @@ const expansionItemRef = ref<InstanceType<typeof QExpansionItem> | null>();
 
 const props = withDefaults(defineProps<Props>(), {
   id: '',
+  child:false,
   documentId: '',
   documentData: () => ({} as Document),
 });
@@ -22,8 +24,6 @@ const props = withDefaults(defineProps<Props>(), {
 onMounted(() => {
   console.log('mounted');
   expansionItemRef.value?.show();
-  if (!!props.documentId) {
-  }
 });
 
 const columns: QTableColumn[] = [
@@ -71,30 +71,6 @@ const columns: QTableColumn[] = [
   },
 ];
 
-// const dummyData = [
-//   {
-//     id: 'ddfasfads',
-//     name: 'Version 2 Cert',
-//     date_added: '27/01/2023',
-//     fileName: 'nombreDocumentos',
-//     date_exp: '27/02/2023',
-//     status: 'Revision',
-//     description: 'Segunda version del documento',
-//     version: '2',
-//     assigned_user_id: 'assignedUserId',
-//   },
-//   {
-//     id: 'otro',
-//     name: 'Version 1 Cert',
-//     date_added: '27/01/2023',
-//     fileName: 'nombreDocumentos',
-//     date_exp: '27/02/2023',
-//     version: '1',
-//     description: 'Primera version del documento',
-//     status: 'Caducado',
-//     assigned_user_id: 'assignedUserId',
-//   },
-// ];
 </script>
 
 <template>
@@ -146,6 +122,7 @@ const columns: QTableColumn[] = [
         >
           <CardAddDocument
             :header-id="props.id"
+            :header-child="props.child"
             :default-data="props.documentData"
           />
         </q-expansion-item>

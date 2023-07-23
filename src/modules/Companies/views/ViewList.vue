@@ -170,9 +170,9 @@ onMounted(async () => {
           <q-td class="text-left">
             <q-checkbox v-model="propsTable.selected" flat dense />
           </q-td>
-          <q-td key="razon_social_c" :props="propsTable" :style="'width: 100px;'">
+          <q-td key="razon_social_c" :props="propsTable">
             <span
-              class="text-blue-9 cursor-pointer"
+              class="cursor-pointer text-primary text-break text-weight-bold"
               @click="openItemSelected(propsTable.row.id, propsTable.row.razon_social_c)"
             >
               {{ propsTable.row.razon_social_c }}
@@ -185,8 +185,10 @@ onMounted(async () => {
           >
             {{ propsTable.row.name }}
           </q-td>
-          <q-td key="direccion_c" :props="propsTable" :style="'width: 100px;'">
-            {{ directionFormat(propsTable.row.direccion_c) }}
+          <q-td key="direccion_c" :props="propsTable">
+              <span class="text-break">
+                {{ directionFormat(propsTable.row.direccion_c) }}
+              </span>
           </q-td>
           <q-td key="resolucion_ministerial_c" :props="propsTable">
             {{ propsTable.row.resolucion_ministerial_c }}
@@ -196,6 +198,8 @@ onMounted(async () => {
               class="primary"
               icon="web"
               label="Visitar"
+              color="info"
+              dark
               clickable
               :disable="!propsTable.row.website"
               @click="() => openLink(propsTable.row.website)"
@@ -206,10 +210,30 @@ onMounted(async () => {
             </q-chip>
           </q-td>
           <q-td key="phone_office" :props="propsTable">
-            {{ propsTable.row.phone_office }}
+            <span>
+              <q-icon name="phone" size="1.5em" color="primary" /> {{ propsTable.row.phone_office }}
+            </span><br>
+            <span v-if="propsTable.row.phone_alternate">
+              <q-icon name="phone" size="1.5em" color="primary" /> {{ propsTable.row.phone_alternate }}
+            </span>
           </q-td>
-          <q-td key="ownership" :props="propsTable">
-            {{ propsTable.row.ownership }}
+          <q-td key="representante" :props="propsTable">
+            <div class="row items-center ">
+              <div class="col-1">
+                <q-avatar
+                  size="24px"
+                  font-size="24px"
+                  color="primary"
+                  text-color="white"
+                  icon="person"
+                />
+              </div>
+              <div class="column q-pl-sm ellipsis col-11">
+                <span class="ellipsis-item text-break">
+                  {{ propsTable.row.representante }}
+                </span>
+              </div>
+            </div>
           </q-td>
           <!--<q-td key="id_representante" :props="propsTable">
             <div
@@ -249,3 +273,17 @@ onMounted(async () => {
   </div>
   <CompanyDialog ref="companyDialogRef" />
 </template>
+<style scoped>
+  .text-break {
+    width:300px;
+    line-break: auto;
+    white-space: normal;
+    font-size: 1.1em;
+  }
+
+  .ellipsis-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>

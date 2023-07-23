@@ -94,6 +94,14 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           visible: true,
         },
         {
+          name: 'cumplimiento_req',
+          align: 'center',
+          label: 'Cumplimiento de Requisitos',
+          field: 'cumplimiento_req',
+          sortable: true,
+          visible: true,
+        },
+        {
           name: 'id',
           align: 'center',
           label: 'Certificación',
@@ -111,6 +119,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
       'solicitante',
       'tipo_producto_c',
       'fabricante_c',
+      'cumplimiento_req',
       'id',
     ],
     visible_columns: [
@@ -121,6 +130,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
       'solicitante',
       'tipo_producto_c',
       'fabricante_c',
+      'cumplimiento_req',
       'id',
     ],
   }),

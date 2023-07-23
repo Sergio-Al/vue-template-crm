@@ -8,9 +8,10 @@ import AddDocument from '../components/Dialogs/AddDocument.vue';
 import CardDocumentViewer from '../components/Cards/CardDocumentViewer.vue';
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import { CompanyDocument } from '../utils/types';
+import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
+
 
 import type { Document } from '../utils/types';
-
 import { documentTableList } from '../utils/dummyData';
 
 interface Props {
@@ -20,6 +21,17 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), { child: false });
 const companyStore = useCompaniesStore();
+const showConfirmed = ref(false);
+
+const propsCreateAlert = {
+  title: 'Alerta de confirmación',
+  icon: 'person',
+  iconSize: 'md',
+  message: '',
+  iconColor: 'red',
+  btnColor: 'red',
+  btnText: 'Si, estoy seguro',
+};
 
 const columns: QTableColumn[] = [
   {
@@ -71,13 +83,13 @@ const columns: QTableColumn[] = [
     field: 'responsable',
     sortable: true,
   },
-  // {
-  //   name: 'options',
-  //   align: 'center',
-  //   label: 'Versiones',
-  //   field: 'options',
-  //   sortable: true,
-  // },
+  {
+    name: 'options',
+    align: 'center',
+    label: 'Acciones',
+    field: 'options',
+    sortable: true,
+  },
 ];
 
 const documentDialog = ref<boolean>(false);
@@ -89,26 +101,71 @@ const openDialog = () => {
   documentDialog.value = true;
 };
 
-const openDocumentVersionDialog = (id: string, data: Document) => {
-  console.log(id);
-  currentDocumentVersionId.value = id;
-  documentVersionDialog.value = true;
-  documentSelected.value = data;
-};
+// const openDocumentVersionDialog = (id: string, data: Document) => {
+//   console.log(id);
+//   currentDocumentVersionId.value = id;
+//   documentVersionDialog.value = true;
+//   documentSelected.value = data;
+// };
 
 //se dispara cuando carga el componente
+const propsParent = {...props};
+
+const idDocumentDelete = ref();
+
 const {
   state: documents,
   isLoading,
   execute,
 } = useAsyncState(async () => {
-  //console.log('holoo');
-  //return documentTableList;
-  let a = await companyStore.onGetCompanyDocuments(props.id);
-  console.log(a);
-  return a;
-  //console.log(a);
+  //console.log(propsParent);
+
+  let docs;
+  docs = await companyStore.onGetCompanyDocuments(props.id, props.child);
+  return docs;
 }, []);
+
+const reloadList = async ()=>{
+  await execute();
+}
+
+const onCancelRelation = () => {
+  console.log('se cancelo');
+};
+
+const deleteDocument = async ()=>{
+  try{
+    await companyStore.onDeleteDocumentCompany(idDocumentDelete.value, propsParent.id, propsParent.child);
+    reloadList();
+  }
+  catch(e){
+    throw (e);
+  }
+}
+
+const setColorState = (state: string): string => {
+  const colorMap: { [key: string]: string } = {
+    Activo : 'green',
+    Archivado: 'orange',
+    Borrador: 'orange',
+    Caducado: 'red',
+    'En Revisión': 'blue',
+    FAQ: 'black',
+    Pendiente: 'blue',
+  };
+
+  return colorMap[state] || 'grey';
+};
+
+const setColorType = (type: string): string => {
+  const colorMap: { [key: string]: string } = {
+    privado : 'orange',
+    publico: 'blue',
+  };
+
+  return colorMap[type] || 'grey';
+};
+
 
 // const dummyData = [
 //   {
@@ -151,10 +208,23 @@ const {
         <div class="column">
           <span class="text-h6">Documentos de la empresa</span>
           <span v-if="props.child" class="text-caption"
-            >Empresa participante</span
+            >Participacion Como</span
           >
         </div>
         <q-space />
+        <q-btn
+            icon="update"
+            :color="$q.dark.isActive ? 'grey-3' : 'primary'"
+            dense
+            flat
+            @click="reloadList()"
+            :label="`${$q.screen.xs ? '' : ''}`"
+            class="q-mx-lg"
+          >
+            <q-tooltip class="bg-primary" :offset="[10, 10]">
+              Actualizar
+            </q-tooltip>
+          </q-btn>
         <q-btn
           color="primary"
           icon="add"
@@ -202,14 +272,14 @@ const {
             </div>
             <span v-else>{{ col.value }}</span>
           </q-td>-->
-          <q-td key="nombre_doc" :props="props" :style="'width: 150px;'">
+          <q-td key="nombre_doc" :props="props" :style="'width: 250px;'">
             <!--<span
               class="text-blue-9 cursor-pointer"
               @click="openItemSelected(props.row.id, props.row.nombre_doc)"
             >
               {{ props.row.nombre_doc }}
             </span>-->
-            <span class="text-blue-9 cursor-pointer">
+            <span class="text-primary cursor-pointer text-weight-bold">
               {{ props.row.nombre_doc }}
             </span>
           </q-td>
@@ -217,37 +287,63 @@ const {
             <p class="q-my-sm">
               {{ props.row.categoria_doc }}
             </p>
-            <p class="text-caption q-my-sm">Tipo: {{ props.row.tipo_doc }}</p>
+            <p class="text-caption q-my-sm"><span class="text-weight-bold">Tipo:</span> {{ props.row.tipo_doc }}</p>
           </q-td>
           <q-td key="division" :props="props" :style="'width: 150px;'">
             <p class="q-my-sm">
               {{ props.row.division_c }}
             </p>
-            <p class="text-caption q-my-sm">A. Mercado: Desconocido</p>
+            <p class="text-caption q-my-sm"><span class="text-weight-bold">A. Mercado:</span> Desconocido</p>
           </q-td>
           <q-td key="active_date" :props="props" :style="'width: 150px;'">
-            <p class="q-my-sm">F. Inicio: {{ props.row.active_date }}</p>
+            <p class="q-my-sm"><span class="text-weight-bold">F. Inicio:  </span>{{ props.row.active_date.substr(0,10) }}</p>
             <p class="text-caption q-my-sm">
-              F. Culminación: {{ props.row.exp_date }}
+              <span class="text-weight-bold">F. Culminación:  </span> {{ props.row.exp_date.substring(0,10) }}
             </p>
           </q-td>
           <q-td key="status_id" :props="props" :style="'width: 150px;'">
-            <span>
-              {{ props.row.status_id }}
-            </span>
+            <q-badge outline :color="setColorState(props.row.status_id)" class="q-px-md q-py-sm">
+              <span class="text-weight-bold">{{ props.row.status_id }}</span>
+            </q-badge>
           </q-td>
           <q-td key="tipo" :props="props" :style="'width: 150px;'">
-            <span>
-              {{ props.row.tipo }}
-            </span>
+            <q-badge :color="setColorType(props.row.tipo)" class="q-px-md q-py-sm">
+              <q-icon v-if="props.row.tipo == 'privado'" name="info" />
+              <q-icon v-else name="check" />
+              <span class="text-weight-bold q-pl-sm">{{ props.row.tipo.toUpperCase() }}</span>
+            </q-badge>
           </q-td>
           <q-td key="responsable" :props="props" :style="'width: 150px;'">
-            <p>
+            <span>
               {{ props.row.responsable }}
-            </p>
-            <p class="text-caption">
-              Fecha de Registro: {{ props.row.fecha_creacion }}
-            </p>
+            </span>
+            <br>
+            <span class="text-weight-bold">Fecha de Registro:</span> {{ props.row.fecha_creacion.substring(0,10) }}
+          </q-td>
+          <q-td key="options" :props="props" :style="'width: 150px;'">
+            <q-btn
+                color="negative"
+                icon="delete"
+                round
+                size="sm"
+                @click="()=>{
+                  showConfirmed = true;
+                  idDocumentDelete = props.row.id
+                }"
+              >
+                <q-tooltip> Eliminar </q-tooltip>
+              </q-btn>
+
+              <AlertComponent
+                v-model="showConfirmed"
+                v-bind="propsCreateAlert"
+                @confirm="deleteDocument"
+                @denegate="onCancelRelation"
+              >
+                <template #body>
+                  <span> ¿Está seguro de eliminar el documento?  </span>
+                </template>
+              </AlertComponent>
           </q-td>
         </q-tr>
         <q-tr v-if="props.expand" :props="props">
@@ -261,6 +357,7 @@ const {
             <CardDocumentViewer
               :id="props.row.id"
               :data="props.row"
+              :child="propsParent.child"
               :category="props.row.category"
               :type="props.row.type"
             />
@@ -270,7 +367,7 @@ const {
     </q-table>
   </div>
   <q-dialog v-model="documentDialog" persistent>
-    <AddDocument :id="props.id" />
+    <AddDocument :id="props.id" :child="props.child" />
   </q-dialog>
   <q-dialog v-model="documentVersionDialog" persistent>
     <AddDocument
@@ -279,10 +376,18 @@ const {
       :document-data="documentSelected"
     />
   </q-dialog>
+
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .fixed-height {
   min-height: inherit;
 }
+
+.text-break {
+    width:300px;
+    line-break: auto;
+    white-space: normal;
+    font-size: 1.1em;
+  } 
 </style>

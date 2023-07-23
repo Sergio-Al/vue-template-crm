@@ -31,6 +31,7 @@ export const getTableData = async (params: Params) => {
     const { data } = await axios_NS_07.get(
       `/empresas?params=${JSON.stringify(params)}`
     );
+    console.log(data);
 
     //const { data } = await axios_NS_07.get(`/empresas`, {params});
     return data;
@@ -39,9 +40,16 @@ export const getTableData = async (params: Params) => {
   }
 };
 
-export const getCompanyDocuments = async (id: string) => {
+export const getCompanyDocuments = async (id: string, child:boolean) => {
+  let response:any='';
   try {
-    const { data } = await axios_NS_07.get(`empresas/documents/${id}`);
+    if(child){
+      response = await axios_NS_07.get(`participacion/documents/${id}`);
+    }
+    else{
+      response = await axios_NS_07.get(`empresas/documents/${id}`);
+    }
+    const { data } = response
     return data;
   } catch (error) {
     throw error;
@@ -156,8 +164,6 @@ export const getOneChildCompany = async (id: string) => {
 export const getOneCompany = async (id: string) => {
   try {
     const response = await axios_NS_07.get(`/empresas/${id}`);
-    // const response = await axios_NS_07.get(`empresas/${id}`);
-    console.log('service ', response);
     return response.data;
   } catch (error) {
     return error;
@@ -219,9 +225,9 @@ export const updateChildCompany = async (
     delete dataSend.id;
     delete dataSend.parentCompany;
 
-    console.log(dataSend);
+    //console.log(dataSend);
 
-    // descomentar y poner el endpoint para actualizar participantes
+    // TODO: descomentar y poner el endpoint para actualizar participantes
     const response = await axios_NS_07.patch(`/participacion/${id}`, dataSend);
     return response.data;
   } catch (error) {
@@ -250,14 +256,10 @@ export const getContactsAccount = async (account_id: string) => {
 };
 
 export const deleteMassiveData = async (data: any) => {
-  // console.log('delete massive');
-  // console.log(data);
-  // return;
   try {
     data.items.forEach(async (element: any) => {
       await axios_NS_07.delete(`empresas/${element.id}`);
     });
-    //return;
   } catch (error) {
     throw error;
   }
@@ -400,6 +402,17 @@ export const getVersions = async(id:string)=>{
     );
     //console.log(data);
     return data; 
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export const deleteDocumentCompany = async(data:any)=>{
+  try{
+    const endpoint = data.child?`/documentos/participacion`:`/documentos/companies`;
+    await axios_NS_07.post(endpoint, data);
+    return;
   }
   catch (error) {
     throw error;
