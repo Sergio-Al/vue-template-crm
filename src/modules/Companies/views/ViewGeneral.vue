@@ -275,8 +275,8 @@ const emits = defineEmits<{
                 <q-tab-panel name="Activities">
                   <ActivitiesComponent
                     :id="localId"
-                    :idUser="'1'"
-                    module="HANCE_Certificaciones"
+                    :idUser="'5c19df6d-0cf0-6e23-7c01-629fb9d01588'"
+                    module="HANCE_SolicitudCertificacion"
                   ></ActivitiesComponent>
                 </q-tab-panel>
                 <q-tab-panel name="historychanges">

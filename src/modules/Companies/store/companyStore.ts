@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { Loading } from 'quasar';
 import { userStore } from 'src/modules/Users/store/UserStore';
 import { computed, ref } from 'vue';
+import { Notification } from 'src/composables';
 import {
   createChildCompany,
   createCompany,
@@ -13,7 +14,8 @@ import {
   //getOneChildCompany,
   getCompanyChildrenUsers,
   getCompanyDocuments,
-  getVersions
+  getVersions,
+  deleteDocumentCompany
 } from '../services/useCompanyService';
 import type { ChildCompany, Company } from '../utils/types';
 
@@ -193,10 +195,10 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     }
   };
 
-  const onGetCompanyDocuments = async (id: string) => {
+  const onGetCompanyDocuments = async (id: string, child:boolean) => {
     try {
       // obtener documentos como array
-      const documents = await getCompanyDocuments(id)
+      const documents = await getCompanyDocuments(id, child)
       return documents;
       //return [];
     } catch (error) {
@@ -229,7 +231,27 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       return versions;
     }
     catch(e){
-      throw new Error(e)
+      throw (e)
+    }
+  }
+
+  const onDeleteDocumentCompany = async(documentId:string, companyId:string, child:boolean)=>{
+    try{
+      const dataSend = {
+        user_id: userCRM.id,
+        documentId,
+        companyId, 
+        child
+      };
+      await deleteDocumentCompany(dataSend);
+      Notification(
+        'positive',
+        'check_circle',
+        `<strong> Acción exitosa¡ </strong> <br/> Se eliminó un registro de la tabla`
+      );
+    }
+    catch(e){
+      throw e;
     }
   }
 
@@ -273,6 +295,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     onGetUsersFromChildCompany,
     onGetCategoryDocuments,
     onGetTypeDocuments,
-    onGetVersions
+    onGetVersions,
+    onDeleteDocumentCompany
   };
 });
