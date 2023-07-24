@@ -1301,3 +1301,21 @@ export interface DataAssginedUser {
 }
 
 //* AssignedUsers types end
+
+//* Contacts Filtered
+
+export interface ContactFiltered {
+  id: string;
+  nombre: string;
+  ci: string;
+  telefono: string;
+  correo: string;
+  fecha_nacimiento: string;
+  genero: string;
+  principal: boolean;
+  padre: boolean;
+  cuenta: string;
+  id_cuenta: string;
+}
+
+//* End Contacts Filtered

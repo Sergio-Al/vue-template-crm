@@ -7,6 +7,7 @@ import {
 import { userStore } from 'src/modules/Users/store/UserStore';
 import type {
   Certification,
+  CertificationDB,
   Manufacturer,
   Params,
   Product,
@@ -40,9 +41,13 @@ export const updateMassiveData = async (data: any) => {
 
 export const deleteMassiveData = async (data: any) => {
   try {
+    // DEV-1 request
     data.items.forEach(async (element: any) => {
-      await axios_NS_07.delete(`certifications/${element.id}`);
+      await axios_NS_07.delete(`certification-request/${element.id}`);
     });
+    // data.items.forEach(async (element: any) => {
+    //   await axios_NS_07.delete(`certifications/${element.id}`);
+    // });
     return;
   } catch (error) {
     throw error;
@@ -52,12 +57,17 @@ export const deleteMassiveData = async (data: any) => {
 export const getTableData = async (params: Params) => {
   console.log(params);
   try {
-    //return certicationsList;
-    const { data } = await axios_NS_07.get(
-      `/certificacion?params=${JSON.stringify(params)}`
-    );
-    //console.log(data);
+    // DEV-1 request
+    const { data } = await axios_NS_07.get('/certification-request');
+    console.log(data);
     return data;
+
+    // //return certicationsList;
+    // const { data } = await axios_NS_07.get(
+    //   `/certificacion?params=${JSON.stringify(params)}`
+    // );
+    // //console.log(data);
+    // return data;
   } catch (error) {
     throw error;
   }
@@ -102,29 +112,60 @@ export const updateTablePreferences = async (id: string, data: any) => {
 };
 
 export const createCertificationRequest = async (
-  solicitud_certification: Certification
+  solicitud_certification: CertificationDB
 ) => {
   console.log('Creacion de solicitud', solicitud_certification);
-  const {data} = await axios_NS_07.post('/solicitud', solicitud_certification);
+
+  const { data } = await axios_NS_07.post(
+    'certification-request',
+    solicitud_certification
+  );
+
+  // const { data } = await axios_NS_07.post(
+  //   '/solicitud',
+  //   solicitud_certification
+  // );
   return data;
 };
 
 export const getCertificationRequest = async (id: string) => {
-  const response = await axios_NS_07.get(`/solicitud/${id}`);
+  try {
+    // const response = await axios_NS_07.get(`/solicitud/${id}`);
+    const { data } = await axios_NS_07.get(`/certification-request/${id}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
   //console.log(response);
-  return response;
   // return certification;
 };
 
 export const updateCertificationRequest = async (
   id: string,
-  data: Partial<Certification>
+  body: Partial<CertificationDB>
 ) => {
-  return;
+  try {
+    // DEV-1 request
+    const { data } = await axios_NS_07.patch(
+      `certification-request/${id}`,
+      body
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export const deleteCertificationRequest = async (id: string) => {
-  return;
+  try {
+    // DEV-1 request
+    const { data } = await axios_NS_07.delete(`certification-request/${id}`);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export const getUser = async (id: string) => {

@@ -6,7 +6,7 @@ import moment from 'moment';
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 import { getUsers, getUser } from '../../services/useCertificationsService';
 
-import { Certification, User } from '../../utils/types';
+import { Certification, CertificationDB, User } from '../../utils/types';
 
 // obtener data del repositorio de mongoDB y borrar este import
 import {
@@ -19,7 +19,7 @@ import {
 
 interface Props {
   id: string;
-  data: Certification;
+  data: Partial<CertificationDB>;
 }
 
 const { getListDivisiones, listDivisiones } = useDivision();
@@ -106,8 +106,10 @@ const amercadoList = computed(() => {
   //console.log('division seleccionada' +inputData.value.iddivision_c);
   //console.log('listado de divisiones' +divisionList.value);
   //inputData.value.idamercado_c = '';
-  const result:any = divisionList.value.filter((element:any)=>(element.cod_div == inputData.value.iddivision_c));
-  const aux = {...result[0]}
+  const result: any = divisionList.value.filter(
+    (element: any) => element.cod_div == inputData.value.iddivision_c
+  );
+  const aux = { ...result[0] };
   //console.log(a.value[0].amercado);
   return aux.amercado;
   //return a;
@@ -115,7 +117,7 @@ const amercadoList = computed(() => {
 
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
-  exposeData: (): Certification => ({ ...inputData.value }),
+  exposeData: (): Partial<CertificationDB> => ({ ...inputData.value }),
 });
 </script>
 
@@ -208,7 +210,6 @@ defineExpose({
           emit-value
           map-options
         >
-          
         </q-select>
         <q-select
           class="col-12 col-sm-6"
@@ -223,7 +224,6 @@ defineExpose({
           emit-value
           map-options
         >
-         
         </q-select>
         <q-select
           class="col-12 col-sm-6"
@@ -238,7 +238,6 @@ defineExpose({
           emit-value
           map-options
         >
-
         </q-select>
       </div>
     </template>
@@ -267,7 +266,6 @@ defineExpose({
           v-model="inputData.user_id_c"
           readonly
         >
-
           <template #no-option>
             <span class="text-grey-8 q-pa-lg">Sin opciones</span>
           </template>
@@ -309,7 +307,6 @@ defineExpose({
           map-options
           readonly
         >
-
         </q-select>
         <q-select
           class="col-12 col-sm-6"
@@ -325,7 +322,6 @@ defineExpose({
           map-options
           readonly
         >
-
         </q-select>
         <q-select
           class="col-12 col-sm-6"
@@ -341,7 +337,6 @@ defineExpose({
           map-options
           readonly
         >
-
         </q-select>
       </div>
     </template>

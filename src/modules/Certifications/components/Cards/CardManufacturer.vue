@@ -7,7 +7,11 @@ import CardRelationManufacturer from './CardRelationManufacturer.vue';
 import ContactRelationCard from 'src/modules/Leads/components/Cards/ContactRelationCard.vue';
 import CardRelationManufacturerAlt from './CardRelationManufacturerAlt.vue';
 
-import { Certification } from '../../utils/types';
+import {
+  Certification,
+  CertificationDB,
+  Manufacturer,
+} from '../../utils/types';
 import {
   getManufacturer,
   getManufacturerContact,
@@ -15,14 +19,15 @@ import {
 
 // eliminar dummyData al capturar del backend
 import { manufacturers, manufacturerContactsData } from '../../utils/dummyData';
+import CardRelationContact from './CardRelationContact.vue';
 
 interface Props {
   id: string;
-  data: Partial<Certification>;
+  data: Partial<CertificationDB>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  data: () => ({ id_empresa: '' }),
+  data: () => ({ hance_empresa_id_c: '' }),
 });
 
 const $q = useQuasar();
@@ -31,8 +36,12 @@ const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const cardRelationManufacturerRef = ref<InstanceType<
   typeof CardRelationManufacturer
 > | null>(null);
+const cardRelationContactRef = ref<InstanceType<
+  typeof CardRelationContact
+> | null>(null);
 
 const inputData = ref({ ...props.data });
+const test = ref('');
 
 const manufacturersList = ref([]);
 const manufacturerContacts = ref([]);
@@ -73,11 +82,16 @@ const assignManufacturerInfo = (id: string) => {
 };
 
 const removeManufacturer = () => {
-  inputData.value.id_fabricante_c = '';
+  inputData.value.fabricante_c = '';
 };
 
 const restoreValues = () => {
   if (props.data) inputData.value = { ...props.data };
+};
+
+const manufacturerSelected = (data: Manufacturer) => {
+  inputData.value.correo_fabricante_c = data.email1;
+  inputData.value.telefono_fabricante_c = data.phone_office;
 };
 
 const reset = () => {
@@ -86,16 +100,14 @@ const reset = () => {
 
 onMounted(async () => {
   if (!!props.id) {
-    if (!!inputData.value.id_fabricante_c) {
+    if (!!inputData.value.hance_empresa_id_c) {
       const manufacturerSelected = await getManufacturer(
-        inputData.value.id_fabricante_c
+        inputData.value.hance_empresa_id_c
       );
       manufacturersList.value = [manufacturerSelected];
     }
-    if (!!inputData.value.id_profesional_acreditado) {
-      const contact = await getManufacturerContact(
-        inputData.value.id_profesional_acreditado
-      );
+    if (!!inputData.value.user_id1_c) {
+      const contact = await getManufacturerContact(inputData.value.user_id1_c);
       manufacturerContacts.value = [contact];
     }
   }
@@ -124,21 +136,17 @@ defineExpose({
         <div class="col-12">
           <CardRelationManufacturer
             ref="cardRelationManufacturerRef"
-            v-model:id="inputData.id_empresa"
+            v-model:id="inputData.hance_empresa_id_c"
             module-name="Fabricante"
             edit-mode
             error-message="Se necesita un fabricante"
+            @assigned="manufacturerSelected"
           />
-          <!-- <CardRelationManufacturerAlt
-            v-model:id="inputData.id_empresa"
-            module-name="Fabricante"
-            @update:id="assignData"
-          /> -->
         </div>
         <div class="col-12">
-          <ContactRelationCard
-            ref="contactRelationCardRef"
-            v-model:id="inputData.contact_id"
+          <CardRelationContact
+            ref="cardRelationContactRef"
+            v-model:id="inputData.contact_fabricante_c"
             module-name="Contacto"
             edit-mode
             @update:id="reset"
@@ -241,67 +249,24 @@ defineExpose({
     <template #read>
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-select
-          :hint="!!inputData.id_fabricante_c ? 'Empresa seleccionada' : ''"
-          :options="manufacturersList"
-          class="col-12 col-sm-6"
-          dense
-          emit-value
-          fill-input
-          hide-dropdown-icon
-          hide-selected
-          input-debounce="500"
-          label="Nombre"
-          map-options
-          option-label="name"
-          option-value="id"
-          outlined
-          use-chips
-          use-input
-          v-model="inputData.id_fabricante_c"
-          readonly
-        >
-          <template #prepend>
-            <q-icon name="work" />
-          </template>
-
-          <template #no-option>
-            <span class="text-grey-8 q-pa-lg">Sin opciones</span>
-          </template>
-
-          <template #option="scope">
-            <q-item v-bind="scope.itemProps">
-              <q-item-section avatar>
-                <q-icon name="work" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>{{ scope.opt.name }}</q-item-label>
-                <q-item-label caption
-                  >Email: {{ scope.opt.email }}</q-item-label
-                >
-                <q-item-label caption
-                  >Teléfono: {{ scope.opt.phone }}</q-item-label
-                >
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-        <q-select
-          class="col-12 col-sm-6"
-          outlined
-          dense
-          v-model="inputData.id_contacto_fabricante_c"
-          :options="manufacturerContacts"
-          type="text"
-          label="Contacto"
-          option-value="id"
-          option-label="name"
-          emit-value
-          map-options
-          hide-dropdown-icon
-          readonly
-        >
-        </q-select>
+        <div class="col-12">
+          <CardRelationManufacturer
+            ref="cardRelationManufacturerRef"
+            v-model:id="inputData.hance_empresa_id_c"
+            module-name="Fabricante"
+            error-message="Se necesita un fabricante"
+            @assigned="manufacturerSelected"
+          />
+        </div>
+        <div class="col-12">
+          <CardRelationContact
+            ref="cardRelationContactRef"
+            v-model:id="inputData.contact_fabricante_c"
+            module-name="Contacto"
+            @update:id="reset"
+            error-message="Se necesita un contacto"
+          />
+        </div>
         <q-input
           v-model="inputData.correo_fabricante_c"
           type="text"

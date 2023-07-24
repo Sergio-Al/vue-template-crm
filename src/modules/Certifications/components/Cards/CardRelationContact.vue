@@ -1,66 +1,119 @@
 <script lang="ts" setup>
-import { useAsyncState } from '@vueuse/core';
 import { ref } from 'vue';
-
-import RelationDetailCard from 'src/modules/Leads/components/Cards/RelationDetailCard.vue';
-import AdvancedFilterProduct from 'src/modules/Accounts/components/AdvancedFilter/AdvancedFilterProduct.vue';
+import { useAsyncState } from '@vueuse/core';
+import { useQuasar } from 'quasar';
+import { getRecordModuleInfo } from 'src/services/GlobalService';
+import RelationDetailCard from './RelationDetailCard.vue';
+import AdvancedFilterContact from 'src/modules/Accounts/components/AdvancedFilter/AdvancedFilterContact.vue';
+import { ContactFiltered } from 'src/components/types';
 import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
 
-import type { Product } from '../../utils/types';
-import { productPromise } from '../../utils/dummyData';
+const props = withDefaults(
+  defineProps<{
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    id: any;
+    moduleName: string;
+    editMode?: boolean;
+    accountId?: string;
+    errorMessage?: string;
+  }>(),
+  {
+    moduleName: 'Name Module',
+    editMode: false,
+    accountId: '',
+  }
+);
 
-interface Props {
-  id: string;
-  moduleName: string;
-  editMode?: boolean;
-  errorMessage?: string;
-}
+const emits = defineEmits<{
+  (event: 'assign'): void;
+  (event: 'update:id', id: string): void;
+  (event: 'delete', id: string): void;
+}>();
 
-interface Emits {
-  (e: 'update:id', id: string): void;
-}
+const $q = useQuasar();
 
-const props = defineProps<Props>();
-const emits = defineEmits<Emits>();
-
-const validated = ref(false);
-const productFiltered = ref({} as Product);
-const selectProductDialog = ref(false);
-
-const advancedFilterProductRef = ref<InstanceType<
-  typeof AdvancedFilterProduct
+const advancedFilterContactRef = ref<InstanceType<
+  typeof AdvancedFilterContact
 > | null>(null);
 
-const openProductFilter = async () => {
-  console.log('opening product filter');
-  await advancedFilterProductRef.value?.openDialog();
+const defaultData = {
+  title: '',
+  subtitle1: '',
+  description: '',
+  phone_mobile: '',
+  email1: '',
 };
+const contactFiltered = ref({} as ContactFiltered);
+const selectContactDialog = ref(false);
+const validated = ref(false);
 
-const deleteValue = () => {
-  console.log('deleting value');
-};
-
-const selectItem = (item: Product) => {
-  productFiltered.value = item;
-  selectProductDialog.value = true;
-  advancedFilterProductRef.value?.onClose();
-};
-
-const assignProduct = async () => {
-  if (!!productFiltered.value.id) {
-    await emits('update:id', productFiltered.value.id);
-    await execute();
+const getContactDetail = async (id: string, assign = false) => {
+  if (assign) isLoading.value = true;
+  const response = await getRecordModuleInfo<{
+    name: string;
+    assigned_user_name: string;
+    phone_mobile: string;
+    email1: string;
+  }>('Contacts', id, {
+    allData: false,
+    fields: ['name', 'assigned_user_name', 'phone_mobile', 'email1'],
+  });
+  const contact = {
+    title: response.name as string,
+    description: response.assigned_user_name as string,
+    phone_mobile: response.phone_mobile,
+    email1: response.email1,
+  };
+  if (assign) {
+    state.value = contact;
+    isLoading.value = false;
   }
+  return contact;
 };
 
-const { state, isLoading, execute } = useAsyncState(async () => {
+const openContactFilter = () => {
+  advancedFilterContactRef.value?.openDialog();
+};
+
+const selectItem = (contact: ContactFiltered) => {
+  contactFiltered.value = contact;
+  selectContactDialog.value = true;
+};
+
+const assignContact = async () => {
+  emits('update:id', contactFiltered.value.id);
+  advancedFilterContactRef.value?.onClose();
+  getContactDetail(contactFiltered.value.id, true);
+};
+
+const deleteValue = async () => {
+  emits('update:id', '');
+  state.value = defaultData;
+};
+
+const validate = () => {
+  reset();
+  validated.value = true;
+  return !!props.id;
+};
+
+const reset = () => {
+  validated.value = false;
+};
+
+const { state, isLoading } = useAsyncState(async () => {
   if (props.id) {
-    const response = await productPromise();
-    console.log(response);
+    const response = await getContactDetail(props.id);
     return response;
   }
-  return {} as Product;
-}, {} as Product);
+  return defaultData;
+}, defaultData);
+
+defineExpose({
+  validate,
+  reset,
+  state,
+});
 </script>
 
 <template>
@@ -122,13 +175,18 @@ const { state, isLoading, execute } = useAsyncState(async () => {
             }}</q-item-label
           >
 
-          <q-item-label v-if="moduleName == 'Producto'">
+          <q-item-label v-if="moduleName == 'Contacto'">
             <a
               class="text-bold cursor-pointer flex items-center text-primary"
               @click="() => {}"
             >
-              {{ state.name }}
+              {{ state.title }}
             </a>
+          </q-item-label>
+
+          <q-item-label v-if="!!state.description" caption lines="1"
+            >Asignado a:
+            <span class="text-weight-bold"> {{ state.description }} </span>
           </q-item-label>
 
           <q-item-label v-else> Seleccionado </q-item-label>
@@ -137,7 +195,7 @@ const { state, isLoading, execute } = useAsyncState(async () => {
         <q-item-section side top>
           <q-btn
             v-if="props.editMode"
-            @click="openProductFilter"
+            @click="openContactFilter"
             class="q-my-xs"
             color="primary"
             icon="open_in_new"
@@ -148,8 +206,9 @@ const { state, isLoading, execute } = useAsyncState(async () => {
       </q-item>
     </q-list>
   </q-card>
+
   <!-- <RelationDetailCard
-    v-if="!props.id"
+    v-if="!id"
     :module-name="moduleName"
     title="No Seleccionado"
     icon="perm_contact_calendar"
@@ -159,7 +218,7 @@ const { state, isLoading, execute } = useAsyncState(async () => {
   >
     <template v-if="editMode" #options>
       <q-btn
-        @click="openProductFilter"
+        @click="openContactFilter"
         class="q-my-xs"
         color="primary"
         icon="open_in_new"
@@ -188,7 +247,7 @@ const { state, isLoading, execute } = useAsyncState(async () => {
   <RelationDetailCard
     v-else
     :module-name="moduleName"
-    :title="state.name"
+    :title="state.title"
     :description="state.description"
     icon="perm_contact_calendar"
     :id="props.id"
@@ -210,29 +269,32 @@ const { state, isLoading, execute } = useAsyncState(async () => {
         icon="open_in_new"
         round
         size="xs"
-        @click="openProductFilter"
+        @click="openContactFilter"
       />
     </template>
   </RelationDetailCard> -->
-  <AdvancedFilterProduct
-    ref="advancedFilterProductRef"
-    title="Búsqueda de Productos"
+  <AdvancedFilterContact
+    ref="advancedFilterContactRef"
+    title="Búsqueda de Contactos"
+    :account_id="''"
+    :alt-account-id="accountId"
     @select-item="selectItem"
   />
   <AlertComponent
-    title="¿Asignar Producto?"
+    title="¿Asignar Contacto?"
     icon="warning"
     iconColor="warning"
     iconSize="50px"
     btn-color="primary"
     btn-text="Si, asignar"
-    v-model="selectProductDialog"
-    @confirm="assignProduct()"
-    @denegate="selectProductDialog = false"
+    v-model="selectContactDialog"
+    @confirm="assignContact"
+    @denegate="selectContactDialog = false"
   >
     <template #body>
       <span class="q-py-sm">
-        ¿Esta seguro de asignar a {{ productFiltered.name }} como producto?
+        ¿Esta seguro de asignar a {{ contactFiltered.nombre }} como contacto
+        relacionado?
       </span>
     </template>
   </AlertComponent>
