@@ -11,7 +11,7 @@ import {
   updateCertificationRequest,
   deleteCertificationRequest,
 } from '../services/useCertificationsService';
-import { Certification } from '../utils/types';
+import { Certification, CertificationDB } from '../utils/types';
 
 //! Borrar datos falsos si no se usan
 // import { childCompanies, defaultData, users } from '../utils/dummyData';
@@ -21,39 +21,46 @@ const { userCRM } = userStore();
 export const useCertificationStore = defineStore('certification-store', () => {
   //states
   const loading = ref(false);
-  const payload = ref({
+  const payload = ref<CertificationDB>({
     id: '',
-    nro_solicitud: '',
-    etapa: '',
-    estado: '',
-    tipo_tramite: '',
-    id_solicitante: '',
-    id_producto: '',
-    id_tipo_producto: '',
+    name: '',
+    etapa_c: '',
+    estado_c: '',
+    tipo_tramite_c: '',
+    user_id_c: '',
+    producto_c: '',
+    tipo_producto_c: '',
     iddivision_c: '',
     idamercado_c: '',
     idregional_c: '',
-    grupocliente_c: '',
     date_entered: moment().format('DD/MM/YYYY'),
-    cod_productos: '',
-    comentario_creacion: '',
-    aprobacion: '',
-    id_profesional_acreditado: '',
-    date_register_misa: '',
-    date_aprox_cert: '',
-    date_certif: '',
-    observacion: '',
-    comentario_observacion: '',
-    id_empresa: '',
+    comentario_solicitud_c: '',
+    estado_aprobacion_c: '',
+    user_id1_c: '',
+    date_register_misa_c: '',
+    date_planning_cert_c: '',
+    date_real_cert_c: '',
+    description: '',
+    hance_empresa_id_c: '',
     assigned_user_id: '',
-    empresa_email: '',
-    empresa_phone: '',
+    correo_fabricante_c: '',
+    telefono_fabricante_c: '',
+    date_modified: '',
+    modified_user_id: '',
+    created_by: '',
+    deleted: '',
+    referencia_prods: '',
+    cod_productos_c: '',
+    cod_misa_c: '',
+    nro_ruta_c: '',
+    fabricante_c: '',
+    contact_fabricante_c: '',
   });
 
   //getters
   const cardApplicant = computed(() => {
     const {
-      id_solicitante,
+      user_id_c, // solicitante
       date_entered,
       idamercado_c,
       iddivision_c,
@@ -61,7 +68,7 @@ export const useCertificationStore = defineStore('certification-store', () => {
     } = payload.value;
 
     return {
-      id_solicitante,
+      user_id_c,
       date_entered,
       iddivision_c,
       idamercado_c,
@@ -71,23 +78,26 @@ export const useCertificationStore = defineStore('certification-store', () => {
 
   const cardManufacturer = computed(() => {
     const {
-      id_empresa,
-      id_profesional_acreditado,
-      empresa_email,
-      empresa_phone,
+      hance_empresa_id_c,
+      user_id1_c,
+      correo_fabricante_c,
+      telefono_fabricante_c,
     } = payload.value;
     return {
-      id_empresa,
-      id_profesional_acreditado,
-      empresa_email,
-      empresa_phone,
+      hance_empresa_id_c,
+      user_id1_c,
+      correo_fabricante_c,
+      telefono_fabricante_c,
     };
   });
 
   const cardProduct = computed(() => {
-    const { id_producto } = payload.value;
+    const { producto_c } = payload.value;
 
-    return { id_producto, productCodes: 'AARRDDX,AADFSDFE,SEFESFSEF,SSEFFEDF' };
+    return {
+      producto_c,
+      cod_productos_c: 'AARRDDX,AADFSDFE,SEFESFSEF,SSEFFEDF',
+    };
   });
   // const cardInfo = computed(() => {
   //   return {
@@ -122,7 +132,7 @@ export const useCertificationStore = defineStore('certification-store', () => {
   });
 
   //actions
-  const onCreateCertificationRequest = async (data: Certification) => {
+  const onCreateCertificationRequest = async (data: CertificationDB) => {
     try {
       Loading.show({
         message: 'Guardando información',
@@ -143,8 +153,7 @@ export const useCertificationStore = defineStore('certification-store', () => {
     try {
       loading.value = true;
       const response = await getCertificationRequest(id);
-      //console.log(response);
-      payload.value = response.data;
+      payload.value = response;
       return response;
     } catch (error) {
       throw error;
@@ -155,7 +164,7 @@ export const useCertificationStore = defineStore('certification-store', () => {
 
   const onUpdateCertificationRequest = async (
     id: string,
-    data: Partial<Certification>
+    data: Partial<CertificationDB>
   ) => {
     try {
       Loading.show({
@@ -187,29 +196,38 @@ export const useCertificationStore = defineStore('certification-store', () => {
   const clearData = () => {
     payload.value = {
       id: '',
-      nro_solicitud: '',
-      etapa: '',
-      estado: '',
-      tipo_tramite: '',
-      id_solicitante: '',
-      id_producto: '',
-      id_tipo_producto: '',
+      name: '',
+      etapa_c: '',
+      estado_c: '',
+      tipo_tramite_c: '',
+      user_id_c: '',
+      producto_c: '',
+      tipo_producto_c: '',
       iddivision_c: '',
       idamercado_c: '',
       idregional_c: '',
-      grupocliente_c: '',
       date_entered: moment().format('DD/MM/YYYY'),
-      cod_productos: '',
-      comentario_creacion: '',
-      aprobacion: '',
-      id_profesional_acreditado: '',
-      date_register_misa: '',
-      date_aprox_cert: '',
-      date_certif: '',
-      observacion: '',
-      comentario_observacion: '',
-      id_empresa: '',
+      comentario_solicitud_c: '',
+      estado_aprobacion_c: '',
+      user_id1_c: '',
+      date_register_misa_c: '',
+      date_planning_cert_c: '',
+      date_real_cert_c: '',
+      description: '',
+      hance_empresa_id_c: '',
       assigned_user_id: '',
+      correo_fabricante_c: '',
+      telefono_fabricante_c: '',
+      date_modified: '',
+      modified_user_id: '',
+      created_by: '',
+      deleted: '',
+      referencia_prods: '',
+      cod_productos_c: '',
+      cod_misa_c: '',
+      nro_ruta_c: '',
+      fabricante_c: '',
+      contact_fabricante_c: '',
     };
   };
 

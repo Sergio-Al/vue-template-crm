@@ -3,10 +3,9 @@ import { ref } from 'vue';
 import { useAsyncState } from '@vueuse/core';
 import { useQuasar } from 'quasar';
 import { getRecordModuleInfo } from 'src/services/GlobalService';
-import RelationDetailCard from 'src/modules/Leads/components/Cards/RelationDetailCard.vue';
 import { Manufacturer } from '../../utils/types';
 import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
-import AdvancedFilterManufacturer from 'src/modules/Accounts/components/AdvancedFilter/AdvancedFilterManufacturer.vue';
+import AdvancedFilterManufacturer from 'src/components/Filters/AdvancedFilterManufacturer.vue';
 
 import { manufacturerPromise } from '../../utils/dummyData';
 
@@ -27,6 +26,7 @@ const props = withDefaults(
 const emits = defineEmits<{
   (event: 'assign'): void;
   (event: 'update:id', id: string): void;
+  (event: 'assigned', data: Manufacturer): void;
   (event: 'delete', id: string): void;
 }>();
 
@@ -88,6 +88,7 @@ const selectItem = (manufacturer: Manufacturer) => {
 
 const assignManufacturer = async () => {
   if (!!manufacturerFiltered.value.id) {
+    emits('assigned', manufacturerFiltered.value);
     await emits('update:id', manufacturerFiltered.value.id);
     advancedFilterManufacturerRef.value?.onClose();
     await execute();
@@ -129,26 +130,7 @@ defineExpose({
 </script>
 
 <template>
-  <RelationDetailCard
-    v-if="!props.id"
-    :module-name="moduleName"
-    title="No Seleccionado"
-    icon="perm_contact_calendar"
-    no-data
-    :error="!props.id && validated"
-    :error-message="props.errorMessage"
-  >
-    <template v-if="editMode" #options>
-      <q-btn
-        @click="openManufacturerFilter"
-        class="q-my-xs"
-        color="primary"
-        icon="open_in_new"
-        round
-        size="xs"
-    /></template>
-  </RelationDetailCard>
-  <q-card v-else-if="isLoading" bordered flat>
+  <q-card v-if="isLoading" bordered flat>
     <q-list bordered>
       <q-item>
         <q-item-section avatar>
@@ -166,35 +148,73 @@ defineExpose({
       </q-item>
     </q-list>
   </q-card>
-  <RelationDetailCard
+  <q-card
     v-else
-    :module-name="moduleName"
-    :title="state.title"
-    :description="state.description"
-    icon="perm_contact_calendar"
-    :id="props.id"
+    :class="{ 'error-card': !props.id && validated }"
+    bordered
+    flat
   >
-    <template v-if="editMode" #leftOptions>
-      <q-btn
-        @click="deleteValue"
-        class="q-my-xs"
-        color="negative"
-        icon="remove"
-        round
-        size="xs"
-      />
-    </template>
-    <template v-if="editMode" #options>
-      <q-btn
-        class="q-my-xs"
-        color="primary"
-        icon="open_in_new"
-        round
-        size="xs"
-        @click="openManufacturerFilter"
-      />
-    </template>
-  </RelationDetailCard>
+    <q-list bordered>
+      <q-item>
+        <q-item-section v-if="!!props.id && props.editMode" side>
+          <q-btn
+            @click="deleteValue"
+            class="q-my-xs"
+            color="negative"
+            icon="remove"
+            round
+            size="xs"
+          />
+        </q-item-section>
+
+        <q-item-section v-if="!props.id">
+          <q-item-label caption class="text-weight-bold" lines="1">
+            <q-icon name="perm_contact_calendar" class="q-mr-sm" />{{
+              moduleName
+            }}</q-item-label
+          >
+          <q-item-label class="text-grey-7">
+            <q-icon name="warning" />
+            <span class="text-weight-thin"> No Seleccionado </span>
+          </q-item-label>
+          <span v-if="!props.id && validated" class="text-caption">{{
+            props.errorMessage
+          }}</span>
+        </q-item-section>
+        <q-item-section v-else>
+          <q-item-label class="text-weight-bold" caption lines="1">
+            <q-icon name="perm_contact_calendar" class="q-mr-sm" />{{
+              moduleName
+            }}</q-item-label
+          >
+
+          <q-item-label v-if="moduleName == 'Fabricante'">
+            <a
+              class="text-bold cursor-pointer flex items-center text-primary"
+              @click="() => {}"
+            >
+              {{ state.title }}
+            </a>
+          </q-item-label>
+
+          <q-item-label v-else> Seleccionado </q-item-label>
+        </q-item-section>
+
+        <q-item-section side top>
+          <q-btn
+            v-if="props.editMode"
+            @click="openManufacturerFilter"
+            class="q-my-xs"
+            color="primary"
+            icon="open_in_new"
+            round
+            size="xs"
+          />
+        </q-item-section>
+      </q-item>
+    </q-list>
+  </q-card>
+
   <AdvancedFilterManufacturer
     ref="advancedFilterManufacturerRef"
     title="Búsqueda de Fabricantes"
@@ -221,3 +241,12 @@ defineExpose({
     </template>
   </AlertComponent>
 </template>
+
+<style lang="scss" scoped>
+.error-card {
+  border-color: $negative;
+  * {
+    color: $negative !important;
+  }
+}
+</style>

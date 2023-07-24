@@ -42,38 +42,38 @@ export interface UpdateMassiveModel {
 
 export interface CertificationDB {
   id: string;
-  name: string;
+  assigned_user_id: string;
+  cod_misa_c: string;
+  cod_productos_c: string;
+  comentario_solicitud_c: string;
+  contact_fabricante_c: string;
+  correo_fabricante_c: string;
+  created_by: string;
   date_entered: string;
   date_modified: string;
-  modified_user_id: string;
-  created_by: string;
-  description: string;
+  date_planning_cert_c: string;
+  date_real_cert_c: string;
+  date_register_misa_c: string;
   deleted: string;
-  assigned_user_id: string;
-  etapa_c: string;
+  description: string;
+  estado_aprobacion_c: string;
   estado_c: string;
-  tipo_tramite_c: string;
-  user_id_c: string;
-  iddivision_c: string;
+  etapa_c: string;
+  fabricante_c: string;
+  hance_empresa_id_c: string;
   idamercado_c: string;
+  iddivision_c: string;
   idregional_c: string;
+  modified_user_id: string;
+  name: string;
+  nro_ruta_c: string;
   producto_c: string;
   referencia_prods: string;
-  cod_productos_c: string;
-  tipo_producto_c: string;
-  comentario_solicitud_c: string;
-  estado_aprobacion_c: string;
-  user_id1_c: string;
-  hance_empresa_id_c: string;
-  date_register_misa_c: string;
-  date_planning_cert_c: string;
-  cod_misa_c: string;
-  nro_ruta_c: string;
-  date_real_cert_c: string;
-  fabricante_c: string;
-  contact_fabricante_c: string;
   telefono_fabricante_c: string;
-  correo_fabricante_c: string;
+  tipo_producto_c: string;
+  tipo_tramite_c: string;
+  user_id_c: string;
+  user_id1_c: string;
 }
 
 export interface Certification {
@@ -84,14 +84,14 @@ export interface Certification {
   tipo_tramite_c: string;
   user_id_c: string;
   date_entered: string;
-  fabricante_c:string;
-  producto_c:string;
-  id_producto_c:string;
-  id_fabricante_c:string;
-  id_contacto_fabricante_c:string;
-  contacto_fabricante_c:string;
-  telefono_fabricante_c:string;
-  correo_fabricante_c:string;
+  fabricante_c: string;
+  producto_c: string;
+  id_producto_c: string;
+  id_fabricante_c: string;
+  id_contacto_fabricante_c: string;
+  contacto_fabricante_c: string;
+  telefono_fabricante_c: string;
+  correo_fabricante_c: string;
   id_producto: string;
   iddivision_c: any;
   idamercado_c: any;
@@ -111,6 +111,7 @@ export interface Certification {
   user_id1_c: string;
   codigos_producto: string;
   contact_id: string;
+  assigned_user_id: string;
 }
 
 export interface Filter extends Partial<Certification> {
@@ -118,7 +119,7 @@ export interface Filter extends Partial<Certification> {
   modified_by?: string[];
   assigned_to?: string[];
   creation_date?: DateBase;
-  fastFilter?:string;
+  fastFilter?: string;
 }
 
 export interface User {
@@ -148,6 +149,7 @@ export interface Manufacturer {
   deleted?: string;
   description?: string;
   employees: string;
+  email1: string;
   hanp_proveedores_type?: string;
   idgrupo_c: string;
   idproveedor_c: string;

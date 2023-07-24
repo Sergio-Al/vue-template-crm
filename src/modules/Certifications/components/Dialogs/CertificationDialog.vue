@@ -25,7 +25,7 @@ const tabsDefinition = [
     name: 'dataGeneral',
     component: ViewGeneralData,
     label: 'Datos Generales',
-    enabledForCreation: false,
+    enabledForCreation: true,
   },
   {
     name: 'dataManufacturer',
@@ -200,7 +200,7 @@ defineExpose({
           :key="index"
           :name="tab.name"
           :label="tab.label"
-          disable
+          :disable="!id"
         >
         </q-tab>
       </q-tabs>
@@ -255,12 +255,20 @@ defineExpose({
       >
     </template>
 
+    <template #footer v-else-if="isEditing && currentView === ''">
+      <q-btn color="primary" class="q-mr-md" @click="saveCurrentForm"
+        >Guardar</q-btn
+      >
+      <q-btn color="negative" v-close-popup>Cancelar</q-btn>
+    </template>
+
     <template
       #footer
       v-else-if="
         !!id &&
         Object.keys(certificationData).length > 0 &&
-        !+certificationData.aprobacion
+        !+certificationData.aprobacion &&
+        currentView == ''
       "
     >
       <q-btn
@@ -275,12 +283,6 @@ defineExpose({
       >
       <q-btn color="negative" v-close-popup>Rechazar</q-btn></template
     >
-    <template #footer v-else-if="isEditing">
-      <q-btn color="primary" class="q-mr-md" @click="saveCurrentForm"
-        >Guardar</q-btn
-      >
-      <q-btn color="negative" v-close-popup>Cancelar</q-btn>
-    </template>
   </dialog-component>
 
   <!-- ******alert antes de cerrar -->

@@ -74,7 +74,7 @@ const onClearDataFilter = () => {
 
 const setEtapaColor = (etapa: string): string => {
   const colorMap: { [key: string]: string } = {
-    Nueva : 'orange',
+    Nueva: 'orange',
     Revisión: 'blue',
     Finalizada: 'green',
   };
@@ -82,16 +82,16 @@ const setEtapaColor = (etapa: string): string => {
   return colorMap[etapa] || 'blue';
 };
 
-const setTipoColor = (tipo:string):string => {
+const setTipoColor = (tipo: string): string => {
   const colorMap: { [key: string]: string } = {
-    DISPOSITIVO : 'green',
+    DISPOSITIVO: 'green',
     EQUIPO: 'blue',
     MEDICAMENTO: 'orange',
     COSMÉTICO: 'purple',
   };
 
   return colorMap[tipo] || 'grey';
-}
+};
 
 const openDialog = () => {
   certificationDialogRef.value?.openDialogTab();
@@ -132,11 +132,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td class="text-left">
             <q-checkbox v-model="propsTable.selected" flat dense />
           </q-td>
-          <q-td
-            key="name"
-            :props="propsTable"
-            :style="'width: 100px;'"
-          >
+          <q-td key="name" :props="propsTable" :style="'width: 100px;'">
             <span
               class="text-primary text-weight-bold text-break cursor-pointer"
               @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
@@ -153,10 +149,13 @@ const openItemSelected = (id: string, title: string) => {
                 />
               </div>
               <span class="text-caption">
-                <span class="text-weight-bold">Estado:</span> {{ propsTable.row.estado_c }}
+                <span class="text-weight-bold">Estado:</span>
+                {{ propsTable.row.estado_c }}
               </span>
               <span class="text-caption">{{
-                propsTable.row.fecha_creacion.substring(0,10)
+                (propsTable.row.fecha_creacion &&
+                  propsTable.row.fecha_creacion.substring(0, 10)) ||
+                propsTable.row?.date_added
               }}</span>
             </div>
           </q-td>
@@ -190,23 +189,42 @@ const openItemSelected = (id: string, title: string) => {
               <span>
                 {{ propsTable.row.producto_c }}
               </span>
-              <span class="text-caption"><span class="text-weight-bold">Fabricante</span> {{propsTable.row.fabricante_c}}</span>
+              <span class="text-caption"
+                ><span class="text-weight-bold">Fabricante</span>
+                {{ propsTable.row.fabricante_c }}</span
+              >
             </div>
           </q-td>
           <q-td key="tipo_producto_c" :props="propsTable">
-            <q-badge outline :color="setTipoColor(propsTable.row.tipo_producto_c)">{{ propsTable.row.tipo_producto_c }}</q-badge>
-            <br>
-              <span class="text-caption"><span class="text-weight-bold">Cant. de requisitos:</span> 10</span>
+            <q-badge
+              outline
+              :color="setTipoColor(propsTable.row.tipo_producto_c)"
+              >{{ propsTable.row.tipo_producto_c }}</q-badge
+            >
+            <br />
+            <span class="text-caption"
+              ><span class="text-weight-bold">Cant. de requisitos:</span>
+              10</span
+            >
           </q-td>
           <q-td key="cumplimiento_req" :props="propsTable">
             <span class="text-weight-bold">100 %</span>
           </q-td>
           <q-td key="id" :props="propsTable">
             <div class="column">
-              <span> <span class="text-weight-bold">Cod Misa:</span> {{ propsTable.row.cod_misa_c }} </span>
-              <span> <span class="text-weight-bold">Nro de Ruta:</span> {{ propsTable.row.nro_ruta_c }} </span>
+              <span>
+                <span class="text-weight-bold">Cod Misa:</span>
+                {{ propsTable.row.cod_misa_c }}
+              </span>
+              <span>
+                <span class="text-weight-bold">Nro de Ruta:</span>
+                {{ propsTable.row.nro_ruta_c }}
+              </span>
             </div>
-            <q-badge dark color="green" class="q-px-md"><span class="text-weight-bold q-mr-sm">Nro. Cert.</span>{{ propsTable.row.nro_cert }}</q-badge>
+            <q-badge dark color="green" class="q-px-md"
+              ><span class="text-weight-bold q-mr-sm">Nro. Cert.</span
+              >{{ propsTable.row.nro_cert }}</q-badge
+            >
           </q-td>
         </q-tr>
       </template>
@@ -340,9 +358,9 @@ const openItemSelected = (id: string, title: string) => {
 }
 
 .text-break {
-    width:300px;
-    line-break: auto;
-    white-space: normal;
-    font-size: 1.1em;
-  }
+  width: 300px;
+  line-break: auto;
+  white-space: normal;
+  font-size: 1.1em;
+}
 </style>

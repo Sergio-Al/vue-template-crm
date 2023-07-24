@@ -11,8 +11,8 @@ import CardApplicant from '../components/Cards/CardApplicant.vue';
 import CardManufacture from '../components/Cards/CardManufacturer.vue';
 import CardProduct from '../components/Cards/CardProduct.vue';
 import { useCertificationStore } from '../store/certificationStore';
-
-import type { Certification } from '../utils/types';
+import { userStore } from 'src/modules/Users/store/UserStore';
+import type { Certification, CertificationDB } from '../utils/types';
 
 interface Props {
   id?: string;
@@ -26,6 +26,7 @@ const props = defineProps<Props>();
 const emits = defineEmits<Emits>();
 
 const $q = useQuasar();
+const { userCRM } = userStore();
 const certificationStore = useCertificationStore();
 const tab = ref(props.id ? 'Activities' : 'comentarios');
 const localId = ref(props.id ?? '');
@@ -38,19 +39,17 @@ const cardManufactureRef = ref<InstanceType<typeof CardManufacture> | null>(
 const cardProductRef = ref<InstanceType<typeof CardProduct> | null>(null);
 
 const onSubmit = async () => {
-  console.log(cardAplicantRef.value.exposeData());
-  return;
-  const cardApplicant = cardAplicantRef.value.exposeData();
-  const cardManufacture = cardManufactureRef.value.exposeData();
-  const cardProduct = cardProductRef.value.exposeData();
+  // console.log(cardAplicantRef.value?.exposeData());
+  // return;
+  const cardApplicant = cardAplicantRef.value?.exposeData();
+  const cardManufacture = cardManufactureRef.value?.exposeData();
+  const cardProduct = cardProductRef.value?.exposeData();
   if (!!localId.value) {
     // update
     if (!!cardApplicant || !!cardManufacture || !!cardProduct) {
       try {
         const body = { ...cardApplicant, ...cardManufacture, ...cardProduct };
 
-        console.log(body);
-        return;
         const newCertification =
           await certificationStore.onUpdateCertificationRequest(
             localId.value,
@@ -65,13 +64,14 @@ const onSubmit = async () => {
   } else {
     // create
     if (!!cardApplicant || !!cardManufacture || !!cardProduct) {
+      console.log('here!!!!');
       try {
         const body = {
           ...cardApplicant,
           ...cardManufacture,
           ...cardProduct,
-          comentario_creacion: commentCreate.value,
-        } as Certification;
+          description: commentCreate.value,
+        } as CertificationDB;
         const newCertification =
           await certificationStore.onCreateCertificationRequest(body);
         localId.value = newCertification.id;
@@ -94,8 +94,6 @@ const onSubmit = async () => {
 
 const { isLoading, execute } = useAsyncState(async () => {
   if (!!localId.value) {
-    console.log('here!!!');
-    //console.log(localId.value);
     return await certificationStore.onGetCertificationRequest(localId.value);
   }
 }, {});
@@ -210,11 +208,11 @@ defineExpose({
                   </q-input>
                 </q-tab-panel>
                 <q-tab-panel name="Activities">
-                  <!-- <ActivitiesComponent
+                  <ActivitiesComponent
                     :id="localId"
-                    :idUser="'1'"
+                    :idUser="userCRM.id"
                     module="HANCE_Certificaciones"
-                  ></ActivitiesComponent> -->
+                  ></ActivitiesComponent>
                 </q-tab-panel>
                 <q-tab-panel name="historychanges">
                   <q-card class="my-card">

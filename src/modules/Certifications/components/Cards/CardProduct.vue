@@ -5,14 +5,14 @@ import { computed, ref, onMounted } from 'vue';
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 import CardRelationProduct from './CardRelationProduct.vue';
 
-import { Certification } from '../../utils/types';
+import { Certification, CertificationDB } from '../../utils/types';
 
 import { getProduct } from '../../services/useCertificationsService';
 import { productListData } from '../../utils/dummyData';
 
 interface Props {
   id: string;
-  data: Certification;
+  data: Partial<CertificationDB>;
 }
 
 const props = defineProps<Props>();
@@ -50,7 +50,7 @@ const restoreValues = () => {
 };
 
 const removeProduct = () => {
-  inputData.value.id_producto = '';
+  inputData.value.producto_c = '';
 };
 
 const assignProductInfo = (id: string) => {
@@ -77,8 +77,8 @@ const removeProductByIndex = (index: number) => {
 
 onMounted(async () => {
   if (!!props.id) {
-    if (!!inputData.value.id_producto) {
-      const product = await getProduct(inputData.value.id_producto);
+    if (!!inputData.value.producto_c) {
+      const product = await getProduct(inputData.value.producto_c);
       productList.value = [product];
       productCodes.value = product.itemCodes.map((code) => ({ id: code }));
       console.log(productCodes.value);
@@ -88,9 +88,9 @@ onMounted(async () => {
 
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
-  exposeData: (): Certification => ({
+  exposeData: (): Partial<CertificationDB> => ({
     ...inputData.value,
-    cod_productos: productCodes.value.map((code) => code.id).join(',') || '',
+    cod_productos_c: productCodes.value.map((code) => code.id).join(',') || '',
   }),
 });
 </script>
@@ -111,7 +111,7 @@ defineExpose({
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <div class="col-12">
           <CardRelationProduct
-            v-model:id="inputData.id_producto"
+            v-model:id="inputData.producto_c"
             module-name="Producto"
             edit-mode
             error-message="Se necesita un producto"
@@ -202,45 +202,13 @@ defineExpose({
     <template #read>
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-select
-          :hint="!!inputData.id_producto_c ? 'Producto seleccionado' : ''"
-          :options="productList"
-          class="col-12 col-sm-12"
-          dense
-          emit-value
-          fill-input
-          hide-dropdown-icon
-          hide-selected
-          input-debounce="500"
-          label="Nombre"
-          map-options
-          option-label="name"
-          option-value="id"
-          outlined
-          use-chips
-          use-input
-          v-model="inputData.id_producto_c"
-          readonly
-        >
-          <template #prepend>
-            <q-icon name="inventory" />
-          </template>
-          <template #no-option>
-            <span class="text-grey-8 q-pa-lg">Sin opciones</span>
-          </template>
-
-          <template #option="scope">
-            <q-item v-bind="scope.itemProps">
-              <q-item-section avatar>
-                <q-icon name="work" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>{{ scope.opt.name }}</q-item-label>
-                <q-item-label caption>Producto</q-item-label>
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
+        <div class="col-12">
+          <CardRelationProduct
+            v-model:id="inputData.producto_c"
+            module-name="Producto"
+            error-message="Se necesita un producto"
+          />
+        </div>
         <q-input
           v-for="(product, index) in productCodes"
           :key="index"
