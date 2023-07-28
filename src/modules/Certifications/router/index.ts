@@ -23,5 +23,38 @@ export default {
         };
       },
     },
+    {
+      path: 'requests',
+      name: 'certifications-request',
+      meta: {
+        isComplete: true,
+        nameLabel: 'Solicitud de Certificaciones',
+      },
+      component: () => import('../views/ViewListCertificationsRequest.vue'),
+      props: (route: { query: { iduser: string; menu: boolean } }) => {
+        return {
+          nameModule: 'CertificationsRequest',
+          idUser: route.query.iduser,
+          menu: route.query.menu,
+        };
+      },
+    },
+    {
+      path: 'main',
+      name: 'certificationsMain',
+      meta: {
+        isComplete: true,
+        nameLabel: 'Certificaciones',
+      },
+      component: () => import('../views/ViewList.vue'),
+      props: (route: { query: { iduser: string; menu: boolean } }) => {
+        const { iduser = '', menu = true } = route.query;
+        return {
+          nameModule: 'CertificationsRequest',
+          idUser: iduser,
+          menu: menu,
+        };
+      },
+    },
   ],
 };

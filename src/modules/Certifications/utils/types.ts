@@ -194,3 +194,40 @@ export interface Product {
   img_aux_c: string;
   aos_product_categories_id_c: string;
 }
+
+export interface CertificationRequest {
+  id: string;
+  name: string;
+  date_entered_c: string;
+  user_id_c: string;
+  iddivision_c: string;
+  idamercado_c: string;
+  idregional_c: string;
+  producto_c: string;
+  fabricante_c: string;
+  state_aprobacion: string;
+  hance_certificacion_id_c: string;
+  assigned_user_id: string;
+  referencia_prods: string;
+}
+
+export interface CertificationTable {
+  name: string;
+  user_id_c: string;
+  date_entered_c: string;
+  hance_empresa_id_c: string;
+  _razon_social: string;
+  _direccion_participacion: string;
+  _resolucion_ministerial: string;
+  user_id1_c: string;
+  _nro_de_matricula: string;
+  tipo_tramite_c: string;
+  tipo_producto_c: string;
+  hance_proveedor_id_c: string;
+  _pais: string;
+  _telefono: string;
+  _correo: string;
+  _direccion_fabricante: string;
+  hance_solicitud_id_c: string;
+  assigned_user_id: string;
+}

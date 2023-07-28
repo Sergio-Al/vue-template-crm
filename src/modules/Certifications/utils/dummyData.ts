@@ -1,4 +1,9 @@
-import { Certification, Manufacturer, Product } from './types';
+import {
+  Certification,
+  CertificationRequest,
+  Manufacturer,
+  Product,
+} from './types';
 
 export const amercado = [
   {
@@ -260,6 +265,70 @@ export const certicationsList = [
     nro_solicitud: '1025/2023',
     observacion: '2',
     tipo_tramite: 'Inscripcion',
+  },
+];
+
+export const certificationRequest: CertificationRequest = {
+  id: '01',
+  name: '001/2023',
+  date_entered_c: '24/07/2023',
+  user_id_c: 'Rosario Morales',
+  iddivision_c: 'Soluciones medicas',
+  idamercado_c: 'Imagenologia',
+  idregional_c: '',
+  producto_c: 'Agujas de Fistula',
+  fabricante_c: 'DIALIFE SA',
+  state_aprobacion: 'Pendiente',
+  hance_certificacion_id_c: '',
+  assigned_user_id: '1',
+  referencia_prods: '',
+};
+
+export const certificationRequests: CertificationRequest[] = [
+  {
+    id: '01',
+    name: '001/2023',
+    date_entered_c: '24/07/2023',
+    user_id_c: 'Rosario Morales',
+    iddivision_c: 'Soluciones medicas',
+    idamercado_c: 'Imagenologia',
+    idregional_c: '',
+    producto_c: 'Agujas de Fistula',
+    fabricante_c: 'DIALIFE SA',
+    state_aprobacion: 'Pendiente',
+    hance_certificacion_id_c: '',
+    assigned_user_id: '1',
+    referencia_prods: '',
+  },
+  {
+    id: '02',
+    name: '002/2023',
+    date_entered_c: '24/07/2023',
+    user_id_c: 'Rosario Morales',
+    iddivision_c: 'Soluciones medicas',
+    idamercado_c: 'Imagenologia',
+    idregional_c: '',
+    producto_c: 'Agujas de Fistula',
+    fabricante_c: 'DIALIFE SA',
+    state_aprobacion: 'Aprobado',
+    hance_certificacion_id_c: '5001/2023',
+    assigned_user_id: '1',
+    referencia_prods: '',
+  },
+  {
+    id: '03',
+    name: '003/2023',
+    date_entered_c: '24/07/2023',
+    user_id_c: 'Rosario Morales',
+    iddivision_c: 'Soluciones medicas',
+    idamercado_c: 'Imagenologia',
+    idregional_c: '',
+    producto_c: 'Agujas de Fistula',
+    fabricante_c: 'DIALIFE SA',
+    state_aprobacion: 'Rechazado',
+    hance_certificacion_id_c: '5002/2023',
+    assigned_user_id: '1',
+    referencia_prods: '',
   },
 ];
 
@@ -577,6 +646,18 @@ export const productPromise = (): Promise<Product> => {
     // Simulate an asynchronous operation
     setTimeout(() => {
       const result = productData();
+      resolve(result);
+    }, 2000); // Simulating a 2-second delay
+  });
+};
+
+export const certificationsRequestPromise = (): Promise<
+  CertificationRequest[]
+> => {
+  return new Promise((resolve, reject) => {
+    // Simulate an asynchronous operation
+    setTimeout(() => {
+      const result = certificationRequests;
       resolve(result);
     }, 2000); // Simulating a 2-second delay
   });
