@@ -45,7 +45,7 @@ const value = ref<string>('cyan');
 
 <template>
   <q-card class="my-card">
-    <q-card-section> Tipo de Trámite </q-card-section>
+    <q-card-section> Tipo de Producto </q-card-section>
     <q-separator spaced inset />
     <q-card-section class="row">
       <q-item

@@ -29,8 +29,7 @@ const props = defineProps<{
 
 const $q = useQuasar();
 const companyStore = useCompaniesStore();
-const { cardInfo, cardContact, cardAddress, cardOwner } =
-  storeToRefs(companyStore);
+const { cardInfo, cardContact, cardAddress, cardOwner } = storeToRefs(companyStore); //important
 
 const tab = ref(props.id ? 'Activities' : 'comentarios');
 const localId = ref(props.id ?? '');
@@ -38,7 +37,7 @@ const commentCreate = ref('');
 
 const cardInfoRef = ref<InstanceType<typeof CardInfo> | null>(null);
 const cardContactRef = ref<InstanceType<typeof CardContact> | null>(null);
-const cardDocumentsRef = ref<InstanceType<typeof CardDocuments> | null>(null);
+// const cardDocumentsRef = ref<InstanceType<typeof CardDocuments> | null>(null);
 const directionCardComponentRef = ref<InstanceType<
   typeof DirectionCard
 > | null>(null);
@@ -74,10 +73,10 @@ const validateCards = async () => {
     const cardContactValidation = await cardContactRef.value.validateInputs();
     validCards.push(cardContactValidation);
   }
-  if (!localId.value) {
-    const firstCommentValidation = await commentRef.value?.validate();
-    validCards.push(firstCommentValidation);
-  }
+  // if (!localId.value) {
+  //   const firstCommentValidation = await commentRef.value?.validate();
+  //   validCards.push(firstCommentValidation);
+  // }
   return validCards.every((card) => !!card);
 };
 
@@ -98,10 +97,13 @@ const onSubmit = async () => {
   const directionData = directionCardComponentRef.value?.captureCurrentData();
   const assignedUser = cardDelegateRef.value?.exposeData();
 
-  if (!!localId.value) {
-    // actualizar datos si existe localId
-    if (!!cardInfoData || !!cardContactData) {
+  if (!!cardInfoData || !!cardContactData) {
+    if (!!localId.value) {
+      //modificar
       try {
+        Loading.show({
+          message: 'Modificando Información',
+        });
         const body: Company = {
           ...cardInfoData,
           ...cardContactData,
@@ -115,20 +117,21 @@ const onSubmit = async () => {
         console.log(error);
       }
     }
-  } else {
-    if (!!cardInfoData || !!cardContactData) {
+    else{
+      //crear
       try {
         Loading.show({
           message: 'Guardando Información',
         });
-        const body = {
+        const body:Company = {
           ...cardInfoData,
           ...cardContactData,
           comment: commentCreate.value,
           direccion_c: directionData?.address_street_generated_c,
           assigned_user_id: assignedUser,
         } as Company;
-        const newCompany = await companyStore.onCreateCompany(body, []);
+
+        const newCompany = await companyStore.onCreateCompany(body);
         localId.value = newCompany.id;
         emits('submitComplete', localId.value);
         await execute();
@@ -136,6 +139,14 @@ const onSubmit = async () => {
         console.log(error);
       }
     }
+  }
+  else{
+    $q.notify({
+      type: 'warning',
+      message: 'Error de validación',
+      caption: 'Algunos campos necesitan ser llenados',
+    });
+    return;
   }
 };
 
@@ -153,7 +164,7 @@ const updateAssigned = async (id: string | null) => {
   }
 };
 
-console.log(props.id);
+//console.log(props.id);
 
 // Funciones que se podran usar al declarar una referencia de este componente
 defineExpose({
@@ -275,8 +286,8 @@ const emits = defineEmits<{
                 <q-tab-panel name="Activities">
                   <ActivitiesComponent
                     :id="localId"
-                    :idUser="'5c19df6d-0cf0-6e23-7c01-629fb9d01588'"
-                    module="HANCE_SolicitudCertificacion"
+                    :idUser="cardInfo.user_id"
+                    module="HANCE_Empresa"
                   ></ActivitiesComponent>
                 </q-tab-panel>
                 <q-tab-panel name="historychanges">

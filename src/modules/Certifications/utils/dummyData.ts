@@ -501,7 +501,7 @@ export const productsFiltered: Product[] = [
   },
   {
     id: '2',
-    name: 'Producto 2',
+    name: 'Equipo de Rayos X',
     date_entered: '',
     date_modified: '',
     modified_user_id: '',
@@ -523,7 +523,7 @@ export const productsFiltered: Product[] = [
   },
   {
     id: '3',
-    name: 'Producto 3',
+    name: 'Sillon Dental',
     date_entered: '',
     date_modified: '',
     modified_user_id: '',

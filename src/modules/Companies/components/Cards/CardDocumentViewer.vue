@@ -38,6 +38,16 @@ onMounted(() => {
   console.log('mounted document viewer');
 });
 
+const convierteFechaDoc = (docs:[]) => {
+  docs.forEach((element:any)=>{
+    const fecha_aux = element.fecha_creacion.substring(0, 10);
+    const aux = fecha_aux.split('-');
+    element.fecha_creacion = `${aux[2]}/${aux[1]}/${aux[0]}`;
+  });
+
+  return docs;
+}
+
 const {
   state: documents,
   isLoading,
@@ -46,8 +56,10 @@ const {
   // const response = await axios_NS_07.get(`/document-history/${id}/${category}-${type}`);
   // return response;
   const response = await companyStore.onGetVersions(props.id);
-  console.log(response);
-  return response;
+
+
+
+  return convierteFechaDoc(response);
   //return documentList;
 }, [] as Document[]);
 </script>
@@ -93,10 +105,10 @@ const {
                       >
                       <q-item-label caption lines="1"
                         >Fecha de Creación:
-                        {{ row.fecha_creacion }}</q-item-label
+                        <span class="text-weight-bold text-black">{{ row.fecha_creacion }}</span></q-item-label
                       >
                       <q-item-label caption lines="1"
-                        >Responsable: {{ row.nombre_usuario }}</q-item-label
+                        >Responsable: <span class="text-weight-bold text-black">{{ row.nombre_usuario }}</span></q-item-label
                       >
                     </q-item-section>
                   </q-item>

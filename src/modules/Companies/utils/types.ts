@@ -217,6 +217,7 @@ export interface Company {
   email1?: string;
   phone_alternate?: string;
   phone: string;
+  user_id:string;
   //idgrupocliente_c: string;
 }
 
@@ -233,7 +234,7 @@ export interface ChildCompany {
   email1: string;
   phone_alternate: string;
   assigned_user_id: string;
-  user_id_c: string;
+  user_id: string;
   hance_empresa_id_c: '';
 }
 
@@ -270,6 +271,10 @@ export interface Document {
   active_date: string;
   exp_date: string;
   description: string;
+  id_doc_version?:string;
+  filename?:string;
+  fecha_creacion?:string;
+  nombre_usuario?:string;
 }
 
 export interface Contact {

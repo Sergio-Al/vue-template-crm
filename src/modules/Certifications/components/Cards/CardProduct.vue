@@ -168,11 +168,14 @@ defineExpose({
             </q-item>
           </template>
         </q-select> -->
+        <div class="row q-mt-md">
+          <span class="">Items a Registrar</span>
+        </div>
         <div class="col-12">
           <q-btn
             color="primary"
             icon="add"
-            label="Añadir nuevo producto"
+            label="Añadir Item"
             dense
             @click="addProduct"
           />

@@ -229,9 +229,10 @@ onMounted(async () => {
                 />
               </div>
               <div class="column q-pl-sm ellipsis col-11">
-                <span class="ellipsis-item text-break">
+                <span v-if="propsTable.row.representante" class="ellipsis-item text-break">
                   {{ propsTable.row.representante }}
                 </span>
+                <span v-else color="red">Sin representante</span>
               </div>
             </div>
           </q-td>

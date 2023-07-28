@@ -72,8 +72,8 @@ export interface CertificationDB {
   telefono_fabricante_c: string;
   tipo_producto_c: string;
   tipo_tramite_c: string;
-  user_id_c: string;
-  user_id1_c: string;
+  user_id_c: string; //solicitante
+  user_id1_c: string;  //profesional acreditado
 }
 
 export interface Certification {
@@ -124,13 +124,13 @@ export interface Filter extends Partial<Certification> {
 
 export interface User {
   id: string;
-  first_name: string;
-  last_name: string;
   fullname: string;
-  iddivision_c: string;
-  idregional_c: string;
-  idamercado_c: string;
-  id_empresa_c: string;
+  first_name?: string;
+  last_name?: string;
+  iddivision_c?: string;
+  idregional_c?: string;
+  idamercado_c?: string;
+  id_empresa_c?: string;
 }
 
 export interface Manufacturer {
@@ -169,6 +169,7 @@ export interface Manufacturer {
   shipping_address_street: string;
   ticker_symbol: string;
   website: string;
+  direccion:string;
 }
 
 export interface Product {

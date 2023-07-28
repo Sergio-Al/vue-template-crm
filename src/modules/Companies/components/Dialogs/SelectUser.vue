@@ -7,6 +7,7 @@ import { availableUsers } from '../../utils/dummyData';
 import { getUsers, getUsersFilter } from '../../services/useCompanyService';
 
 import type { User } from '../../utils/types';
+import { useCompaniesStore } from '../../store/companyStore';
 
 interface Props {
   users?: User[];
@@ -72,6 +73,7 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
 ];
+const companyStore = useCompaniesStore();
 
 const userFiltered = ref<string>('');
 const selected = ref<User[]>(props.users || []);
@@ -82,8 +84,8 @@ const {
   isLoading,
   execute,
 } = useAsyncState(async () => {
-  if (props.parentId) console.log(props.parentId);
-  return await getUsersFilter(props.parentId, userFiltered);
+  if(!userFiltered.value) userFiltered.value = ''
+  return await companyStore.onGetCompanyUsers(props.parentId, userFiltered.value);
 }, []);
 </script>
 
@@ -92,7 +94,7 @@ const {
     view="lHh LpR lff"
     container
     :style="{ 'max-height': $q.screen.lt.sm ? '100vh' : '95vh' }"
-    style="height: 900px; width: 70rem; max-width: 100vw"
+    style="height: 750px; width: 70rem; max-width: 100vw"
     class="bg-grey-3"
   >
     <q-header class="bg-primary text-white">
@@ -181,7 +183,7 @@ const {
               v-model:selected="selected"
               row-key="id"
               selection="multiple"
-              :rows-per-page-options="[0]"
+              :rows-per-page-options="[15, 20, 50]"
               @selection="() => {}"
             >
               <template #body-cell-fullname="slotProps">

@@ -23,6 +23,7 @@ const restoreValues = () => {
 
 const validateInputs = async () => {
   const validatedFields = await Promise.all([
+    //websiteInputRef.value?.validate(),
     websiteInputRef.value?.validate(),
     email1InputRef.value?.validate(),
   ]);
@@ -82,6 +83,7 @@ defineExpose({
           label="Teléfono Principal"
           outlined
           dense
+          :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
           v-model="inputData.phone_alternate"
