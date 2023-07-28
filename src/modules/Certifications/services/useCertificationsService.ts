@@ -27,6 +27,7 @@ import {
   product,
   manufacturerFiltered,
   productsFiltered,
+  certificationsRequestPromise,
 } from '../utils/dummyData';
 
 const { userCRM } = userStore();
@@ -246,4 +247,12 @@ export const getManufacturers = async (params: Partial<Manufacturer>) => {
 export const getProducts = async (params: Partial<Product>) => {
   console.log(params);
   return productsFiltered;
+};
+
+export const getCertificationRequests = async () => {
+  try {
+    return await certificationsRequestPromise();
+  } catch (error) {
+    throw error;
+  }
 };
