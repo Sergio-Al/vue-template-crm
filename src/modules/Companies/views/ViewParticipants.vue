@@ -49,14 +49,6 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
   {
-    name: 'ownership',
-    required: true,
-    align: 'left',
-    label: 'Representante',
-    field: 'ownership',
-    sortable: true,
-  },
-  {
     name: 'resolucion_ministerial_c',
     required: true,
     align: 'left',
@@ -65,11 +57,27 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
   {
+    name: 'website',
+    required: true,
+    align: 'left',
+    label: 'Sitio Web',
+    field: 'website',
+    sortable: true,
+  },
+  {
     name: 'phone_office',
     required: true,
     align: 'left',
     label: 'Teléfono',
     field: 'phone_office',
+    sortable: true,
+  },
+  {
+    name: 'ownership',
+    required: true,
+    align: 'left',
+    label: 'Representante',
+    field: 'ownership',
     sortable: true,
   },
 ];
@@ -134,6 +142,11 @@ const onCancelRelation = () => {
   console.log('se cancelo');
 };
 
+const openLink = (link: string) => {
+  if (!link) return;
+  window.open(`https://${link}`, '_blank');
+};
+
 const localId = ref(props.id ?? '');
 //se dispara cuando carga el componente
 const {
@@ -164,7 +177,6 @@ const {
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
-          <q-th auto-width />
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
@@ -173,49 +185,63 @@ const {
 
       <template #body="props">
         <q-tr :props="props">
-          <q-td auto-width>
-            <q-btn
-              size="sm"
-              color="accent"
-              round
-              dense
-              @click="props.expand = !props.expand"
-              :icon="props.expand ? 'remove' : 'add'"
-            />
-          </q-td>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <!-- colocar el mismo nombre de la columna del array de columnas -->
             <div v-if="col.name === 'razon_social_c'">
               <span
-                class="text-primary cursor"
+                class="text-primary cursor text-weight-bold"
                 @click="openDialog(props.row.id, col.value)"
               >
                 {{ col.value }}
               </span>
             </div>
-            <div v-else-if="col.name === 'ownership'">
+            <div v-else-if="col.name === 'website'">
               <q-chip
-                v-if="!col.value"
-                class="primary"
-                icon="person"
-                outline
-                dense
-                label="No asignado"
-              />
-              <div v-else>
+              class="primary"
+              icon="web"
+              label="Visitar"
+              color="info"
+              dark
+              clickable
+              :disable="!props.row.website"
+              @click="() => openLink(props.row.website)"
+            >
+              <q-tooltip v-if="!!props.row.website">
+                {{ props.row.website }}
+              </q-tooltip>
+            </q-chip>
+            </div>
+            <div v-else-if="col.name === 'ownership'">
+              <div class="row items-center ">
+              <div class="col-2">
                 <q-avatar
-                  icon="person"
+                  size="24px"
+                  font-size="24px"
                   color="primary"
-                  size="sm"
                   text-color="white"
+                  icon="person"
                 />
-                <span class="q-ml-sm">{{ col.value }}</span>
               </div>
+              <div class="column q-pl-sm ellipsis col-10">
+                <span v-if="props.row.representante" class="ellipsis-item text-break">
+                  {{ props.row.representante }}
+                </span>
+                <span v-else color="red">Sin representante</span>
+              </div>
+            </div>
             </div>
             <div v-else-if="col.name === 'direccion_c'">
               <div>
                 {{ directionFormat(col.value) }}
               </div>
+            </div>
+            <div v-else-if="col.name === 'phone_office'">
+              <span>
+                <q-icon name="phone" size="1.5em" color="primary" /> {{ props.row.phone_office }}
+              </span><br>
+              <span v-if="props.row.phone_alternate">
+                <q-icon name="phone" size="1.5em" color="primary" /> {{ props.row.phone_alternate }}
+              </span>
             </div>
             <span v-else>{{ col.value }}</span>
           </q-td>
@@ -246,25 +272,6 @@ const {
             </AlertComponent>
           </q-td>
     
-        </q-tr>
-        <q-tr v-show="props.expand" :props="props">
-          <q-td colspan="100%">
-            <div class="text-left">
-              <span class="text-bold">Sitio Web :</span>
-              <q-chip
-                v-if="props.row.website"
-                color="primary"
-                text-color="white"
-                icon="web"
-                dense
-                clickable
-                label="Visitar"
-                class="q-px-md"
-                @click="visitPage(props.row.website)"
-              />
-              <span v-else class="q-px-sm">Sin página</span>
-            </div>
-          </q-td>
         </q-tr>
       </template>
     </q-table>

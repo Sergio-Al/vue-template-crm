@@ -392,6 +392,7 @@ export const useProspectStore = defineStore('Prospect', {
     },
 
     async Get_list_Activities(id: string, dateStart: string, dateEnd: string) {
+      console.log(id);
       try {
         const { data } = await api.get(
           `${CRM4_LB_03}/Get_list_Activities/${id}/${dateStart}/${dateEnd}`

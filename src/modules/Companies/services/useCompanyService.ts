@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   axios_LB_01,
-  axios_LB_04,
   axios_LB_05,
+  axios_GLOBAL,
   axios_NS_07,
   axios_PREFERENCES,
 } from 'src/conections/axiosCRM';
@@ -112,6 +112,22 @@ export const createCompany = async (
 ) => {
   try {
     const { data } = await axios_NS_07.post('/empresas', dataCompany);
+
+    if(!!dataCompany.comment){
+      const bodyComment = 
+      {
+        assigned_user_id:dataCompany.user_id,
+        bean_id:data.id,
+        bean_module:'HANCE_Empresa',
+        created_by:dataCompany.user_id,
+        description:dataCompany.comment,
+        relevance:'medium',
+        visualizacion_c:'interno'
+      };
+  
+      await axios_GLOBAL.post('/comments-new', {comment:bodyComment});
+    }
+
     return data;
   } catch (error) {
     throw error;
@@ -158,7 +174,9 @@ export const getOneChildCompany = async (id: string) => {
   try {
     const { data } = await axios_NS_07.get(`/participacion/${id}`);
     return data;
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getOneCompany = async (id: string) => {
@@ -170,16 +188,9 @@ export const getOneCompany = async (id: string) => {
   }
 };
 
-export const getCompanyUsers = async (id: string) => {
+export const getCompanyUsers = async (id: string, filter:string) => {
   try {
-    // const params = {
-    //   division: '04',
-    // };
-    // const { data } = await axios_LB_01.get(
-    //   `/users/division/amercado?params=${JSON.stringify(params)}`
-    // );
-
-    const { data } = await axios_NS_07.get(`empresas/list-users/${id}`);
+    const { data } = await axios_NS_07.get(`empresas/list-users/${id}?params=${filter}`);
 
     return data;
   } catch (error) {
@@ -187,11 +198,9 @@ export const getCompanyUsers = async (id: string) => {
   }
 };
 
-export const getCompanyChildrenUsers = async (id: string) => {
+export const getCompanyChildrenUsers = async (id: string, filter:string) => {
   try {
-    const { data } = await axios_NS_07.get(`/participacion/child-users/${id}`);
-    // const data = await axios_NS_07.get('/user');
-    console.log(data);
+    const { data } = await axios_NS_07.get(`/participacion/child-users/${id}?params=${filter}`);
     return data;
   } catch (error) {
     return error;
@@ -200,7 +209,7 @@ export const getCompanyChildrenUsers = async (id: string) => {
 
 export const updateCompany = async (
   id: string,
-  information: BasicInformation
+  information: any
 ) => {
   try {
     const dataSend = {
@@ -275,25 +284,24 @@ export const updateMassiveData = async (data: any) => {
 
 export async function getUsers(
   value: string,
-  options: RecordOptionsModel = {}
+  //options: RecordOptionsModel = {}
+  idCompany:string
 ): Promise<SearchUser[]> {
-  console.log(value);
-  console.log(options);
 
-  const {
-    module = '',
-    user_iddivision = '',
-    user_idamercado = '',
-    user_idgrupocliente = '',
-  } = options;
-  const formattedModule = module.charAt(0).toUpperCase() + module.slice(1);
-  const bodyOptions = {
-    value,
-    module: formattedModule,
-    user_iddivision,
-    user_idamercado,
-    user_idgrupocliente,
-  };
+  // const {
+  //   module = '',
+  //   user_iddivision = '',
+  //   user_idamercado = '',
+  //   user_idgrupocliente = '',
+  // } = options;
+  //const formattedModule = module.charAt(0).toUpperCase() + module.slice(1);
+  // const bodyOptions = {
+  //   value,
+  //   module: formattedModule,
+  //   user_iddivision,
+  //   user_idamercado,
+  //   user_idgrupocliente,
+  // };
   try {
     // const { data } = await axios_LB_04.patch<GuestsRecordResponse>(
     //   '/search-user-mitings/1/100/desc/{val}',
@@ -302,14 +310,15 @@ export async function getUsers(
     // return data.search_users;
 
     if (!!value) {
-      const { data } = await axios_NS_07.get<SearchUser[]>('/user', {
+      const { data } = await axios_NS_07.get<SearchUser[]>('/users', {
         params: {
           name: value,
+          idCompany
         },
       });
       return data;
     }
-    const { data } = await axios_NS_07.get(`empresas/list-users/${id}`);
+    const { data } = await axios_NS_07.get(`empresas/list-users/${idCompany}`);
     return data;
   } catch (error) {
     throw error;
@@ -317,11 +326,11 @@ export async function getUsers(
 }
 
 export const getUsersFilter = async (id: string, params: any) => {
+  console.log(id)
+  console.log(params)
   try {
     const { data } = await axios_NS_07.get(`/empresas/list-users/${id}`, {
-      params: {
-        name: params.value,
-      },
+      params: params.value,
     });
     //console.log(data);
     return data;
@@ -331,8 +340,8 @@ export const getUsersFilter = async (id: string, params: any) => {
 };
 
 export const getUser = async (id: string) => {
-  const { data } = await axios_NS_07.get(`/user/${id}`);
-  return data;
+  const { data } = await axios_NS_07.get(`/users/${id}`);
+  return data[0];
 };
 
 export const assignUsersToCompany = async (id: string, userIds: string[]) => {
@@ -346,11 +355,15 @@ export const assignUsersToCompany = async (id: string, userIds: string[]) => {
   return data;
 };
 
-export const deleteUserFromCompany = async (id: string, userId: string) => {
-  const { data } = await axios_NS_07.patch(`user/${id}`, {
-    companyIdEmpresa: '-1',
-  });
-  return data;
+export const deleteUserFromCompany = async (data:any) => {
+  try{
+    const {child, userId, companyId} = data;
+    const endpoint = child?`/participacion/user/${companyId}/${userId}`:`/empresas/user/${userId}`;
+    axios_NS_07.delete(endpoint);
+  }
+  catch(e){
+    throw e;
+  }
 };
 
 export const deleteChildCompany = async (id: string) => {

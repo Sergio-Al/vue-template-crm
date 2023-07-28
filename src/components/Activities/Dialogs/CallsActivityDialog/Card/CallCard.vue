@@ -44,7 +44,7 @@ const data = ref({
   descripcion: '',
   modulorela: props.ModuleTypeC,
   relaUserCall: '',
-  idrelaUserCall: '',
+  idrelaUserCall: props.idModule,
   prioridad: 'Short',
 });
 
@@ -61,7 +61,7 @@ const dataread = ref({
   descripcion: '',
   modulorela: '',
   relaUserCall: '',
-  idrelaUserCall: '',
+  idrelaUserCall: props.idModule,
   prioridad: '',
 });
 

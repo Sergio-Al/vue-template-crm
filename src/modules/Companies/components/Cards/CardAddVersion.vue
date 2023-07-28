@@ -50,10 +50,9 @@ const uploadFiles = async (file: File[]) => {
     };
 
     //const method = props.child?'certif_upload_version_empresa':'certif_upload_version_participacion';
-    const method = 'certif_upload_version_empresa';
 
     const body = dataFormatCRM3Basic(
-      method,
+      'certif_upload_version_empresa',
       {
         data: dataSend,
       },

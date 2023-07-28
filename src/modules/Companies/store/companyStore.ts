@@ -20,7 +20,7 @@ import {
 import type { ChildCompany, Company } from '../utils/types';
 
 //! Borrar datos falsos si no se usan
-import { childCompanies, defaultData, users } from '../utils/dummyData';
+// import { childCompanies } from '../utils/dummyData';
 import { getCategoryDocuments, getTypeDocuments } from '../services/useCompanyService';
 
 const { userCRM } = userStore();
@@ -39,14 +39,13 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     phone_office: '',
     phone_alternate: '',
     website: '',
-    ownership: '',
-    assigned_user_id: '',
-    user_id_c: userCRM.id,
+    ownership: '', //nombre de propietario
+    assigned_user_id: '', //responsable
+    user_id_c:'', //id de propietario
+    user_id: userCRM.id, //creado y modificado por
   });
 
   const childPayload = ref({} as ChildCompany);
-
-  //const data_table = ref([])
 
   //getters
   const cardInfo = computed(() => {
@@ -55,7 +54,9 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       razon_social_c: payload.value.razon_social_c,
       resolucion_ministerial_c: payload.value.resolucion_ministerial_c,
       identificacion_fiscal_c: payload.value.identificacion_fiscal_c,
+      user_id: payload.value.user_id,
       user_id_c: payload.value.user_id_c,
+      assigned_user_id: payload.value.assigned_user_id,
     };
   });
 
@@ -78,20 +79,20 @@ export const useCompaniesStore = defineStore('companies-store', () => {
 
   const cardOwner = computed(() => {
     //console.log(payload.value.assigned_user_id);
-    return payload.value.assigned_user_id;
+    return payload.value.user_id_c;
   });
 
   //actions
   const onCreateCompany = async (
     dataCompany: Company,
-    dataDocuments: any[]
+    //dataDocuments: any[]
   ) => {
-    console.log('create');
+    const data = {...dataCompany, user_id:userCRM.id}; 
     try {
       Loading.show({
         message: 'Guardando informacion',
       });
-      const response = await createCompany(dataCompany);
+      const response = await createCompany(data);
       return response;
     } catch (error) {
       console.log(error);
@@ -103,8 +104,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
 
   const onCreateChildCompany = async (
     idParent: string,
-    dataCompany: ChildCompany,
-    dataDocuments: any[]
+    dataCompany: ChildCompany
   ) => {
     try {
       Loading.show({
@@ -124,9 +124,8 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       Loading.show({
         message: 'Modificando informacion',
       });
-      console.log(id);
-      console.log(data);
-
+      data.user_id = userCRM.id;
+      
       const response = await updateCompany(id, data);
       return response;
     } catch (error) {
@@ -143,7 +142,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       loading.value = true;
       const response = await getOneCompany(id);
       payload.value = response;
-      console.log(response.assigned_user_id);
+      //console.log(response.assigned_user_id);
       return response;
     } catch (error) {
       console.log(error);
@@ -153,14 +152,14 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     }
   };
 
-  const onGetChildCompanies = async (id: string) => {
-    try {
-      // obtener datos del servicio
-      return childCompanies;
-    } catch (error) {
-      throw error;
-    }
-  };
+  // const onGetChildCompanies = async (id: string) => {
+  //   try {
+  //     // obtener datos del servicio
+  //     return childCompanies;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // };
 
   const onGetListCompaniesChild = async (id: string) => {
     try {
@@ -172,24 +171,19 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     }
   };
 
-  const onGetCompanyUsers = async (id: string) => {
+  const onGetCompanyUsers = async (id: string, filter:string) => {
     try {
-      // console.log(id);
-      const users = await getCompanyUsers(id);
-      //console.log(users);
+      const users = await getCompanyUsers(id, filter);
       return users;
     } catch (error) {
       throw error;
     }
   };
 
-  const onGetUsersFromChildCompany = async (id: string) => {
+  const onGetUsersFromChildCompany = async (id: string, filter:string) => {
     try {
-      // obtener array de usuarios
-      console.log(id);
-      const users = await getCompanyChildrenUsers(id);
+      const users = await getCompanyChildrenUsers(id, filter);
       return users;
-      //return [];
     } catch (error) {
       throw error;
     }
@@ -288,7 +282,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     onGetCompany,
     clearData,
     onCreateChildCompany,
-    onGetChildCompanies,
+    //onGetChildCompanies,
     onGetCompanyUsers,
     onGetCompanyDocuments,
     onGetListCompaniesChild,

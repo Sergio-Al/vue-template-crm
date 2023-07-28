@@ -58,16 +58,16 @@ export const getTableData = async (params: Params) => {
   console.log(params);
   try {
     // DEV-1 request
-    const { data } = await axios_NS_07.get('/certification-request');
-    console.log(data);
-    return data;
-
-    // //return certicationsList;
-    // const { data } = await axios_NS_07.get(
-    //   `/certificacion?params=${JSON.stringify(params)}`
-    // );
-    // //console.log(data);
+    // const { data } = await axios_NS_07.get('/certification-request');
+    // console.log(data);
     // return data;
+
+    //return certicationsList;
+    const { data } = await axios_NS_07.get(
+      `/certificacion?params=${JSON.stringify(params)}`
+    );
+    //console.log(data);
+    return data;
   } catch (error) {
     throw error;
   }
@@ -115,23 +115,27 @@ export const createCertificationRequest = async (
   solicitud_certification: CertificationDB
 ) => {
   console.log('Creacion de solicitud', solicitud_certification);
-
-  const { data } = await axios_NS_07.post(
-    'certification-request',
-    solicitud_certification
-  );
+  solicitud_certification.etapa_c='nueva';
+  solicitud_certification.estado_c='pendiente';
 
   // const { data } = await axios_NS_07.post(
-  //   '/solicitud',
+  //   'certification-request',
   //   solicitud_certification
   // );
+
+  console.log(solicitud_certification);
+
+  const { data } = await axios_NS_07.post(
+    '/solicitud',
+    solicitud_certification
+  );
   return data;
 };
 
 export const getCertificationRequest = async (id: string) => {
   try {
-    // const response = await axios_NS_07.get(`/solicitud/${id}`);
-    const { data } = await axios_NS_07.get(`/certification-request/${id}`);
+    const response = await axios_NS_07.get(`/solicitud/${id}`);
+    //const { data } = await axios_NS_07.get(`/certification-request/${id}`);
     return data;
   } catch (error) {
     throw error;
@@ -225,8 +229,18 @@ export const getProduct = async (id: string) => {
 };
 
 export const getManufacturers = async (params: Partial<Manufacturer>) => {
-  console.log(params);
-  return manufacturerFiltered;
+  // console.log(params);
+  // console.log(manufacturerFiltered);
+  // return manufacturerFiltered;
+
+  try{
+    const { data } = await axios_NS_07.get(`proveedor/advanced?params=${JSON.stringify(params)}`)
+    console.log(data);
+    return data;
+  }
+  catch(e){
+    throw (e)
+  }
 };
 
 export const getProducts = async (params: Partial<Product>) => {
