@@ -264,7 +264,7 @@ export interface Document {
   iddivision_c: any;
   idamercado_c: any;
   assigned_user_id: string;
-  version: string;
+  version: number;
   document_type: string;
   category: any;
   type: any;

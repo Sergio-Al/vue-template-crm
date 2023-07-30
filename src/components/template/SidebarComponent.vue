@@ -10,11 +10,15 @@
       </div>
       <q-separator class="q-mb-sm" v-if="!template.miniSidebar" />
       <p class="q-ml-lg">
-        <a href="/#/companies"  class="underline-none"><q-icon name="business" /> Empresas</a>
+        <a href="/#/companies"  class="text-weight-bold underline-none"><q-icon name="business" /> Empresas</a>
       </p>
       <p class="q-ml-lg">
-        <a href="/#/certifications"  class="underline-none"><q-icon name="shield" /> Certificaciones</a>
+        <a href="/#/certifications/requests"  class="text-weight-bold underline-none"><q-icon name="edit" /> Solicitudes </a>
       </p>
+      <p class="q-ml-lg">
+        <a href="/#/certifications"  class="text-weight-bold underline-none"><q-icon name="shield" /> Certificaciones</a>
+      </p>
+
 
     </q-scroll-area>
     <div flat class="logo-metronic text-center absolute-top" :class="$q.dark.isActive ? 'bg-dark' : 'bg-custom'">

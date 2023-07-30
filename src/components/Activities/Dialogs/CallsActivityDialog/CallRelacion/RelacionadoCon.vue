@@ -131,6 +131,41 @@
                 <span class="text-h6 q-mb-sm flex flex-center text-primary"
                   >Contactos</span
                 >
+                <div class="col-12">
+                  <q-input
+                    outlined
+                    v-model="dataE.name_account"
+                    label="Cuentas"
+                    class="col-md-6 col-sm-12"
+                    dense
+                    label-slot
+                    :disable="cargaracons"
+                    :loading="cargaracons"
+                    @keyup.enter="onSubmitAcons"
+                  >
+                    <template v-slot:prepend>
+                      <q-avatar>
+                        <q-icon name="account_circle" size="sm" />
+                      </q-avatar>
+                    </template>
+                    <template v-slot:after>
+                      <q-btn
+                        dense
+                        outline
+                        icon="north_west"
+                        color="primary"
+                        @click="openDialogAco"
+                      />
+                      <q-btn
+                        dense
+                        outline
+                        icon="close"
+                        color="negative"
+                        @click="clearAco"
+                      />
+                    </template>
+                  </q-input>
+                </div>
                 <template v-for="(element, index) in formInputs" :key="index">
                   <component
                     :is="element.input"
@@ -226,41 +261,7 @@
                     v-if="element.input === 'q-toggle' && element.visible"
                   />
                 </template>
-                <div class="col-12">
-                  <q-input
-                    outlined
-                    v-model="dataE.name_account"
-                    label="Cuentas"
-                    class="col-md-6 col-sm-12"
-                    dense
-                    label-slot
-                    :disable="cargaracons"
-                    :loading="cargaracons"
-                    @keyup.enter="onSubmitAcons"
-                  >
-                    <template v-slot:prepend>
-                      <q-avatar>
-                        <q-icon name="account_circle" size="sm" />
-                      </q-avatar>
-                    </template>
-                    <template v-slot:after>
-                      <q-btn
-                        dense
-                        outline
-                        icon="north_west"
-                        color="primary"
-                        @click="openDialogAco"
-                      />
-                      <q-btn
-                        dense
-                        outline
-                        icon="close"
-                        color="negative"
-                        @click="clearAco"
-                      />
-                    </template>
-                  </q-input>
-                </div>
+
               </q-card-section>
               <q-card-section>
                 <q-btn
@@ -338,10 +339,10 @@ import { computed, ref } from 'vue';
 // import { useContacts } from 'src/modules/Accounts/composables/TabsComposables/useContacts';
 import { useBusquedaCon } from '../../../../../composables/Activity/useBusquedaCon';
 // import { useBusquedaCon } from 'src/composables/Activity/useBusquedaCon';
-import RelacionadoAco from './RelacionadoAco.vue';
 import DialogFilterEas from 'src/components/MainDialog/DialogFilterEas.vue';
-import { useActivityStore } from 'src/stores/ActivityStore';
 import ContactDialog from 'src/modules/Contacts/components/Dialogs/ContactDialog.vue';
+import { useActivityStore } from 'src/stores/ActivityStore';
+import RelacionadoAco from './RelacionadoAco.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -388,6 +389,7 @@ const onSubmit = () => {
 };
 
 const openDialog = () => {
+
   showFilter.value = !showFilter.value;
 };
 const verDialogItem = async (id: string) => {
@@ -429,7 +431,9 @@ const selectRelaAco = (item: any) => {
   // emit('changeRela', dataSend.value);
 };
 const openDialogAco = () => {
+
   advancedFilterAco.value?.openDialog();
+
 };
 const clearAco = () => {
   dataE.value.name_account = '';
@@ -448,7 +452,7 @@ const onSubmitAcons = async () => {
   dataFilter.value.account = 'pre';
   cargaracons.value = false;
 };
-// tr=========================================================================
+
 
 const emit = defineEmits(['selectItem', 'showAccount', 'sendIdContact']);
 defineExpose({

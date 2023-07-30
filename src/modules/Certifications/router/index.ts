@@ -28,7 +28,7 @@ export default {
       name: 'certifications-request',
       meta: {
         isComplete: true,
-        nameLabel: 'Solicitud de Certificaciones',
+        nameLabel: 'Solicitudes de Certificación',
       },
       component: () => import('../views/ViewListCertificationsRequest.vue'),
       props: (route: { query: { iduser: string; menu: boolean } }) => {

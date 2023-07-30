@@ -51,7 +51,7 @@ const status_doc = [
 //const types_doc = ['2.1.1 Fotocopia de Representación Legal', '2.1.2 Certificado de Libre Venta'];
 const types_doc = ref([]);
 
-const data = ref({ category: '', version: '', iddivision_c:'04', active_date: new Date().toISOString().substring(0,10)  } as Document);
+const data = ref({ category: '', version: 2, iddivision_c:userCRM.iddivision, active_date: new Date().toISOString().substring(0,10)  } as Document);
 //const headerId = ref<string>('');
 
 const divisionList = ref([]);
@@ -86,7 +86,6 @@ const defaultExists = computed(() => {
 
 const uploadFiles = async (file: File[]) => {
   dataFormatCRM3;
-
   try {
     $q.loading.show({
       message: 'Guardando información',
@@ -118,7 +117,7 @@ const uploadFiles = async (file: File[]) => {
       );
     await axiosCRM3.post('', body);
   } catch (error) {
-    console.log('se guardó el documento');
+    console.log('error al guardar');
     // $q.notify({
     //   type: 'negative',
     //   message: 'Error al guardar el archivo',
@@ -139,7 +138,8 @@ onMounted(async () => {
     data.value = {
       ...data.value,
       ...props.defaultData,
-      version: (+(props.defaultData?.version || 1) + 1).toString(),
+      version:1
+      //version: (+(props.defaultData?.version || 1) + 1).toString(),
     };
   }
   categories_doc.value = await companyStore.onGetCategoryDocuments();

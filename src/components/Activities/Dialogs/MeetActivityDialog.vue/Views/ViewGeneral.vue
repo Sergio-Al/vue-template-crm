@@ -24,7 +24,11 @@ import ViewCardVue from 'src/components/MainCard/ViewCard.vue';
 import { useIdGenerator } from 'src/composables/General/generator';
 import CommentsList from 'src/components/Comments/CommentsList.vue';
 
-const props = withDefaults(defineProps<{ idActivity: string }>(), {
+const props = withDefaults(defineProps<{ 
+  idActivity: string;
+  NameRegMod?: string;
+
+}>(), {
   idActivity: '',
 });
 
@@ -269,6 +273,7 @@ defineExpose({
               id-module=""
               @submit="saveMeet"
               name-module=""
+              :NameRegMod="props.NameRegMod"
             />
           </template>
           <template #read>
