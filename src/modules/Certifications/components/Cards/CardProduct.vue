@@ -9,6 +9,7 @@ import { Certification, CertificationDB } from '../../utils/types';
 
 import { getProduct } from '../../services/useCertificationsService';
 import { productListData } from '../../utils/dummyData';
+import CardRelationManufacturer from './CardRelationManufacturer.vue';
 
 interface Props {
   id: string;
@@ -110,6 +111,15 @@ defineExpose({
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <div class="col-12">
+          <CardRelationManufacturer
+            ref="cardRelationManufacturerRef"
+            v-model:id="inputData.hance_empresa_id_c"
+            module-name="Fabricante"
+            edit-mode
+            error-message="Se necesita un fabricante"
+          />
+        </div>
+        <div class="col-12">
           <CardRelationProduct
             v-model:id="inputData.producto_c"
             module-name="Producto"
@@ -205,6 +215,14 @@ defineExpose({
     <template #read>
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
+        <div class="col-12">
+          <CardRelationManufacturer
+            ref="cardRelationManufacturerRef"
+            v-model:id="inputData.hance_empresa_id_c"
+            module-name="Fabricante"
+            error-message="Se necesita un fabricante"
+          />
+        </div>
         <div class="col-12">
           <CardRelationProduct
             v-model:id="inputData.producto_c"

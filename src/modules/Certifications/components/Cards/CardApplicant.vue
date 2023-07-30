@@ -6,9 +6,8 @@ import moment from 'moment';
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 import { getUsers, getUser } from '../../services/useCertificationsService';
 
-import { Certification, CertificationDB, User } from '../../utils/types';
+import { CertificationDB, CertificationRequest, User } from '../../utils/types';
 import { userStore } from 'src/modules/Users/store/UserStore';
-
 
 // obtener data del repositorio de mongoDB y borrar este import
 import {
@@ -22,7 +21,7 @@ import { user } from '../../utils/dummyData';
 
 interface Props {
   id: string;
-  data: Partial<CertificationDB>;
+  data: Partial<CertificationRequest>;
 }
 
 const { getListDivisiones, listDivisiones } = useDivision();
@@ -35,8 +34,6 @@ const $q = useQuasar();
 //const { userCRM, getCompany } = useCompany();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
-
-  
 
 const inputData = ref({ ...props.data });
 inputData.value.iddivision_c = '04';
@@ -89,31 +86,25 @@ onMounted(async () => {
 
   //console.log(divisionList.value);
 
-  if(!!props.id){
-
-  }
-  else{
-    if(userCRM){
+  if (!!props.id) {
+  } else {
+    if (userCRM) {
       console.log(userCRM);
-      const {id, nombres, apellidos, iddivision, idamercado, idregional} = userCRM;
+      const { id, nombres, apellidos, iddivision, idamercado, idregional } =
+        userCRM;
       inputData.value.user_id_c = id;
-      users.value = 
-        [
-          {id, fullname:`${nombres} ${apellidos}`}
-        ]
-      ;
+      users.value = [{ id, fullname: `${nombres} ${apellidos}` }];
       //valores por defecto aqui
-      inputData.value.idamercado_c=idamercado;
-      inputData.value.iddivision_c=iddivision;
+      inputData.value.idamercado_c = idamercado;
+      inputData.value.iddivision_c = iddivision;
       //inputData.value.idregional_c=idregional;
-      inputData.value.idregional_c='';
+      inputData.value.idregional_c = '';
     }
-     inputData.value.date_entered = new Date().toISOString().substring(0,10);
+    inputData.value.date_entered = new Date().toISOString().substring(0, 10);
   }
 
   console.log(inputData.value);
 
-  
   // buscar solicitante y asignar a users[] (options)
   // if (!!inputData.value.user_id_c) {
   //   if (!!props.id) {
@@ -125,7 +116,6 @@ onMounted(async () => {
   //   //   console.log(response);
   //   //   users.value = [response];
   // }
-
 
   //listAreaMercado.value = await useDivAreaMercado(inputData.value.iddivision_c);
   await getRegionales();
@@ -227,7 +217,7 @@ defineExpose({
           </template>
         </q-select>
         <q-input
-          v-model="inputData.date_entered"
+          v-model="inputData.date_entered_c"
           class="col-12 col-sm-6"
           label="Fecha"
           outlined
@@ -324,7 +314,7 @@ defineExpose({
           </template>
         </q-select>
         <q-input
-          v-model="inputData.date_entered"
+          v-model="inputData.date_entered_c"
           class="col-12 col-sm-6"
           label="Fecha"
           outlined

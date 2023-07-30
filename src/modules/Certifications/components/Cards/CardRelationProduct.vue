@@ -10,7 +10,8 @@ import type { Product } from '../../utils/types';
 import { productPromise } from '../../utils/dummyData';
 
 interface Props {
-  id: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  id: any;
   moduleName: string;
   editMode?: boolean;
   errorMessage?: string;
