@@ -8,6 +8,7 @@ import { userStore } from 'src/modules/Users/store/UserStore';
 import type {
   Certification,
   CertificationDB,
+  CertificationRequest,
   Manufacturer,
   Params,
   Product,
@@ -113,7 +114,7 @@ export const updateTablePreferences = async (id: string, data: any) => {
 };
 
 export const createCertificationRequest = async (
-  solicitud_certification: CertificationDB
+  solicitud_certification: Partial<CertificationRequest>
 ) => {
   console.log('Creacion de solicitud', solicitud_certification);
 
@@ -143,7 +144,7 @@ export const getCertificationRequest = async (id: string) => {
 
 export const updateCertificationRequest = async (
   id: string,
-  body: Partial<CertificationDB>
+  body: Partial<CertificationRequest>
 ) => {
   try {
     // DEV-1 request

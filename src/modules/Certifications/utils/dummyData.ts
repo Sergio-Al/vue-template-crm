@@ -651,6 +651,17 @@ export const productPromise = (): Promise<Product> => {
   });
 };
 
+export const certificationRequestPromise = (
+  id: string
+): Promise<CertificationRequest> => {
+  console.log(id);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(certificationRequest);
+    }, 500);
+  });
+};
+
 export const certificationsRequestPromise = (): Promise<
   CertificationRequest[]
 > => {

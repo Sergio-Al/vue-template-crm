@@ -6,7 +6,7 @@ import moment from 'moment';
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 import { getUsers, getUser } from '../../services/useCertificationsService';
 
-import { Certification, CertificationDB, User } from '../../utils/types';
+import { CertificationDB, CertificationRequest, User } from '../../utils/types';
 
 // obtener data del repositorio de mongoDB y borrar este import
 import {
@@ -19,7 +19,7 @@ import {
 
 interface Props {
   id: string;
-  data: Partial<CertificationDB>;
+  data: Partial<CertificationRequest>;
 }
 
 const { getListDivisiones, listDivisiones } = useDivision();
@@ -188,7 +188,7 @@ defineExpose({
           </template>
         </q-select>
         <q-input
-          v-model="inputData.date_entered"
+          v-model="inputData.date_entered_c"
           class="col-12 col-sm-6"
           label="Fecha"
           outlined
@@ -285,7 +285,7 @@ defineExpose({
           </template>
         </q-select>
         <q-input
-          v-model="inputData.date_entered"
+          v-model="inputData.date_entered_c"
           class="col-12 col-sm-6"
           label="Fecha"
           outlined

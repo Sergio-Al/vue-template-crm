@@ -6,6 +6,7 @@ import { useCertificationRequestTableStore } from '../store/useCertificationRequ
 import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
 
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
+import CertificationRequestDialog from '../components/Dialogs/CertificationRequestDialog.vue';
 import CertificationDialog from '../components/Dialogs/CertificationDialog.vue';
 
 interface Props {
@@ -60,6 +61,10 @@ const onSubmitDataFilter = () => {
 const advancedFilterRef = ref<InstanceType<typeof AdvancedFilter> | null>(null);
 const certificationDialogRef = ref<InstanceType<
   typeof CertificationDialog
+> | null>(null);
+
+const certificationRequestDialogRef = ref<InstanceType<
+  typeof CertificationRequestDialog
 > | null>(null);
 
 // const updateMassiveRef = ref<InstanceType<
@@ -138,8 +143,8 @@ const setTipoColor = (tipo: string): string => {
   return colorMap[tipo] || 'grey';
 };
 
-const openDialog = () => {
-  certificationDialogRef.value?.openDialogTab();
+const openDialog = (id?: string) => {
+  certificationRequestDialogRef.value?.openDialogTab(id);
 };
 
 const openItemSelected = (id: string, title: string) => {
@@ -180,7 +185,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="name" :props="propsTable" :style="'width: 100px;'">
             <span
               class="text-primary text-weight-bold text-break cursor-pointer"
-              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
+              @click="openDialog(propsTable.row.id)"
             >
               {{ propsTable.row.name || 'Sin Número' }}
             </span>
@@ -471,6 +476,7 @@ const openItemSelected = (id: string, title: string) => {
     </table-component>
     <TableSkeleton v-else />
   </div>
+  <CertificationRequestDialog ref="certificationRequestDialogRef" />
   <CertificationDialog ref="certificationDialogRef" />
 </template>
 
