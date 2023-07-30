@@ -160,7 +160,7 @@ const setColorState = (state: string): string => {
 const setColorType = (type: string): string => {
   const colorMap: { [key: string]: string } = {
     privado : 'orange',
-    publico: 'blue',
+    publico: 'green',
   };
 
   return colorMap[type] || 'grey';
@@ -296,29 +296,41 @@ const setColorType = (type: string): string => {
             <p class="text-caption q-my-sm"><span class="text-weight-bold">A. Mercado:</span> Desconocido</p>
           </q-td>
           <q-td key="active_date" :props="props" :style="'width: 150px;'">
-            <p class="q-my-sm"><span class="text-weight-bold">F. Inicio:  </span>{{ props.row.active_date.substr(0,10) }}</p>
+            <p class="q-my-sm"><span class="text-weight-bold">F. Inicio:  </span>{{ props.row.active_date }}</p>
             <p class="text-caption q-my-sm">
-              <span class="text-weight-bold">F. Culminación:  </span> {{ props.row.exp_date.substring(0,10) }}
+              <span class="text-weight-bold">F. Culminación:  </span> {{ props.row.exp_date }}
             </p>
           </q-td>
           <q-td key="status_id" :props="props" :style="'width: 150px;'">
             <q-badge outline :color="setColorState(props.row.status_id)" class="q-px-md q-py-sm">
-              <span class="text-weight-bold">{{ props.row.status_id }}</span>
+              <span class="text-weight-bold">{{ props.row.status_id.toUpperCase() }}</span>
             </q-badge>
           </q-td>
           <q-td key="tipo" :props="props" :style="'width: 150px;'">
-            <q-badge :color="setColorType(props.row.tipo)" class="q-px-md q-py-sm">
+            <q-badge outline :color="setColorType(props.row.tipo)" class="q-px-md q-py-sm">
               <q-icon v-if="props.row.tipo == 'privado'" name="info" />
               <q-icon v-else name="check" />
               <span class="text-weight-bold q-pl-sm">{{ props.row.tipo.toUpperCase() }}</span>
             </q-badge>
           </q-td>
           <q-td key="responsable" :props="props" :style="'width: 150px;'">
-            <span>
-              {{ props.row.responsable }}
-            </span>
-            <br>
-            <span class="text-weight-bold">Fecha de Registro:</span> {{ props.row.fecha_creacion.substring(0,10) }}
+            <div class="row">
+              <div class="col-2">
+                <q-avatar
+                  size="24px"
+                  font-size="24px"
+                  color="primary"
+                  text-color="white"
+                  icon="person"
+                />
+              </div>
+              <div class="col-10">
+                <span>
+                  {{ props.row.responsable }}
+                </span>
+              </div>
+            </div>
+            <span class="text-caption"><span class="text-weight-bold">Fecha de Registro:</span> {{ props.row.fecha_creacion }}</span>
           </q-td>
           <q-td key="options" :props="props" :style="'width: 150px;'">
             <q-btn

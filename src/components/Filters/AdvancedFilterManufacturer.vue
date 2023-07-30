@@ -64,7 +64,21 @@ const formInputs = ref([
     input: 'q-input',
     label: 'NIT/CI',
     clearable: true,
-    field: 'ni_ci_c',
+    field: 'nit_ci_c',
+    visible: true,
+  },
+  {
+    input: 'q-input',
+    label: 'País',
+    clearable: true,
+    field: 'billing_address_country',
+    visible: true,
+  },
+  {
+    input: 'q-input',
+    label: 'Ciudad',
+    clearable: true,
+    field: 'billing_address_city',
     visible: true,
   },
   {
@@ -73,14 +87,6 @@ const formInputs = ref([
     type: 'tel',
     clearable: true,
     field: 'phone_office',
-    visible: true,
-  },
-  {
-    input: 'q-input',
-    label: 'Website',
-    type: 'tel',
-    clearable: true,
-    field: 'website',
     visible: false,
   },
   // {
@@ -154,7 +160,7 @@ const formInputs = ref([
     label: 'Direccion',
     clearable: true,
     field: 'billing_address_street',
-    visible: true,
+    visible: false,
   },
 ]);
 
@@ -163,8 +169,20 @@ const formInputs = ref([
 const onSubmit = async () => {
   console.log('submitting');
   try {
+    console.log(dataFilter.value)
+
+    const body = {
+      name : !!dataFilter.value.name?dataFilter.value.name:'',
+      billing_address_street : !!dataFilter.value.billing_address_street?dataFilter.value.billing_address_street:'',
+      nit_ci_c : !!dataFilter.value.nit_ci_c?dataFilter.value.nit_ci_c:'',
+      billing_address_country : !!dataFilter.value.billing_address_country?dataFilter.value.billing_address_country:'',
+      billing_address_city : !!dataFilter.value.billing_address_city?dataFilter.value.billing_address_city:'',
+      phone_office : !!dataFilter.value.phone_office?dataFilter.value.phone_office:'',
+    }
+
     loading.value = true;
-    const response = await getManufacturers(dataFilter.value);
+    const response = await getManufacturers(body);
+    console.log(response);
     manufacturerFiltered.value = response;
     isFiltering.value = true;
   } catch (error) {
@@ -286,12 +304,12 @@ defineExpose({
 
                             <q-item-label caption>
                               <div>
-                                NIT/CI:
+                                País:
                                 <span class="text-blue">{{
-                                  item.nit_ci_c
-                                }}</span>
+                                  item.pais
+                                }} - {{ item.ciudad}}</span>
                               </div>
-                              <div>Teléfono: {{ item.phone_office }}</div>
+                              <div>Dirección: {{ item.direccion }}</div>
                             </q-item-label>
                           </q-item-section>
                         </q-item>

@@ -7,6 +7,7 @@ import ViewCard from 'src/components/MainCard/ViewCard.vue';
 import { getUsers, getUser } from '../../services/useCertificationsService';
 
 import { CertificationDB, CertificationRequest, User } from '../../utils/types';
+import { userStore } from 'src/modules/Users/store/UserStore';
 
 // obtener data del repositorio de mongoDB y borrar este import
 import {
@@ -15,6 +16,7 @@ import {
   useGrupoCliente,
   useRegionales,
 } from 'src/composables/useLanguage';
+import { user } from '../../utils/dummyData';
 //import { amercado, divisions, regional } from '../../utils/dummyData';
 
 interface Props {
@@ -24,6 +26,7 @@ interface Props {
 
 const { getListDivisiones, listDivisiones } = useDivision();
 const { getRegionales, listRegionales } = useRegionales();
+const { userCRM } = userStore();
 
 const props = defineProps<Props>();
 const $q = useQuasar();
@@ -34,6 +37,7 @@ const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
 
 const inputData = ref({ ...props.data });
 inputData.value.iddivision_c = '04';
+//inputData.value.user_id_c = '5c19df6d-0cf0-6e23-7c01-629fb9d01588';
 
 const users = ref<User[] | undefined>(undefined);
 
@@ -52,8 +56,7 @@ const filterFn = async (
       if (!!users.value && users.value.length > 0) return;
       users.value = [];
     } else {
-      const term = val;
-      const response = await getUsers(term);
+      const response = await getUsers(val);
       users.value = response;
       //users.value = [{ id: '1', fullname: 'Dan dd' }];
       console.log(users.value);
@@ -78,16 +81,42 @@ const divisionList = ref([]);
 const listRegional = ref([]);
 
 onMounted(async () => {
-  // buscar solicitante y asignar a users[] (options)
-  if (!!inputData.value.user_id_c) {
-    if (!!props.id) {
-      const response = await getUser(inputData.value.user_id_c);
-      console.log(response);
-      users.value = [response];
-    }
-  }
   await getListDivisiones();
   divisionList.value = listDivisiones.value;
+
+  //console.log(divisionList.value);
+
+  if (!!props.id) {
+  } else {
+    if (userCRM) {
+      console.log(userCRM);
+      const { id, nombres, apellidos, iddivision, idamercado, idregional } =
+        userCRM;
+      inputData.value.user_id_c = id;
+      users.value = [{ id, fullname: `${nombres} ${apellidos}` }];
+      //valores por defecto aqui
+      inputData.value.idamercado_c = idamercado;
+      inputData.value.iddivision_c = iddivision;
+      //inputData.value.idregional_c=idregional;
+      inputData.value.idregional_c = '';
+    }
+    inputData.value.date_entered = new Date().toISOString().substring(0, 10);
+  }
+
+  console.log(inputData.value);
+
+  // buscar solicitante y asignar a users[] (options)
+  // if (!!inputData.value.user_id_c) {
+  //   if (!!props.id) {
+  //     const response = await getUser(inputData.value.user_id_c);
+  //     console.log(response);
+  //     users.value = [response];
+  //   }
+  //   // const response = await getUser(inputData.value.user_id_c);
+  //   //   console.log(response);
+  //   //   users.value = [response];
+  // }
+
   //listAreaMercado.value = await useDivAreaMercado(inputData.value.iddivision_c);
   await getRegionales();
   const aux = await listRegionales.value.find(
@@ -233,7 +262,7 @@ defineExpose({
           :options="listRegional"
           type="text"
           label="Regional"
-          option-value="value"
+          option-value="cod_region"
           option-label="label"
           emit-value
           map-options
@@ -316,7 +345,7 @@ defineExpose({
           :options="divisionList"
           type="text"
           label="División"
-          option-value="value"
+          option-value="cod_div"
           option-label="label"
           emit-value
           map-options
@@ -331,7 +360,7 @@ defineExpose({
           :options="listRegional"
           type="text"
           label="Regional"
-          option-value="value"
+          option-value="cod_region"
           option-label="label"
           emit-value
           map-options

@@ -137,9 +137,14 @@ const seeLess = (index: number) => {
 
 //Metodos y funciones
 onMounted(async () => {
+  console.log(props);
+
   let dateStart = moment(rangeDate.value.from).format('YYYY-MM-DD');
   let dateEnd = moment(rangeDate.value.to).format('YYYY-MM-DD');
-  // getActivities.value = await Get_list_Activities(id.value, dateStart, dateEnd);
+  getActivities.value = await Get_list_Activities(id.value, dateStart, dateEnd);
+
+  //console.log(getActivities.value);
+
   ActiveSqeleton.value = true;
   addatribute();
 });
