@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 // import { QTableColumn } from 'quasar';
 // import { useAsyncState } from '@vueuse/core';
 // import { useActivityStore } from 'src/stores/ActivityStore';
 // import UsersTable from '../../MeetActivityDialog.vue/Tables/UsersTable.vue';
-import TablePhonesContact from '../Dialog/TablePhonesContact.vue';
 import { SearchUser } from '../../../../../components/types/index';
+import TablePhonesContact from '../Dialog/TablePhonesContact.vue';
 // const props = defineProps<{
 //   buscarConta: boolean;
 // }>();

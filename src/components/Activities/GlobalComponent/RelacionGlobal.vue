@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import RelacionadoCon from '../../Activities/Dialogs/CallsActivityDialog/CallRelacion/RelacionadoCon.vue';
 import RelacionadoPro from '../../Activities/Dialogs/CallsActivityDialog/CallRelacion/RelacionadoPro.vue';
 import { useActivityStore } from 'src/stores/ActivityStore';
+import { idActivityKey } from '../ProvideKeys';
+import { ModuleActivity } from 'src/components/types';
 
 const prospect_param = ref();
 const listModules = ref();
@@ -75,6 +77,10 @@ const openDialogFilter = (option: string) => {
   }
 };
 
+const closeDialogFilter = () => {
+  advancedFilterCon.value?.onClose();
+};
+
 const selectRela = (item: any) => {
   console.log(item);
   dataSend.value.relaUser = item.nombre;
@@ -90,7 +96,20 @@ const clearRela = () => {
   dataSend.value.relaUser = '';
   dataSend.value.idrelaUser = '';
 };
-
+const optionrela = [
+  {
+    label: 'Prospectos',
+    value: 'Prospects',
+  },
+  {
+    label: 'Cuentas',
+    value: 'Accounts',
+  },
+  {
+    label: 'Contactos',
+    value: 'Contacts',
+  },
+];
 const exposeData = () => {
   return dataSend.value;
 };

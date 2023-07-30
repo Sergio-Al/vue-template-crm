@@ -1,11 +1,12 @@
 <script lang="ts">
+import { Loading, QSpinnerPuff, useQuasar } from 'quasar';
 import { ref } from 'vue';
-import { useQuasar, QSpinnerPuff } from 'quasar';
-import { useActivityStore } from 'src/stores/ActivityStore';
-import CallCard from './CallsActivityDialog/Card/CallCard.vue';
-import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
+
 import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
 import CommentsList from 'src/components/Comments/CommentsList.vue';
+import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
+import { useActivityStore } from 'src/stores/ActivityStore';
+import CallCard from './CallsActivityDialog/Card/CallCard.vue';
 </script>
 <script lang="ts" setup>
 const open = ref(false);
@@ -15,9 +16,11 @@ const idCallreadC = ref('');
 const verfotter = ref(true);
 const props = withDefaults(
   defineProps<{
-    idActivity?: string;
+    idActivity: string;
     idModule: string;
+    AccountId?:string;
     ModuleType?: string;
+    NameRegMod?:string;
   }>(),
   {
     idActivity: '',
@@ -25,14 +28,12 @@ const props = withDefaults(
 );
 //* composable variables
 const $q = useQuasar();
-const showConfimed = ref(false);
 
 const storeCall = useActivityStore();
-//const lista = ref();
-// ----------comentarios ini
-const tab = ref('comentarios');
-const commentCreate = ref('');
 
+const showConfimed = ref(false);
+const commentCreate = ref('');
+const tab = ref('comentarios');
 const coment = ref({
   bean_module: 'Calls',
   bean_id: '',
@@ -40,7 +41,7 @@ const coment = ref({
   relevance: 'medium',
   description: '',
 });
-// --------- comentarios fin
+
 // ---------------------------------------------------------------------------------
 const openDialog = (ids: string) => {
   open.value = !open.value;
@@ -58,6 +59,7 @@ const CallLetfRef = ref<InstanceType<typeof CallCard> | null>(null);
 const assignedSingleUserRef = ref<InstanceType<typeof AssignedUser> | null>(
   null
 );
+
 const validandoInput = async (): Promise<boolean | undefined> => {
   return (await Promise.all([CallLetfRef.value?.rulesInput()])).every(
     (val) => !!val
@@ -70,34 +72,33 @@ const saveCallP = async () => {
     console.log('mal values');
     return;
   }
-  $q.loading.show({
+  Loading.show({
     spinner: QSpinnerPuff,
     message: 'Creando una llamada',
   });
   callform.value = CallLetfRef.value?.exposeData();
-  // asigform.value = assignedSingleUserRef.value?.assignedUser();
   asigform.value = assignedSingleUserRef.value?.assignedUser.id;
-  // console.log(callform, props);
   coment.value.description = commentCreate.value;
   coment.value.bean_id = props.idActivity;
 
-  // await storeCall.saveComentPro(coment.value, asigform.value);
   console.log('Guarda', callform.value.id, props.ModuleType);
 
   if (!callform.value.id) {
-    await storeCall.saveCallPro(callform.value, asigform.value, coment.value);
-    // console.log('vacio', callform.value);
+    await storeCall.saveCallPro(
+      callform.value,
+      asigform.value,
+      coment.value
+    );
   } else {
     await storeCall.updateCallPro(
       callform.value,
       asigform.value,
-      callform.value.id
+      callform.value.id,
     );
-    // console.log('lleno', callform.value);
   }
   commentCreate.value = '';
   open.value = false;
-  $q.loading.hide();
+  Loading.hide();
   emits('formSaved');
 };
 
@@ -105,12 +106,12 @@ const alertDeleteCall = async () => {
   showConfimed.value = true;
 };
 const deleteCallP = async () => {
-  $q.loading.show({
+  Loading.show({
     spinner: QSpinnerPuff,
     message: 'Eliminando una llamada',
   });
   await storeCall.deleteCallPro(idCallreadC.value);
-  $q.loading.hide();
+  Loading.hide();
   open.value = false;
   emits('formSaved');
 };
@@ -159,18 +160,9 @@ defineExpose({
   >
     <template #header>
       <div class="bg-primary-3 text-black">
-        <q-toolbar class="bg-primary q-pa-md text-white">
+        <q-toolbar class="bg-primary q-pa-lg text-white">
           <q-list>
             <q-item>
-              <!-- <q-btn
-                dense
-                flat
-                color="white"
-                v-if="$q.platform.has.touch"
-                icon="arrow_back_ios"
-                v-close-popup
-              >
-              </q-btn> -->
               <q-item-section avatar>
                 <q-avatar text-color="white">
                   <q-icon name="phone" size="md"></q-icon>
@@ -222,13 +214,14 @@ defineExpose({
         <div class="col-md-6 q-pa-sm">
           <CallCard
             ref="CallLetfRef"
-            module="Leads"
-            :idModule="props.idModule"
-            :ModuleTypeC="props.ModuleType"
+            :idModule="idModule"
             :idCardread="idCallreadC"
-            :idActivityC="props.idActivity"
-            @editcard="editarCardC"
-            @cancelcard="cancelCardC"
+            :ModuleTypeC="ModuleType || ''"
+            :idActivityC="idActivity"
+            :AccountId="AccountId"
+            :NameRegMod="NameRegMod"
+            @edit-card="editarCardC"
+            @cancel-edit="cancelCardC"
           />
         </div>
         <div class="col-md-6 q-pa-sm">
@@ -273,7 +266,7 @@ defineExpose({
               >
                 <q-tab-panel
                   name="comentarios"
-                  style="min-height: 10vh"
+                  style="min-height: 59vh"
                   class="q-py-sm"
                 >
                   <!-- <pre>{{idActivity}}</pre> -->

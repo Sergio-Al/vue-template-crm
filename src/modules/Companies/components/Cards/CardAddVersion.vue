@@ -6,6 +6,7 @@ import { userStore } from 'src/modules/Users/store/UserStore';
 import type { Document } from '../../utils/types';
 import { axiosCRM3 } from 'src/conections/axiosPRY';
 import { dataFormatCRM3Basic } from 'src/conections/conexionCRM3';
+import { useCompaniesStore } from '../../store/companyStore';
 
 interface Props {
   idDocument: string;
@@ -20,6 +21,8 @@ interface Emits {
 const props = defineProps<Props>();
 const emits = defineEmits<Emits>();
 
+const companyStore = useCompaniesStore();
+
 const uploadFileRef = ref<InstanceType<typeof QUploader> | null>();
 
 const $q = useQuasar();
@@ -27,12 +30,15 @@ const { userCRM } = userStore();
 
 onMounted(async () => {
   //console.log(props.child);
+  // = companyStore.onGetLastVersionDocument(props.idDocument);
+  const version = await companyStore.onGetLastVersionDocument(props.idDocument);
+  data.value.version = parseInt(version)+1;
 });
 
 const data = ref({
   ...props.data,
   active_date: new Date().toISOString().substring(0, 10), // fecha actual
-  version: ((!!props.data?.version ? +props.data?.version : 1) + 1).toString(), // nueva version
+  //version: ((!!props.data?.version ? +props.data?.version : 1) + 1).toString(), // nueva version
 } as Document);
 
 const uploadFiles = async (file: File[]) => {

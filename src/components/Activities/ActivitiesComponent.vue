@@ -1,22 +1,21 @@
 <script lang="ts">
-import { ref, provide, onMounted, computed } from 'vue';
-import { api } from '../../boot/axios';
-import { useProspectStore } from '../../modules/Prospects/store/ProspectStore';
-import EmailsActivitieDialog from '../../components/Activities/Dialogs/EmailsActivitieDialog.vue';
 import MeetsActivitieDialog from 'src/components/Activities/Dialogs/MeetActivitieDialog.vue';
+import { computed, onMounted, provide, ref } from 'vue';
+import { api } from '../../boot/axios';
+import EmailsActivitieDialog from '../../components/Activities/Dialogs/EmailsActivitieDialog.vue';
+import { useProspectStore } from '../../modules/Prospects/store/ProspectStore';
 import CallsActivitieDialog from './Dialogs/CallsActivitieDialog.vue';
-import TasksActivitieDialog from './Dialogs/TasksActivitieDialog.vue';
 import NoteActivitieDialog from './Dialogs/NoteActivitieDialog.vue';
+import TasksActivitieDialog from './Dialogs/TasksActivitieDialog.vue';
 //import { userStore } from 'src/modules/Users/store/UserStore';
+import moment from 'moment';
+import InfoCardEmails from 'src/components/Activities/Dialogs/EmailActivitieDialog/Card/InfoCardEmails.vue';
+import InfoCard from 'src/components/Activities/Dialogs/TaskActivityDialog/Card/InfoCard.vue';
 import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
-import { ModuleActivity } from '../types/index';
-import { moduleKey, idModuleKey } from './ProvideKeys';
 import { updateMeetingAttributesService } from 'src/services/MeetingsServices';
 import { useActivityStore } from 'src/stores/ActivityStore';
-import InfoCard from 'src/components/Activities/Dialogs/TaskActivityDialog/Card/InfoCard.vue';
-import InfoCardEmails from 'src/components/Activities/Dialogs/EmailActivitieDialog/Card/InfoCardEmails.vue';
-import { SearchUser } from '../types/index';
-import moment from 'moment';
+import { ModuleActivity, SearchUser } from '../types/index';
+import { idModuleKey, moduleKey } from './ProvideKeys';
 </script>
 <script lang="ts" setup>
 //Declaracion de Constantes, props.
@@ -26,19 +25,14 @@ const props = withDefaults(
   defineProps<{
     id: string;
     idUser: string;
-    module: ModuleActivity;
+    module?: ModuleActivity;
     emails?: SearchUser[];
     nameReg?: string;
     fromDate?: string;
     toDate?: string;
-    activeTab?:
-      | 'todas'
-      | 'tarea'
-      | 'llamada'
-      | 'correo'
-      | 'reunion'
-      | 'notas'
-      | 'nota';
+    activeTab?: 'todas' | 'tarea' | 'llamada' | 'correo' | 'reunion' | 'nota';
+    NameRegMod?:string;
+    accountId?:string;
   }>(),
   {
     activeTab: 'todas',
@@ -60,15 +54,15 @@ const ActiveSqeleton = ref(false);
 const rangeDate = ref({
   from: !!props.fromDate
     ? moment(props.fromDate, 'DD/MM/YYYY').format('YYYY/MM/DD')
-    : moment().startOf('month').format('YYYY/MM/DD'),
+    : moment().startOf('year').format('YYYY/MM/DD'),
   to: !!props.toDate
     ? moment(props.toDate, 'DD/MM/YYYY').format('YYYY/MM/DD')
-    : moment().endOf('month').format('YYYY/MM/DD'),
+    : moment().endOf('year').format('YYYY/MM/DD'),
 });
 
 const rangeDate2 = ref({
-  from2: props.fromDate || moment().startOf('month').format('DD/MM/YYYY'),
-  to2: props.toDate || moment().endOf('month').format('DD/MM/YYYY'),
+  from2: props.fromDate || moment().startOf('year').format('DD/MM/YYYY'),
+  to2: props.toDate || moment().endOf('year').format('DD/MM/YYYY'),
 });
 const id = ref(props.id);
 const idUser = ref(props.idUser);
@@ -82,7 +76,7 @@ const meetDialog = ref();
 const callDialog = ref();
 const taskDialog = ref();
 const noteDialog = ref();
-const idActivity = ref('');
+const idActivity = ref();
 const storeCall = useActivityStore();
 const showConfimed = ref(false);
 const activityId = ref('');
@@ -137,14 +131,9 @@ const seeLess = (index: number) => {
 
 //Metodos y funciones
 onMounted(async () => {
-  console.log(props);
-
   let dateStart = moment(rangeDate.value.from).format('YYYY-MM-DD');
   let dateEnd = moment(rangeDate.value.to).format('YYYY-MM-DD');
   getActivities.value = await Get_list_Activities(id.value, dateStart, dateEnd);
-
-  //console.log(getActivities.value);
-
   ActiveSqeleton.value = true;
   addatribute();
 });
@@ -227,7 +216,11 @@ const updateStatusDynamic = async () => {
       hideCardCompleted.value = false;
     case 'llamada':
       console.log('actualizar llamada', activityId.value);
-      await storeCall.updateCallProStatus(activityId.value);
+      await storeCall.updateCallProStatus(
+        activityId.value,
+        listAux.value[indexAux.value].fecha_inicio,
+        listAux.value[indexAux.value].fecha_fin
+      );
       hideCard.value = false;
       formSaved();
       hideCardCompleted.value = false;
@@ -352,11 +345,8 @@ const listAux = computed(() => {
                 :flat="tabAct == 'tarea' ? false : true"
               >
                 <q-badge color="blue " floating transparent>
-                  {{
-                    getActivities.filter(
-                      (v: any) => v.tipo_actividad === 'tarea'
-                    ).length
-                  }}
+                  {{getActivities.filter((v:any) => v.tipo_actividad ===
+                'tarea').length}}
                 </q-badge>
                 <q-tooltip class="bg-grey-8">Ver solo Tareas</q-tooltip>
               </q-btn>
@@ -369,11 +359,8 @@ const listAux = computed(() => {
                 :flat="tabAct == 'llamada' ? false : true"
               >
                 <q-badge color="blue " floating transparent>
-                  {{
-                    getActivities.filter(
-                      (v: any) => v.tipo_actividad === 'llamada'
-                    ).length
-                  }}
+                  {{getActivities.filter((v:any) => v.tipo_actividad ===
+                'llamada').length}}
                 </q-badge>
                 <q-tooltip class="bg-grey-8">Ver solo Llamadas</q-tooltip>
               </q-btn>
@@ -386,11 +373,8 @@ const listAux = computed(() => {
                 :flat="tabAct == 'reunion' ? false : true"
               >
                 <q-badge color="blue " floating transparent>
-                  {{
-                    getActivities.filter(
-                      (v: any) => v.tipo_actividad === 'reunion'
-                    ).length
-                  }}
+                  {{getActivities.filter((v:any) => v.tipo_actividad ===
+                'reunion').length}}
                 </q-badge>
                 <q-tooltip class="bg-grey-8">Ver solo Reuniónes</q-tooltip>
               </q-btn>
@@ -403,11 +387,8 @@ const listAux = computed(() => {
                 :flat="tabAct == 'correo' ? false : true"
               >
                 <q-badge color="blue " floating transparent>
-                  {{
-                    getActivities.filter(
-                      (v: any) => v.tipo_actividad === 'correo'
-                    ).length
-                  }}
+                  {{getActivities.filter((v:any) => v.tipo_actividad ===
+                'correo').length}}
                 </q-badge>
                 <q-tooltip class="bg-grey-8">Ver solo Email</q-tooltip>
               </q-btn>
@@ -420,18 +401,14 @@ const listAux = computed(() => {
                 :flat="tabAct == 'nota' ? false : true"
               >
                 <q-badge color="blue " floating transparent>
-                  {{
-                    getActivities.filter(
-                      (v: any) => v.tipo_actividad === 'nota'
-                    ).length
-                  }}
+                  {{getActivities.filter((v:any) => v.tipo_actividad ===
+                'nota').length}}
                 </q-badge>
                 <q-tooltip class="bg-grey-8">Ver solo Notas</q-tooltip>
               </q-btn>
             </div>
             <div>
-              <q-btn round color="primary" size="sm" flat>
-                <q-icon name="event" class="cursor-pointer">
+              <q-btn dense color="primary" size="sm" flat label="Fechas" icon="filter_alt" class="q-mr-sm">
                   <q-popup-proxy
                     cover
                     transition-show="scale"
@@ -464,9 +441,7 @@ const listAux = computed(() => {
                       </div>
                     </q-date>
                   </q-popup-proxy>
-                </q-icon>
-
-                <q-tooltip class="bg-grey-8">Rango de fechas</q-tooltip>
+                <q-tooltip class="bg-grey-8">Filtro por rango de fechas</q-tooltip>
               </q-btn>
               <q-btn-dropdown
                 :dense="!$q.screen.xs ? false : true"
@@ -538,14 +513,7 @@ const listAux = computed(() => {
                     Actividades por hacer
                   </q-chip>
                   <q-chip square color="blue-5" text-color="white" size="sm">
-                    {{
-                      listAux.filter(
-                        (v: any) =>
-                          v.estado === 'Planificada' ||
-                          v.estado == 'No iniciada' ||
-                          v.estado == 'En progreso'
-                      ).length
-                    }}
+                    {{listAux.filter((v:any) => v.estado === 'Planificada' || v.estado == 'No iniciada' || v.estado == 'En progreso').length}}
                   </q-chip>
 
                   <q-separator color="blue-4" inset />
@@ -638,9 +606,7 @@ const listAux = computed(() => {
                   color="blue-3"
                   text-color="white"
                   v-if="
-                    reg.estado == 'Planificada' ||
-                    reg.estado == 'No iniciada' ||
-                    reg.estado == 'En progreso'
+                    reg.estado == 'Planificada' || reg.estado == 'No iniciada' || reg.estado == 'En progreso'
                   "
                 >
                   <template v-slot:title>
@@ -655,13 +621,6 @@ const listAux = computed(() => {
                         v-show="hideCard"
                       >
                         <q-item bordered separator>
-                          <!-- <q-item-section avatar>
-                        <q-btn  round color="blue" class="shadow-5" text-color="white" size="md" icon="check"
-                          @click="updateStatus(reg.id)">
-                          <q-tooltip class="bg-black" anchor="top middle" self="bottom middle" :offset="[10, 10]">Marcar
-                            la tarea como completada</q-tooltip>
-                        </q-btn>
-                      </q-item-section> -->
                           <q-item-section
                             style="padding: 0px"
                             class="q-mr-lg"
@@ -802,25 +761,9 @@ const listAux = computed(() => {
                             color="blue"
                             size="xs"
                             label="marcar como completado"
-                            @click="
-                              update_status(
-                                reg.id,
-                                index,
-                                reg.tipo_actividad as
-                                  | 'tarea'
-                                  | 'llamada'
-                                  | 'reunion'
-                                  | 'correo'
-                              )
-                            "
+                            @click="update_status(reg.id, index, reg.tipo_actividad as 'tarea' | 'llamada' | 'reunion' | 'correo')"
                           >
-                            <!-- <q-tooltip
-                              class="bg-primary"
-                              anchor="top middle"
-                              self="bottom middle"
-                              :offset="[10, 10]"
-                              >La tarea pasara como completada</q-tooltip
-                            > -->
+
                           </q-btn>
                           <span class="text-grey-7"
                             ><q-icon
@@ -842,14 +785,7 @@ const listAux = computed(() => {
                     Actividades realizadas
                   </q-chip>
                   <q-chip square color="green" text-color="white" size="sm">
-                    {{
-                      listAux.filter(
-                        (v: any) =>
-                          v.estado !== 'Planificada' &&
-                          v.estado !== 'No iniciada' &&
-                          v.estado !== 'En progreso'
-                      ).length
-                    }}
+                    {{listAux.filter((v:any) => v.estado !== 'Planificada' && v.estado !== 'No iniciada' && v.estado !== 'En progreso').length}}
                   </q-chip>
                   <q-separator color="green-2" inset />
                 </div>
@@ -875,8 +811,7 @@ const listAux = computed(() => {
                     text-color="white"
                     v-if="
                       reg.estado !== 'Planificada' &&
-                      reg.estado !== 'No iniciada' &&
-                      reg.estado !== 'En progreso'
+                      reg.estado !== 'No iniciada' && reg.estado !== 'En progreso'
                     "
                   >
                     <template v-slot:title>
@@ -1061,7 +996,6 @@ const listAux = computed(() => {
 
       <div class="q-gutter-y-md" v-else>
         <div class="column no-wrap flex-center">
-          <!-- <q-icon name="person_add_disabled" size="56px" /> -->
           <div class="q-mt-md text-center">
             <p>No se encontraron</p>
             <p>
@@ -1159,6 +1093,7 @@ const listAux = computed(() => {
       <span> Esta seguro de completar la actividad? </span>
     </template>
   </AlertComponent>
+
   <EmailsActivitieDialog
     ref="emailDialog"
     :idModule="id"
@@ -1166,11 +1101,15 @@ const listAux = computed(() => {
     :guests="emailsOrigin"
     :module="module"
   />
-  <MeetsActivitieDialog ref="meetDialog" @saved="getModuleActivities" />
+  <MeetsActivitieDialog ref="meetDialog" @saved="getModuleActivities" :NameRegMod="props.NameRegMod" />
+
   <CallsActivitieDialog
     ref="callDialog"
-    :idModule="id"
-    :ModuleType="props.module"
+    :id-module="id"
+    :id-activity="idActivity"
+    :AccountId="accountId ?? 'si hay cuenta'"
+    :ModuleType="module"
+    :NameRegMod="NameRegMod"
     @form-saved="formSaved"
   />
   <TasksActivitieDialog
@@ -1178,27 +1117,29 @@ const listAux = computed(() => {
     :idModule="id"
     @form-saved="formSaved"
     :module="module"
+    :NameRegMod="NameRegMod"
   />
   <InfoCard
     ref="taskEditDialog"
     :asunto="asunto"
-    :idActivity="idActivity"
+    :idActivity="idActivity||''"
     @form-saved="formSaved"
+    :module="module"
   />
   <InfoCardEmails
     ref="emailEditDialog"
     :asunto="asunto"
-    :idActivity="idActivity"
+    :idActivity="idActivity||''"
     @form-saved="formSaved"
   />
   <NoteActivitieDialog
     ref="noteDialog"
     :idModule="id"
-    :ModuleType="props.module"
+    :ModuleType="module || ''"
     @form-saved="formSaved"
   />
 </template>
-<style lang="sass">
+<style lang="sass" scoped>
 .my-menu-link
   color: white
   background: #F2C037

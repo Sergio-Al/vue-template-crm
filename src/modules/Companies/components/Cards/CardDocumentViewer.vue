@@ -35,33 +35,25 @@ const previewDocument = (fileName: string) => {
 };
 
 onMounted(() => {
-  console.log('mounted document viewer');
+  console.log('mounted here')
 });
-
-const convierteFechaDoc = (docs:[]) => {
-  docs.forEach((element:any)=>{
-    const fecha_aux = element.fecha_creacion.substring(0, 10);
-    const aux = fecha_aux.split('-');
-    element.fecha_creacion = `${aux[2]}/${aux[1]}/${aux[0]}`;
-  });
-
-  return docs;
-}
 
 const {
   state: documents,
   isLoading,
   execute,
 } = useAsyncState(async () => {
-  // const response = await axios_NS_07.get(`/document-history/${id}/${category}-${type}`);
-  // return response;
   const response = await companyStore.onGetVersions(props.id);
-
-
-
   return convierteFechaDoc(response);
-  //return documentList;
 }, [] as Document[]);
+
+const convierteFechaDoc = (docs:[]) => {
+  docs.forEach((element:any)=>{
+    element.fecha_creacion = companyStore.formatoFecha(element.fecha_creacion, 1)
+  });
+  return docs;
+}
+
 </script>
 <template>
   <q-card class="my-card">
