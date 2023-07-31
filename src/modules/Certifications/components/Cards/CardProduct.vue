@@ -5,15 +5,15 @@ import { computed, ref, onMounted } from 'vue';
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 import CardRelationProduct from './CardRelationProduct.vue';
 
-import { Certification, CertificationDB } from '../../utils/types';
+import { CertificationDB, CertificationRequest } from '../../utils/types';
 
 import { getProduct } from '../../services/useCertificationsService';
-import { productListData } from '../../utils/dummyData';
+import { manufacturers, productListData } from '../../utils/dummyData';
 import CardRelationManufacturer from './CardRelationManufacturer.vue';
 
 interface Props {
   id: string;
-  data: Partial<CertificationDB>;
+  data: Partial<CertificationRequest>;
 }
 
 const props = defineProps<Props>();
@@ -25,9 +25,29 @@ const inputData = ref({ ...props.data });
 const productCodes = ref([]);
 
 const productList = ref([]);
+const manufacturerList = ref([]);
 
 //* Methods
-const filterFn = async (
+const filterProduct = async (
+  val: string,
+  update: (callback: () => void) => void,
+  abort: () => void
+) => {
+  update(async () => {
+    if (val === '') {
+      if (!!manufacturerList.value && manufacturerList.value.length > 0) return;
+      manufacturerList.value = [];
+    } else {
+      const term = val;
+      // const response = await getUsers(term);
+      // users.value = response;
+      manufacturerList.value = manufacturers;
+      console.log(manufacturerList.value);
+    }
+  });
+};
+
+const filterManufacturer = async (
   val: string,
   update: (callback: () => void) => void,
   abort: () => void
@@ -89,9 +109,11 @@ onMounted(async () => {
 
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
-  exposeData: (): Partial<CertificationDB> => ({
+  exposeData: (): Partial<CertificationRequest> => ({
     ...inputData.value,
-    cod_productos_c: productCodes.value.map((code) => code.id).join(',') || '',
+    referencia_prods:
+      productCodes.value.map((code: { id: string }) => code.id).join(',|') ||
+      '',
   }),
 });
 </script>
@@ -110,28 +132,11 @@ defineExpose({
     <template #edit>
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <div class="col-12">
-          <CardRelationManufacturer
-            ref="cardRelationManufacturerRef"
-            v-model:id="inputData.hance_empresa_id_c"
-            module-name="Fabricante"
-            edit-mode
-            error-message="Se necesita un fabricante"
-          />
-        </div>
-        <div class="col-12">
-          <CardRelationProduct
-            v-model:id="inputData.producto_c"
-            module-name="Producto"
-            edit-mode
-            error-message="Se necesita un producto"
-          />
-        </div>
-        <!-- <q-select
-          :hint="!!inputData.id_producto ? 'Producto seleccionado' : ''"
-          :options="productList"
+        <q-select
+          :hint="!!inputData.producto_c ? 'Fabricante seleccionado' : ''"
+          :options="manufacturerList"
           @filter-abort="abortFilterFn"
-          @filter="filterFn"
+          @filter="filterManufacturer"
           class="col-12 col-sm-12"
           dense
           emit-value
@@ -139,19 +144,18 @@ defineExpose({
           hide-dropdown-icon
           hide-selected
           input-debounce="500"
-          label="Nombre"
+          label="Fabricante"
           map-options
           option-label="name"
-          option-value="id"
+          option-value="name"
           outlined
           use-chips
           use-input
-          v-model="inputData.id_producto_c"
-          @update:model-value="assignProductInfo"
+          v-model="inputData.fabricante_c"
         >
           <template #append>
             <q-btn
-              v-if="!!inputData.id_producto_c"
+              v-if="!!inputData.producto_c"
               color="primary"
               size="sm"
               rounded
@@ -177,7 +181,57 @@ defineExpose({
               </q-item-section>
             </q-item>
           </template>
-        </q-select> -->
+        </q-select>
+        <q-select
+          :hint="!!inputData.producto_c ? 'Producto seleccionado' : ''"
+          :options="productList"
+          @filter-abort="abortFilterFn"
+          @filter="filterProduct"
+          class="col-12 col-sm-12"
+          dense
+          emit-value
+          fill-input
+          hide-dropdown-icon
+          hide-selected
+          input-debounce="500"
+          label="Nombre del producto"
+          map-options
+          option-label="name"
+          option-value="name"
+          outlined
+          use-chips
+          use-input
+          v-model="inputData.producto_c"
+        >
+          <template #append>
+            <q-btn
+              v-if="!!inputData.producto_c"
+              color="primary"
+              size="sm"
+              rounded
+              icon="remove"
+              flat
+              dense
+              @click="removeProduct"
+            />
+          </template>
+
+          <template #no-option>
+            <span class="text-grey-8 q-pa-lg">Sin opciones</span>
+          </template>
+
+          <template #option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section avatar>
+                <q-icon name="work" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ scope.opt.name }}</q-item-label>
+                <q-item-label caption>Producto</q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
         <div class="row q-mt-md">
           <span class="">Items a Registrar</span>
         </div>
