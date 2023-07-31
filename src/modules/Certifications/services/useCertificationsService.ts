@@ -289,8 +289,17 @@ export const getProducts = async (params: Partial<Product>) => {
   return productsFiltered;
 };
 
-export const getCertificationRequests = async () => {
+/**
+ * Funcion que obtiene la lista de las solicitudes de certificados
+ * @returns Lista de las solicitudes de certificado
+ */
+export const getCertificationRequests = async (params: Params) => {
   try {
+    // const { data } = await axios_NS_07.get(
+    //   `/certificacion?params=${JSON.stringify(params)}`
+    // );
+
+    // retornando datos falsos
     return await certificationsRequestPromise();
   } catch (error) {
     throw error;
