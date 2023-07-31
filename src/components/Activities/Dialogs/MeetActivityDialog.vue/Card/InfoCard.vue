@@ -15,7 +15,6 @@ import { useAsyncState } from '@vueuse/core';
 import { getRecordInfo } from 'src/services/MeetingsServices';
 import { useActivity } from 'src/composables/core';
 import { useQuasar } from 'quasar';
-
 const props = withDefaults(
   defineProps<{
     data?: InfoDataMeetingModel;
@@ -24,6 +23,7 @@ const props = withDefaults(
     idModule: string;
     nameModule: string;
     readonlyFields?: boolean;
+    NameRegMod?: string;
   }>(),
   {
     readonlyFields: false,
@@ -323,7 +323,10 @@ const exposeData = () => {
 };
 
 onMounted(() => {
-  if (!props.data) formatStartTime();
+  if (!props.data) {
+    formatStartTime();
+    infoData.value.name=props.NameRegMod || '';
+  }
   else {
     formatHoursMinutes();
     updateDurationCustom();
@@ -407,7 +410,7 @@ defineExpose({
               >
                 <q-date v-model="dateStart" mask="DD/MM/YYYY">
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -443,7 +446,7 @@ defineExpose({
           dense
           class="col-12 col-md-6 q-pb-xs"
           outlined
-          v-model="dateEnd"
+          v-model="dateStart"
           label="Fecha Fin"
           @update:model-value="updateDurationCustom"
           :rules="[(val) => !!val || 'El campo no debe de estar vacio']"
@@ -456,12 +459,12 @@ defineExpose({
                 transition-hide="scale"
               >
                 <q-date
-                  v-model="dateEnd"
+                  v-model="dateStart"
                   @update:model-value="updateDurationCustom"
                   mask="DD/MM/YYYY"
                 >
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -505,7 +508,7 @@ defineExpose({
           <q-icon name="model_training" />
         </template>
       </q-select>
-      <!-- <div class="row q-col-gutter-sm">
+      <div class="row q-col-gutter-sm">
         <q-select
           dense
           class="col-12 col-md-4"
@@ -539,7 +542,7 @@ defineExpose({
           <template v-if="$q.screen.lt.md" #before>
             <q-icon name="person" /> </template
         ></q-select>
-      </div> -->
+      </div>
       <q-input
         :readonly="readonlyFields"
         outlined

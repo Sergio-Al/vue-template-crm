@@ -173,6 +173,18 @@ const createDataSend = () => {
   };
 };
 
+// const existUserInDivision = (list: AssignedUserModel[], division: string) => {
+//   return list.filter((el: AssignedUserModel) => el.iddivision_c === division)
+//     .length;
+// };
+
+const existUserInAMercado = (list: AssignedUserModel[], amercado: string) => {
+  return list.filter(
+    (el: AssignedUserModel) =>
+      el.idamercado_c === amercado && el.principal !== 'assigned_id'
+  ).length;
+};
+
 const listUserFiltered = computed(() => {
   if (search.value.length < 3) {
     return [];
@@ -212,6 +224,7 @@ defineExpose({
 });
 </script>
 <template>
+  <!-- <pre>{{ dataSend }}</pre> -->
   <AlertComponent
     v-model="showModal"
     v-bind="propsAlert"
@@ -444,6 +457,107 @@ defineExpose({
       </q-item>
     </q-list>
   </q-card>
+  <!-- <pre>{{ dataSend }}</pre> -->
+  <!-- <q-card class="my-card q-mb-md" v-if="withList">
+    <q-card-section class="q-px-lg q-py-sm">
+      <div class="text-h7">
+        <q-icon name="group" size="20px" color="primary" class="q-mr-xs" />
+        Vendedores asignados
+      </div>
+    </q-card-section>
+    <q-separator dark />
+    <template v-if="listUsersAssigneds.length > 0">
+      <q-list separator style="max-height: 300px; overflow-y: auto">
+        <template
+          v-for="{ cod_amercado, label } in listAMercado"
+          :key="cod_amercado"
+        >
+          <q-expansion-item
+            icon="groups"
+            :default-opened="cod_amercado === userDefault.idamercado_c ?? false"
+            v-if="cod_amercado === userDefault.idamercado_c"
+          >
+            <template v-slot:header>
+              <q-item-section avatar>
+                <q-avatar icon="work" color="primary" text-color="white" />
+              </q-item-section>
+
+              <q-item-section>
+                <div>
+                  Area de mercado:
+                  <span class="text-orange inline-block">
+                    {{ label }}
+                  </span>
+                </div>
+
+                <small>
+                  {{
+                    `Vendedores: ${existUserInAMercado(
+                      listUsersAssigneds,
+                      cod_amercado
+                    )}`
+                  }}
+                </small>
+              </q-item-section>
+            </template>
+            <q-separator />
+            <template
+              v-for="(
+                {
+                  user_name,
+                  a_mercado,
+                  division,
+                  cargo,
+                  avatar,
+                  idamercado_c,
+                  principal,
+                },
+                index
+              ) in listUsersAssigneds"
+              :key="index"
+            >
+              <template
+                v-if="
+                  idamercado_c === cod_amercado && principal !== 'assigned_id'
+                "
+              >
+                <q-item>
+                  <q-item-section top avatar>
+                    <q-avatar>
+                      <object
+                        :data="`${HANSACRM3_URL}${avatar}`"
+                        type="image/png"
+                        style="object-fit: cover; width: 40px; height: 40px"
+                      >
+                        <img
+                          src="/avatar/avatardefault.png"
+                          style="object-fit: cover; width: 40px; height: 40px"
+                        />
+                      </object>
+                    </q-avatar>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>
+                      {{ user_name }}
+                      <small class="text-positive q-mx-sm">
+                        Cargo: {{ cargo ?? 'Sin asignar' }}
+                      </small>
+                      <br />
+                      <small class="text-grey-6">
+                        División: {{ division }} | Area:
+                        {{ ` ${a_mercado}` }}
+                      </small>
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </template>
+          </q-expansion-item>
+        </template>
+      </q-list>
+    </template>
+    <q-card-section v-else> Sin registros que mostrar. </q-card-section>
+  </q-card> -->
 </template>
 
 <style lang="scss" scoped>

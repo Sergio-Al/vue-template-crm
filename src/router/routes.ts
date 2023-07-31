@@ -10,8 +10,12 @@ const routes: RouteRecordRaw[] = [
     redirect: '/companies',
   },
   {
+    path: '/requests',
+    redirect: '/certifications/requests',
+    ...certificationsRouter,
+  },
+  {
     path: '/certifications',
-    redirect: '/requests',
     ...certificationsRouter,
   },
   {

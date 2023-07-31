@@ -15,13 +15,15 @@ import {
   getCompanyChildrenUsers,
   getCompanyDocuments,
   getVersions,
-  deleteDocumentCompany
+  deleteDocumentCompany,
+  getLastVersionDocument
 } from '../services/useCompanyService';
 import type { ChildCompany, Company } from '../utils/types';
 
 //! Borrar datos falsos si no se usan
 // import { childCompanies } from '../utils/dummyData';
 import { getCategoryDocuments, getTypeDocuments } from '../services/useCompanyService';
+import { axios_NS_07 } from 'src/conections/axiosCRM';
 
 const { userCRM } = userStore();
 
@@ -151,6 +153,29 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       loading.value = false;
     }
   };
+
+  const onGetLastVersionDocument = async(id:string) =>{
+    try{
+      const response = await getLastVersionDocument(id);
+      return response.last_version;
+    }
+    catch(e){
+      throw e;
+    }
+  }
+
+  const formatoFecha = (fecha:string, formato:number)=>{
+    let fecha_result = ''
+    if(formato == 1){
+      const fecha_aux = fecha.substring(0, 10);
+      const aux = fecha_aux.split('-');
+      fecha_result =  `${aux[2]}/${aux[1]}/${aux[0]}`;
+    }
+    else{
+      fecha_result = fecha;
+    }
+    return fecha_result
+}
 
   // const onGetChildCompanies = async (id: string) => {
   //   try {
@@ -290,6 +315,8 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     onGetCategoryDocuments,
     onGetTypeDocuments,
     onGetVersions,
-    onDeleteDocumentCompany
+    onDeleteDocumentCompany,
+    onGetLastVersionDocument,
+    formatoFecha
   };
 });

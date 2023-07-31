@@ -134,6 +134,18 @@ export const createCompany = async (
   }
 };
 
+
+export const getLastVersionDocument = async(id)=>{
+  try{
+    const { data } = await axios_NS_07.get(`/documentos/last-version/${id}`);
+    //console.log(data[0]);
+    return data[0];
+  }
+  catch(e){
+    throw e;
+  }
+}
+
 export const createChildCompany = async (
   idParent: string,
   dataCompany: ChildCompany
@@ -379,10 +391,13 @@ export const assignUsersToChildCompany = async (
   userIds: string[]
 ) => {
   try {
-    const { data } = await axios_NS_07.post(`/participacion/asignar/${id}`, {
+    const { status } = await axios_NS_07.post(`/participacion/asignar/${id}`, {
       userIds,
     });
-    return data;
+    if(status == 201){
+      return 1;
+    }
+    return 0;
   } catch (error) {
     throw error;
   }

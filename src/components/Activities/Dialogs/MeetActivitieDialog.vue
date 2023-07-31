@@ -1,22 +1,20 @@
 <script lang="ts">
-import { ref, inject, provide, onMounted, computed } from 'vue';
-import { useQuasar, QSpinnerDots } from 'quasar';
-import { useActivityStore } from 'src/stores/ActivityStore';
-import ViewGeneral from './MeetActivityDialog.vue/Views/ViewGeneral.vue';
+import { QSpinnerDots, useQuasar } from 'quasar';
 import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
-import {
-  moduleKey,
-  idActivityKey,
-  idModuleKey,
-  reactiveModuleIdKey,
-  reactiveModuleNameKey,
-} from '../ProvideKeys';
-import {
-  InfoDataMeetingModel,
-  RemindersDatum,
-  ModuleActivity,
-} from '../../types/index';
 import { deleteMeeting } from 'src/services/MeetingsServices';
+import { useActivityStore } from 'src/stores/ActivityStore';
+import { computed, inject, provide, ref } from 'vue';
+import {
+ModuleActivity
+} from '../../types/index';
+import {
+idActivityKey,
+idModuleKey,
+moduleKey,
+reactiveModuleIdKey,
+reactiveModuleNameKey,
+} from '../ProvideKeys';
+import ViewGeneral from './MeetActivityDialog.vue/Views/ViewGeneral.vue';
 </script>
 <script lang="ts" setup>
 const open = ref(false);
@@ -24,6 +22,7 @@ const open = ref(false);
 const props = withDefaults(
   defineProps<{
     idActivity?: string;
+    NameRegMod?: string;
   }>(),
   {
     idActivity: '',
@@ -81,17 +80,8 @@ const captureData = async () => {
 };
 
 const saveMeet = async (
-  body: {
-    attributes: InfoDataMeetingModel;
-    reminders: {
-      user_invitees: string[];
-      contact_invitees: string[];
-      lead_invitees: string[];
-      prospect_invitees: string[];
-      reminders_data: RemindersDatum[];
-    };
-    attributes_comment: { [key: string]: string };
-  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body:any,
   id?: string,
   options: { autoCloseDisabled?: boolean } = {}
 ) => {
@@ -156,12 +146,8 @@ const cancelMeet = () => {
 
 (() => {
   restoreValues();
-  console.log(currentModule.value, currentIdModle.value);
 })();
 
-onMounted(() => {
-  console.log(idActivityLocal.value);
-});
 
 provide(idActivityKey, idActivityLocal);
 provide(reactiveModuleIdKey, currentIdModle);
@@ -275,6 +261,7 @@ defineExpose({
         :id-activity="idActivityLocal"
         @submit="saveMeet"
         @submit-error="submitError"
+        :NameRegMod="props.NameRegMod"
       />
     </template>
     <template #footer>

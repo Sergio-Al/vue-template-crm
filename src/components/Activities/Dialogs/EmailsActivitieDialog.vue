@@ -14,8 +14,7 @@
   const open = ref(false);
   const usuarioLogueado = ref(userCRM.nombres+' '+userCRM.apellidos);
   const correoUsuarioLoagueado = ref(userCRM.email);
-  const division = ref('');
-  // const division = ref(userCRM.division.substr(2,20)  || '');
+  const division = ref(userCRM.division.substr(2,20)  || '');
   const idUsuarioLogueado = ref(userCRM.id);
   //const cargo = ref(userCRM.rol);
   const asunto = ref();

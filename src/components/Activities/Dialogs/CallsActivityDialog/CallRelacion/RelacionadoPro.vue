@@ -70,10 +70,10 @@
                             </q-item-label> -->
                             <span class="text-primary">Prospecto</span>
                           </q-item-section>
-                          <q-item-section side>
+                          <q-item-section side @click.stop.prevent="openDetail(item.id)">
                             <q-chip
                               square
-                              color="brown-2"
+                              color="blue-2"
                               size="sm"
                               v-if="item.cantLeads > 0"
                             >
@@ -118,9 +118,8 @@
           >
             <q-card class="no-border-radius" flat bordered>
               <q-card-section class="row q-col-gutter-sm">
-                <span class="text-h6 q-mb-sm flex flex-center text-primary"
-                  >Prospectos</span
-                >
+                <q-btn color="primary" icon="person_add" label="NUEVO PROSPECTO" class="full-width" dense @click="openProspectDialog"/>
+
                 <template v-for="(element, index) in formInputs" :key="index">
                   <component
                     :is="element.input"
@@ -271,6 +270,9 @@
             />
           </div>
         </q-card-section>
+        <q-card-section  >
+          <q-btn color="primary" icon="check" label="OK"/>
+        </q-card-section>
       </q-card>
     </q-dialog>
 
@@ -299,14 +301,6 @@
                     >Encontrados: {{ documentRelation.length }}
                   </q-item-label>
                 </q-item-section>
-                <!-- <q-item-section >
-              <q-item-label>Cuentas</q-item-label>
-              <q-item-label caption class="text-grey-7">Relacionadas con el Leads </q-item-label>
-            </q-item-section>
-            <q-item-section >
-              <q-item-label>Contactos</q-item-label>
-              <q-item-label caption class="text-grey-7">Relacionadas con el Leads </q-item-label>
-            </q-item-section> -->
               </q-item>
               <q-item v-for="(reg, index) in documentRelation" :key="index">
                 <q-item-section>
@@ -328,23 +322,13 @@
                     {{ reg.fechaCreacionLead || 'Sin relación' }}</q-item-label
                   >
                 </q-item-section>
-                <!-- <q-item-section >
-
-              <q-item-label>{{ reg.cuenta }}</q-item-label>
-              <q-item-label caption :class="reg.fechaCreacionCuenta != null ? 'text-grey-8' :'text-grey'"> {{ reg.fechaCreacionCuenta || 'Sin relación'}}</q-item-label>
-            </q-item-section>
-            <q-item-section >
-
-              <q-item-label>{{ reg.contacto }}</q-item-label>
-              <q-item-label caption :class="reg.fechaCreacionContacto != null ? 'text-grey-8' :'text-grey'"> {{ reg.fechaCreacionContacto || 'Sin relación'}}</q-item-label>
-            </q-item-section> -->
               </q-item>
             </q-list>
           </div>
         </q-card-section>
       </q-card>
     </q-dialog>
-    <ProspectDialog ref="prospectDialogRef" />
+    <ProspectDialog ref="prospectDialogRef" :relational="true" @form-saved-relational="sendRelationalData" />
     <LeadDialog ref="leadDialogRef" />
   </div>
 </template>
@@ -354,11 +338,11 @@ export default {
 };
 </script>
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useBusquedaPro } from '../../../../../composables/Activity/useBusquedaPro';
+import LeadDialog from 'src/modules/Leads/components/Dialogs/LeadDialog.vue';
 import { useLeadsStore } from 'src/modules/Leads/store/LeadsStore';
 import ProspectDialog from 'src/modules/Prospects/components/Dialogs/ProspectDialog.vue';
-import LeadDialog from 'src/modules/Leads/components/Dialogs/LeadDialog.vue';
+import { computed, ref } from 'vue';
+import { useBusquedaPro } from '../../../../../composables/Activity/useBusquedaPro';
 const { getRelationAll } = useLeadsStore();
 const documentRelation = ref([] as { [key: string]: string }[]);
 const prospectDialogRef = ref<InstanceType<typeof ProspectDialog> | null>(null);
@@ -390,7 +374,7 @@ const {
 } = useBusquedaPro();
 
 const filteredContacts = computed(() => {
-  return listPros.value.filter((contact) => contact.id !== props.account_id);
+  return listPros.value.filter((contact:{id:string}) => contact.id !== props.account_id);
 });
 
 const onSubmit = () => {
@@ -406,7 +390,7 @@ const verDialogItem = async (id: string) => {
   await prospectDialogRef.value?.openDialogAccountTab(id);
 };
 
-const openDetail = async (id: any) => {
+const openDetail = async (id: string) => {
   documentRelation.value = await getRelationAll('Leads', id);
   show_encontrados.value = true;
 };
@@ -417,11 +401,21 @@ const openDialogLeads = async (id?: string) => {
   await leadDialogRef.value?.openDialogAccountTab(id ? id : '');
 };
 
+const openProspectDialog = () => {
+  prospectDialogRef.value?.openDialogAccountTab();
+}
+
+const sendRelationalData = (item:any) => {
+  console.log('nuevo prospecto ',item)
+  onClose();
+  emit('selectItem', item)
+}
+
 const onReset = () => {
   clearFilter();
 };
 
-defineEmits(['selectItem', 'showAccount']);
+const emit  = defineEmits<{(e:'selectItem', item:any):void, (e:'showAccount'):void}>();
 defineExpose({
   openDialog,
   onClose,

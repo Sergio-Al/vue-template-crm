@@ -275,7 +275,7 @@ const redondear = () => {
   hor = tR.getHours().toString();
   min = tR.getMinutes().toString();
   if ((min >= 0) & (min <= 7)) {
-    data.value.horainicio = hor + ':' + 0;
+    data.value.horainicio = hor + ':' + 0+'0';
   } else if ((min >= 8) & (min <= 15)) {
     data.value.horainicio = hor + ':' + 15;
   } else if ((min >= 16) & (min <= 22)) {
@@ -289,7 +289,7 @@ const redondear = () => {
   } else if ((min >= 46) & (min <= 52)) {
     data.value.horainicio = hor + ':' + 45;
   } else if ((min >= 53) & (min <= 59)) {
-    data.value.horainicio = hor + ':' + 0;
+    data.value.horainicio = hor + ':' + 0+'0';
   }
   console.log(otro);
 };
@@ -311,6 +311,14 @@ const optionsdura = [
   {
     label: '1 hora',
     valormin: '01:00',
+  },
+  {
+    label: '6 horas',
+    valormin: '06:00',
+  },
+  {
+    label: '24 horas',
+    valormin: '24:00',
   },
   {
     label: 'Establecer',

@@ -118,16 +118,23 @@ const {
   isLoading,
   execute,
 } = useAsyncState(async () => {
-  //console.log(propsParent);
 
-  let docs;
-  docs = await companyStore.onGetCompanyDocuments(props.id, props.child);
-  return docs;
+  const response = await companyStore.onGetCompanyDocuments(props.id, props.child);
+  //console.log(response);
+  return response;
+  //return convierteFechaDoc(response);
 }, []);
 
 const reloadList = async ()=>{
   await execute();
 }
+
+// const convierteFechaDoc = (docs:[]) => {
+//   docs.forEach((element:any)=>{
+//     element.fecha_creacion = companyStore.formatoFecha(element.fecha_creacion, 1)
+//   });
+//   return docs;
+// }
 
 const onCancelRelation = () => {
   console.log('se cancelo');
