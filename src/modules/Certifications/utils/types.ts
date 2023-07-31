@@ -198,8 +198,7 @@ export interface Product {
 export interface CertificationRequest {
   id: string;
   name: string;
-  description: string;
-  date_entered_c: string;
+  date_entered: string;
   user_id_c: string;
   iddivision_c: string;
   idamercado_c: string;

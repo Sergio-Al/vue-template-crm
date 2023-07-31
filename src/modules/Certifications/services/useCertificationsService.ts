@@ -289,18 +289,15 @@ export const getProducts = async (params: Partial<Product>) => {
   return productsFiltered;
 };
 
-/**
- * Funcion que obtiene la lista de las solicitudes de certificados
- * @returns Lista de las solicitudes de certificado
- */
-export const getCertificationRequests = async (params: Params) => {
+export const getCertificationRequests = async (params:any) => {
   try {
-    // const { data } = await axios_NS_07.get(
-    //   `/certificacion?params=${JSON.stringify(params)}`
-    // );
-
-    // retornando datos falsos
-    return await certificationsRequestPromise();
+    const { data } = await axios_NS_07.get(
+      `/solicitud/advanced?params=${JSON.stringify(params)}`
+    );
+    console.log(data);
+    return data;
+    //return await certificationsRequestPromise();
+    //obtener listado de solicitudes
   } catch (error) {
     throw error;
   }

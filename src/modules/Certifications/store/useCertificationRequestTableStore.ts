@@ -28,7 +28,7 @@ export const useCertificationRequestTableStore = defineStore(
     const mongo_id = ref('');
     const pagination = ref({
       page: 1,
-      sortBy: 'fecha_creacion',
+      sortBy: 'date_entered',
       descending: true,
       rowsPerPage: 15,
       rowsNumber: 10,
@@ -36,13 +36,13 @@ export const useCertificationRequestTableStore = defineStore(
     const data_filter = ref({
       name: '',
       user_id_c: '',
-      iddivision_c: '',
+      division: '',
       idamercado_c: '',
       idregional_c: '',
       producto_c: '',
       fabricante_c: '',
       state_aprobacion: '',
-      hance_certificacion_id_c: '',
+      nro_certificacion: '',
       referencia_prods: '',
       created_by: [],
       modified_by: [],
@@ -61,10 +61,10 @@ export const useCertificationRequestTableStore = defineStore(
           visible: true,
         },
         {
-          name: 'date_entered_c',
+          name: 'date_entered',
           align: 'left',
           label: 'Fecha',
-          field: 'date_entered_c',
+          field: 'date_entered',
           sortable: true,
           visible: true,
         },
@@ -77,10 +77,10 @@ export const useCertificationRequestTableStore = defineStore(
           visible: true,
         },
         {
-          name: 'iddivision_c',
+          name: 'division',
           align: 'center',
           label: 'División',
-          field: 'iddivision_c',
+          field: 'division',
           sortable: true,
           visible: true,
         },
@@ -109,10 +109,10 @@ export const useCertificationRequestTableStore = defineStore(
           visible: true,
         },
         {
-          name: 'hance_certificacion_id_c',
+          name: 'nro_certificacion',
           align: 'center',
           label: 'Certificacion',
-          field: 'hance_certificacion_id_c',
+          field: 'nro_certificacion',
           sortable: true,
           visible: true,
         },
@@ -127,27 +127,29 @@ export const useCertificationRequestTableStore = defineStore(
     });
     const visible_fields = ref([
       'name',
-      'date_entered_c',
+      'date_entered',
       'user_id_c',
-      'iddivision_c',
+      'solicitante',
+      'division',
       'idamercado_c',
       'idregional_c',
       'producto_c',
       'fabricante_c',
       'state_aprobacion',
-      'hance_certificacion_id_c',
+      'nro_certificacion',
     ]);
     const visible_columns = ref([
       'name',
-      'date_entered_c',
+      'date_entered',
       'user_id_c',
-      'iddivision_c',
+      'solicitante',
+      'division',
       'idamercado_c',
       'idregional_c',
       'producto_c',
       'fabricante_c',
       'state_aprobacion',
-      'hance_certificacion_id_c',
+      'nro_certificacion',
       'options',
     ]);
 
@@ -172,7 +174,7 @@ export const useCertificationRequestTableStore = defineStore(
       }
     }
 
-    async function getListCertifications(props: {
+    async function getListCertificationRequest(props: {
       pagination: Pagination;
       filter: Filter;
     }) {
@@ -188,7 +190,8 @@ export const useCertificationRequestTableStore = defineStore(
           filter: filter,
         };
         // const data = await getCertificationRequests(params);
-        const data = await getCertificationRequests();
+        const data = await getCertificationRequests(params);
+        //console.log('peticion de lista de solicitantes');
         console.log(data);
         data_table.value.rows = data;
         // pagination.value = data.length;
@@ -201,7 +204,7 @@ export const useCertificationRequestTableStore = defineStore(
     }
 
     async function reloadList() {
-      await getListCertifications({
+      await getListCertificationRequest({
         pagination: pagination.value,
         filter: data_filter.value,
       });
@@ -326,13 +329,13 @@ export const useCertificationRequestTableStore = defineStore(
       data_filter.value = {
         name: '',
         user_id_c: '',
-        iddivision_c: '',
+        division: '',
         idamercado_c: '',
         idregional_c: '',
         producto_c: '',
         fabricante_c: '',
         state_aprobacion: '',
-        hance_certificacion_id_c: '',
+        nro_certificacion: '',
         referencia_prods: '',
         created_by: [],
         modified_by: [],
@@ -364,7 +367,7 @@ export const useCertificationRequestTableStore = defineStore(
       // actions
       clearFilterData,
       deleteMultiple,
-      getListCertifications,
+      getListCertificationRequest,
       getUserConfig,
       reloadList,
       setFilterData,

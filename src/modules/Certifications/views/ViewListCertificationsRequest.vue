@@ -34,7 +34,7 @@ const {
 const {
   clearFilterData,
   deleteMultiple,
-  getListCertifications,
+  getListCertificationRequest,
   getUserConfig,
   reloadList,
   setFilterData,
@@ -98,7 +98,7 @@ const onUpdateDataTable = async () => {
 const onRequestTable = async (val: { pagination: any; filter: any }) => {
   //console.log('request data table');
   await setPagination(val.pagination);
-  await getListCertifications(val);
+  await getListCertificationRequest(val);
 };
 
 const onClearDataFilter = () => {
@@ -187,11 +187,11 @@ const openItemSelected = (id: string, title: string) => {
               class="text-primary text-weight-bold text-break cursor-pointer"
               @click="openDialog(propsTable.row.id)"
             >
-              {{ propsTable.row.name || 'Sin Número' }}
+             {{ propsTable.row.name || 'Sin Número' }}
             </span>
           </q-td>
-          <q-td key="date_entered_c" :props="propsTable">
-            <span>{{ propsTable.row.date_entered_c }}</span>
+          <q-td key="date_entered" :props="propsTable">
+            <span>{{ propsTable.row.date_entered }}</span>
           </q-td>
           <q-td key="user_id_c" :props="propsTable">
             <div
@@ -209,11 +209,11 @@ const openItemSelected = (id: string, title: string) => {
                 text-color="white"
                 icon="person"
               />
-              <span>{{ propsTable.row.user_id_c }}</span>
+              <span>{{ propsTable.row.solicitante }}</span>
             </div>
           </q-td>
-          <q-td key="iddivision_c" :props="propsTable">
-            <span>{{ propsTable.row.iddivision_c }}</span>
+          <q-td key="division" :props="propsTable">
+            <span>{{ propsTable.row.division }}</span>
           </q-td>
           <q-td key="idamercado_c" :props="propsTable">
             <span>{{ propsTable.row.idamercado_c }}</span>
@@ -239,8 +239,8 @@ const openItemSelected = (id: string, title: string) => {
               {{ propsTable.row.state_aprobacion }}
             </q-chip>
           </q-td>
-          <q-td key="hance_certificacion_id_c" :props="propsTable">
-            <span>{{ propsTable.row.hance_certificacion_id_c }}</span>
+          <q-td key="nro_certificacion" :props="propsTable">
+            <span class="text-weight-bold text-primary">{{ propsTable.row.nro_certificacion }}</span>
           </q-td>
           <q-td key="options" :props="propsTable">
             <q-btn color="primary" icon="more_vert" round outline size="sm">

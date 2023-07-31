@@ -27,7 +27,6 @@ const { userCRM } = userStore();
 
 export const getTableData = async (params: Params) => {
   try {
-    //const { data } = await axios_NS_07.get('/empresas');
     const { data } = await axios_NS_07.get(
       `/empresas?params=${JSON.stringify(params)}`
     );
