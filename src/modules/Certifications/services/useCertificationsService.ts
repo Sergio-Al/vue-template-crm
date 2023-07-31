@@ -113,12 +113,30 @@ export const updateTablePreferences = async (id: string, data: any) => {
   }
 };
 
+/**
+ * La funcion recibe los datos de la siguiente forma
+ * @example
+ * assigned_user_id: '1';
+ * date_entered_c: '2023-07-15';
+ * description: 'comentario de pruebas';
+ * estado_c: 'pendiente';
+ * etapa_c: 'nueva';
+ * fabricante_c: 'Diamed';
+ * idamercado_c: undefined;
+ * iddivision_c: '04';
+ * idregional_c: undefined;
+ * producto_c: 'Agujas';
+ * referencia_prods: 'adsfasdf,|aadsfadsf,|asdfadsf,|safasdf';
+ * user_id_c: undefined;
+ * @param solicitud_certification body de la nueva solicitud *ver ejemplo*
+ * @returns la nueva solicitud con su id
+ */
 export const createCertificationRequest = async (
   solicitud_certification: Partial<CertificationRequest>
 ) => {
   console.log('Creacion de solicitud', solicitud_certification);
-  solicitud_certification.etapa_c='nueva';
-  solicitud_certification.estado_c='pendiente';
+  solicitud_certification.etapa_c = 'nueva';
+  solicitud_certification.estado_c = 'pendiente';
 
   // const { data } = await axios_NS_07.post(
   //   'certification-request',
@@ -146,6 +164,26 @@ export const getCertificationRequest = async (id: string) => {
   // return certification;
 };
 
+/**
+ * Actualiza la informacion con el siguiente formato:
+ * @example
+ * id: '22343',
+ * assigned_user_id: '1';
+ * date_entered_c: '2023-07-15';
+ * description: 'comentario de pruebas';
+ * estado_c: 'pendiente';
+ * etapa_c: 'nueva';
+ * fabricante_c: 'Diamed';
+ * idamercado_c: undefined;
+ * iddivision_c: '04';
+ * idregional_c: undefined;
+ * producto_c: 'Agujas';
+ * referencia_prods: 'adsfasdf,|aadsfadsf,|asdfadsf,|safasdf';
+ * user_id_c: undefined;
+ * @param id id de la solicitud
+ * @param body body de la solicitud ver ejemplo
+ * @returns los datos actualizados
+ */
 export const updateCertificationRequest = async (
   id: string,
   body: Partial<CertificationRequest>
@@ -235,13 +273,14 @@ export const getManufacturers = async (params: Partial<Manufacturer>) => {
   // console.log(manufacturerFiltered);
   // return manufacturerFiltered;
 
-  try{
-    const { data } = await axios_NS_07.get(`proveedor/advanced?params=${JSON.stringify(params)}`)
+  try {
+    const { data } = await axios_NS_07.get(
+      `proveedor/advanced?params=${JSON.stringify(params)}`
+    );
     console.log(data);
     return data;
-  }
-  catch(e){
-    throw (e)
+  } catch (e) {
+    throw e;
   }
 };
 
@@ -250,8 +289,17 @@ export const getProducts = async (params: Partial<Product>) => {
   return productsFiltered;
 };
 
-export const getCertificationRequests = async () => {
+/**
+ * Funcion que obtiene la lista de las solicitudes de certificados
+ * @returns Lista de las solicitudes de certificado
+ */
+export const getCertificationRequests = async (params: Params) => {
   try {
+    // const { data } = await axios_NS_07.get(
+    //   `/certificacion?params=${JSON.stringify(params)}`
+    // );
+
+    // retornando datos falsos
     return await certificationsRequestPromise();
   } catch (error) {
     throw error;

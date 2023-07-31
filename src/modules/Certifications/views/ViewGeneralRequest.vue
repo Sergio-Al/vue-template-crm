@@ -29,6 +29,9 @@ const commentCreate = ref<string>('');
 
 const cardApplicantRef = ref<InstanceType<typeof CardApplicant> | null>(null);
 const cardProductRef = ref<InstanceType<typeof CardProduct> | null>(null);
+const assignedSingleUserRef = ref<InstanceType<
+  typeof AssignedSingleUser2
+> | null>(null);
 
 // computed variables
 const isSomeCardEditing = computed(() => {
@@ -64,14 +67,17 @@ const onSubmit = () => {
   const cardProductData = cardProductRef.value?.exposeData();
 
   const body: Partial<CertificationRequest> = {
+    ...props.data,
     ...cardApplicantData,
     ...cardProductData,
+    assigned_user_id: assignedSingleUserRef.value?.dataSend.id || '1',
   };
 
   // send data
   if (!!props.data?.id) {
     emits('update', body);
   } else {
+    body.description = commentCreate.value;
     emits('create', body);
   }
 };

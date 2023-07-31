@@ -13,6 +13,12 @@ import {
   updateCertificationRequest,
 } from '../../services/useCertificationsService';
 
+interface Emits {
+  (e: 'update'): void;
+}
+
+const emits = defineEmits<Emits>();
+
 const $q = useQuasar();
 const open = ref(false);
 const titleDialog = ref('Solicitud de certificacion');
@@ -40,9 +46,11 @@ const createCertification = async (data: Partial<CertificationRequest>) => {
     $q.loading.show({
       message: 'Creando solicitud',
     });
-    // const response = await createCertificationRequest(data);
-    const response = await certificationRequestPromise(localId.value);
+    const response = await createCertificationRequest(data);
+    // console.log(data);
+    // const response = await certificationRequestPromise(localId.value);
     localId.value = response.id;
+    emits('update');
     await getCertification();
   } catch (error) {
     $q.notify({
@@ -61,11 +69,13 @@ const updateCertification = async (data: Partial<CertificationRequest>) => {
     $q.loading.show({
       message: 'Actualizando solicitud',
     });
-    console.log(data.id);
-    console.log('update', data);
-    // if (!!data.id) {
-    //   await updateCertificationRequest(data.id, data);
-    // }
+    // console.log(data.id);
+    // console.log('update', data);
+
+    if (!!data.id) {
+      await updateCertificationRequest(data.id, data);
+    }
+    emits('update');
     await getCertification();
   } catch (error) {
     $q.notify({
