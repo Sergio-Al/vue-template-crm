@@ -31,8 +31,8 @@ const props = withDefaults(
     fromDate?: string;
     toDate?: string;
     activeTab?: 'todas' | 'tarea' | 'llamada' | 'correo' | 'reunion' | 'nota';
-    NameRegMod?:string;
-    accountId?:string;
+    NameRegMod?: string;
+    accountId?: string;
   }>(),
   {
     activeTab: 'todas',
@@ -133,7 +133,7 @@ const seeLess = (index: number) => {
 onMounted(async () => {
   let dateStart = moment(rangeDate.value.from).format('YYYY-MM-DD');
   let dateEnd = moment(rangeDate.value.to).format('YYYY-MM-DD');
-  getActivities.value = await Get_list_Activities(id.value, dateStart, dateEnd);
+  // getActivities.value = await Get_list_Activities(id.value, dateStart, dateEnd);
   ActiveSqeleton.value = true;
   addatribute();
 });
@@ -345,8 +345,11 @@ const listAux = computed(() => {
                 :flat="tabAct == 'tarea' ? false : true"
               >
                 <q-badge color="blue " floating transparent>
-                  {{getActivities.filter((v:any) => v.tipo_actividad ===
-                'tarea').length}}
+                  {{
+                    getActivities.filter(
+                      (v: any) => v.tipo_actividad === 'tarea'
+                    ).length
+                  }}
                 </q-badge>
                 <q-tooltip class="bg-grey-8">Ver solo Tareas</q-tooltip>
               </q-btn>
@@ -359,8 +362,11 @@ const listAux = computed(() => {
                 :flat="tabAct == 'llamada' ? false : true"
               >
                 <q-badge color="blue " floating transparent>
-                  {{getActivities.filter((v:any) => v.tipo_actividad ===
-                'llamada').length}}
+                  {{
+                    getActivities.filter(
+                      (v: any) => v.tipo_actividad === 'llamada'
+                    ).length
+                  }}
                 </q-badge>
                 <q-tooltip class="bg-grey-8">Ver solo Llamadas</q-tooltip>
               </q-btn>
@@ -373,8 +379,11 @@ const listAux = computed(() => {
                 :flat="tabAct == 'reunion' ? false : true"
               >
                 <q-badge color="blue " floating transparent>
-                  {{getActivities.filter((v:any) => v.tipo_actividad ===
-                'reunion').length}}
+                  {{
+                    getActivities.filter(
+                      (v: any) => v.tipo_actividad === 'reunion'
+                    ).length
+                  }}
                 </q-badge>
                 <q-tooltip class="bg-grey-8">Ver solo Reuniónes</q-tooltip>
               </q-btn>
@@ -387,8 +396,11 @@ const listAux = computed(() => {
                 :flat="tabAct == 'correo' ? false : true"
               >
                 <q-badge color="blue " floating transparent>
-                  {{getActivities.filter((v:any) => v.tipo_actividad ===
-                'correo').length}}
+                  {{
+                    getActivities.filter(
+                      (v: any) => v.tipo_actividad === 'correo'
+                    ).length
+                  }}
                 </q-badge>
                 <q-tooltip class="bg-grey-8">Ver solo Email</q-tooltip>
               </q-btn>
@@ -401,47 +413,60 @@ const listAux = computed(() => {
                 :flat="tabAct == 'nota' ? false : true"
               >
                 <q-badge color="blue " floating transparent>
-                  {{getActivities.filter((v:any) => v.tipo_actividad ===
-                'nota').length}}
+                  {{
+                    getActivities.filter(
+                      (v: any) => v.tipo_actividad === 'nota'
+                    ).length
+                  }}
                 </q-badge>
                 <q-tooltip class="bg-grey-8">Ver solo Notas</q-tooltip>
               </q-btn>
             </div>
             <div>
-              <q-btn dense color="primary" size="sm" flat label="Fechas" icon="filter_alt" class="q-mr-sm">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                    persistent
-                  >
-                    <q-date v-model="rangeDate" range minimal>
-                      <div class="row justify-center">
-                        <q-btn
-                          v-close-popup
-                          label="Aplicar"
-                          color="primary"
-                          flat
-                          @click="DuplicateDatesAux"
-                        />
-                        <q-btn
-                          v-close-popup
-                          label="este mes"
-                          color="primary"
-                          flat
-                          @click="filterDates('mes')"
-                        />
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="red"
-                          flat
-                          @click="restoreDate"
-                        />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                <q-tooltip class="bg-grey-8">Filtro por rango de fechas</q-tooltip>
+              <q-btn
+                dense
+                color="primary"
+                size="sm"
+                flat
+                label="Fechas"
+                icon="filter_alt"
+                class="q-mr-sm"
+              >
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                  persistent
+                >
+                  <q-date v-model="rangeDate" range minimal>
+                    <div class="row justify-center">
+                      <q-btn
+                        v-close-popup
+                        label="Aplicar"
+                        color="primary"
+                        flat
+                        @click="DuplicateDatesAux"
+                      />
+                      <q-btn
+                        v-close-popup
+                        label="este mes"
+                        color="primary"
+                        flat
+                        @click="filterDates('mes')"
+                      />
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="red"
+                        flat
+                        @click="restoreDate"
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+                <q-tooltip class="bg-grey-8"
+                  >Filtro por rango de fechas</q-tooltip
+                >
               </q-btn>
               <q-btn-dropdown
                 :dense="!$q.screen.xs ? false : true"
@@ -513,7 +538,14 @@ const listAux = computed(() => {
                     Actividades por hacer
                   </q-chip>
                   <q-chip square color="blue-5" text-color="white" size="sm">
-                    {{listAux.filter((v:any) => v.estado === 'Planificada' || v.estado == 'No iniciada' || v.estado == 'En progreso').length}}
+                    {{
+                      listAux.filter(
+                        (v: any) =>
+                          v.estado === 'Planificada' ||
+                          v.estado == 'No iniciada' ||
+                          v.estado == 'En progreso'
+                      ).length
+                    }}
                   </q-chip>
 
                   <q-separator color="blue-4" inset />
@@ -606,7 +638,9 @@ const listAux = computed(() => {
                   color="blue-3"
                   text-color="white"
                   v-if="
-                    reg.estado == 'Planificada' || reg.estado == 'No iniciada' || reg.estado == 'En progreso'
+                    reg.estado == 'Planificada' ||
+                    reg.estado == 'No iniciada' ||
+                    reg.estado == 'En progreso'
                   "
                 >
                   <template v-slot:title>
@@ -761,9 +795,18 @@ const listAux = computed(() => {
                             color="blue"
                             size="xs"
                             label="marcar como completado"
-                            @click="update_status(reg.id, index, reg.tipo_actividad as 'tarea' | 'llamada' | 'reunion' | 'correo')"
+                            @click="
+                              update_status(
+                                reg.id,
+                                index,
+                                reg.tipo_actividad as
+                                  | 'tarea'
+                                  | 'llamada'
+                                  | 'reunion'
+                                  | 'correo'
+                              )
+                            "
                           >
-
                           </q-btn>
                           <span class="text-grey-7"
                             ><q-icon
@@ -785,7 +828,14 @@ const listAux = computed(() => {
                     Actividades realizadas
                   </q-chip>
                   <q-chip square color="green" text-color="white" size="sm">
-                    {{listAux.filter((v:any) => v.estado !== 'Planificada' && v.estado !== 'No iniciada' && v.estado !== 'En progreso').length}}
+                    {{
+                      listAux.filter(
+                        (v: any) =>
+                          v.estado !== 'Planificada' &&
+                          v.estado !== 'No iniciada' &&
+                          v.estado !== 'En progreso'
+                      ).length
+                    }}
                   </q-chip>
                   <q-separator color="green-2" inset />
                 </div>
@@ -811,7 +861,8 @@ const listAux = computed(() => {
                     text-color="white"
                     v-if="
                       reg.estado !== 'Planificada' &&
-                      reg.estado !== 'No iniciada' && reg.estado !== 'En progreso'
+                      reg.estado !== 'No iniciada' &&
+                      reg.estado !== 'En progreso'
                     "
                   >
                     <template v-slot:title>
@@ -1101,7 +1152,11 @@ const listAux = computed(() => {
     :guests="emailsOrigin"
     :module="module"
   />
-  <MeetsActivitieDialog ref="meetDialog" @saved="getModuleActivities" :NameRegMod="props.NameRegMod" />
+  <MeetsActivitieDialog
+    ref="meetDialog"
+    @saved="getModuleActivities"
+    :NameRegMod="props.NameRegMod"
+  />
 
   <CallsActivitieDialog
     ref="callDialog"
@@ -1122,14 +1177,14 @@ const listAux = computed(() => {
   <InfoCard
     ref="taskEditDialog"
     :asunto="asunto"
-    :idActivity="idActivity||''"
+    :idActivity="idActivity || ''"
     @form-saved="formSaved"
     :module="module"
   />
   <InfoCardEmails
     ref="emailEditDialog"
     :asunto="asunto"
-    :idActivity="idActivity||''"
+    :idActivity="idActivity || ''"
     @form-saved="formSaved"
   />
   <NoteActivitieDialog

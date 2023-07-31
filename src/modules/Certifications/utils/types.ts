@@ -73,7 +73,7 @@ export interface CertificationDB {
   tipo_producto_c: string;
   tipo_tramite_c: string;
   user_id_c: string; //solicitante
-  user_id1_c: string;  //profesional acreditado
+  user_id1_c: string; //profesional acreditado
 }
 
 export interface Certification {
@@ -169,7 +169,7 @@ export interface Manufacturer {
   shipping_address_street: string;
   ticker_symbol: string;
   website: string;
-  direccion:string;
+  direccion: string;
 }
 
 export interface Product {
@@ -198,6 +198,7 @@ export interface Product {
 export interface CertificationRequest {
   id: string;
   name: string;
+  description: string;
   date_entered_c: string;
   user_id_c: string;
   iddivision_c: string;

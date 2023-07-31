@@ -281,7 +281,7 @@ export const certificationRequest: CertificationRequest = {
   state_aprobacion: 'Pendiente',
   hance_certificacion_id_c: '',
   assigned_user_id: '1',
-  referencia_prods: '',
+  referencia_prods: 'xxx33ff,|componente2,|dfesfsefef',
 };
 
 export const certificationRequests: CertificationRequest[] = [

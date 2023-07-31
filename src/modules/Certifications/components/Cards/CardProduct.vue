@@ -22,13 +22,13 @@ const $q = useQuasar();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 
 const inputData = ref({ ...props.data });
-const productCodes = ref([]);
+const productCodes = ref<{ id: string }[]>([]);
 
 const productList = ref([]);
 const manufacturerList = ref([]);
 
 //* Methods
-const filterProduct = async (
+const filterManufacturer = async (
   val: string,
   update: (callback: () => void) => void,
   abort: () => void
@@ -47,7 +47,7 @@ const filterProduct = async (
   });
 };
 
-const filterManufacturer = async (
+const filterProduct = async (
   val: string,
   update: (callback: () => void) => void,
   abort: () => void
@@ -98,11 +98,9 @@ const removeProductByIndex = (index: number) => {
 
 onMounted(async () => {
   if (!!props.id) {
-    if (!!inputData.value.producto_c) {
-      const product = await getProduct(inputData.value.producto_c);
-      productList.value = [product];
-      productCodes.value = product.itemCodes.map((code) => ({ id: code }));
-      console.log(productCodes.value);
+    if (!!inputData.value.referencia_prods) {
+      const product = inputData.value.referencia_prods.split(',|');
+      productCodes.value = product.map((code: string) => ({ id: code }));
     }
   }
 });
@@ -110,7 +108,8 @@ onMounted(async () => {
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): Partial<CertificationRequest> => ({
-    ...inputData.value,
+    fabricante_c: inputData.value.fabricante_c,
+    producto_c: inputData.value.producto_c,
     referencia_prods:
       productCodes.value.map((code: { id: string }) => code.id).join(',|') ||
       '',
@@ -132,8 +131,24 @@ defineExpose({
     <template #edit>
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-select
-          :hint="!!inputData.producto_c ? 'Fabricante seleccionado' : ''"
+        <q-input
+          class="col-12 col-sm-12"
+          dense
+          label="Fabricante"
+          outlined
+          type="text"
+          v-model="inputData.fabricante_c"
+        />
+        <q-input
+          class="col-12 col-sm-12"
+          dense
+          label="Nombre del Producto"
+          outlined
+          type="text"
+          v-model="inputData.producto_c"
+        />
+        <!-- <q-select
+          :hint="!!inputData.fabricante_c ? 'Fabricante seleccionado' : ''"
           :options="manufacturerList"
           @filter-abort="abortFilterFn"
           @filter="filterManufacturer"
@@ -155,7 +170,7 @@ defineExpose({
         >
           <template #append>
             <q-btn
-              v-if="!!inputData.producto_c"
+              v-if="!!inputData.fabricante_c"
               color="primary"
               size="sm"
               rounded
@@ -181,8 +196,8 @@ defineExpose({
               </q-item-section>
             </q-item>
           </template>
-        </q-select>
-        <q-select
+        </q-select> -->
+        <!-- <q-select
           :hint="!!inputData.producto_c ? 'Producto seleccionado' : ''"
           :options="productList"
           @filter-abort="abortFilterFn"
@@ -231,7 +246,7 @@ defineExpose({
               </q-item-section>
             </q-item>
           </template>
-        </q-select>
+        </q-select> -->
         <div class="row q-mt-md">
           <span class="">Items a Registrar</span>
         </div>
@@ -269,7 +284,25 @@ defineExpose({
     <template #read>
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <div class="col-12">
+        <q-input
+          class="col-12 col-sm-12"
+          dense
+          label="Fabricante"
+          outlined
+          type="text"
+          v-model="inputData.fabricante_c"
+          readonly
+        />
+        <q-input
+          class="col-12 col-sm-12"
+          dense
+          label="Nombre del Producto"
+          outlined
+          type="text"
+          v-model="inputData.producto_c"
+          readonly
+        />
+        <!-- <div class="col-12">
           <CardRelationManufacturer
             ref="cardRelationManufacturerRef"
             v-model:id="inputData.hance_empresa_id_c"
@@ -283,6 +316,9 @@ defineExpose({
             module-name="Producto"
             error-message="Se necesita un producto"
           />
+        </div> -->
+        <div class="row q-mt-md col-12">
+          <span class="">Items Registrados</span>
         </div>
         <q-input
           v-for="(product, index) in productCodes"
