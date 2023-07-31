@@ -476,7 +476,14 @@ const openItemSelected = (id: string, title: string) => {
     </table-component>
     <TableSkeleton v-else />
   </div>
-  <CertificationRequestDialog ref="certificationRequestDialogRef" />
+  <CertificationRequestDialog
+    ref="certificationRequestDialogRef"
+    @update="
+      () => {
+        reloadList();
+      }
+    "
+  />
   <CertificationDialog ref="certificationDialogRef" />
 </template>
 

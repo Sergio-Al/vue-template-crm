@@ -146,7 +146,13 @@ const amercadoList = computed(() => {
 
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
-  exposeData: (): Partial<CertificationDB> => ({ ...inputData.value }),
+  exposeData: (): Partial<CertificationRequest> => ({
+    user_id_c: inputData.value.user_id_c,
+    date_entered_c: inputData.value.date_entered_c,
+    iddivision_c: inputData.value.iddivision_c,
+    idamercado_c: inputData.value.idamercado_c,
+    idregional_c: inputData.value.idregional_c,
+  }),
 });
 </script>
 
