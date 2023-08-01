@@ -210,6 +210,8 @@ const openItemSelected = (id: string, title: string) => {
                 icon="person"
               />
               <span>{{ propsTable.row.solicitante }}</span>
+              <br />
+              <span class="text-caption text-grey">{{propsTable.row.cargo}}</span>
             </div>
           </q-td>
           <q-td key="division" :props="propsTable">

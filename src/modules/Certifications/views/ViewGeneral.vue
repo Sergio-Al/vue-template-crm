@@ -72,8 +72,7 @@ const onSubmit = async () => {
           ...cardProduct,
           description: commentCreate.value,
         } as CertificationDB;
-        const newCertification =
-          await certificationStore.onCreateCertificationRequest(body);
+        const newCertification = await certificationStore.onCreateCertificationRequest(body);
         localId.value = newCertification.id;
         emits('submitComplete', localId.value);
         $q.notify({

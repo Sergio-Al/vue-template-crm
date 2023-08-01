@@ -234,11 +234,8 @@ export interface CertificationRequest {
   nro_ruta_c: string;
   producto_c: string;
   referencia_prods: string;
-  telefono_fabricante_c: string;
-  tipo_producto_c: string;
-  tipo_tramite_c: string;
-  user_id1_c: string;
-  user_id_c: string;
+  user_id?:string;
+  user_id_c?:string;
 }
 
 export interface CertificationTable {

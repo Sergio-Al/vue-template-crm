@@ -159,7 +159,7 @@ const onSubmit = () => {
                       <CommentsList
                         :id="props.data?.id"
                         :descCRM3="'comentario prueba certificacion'"
-                        :modulo="'HANCE_Certficaciones'"
+                        :modulo="'HANCE_SolicitudCertificacion'"
                       >
                       </CommentsList>
                       <!-- <CardComment /> -->
@@ -186,7 +186,7 @@ const onSubmit = () => {
                       <ActivitiesComponent
                         :id="props.data?.id || ''"
                         :idUser="userCRM.id"
-                        module="HANCE_Certificaciones"
+                        module="HANCE_SolicitudCertificacion"
                       ></ActivitiesComponent>
                     </q-tab-panel>
                     <q-tab-panel name="historychanges">
