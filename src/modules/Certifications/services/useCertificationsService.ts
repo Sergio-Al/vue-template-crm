@@ -190,6 +190,7 @@ export const updateCertificationRequest = async (
 ) => {
   try {
     // DEV-1 request
+    console.log(body);
     const { data } = await axios_NS_07.patch(
       `certification-request/${id}`,
       body
@@ -215,7 +216,11 @@ export const deleteCertificationRequest = async (id: string) => {
 export const getUser = async (id: string) => {
   try {
     // const response = await axios_NS07('user/id');
-    // return response
+    const response = {
+      id: '25e1d045-64e8-60d1-4ba0-63d81c7bb46c',
+      fullname: 'Erik',
+    };
+    return response;
 
     return user;
   } catch (error) {}

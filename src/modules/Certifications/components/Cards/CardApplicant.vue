@@ -42,8 +42,9 @@ inputData.value.iddivision_c = '04';
 const users = ref<User[] | undefined>(undefined);
 
 //* Methods
-const restoreValues = () => {
+const restoreValues = async () => {
   if (props.data) inputData.value = { ...props.data };
+  await formatData();
 };
 
 const filterFn = async (
@@ -64,24 +65,12 @@ const filterFn = async (
   });
 };
 
-const closeDate = () => {
-  dateRef.value?.hide();
-};
-
-const removeSolicitante = () => {
-  inputData.value.user_id_c = '';
-};
-
-const abortFilterFn = () => {
-  // console.log('delayed filter aborted')
-};
-
-const divisionList = ref([]);
-//let listAreaMercado = ref({});
-const listRegional = ref([]);
-
-onMounted(async () => {
-  await getListDivisiones();
+const formatData = async () => {
+  if (!!inputData.value.date_entered) {
+    inputData.value.date_entered = moment(inputData.value.date_entered).format(
+      'YYYY-MM-DD'
+    );
+  }
   divisionList.value = listDivisiones.value;
 
   //console.log(divisionList.value);
@@ -106,24 +95,46 @@ onMounted(async () => {
   console.log(inputData.value);
 
   // buscar solicitante y asignar a users[] (options)
-  // if (!!inputData.value.user_id_c) {
-  //   if (!!props.id) {
-  //     const response = await getUser(inputData.value.user_id_c);
-  //     console.log(response);
-  //     users.value = [response];
-  //   }
-  //   // const response = await getUser(inputData.value.user_id_c);
-  //   //   console.log(response);
-  //   //   users.value = [response];
-  // }
+  if (!!inputData.value.user_id_c) {
+    if (!!props.id) {
+      const response = await getUser(inputData.value.user_id_c);
+      console.log(response);
+      users.value = [response];
+    }
+    // const response = await getUser(inputData.value.user_id_c);
+    //   console.log(response);
+    //   users.value = [response];
+  }
 
   //listAreaMercado.value = await useDivAreaMercado(inputData.value.iddivision_c);
-  await getRegionales();
+
   const aux = await listRegionales.value.find(
     (element: any) => element.cod_pais == 'BO'
   );
   listRegional.value = aux.regiones;
   console.log(listRegional.value);
+};
+
+const closeDate = () => {
+  dateRef.value?.hide();
+};
+
+const removeSolicitante = () => {
+  inputData.value.user_id_c = '';
+};
+
+const abortFilterFn = () => {
+  // console.log('delayed filter aborted')
+};
+
+const divisionList = ref([]);
+//let listAreaMercado = ref({});
+const listRegional = ref([]);
+
+onMounted(async () => {
+  await getListDivisiones();
+  await getRegionales();
+  await formatData();
 });
 
 const amercadoList = computed(() => {
@@ -148,7 +159,7 @@ defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): Partial<CertificationRequest> => ({
     user_id_c: inputData.value.user_id_c,
-    date_entered_c: inputData.value.date_entered_c,
+    date_entered: inputData.value.date_entered,
     iddivision_c: inputData.value.iddivision_c,
     idamercado_c: inputData.value.idamercado_c,
     idregional_c: inputData.value.idregional_c,
@@ -223,7 +234,7 @@ defineExpose({
           </template>
         </q-select>
         <q-input
-          v-model="inputData.date_entered_c"
+          v-model="inputData.date_entered"
           class="col-12 col-sm-6"
           label="Fecha"
           outlined
@@ -320,7 +331,8 @@ defineExpose({
           </template>
         </q-select>
         <q-input
-          v-model="inputData.date_entered_c"
+          type="date"
+          v-model="inputData.date_entered"
           class="col-12 col-sm-6"
           label="Fecha"
           outlined
@@ -328,21 +340,6 @@ defineExpose({
           readonly
         >
         </q-input>
-        <q-select
-          class="col-12 col-sm-6"
-          outlined
-          dense
-          v-model="inputData.idamercado_c"
-          :options="amercadoList"
-          type="text"
-          label="Área de mercado"
-          option-value="value"
-          option-label="label"
-          emit-value
-          map-options
-          readonly
-        >
-        </q-select>
         <q-select
           class="col-12 col-sm-6"
           outlined
@@ -358,6 +355,22 @@ defineExpose({
           readonly
         >
         </q-select>
+        <q-select
+          class="col-12 col-sm-6"
+          outlined
+          dense
+          v-model="inputData.idamercado_c"
+          :options="amercadoList"
+          type="text"
+          label="Área de mercado"
+          option-value="value"
+          option-label="label"
+          emit-value
+          map-options
+          readonly
+        >
+        </q-select>
+
         <q-select
           class="col-12 col-sm-6"
           outlined

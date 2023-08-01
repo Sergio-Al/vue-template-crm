@@ -196,20 +196,49 @@ export interface Product {
 }
 
 export interface CertificationRequest {
-  id: string;
-  name: string;
-  description: string;
-  date_entered_c: string;
-  user_id_c: string;
-  iddivision_c: string;
-  idamercado_c: string;
-  idregional_c: string;
-  producto_c: string;
-  fabricante_c: string;
-  state_aprobacion: string;
-  hance_certificacion_id_c: string;
   assigned_user_id: string;
+  assigned_user_link: string;
+  assigned_user_name: string;
+  cod_misa_c: string;
+  cod_productos_c: string;
+  comentario_solicitud_c: string;
+  contact_fabricante_c: string;
+  correo_fabricante_c: string;
+  created_by: string;
+  created_by_link: string;
+  created_by_name: string;
+  date_entered: string;
+  date_modified: string;
+  date_planning_cert_c: string;
+  date_real_cert_c: string;
+  date_register_misa_c: string;
+  deleted: number;
+  description: string;
+  estado_aprobacion_c: string;
+  estado_c: string;
+  etapa_c: string;
+  fabricante_c: string;
+  hance_certificacion_id_c: string;
+  hance_empresa_id_c: string;
+  id: string;
+  id_empresa_c: string;
+  id_profesional_acreditado_c: string;
+  id_user_solicitante_c: string;
+  idamercado_c: string;
+  iddivision_c: string;
+  idregional_c: string;
+  modified_by_name: string;
+  modified_user_id: string;
+  modified_user_link: string;
+  name: string;
+  nro_ruta_c: string;
+  producto_c: string;
   referencia_prods: string;
+  telefono_fabricante_c: string;
+  tipo_producto_c: string;
+  tipo_tramite_c: string;
+  user_id1_c: string;
+  user_id_c: string;
 }
 
 export interface CertificationTable {
