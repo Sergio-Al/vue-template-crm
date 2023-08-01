@@ -23,7 +23,7 @@ import type { ChildCompany, Company } from '../utils/types';
 //! Borrar datos falsos si no se usan
 // import { childCompanies } from '../utils/dummyData';
 import { getCategoryDocuments, getTypeDocuments } from '../services/useCompanyService';
-import { axios_NS_07 } from 'src/conections/axiosCRM';
+//import { axios_NS_07 } from 'src/conections/axiosCRM';
 
 const { userCRM } = userStore();
 

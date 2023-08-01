@@ -318,7 +318,7 @@ export const certificationRequests: CertificationRequest[] = [
   {
     id: '01',
     name: '001/2023',
-    date_entered_c: '24/07/2023',
+    date_entered: '24/07/2023',
     user_id_c: 'Rosario Morales',
     iddivision_c: 'Soluciones medicas',
     idamercado_c: 'Imagenologia',
@@ -333,7 +333,7 @@ export const certificationRequests: CertificationRequest[] = [
   {
     id: '02',
     name: '002/2023',
-    date_entered_c: '24/07/2023',
+    date_entered: '24/07/2023',
     user_id_c: 'Rosario Morales',
     iddivision_c: 'Soluciones medicas',
     idamercado_c: 'Imagenologia',
@@ -348,7 +348,7 @@ export const certificationRequests: CertificationRequest[] = [
   {
     id: '03',
     name: '003/2023',
-    date_entered_c: '24/07/2023',
+    date_entered:'24/07/2023',
     user_id_c: 'Rosario Morales',
     iddivision_c: 'Soluciones medicas',
     idamercado_c: 'Imagenologia',
