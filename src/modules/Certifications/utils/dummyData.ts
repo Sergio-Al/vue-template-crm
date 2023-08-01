@@ -1,5 +1,7 @@
+import { CertificationMain } from './dummyData';
 import {
   Certification,
+  CertificationModel,
   CertificationRequest,
   Manufacturer,
   Product,
@@ -671,6 +673,127 @@ export const productData = (): Product => {
   return product;
 };
 
+export const CertificationMain = [
+  {
+    name: '5001/2023',
+    user_id_c: '1u',
+    date_entered_c: '2023-07-31 00:00:00',
+    hance_empresa_id_c: '1e',
+    participacion_como: {
+      id: '1e',
+      razon_social: 'razon social',
+      direccion_participacion: 'Av. 33',
+      resolucion_ministerial: '222',
+    },
+    user_id1_c: '1pa',
+    profesional_acreditado: {
+      id: '1pa',
+      name: 'Gabriela Canseco',
+      nro_de_matricula: '333',
+    },
+    tipo_tramite_c: 'Inscripcion',
+    tipo_producto_c: 'Dispositivo',
+    producto_id_c: '3p',
+    producto: {
+      id: '3p',
+      name: 'Agujas de fístula',
+    },
+    hance_proveedor_id_c: '1f',
+    fabricante: {
+      id: '1f',
+      name: 'DIALIFE',
+      pais: 'Bolivia',
+      telefono: '2233442',
+      correo: 'dialife@example.com',
+      direccion_fabricante: 'Av. Costanera',
+    },
+    hance_solicitud_id_c: '1s',
+    assigned_user_id: '1',
+    etapa_c: '',
+    estado_c: 'En Curso',
+    date_modified: '2023-07-31 00:00:00',
+  },
+  {
+    name: '5002/2023',
+    user_id_c: '2u',
+    date_entered_c: '2023-07-31 00:00:00',
+    hance_empresa_id_c: '2e',
+    participacion_como: {
+      id: '2e',
+      razon_social: 'razon social',
+      direccion_participacion: 'Av. 33',
+      resolucion_ministerial: '222',
+    },
+    user_id1_c: '2pa',
+    profesional_acreditado: {
+      id: '2pa',
+      name: 'Gabriela Canseco',
+      nro_de_matricula: '333',
+    },
+    tipo_tramite_c: 'Inscripcion',
+    tipo_producto_c: 'Dispositivo',
+    producto_id_c: '3p',
+    producto: {
+      id: '3p',
+      name: 'Tomógrafo',
+    },
+    hance_proveedor_id_c: '1f',
+    fabricante: {
+      id: '2f',
+      name: 'DIALIFE',
+      pais: 'Bolivia',
+      telefono: '2233442',
+      correo: 'dialife@example.com',
+      direccion_fabricante: 'Av. Costanera',
+    },
+    hance_solicitud_id_c: '2s',
+    assigned_user_id: '1',
+    etapa_c: '',
+    estado_c: 'En Curso',
+    date_modified: '2023-07-31 00:00:00',
+  },
+  {
+    name: '5003/2023',
+    user_id_c: '1u',
+    date_entered_c: '2023-07-31 00:00:00',
+    hance_empresa_id_c: '3e',
+    participacion_como: {
+      id: '3e',
+      razon_social: 'razon social',
+      direccion_participacion: 'Av. 33',
+      resolucion_ministerial: '222',
+    },
+    user_id1_c: '3pa',
+    profesional_acreditado: {
+      id: '3pa',
+      name: 'Gabriela Canseco',
+      nro_de_matricula: '333',
+    },
+    tipo_tramite_c: 'Inscripcion',
+    tipo_producto_c: 'Dispositivo',
+    producto_id_c: '3p',
+    producto: {
+      id: '3p',
+      name: 'Equipo de Rayos X',
+    },
+    hance_proveedor_id_c: '3f',
+    fabricante: {
+      id: '3f',
+      name: 'DIALIFE',
+      pais: 'Bolivia',
+      telefono: '2233442',
+      correo: 'dialife@example.com',
+      direccion_fabricante: 'Av. Costanera',
+    },
+    hance_solicitud_id_c: '3s',
+    assigned_user_id: '1',
+    etapa_c: 'revision',
+    status: '',
+    estado_c: 'En Curso',
+    date_modified: '2023-07-31 00:00:00',
+  },
+];
+
 export const productPromise = (): Promise<Product> => {
   return new Promise((resolve, reject) => {
     // Simulate an asynchronous operation
@@ -701,5 +824,13 @@ export const certificationsRequestPromise = (): Promise<
       const result = certificationRequests;
       resolve(result);
     }, 2000); // Simulating a 2-second delay
+  });
+};
+
+export const certificationsPromise = (): Promise<CertificationModel[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(CertificationMain);
+    }, 500);
   });
 };
