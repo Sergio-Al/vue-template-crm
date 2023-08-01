@@ -261,3 +261,43 @@ export interface CertificationTable {
   hance_solicitud_id_c: string;
   assigned_user_id: string;
 }
+
+export interface CertificationModel {
+  name: string;
+  user_id_c: string;
+  date_entered_c: string;
+  hance_empresa_id_c: string;
+  participacion_como: {
+    id: string;
+    razon_social: string;
+    direccion_participacion: string;
+    resolucion_ministerial: string;
+  };
+  user_id1_c: string;
+  profesional_acreditado: {
+    id: string;
+    name: string;
+    nro_de_matricula: string;
+  };
+  tipo_tramite_c: string;
+  tipo_producto_c: string;
+  producto_id_c: string;
+  producto: {
+    id: string;
+    name: string;
+  };
+  hance_proveedor_id_c: string;
+  fabricante: {
+    id: string;
+    name: string;
+    pais: string;
+    telefono: string;
+    correo: string;
+    direccion_fabricante: string;
+  };
+  hance_solicitud_id_c: string;
+  assigned_user_id: string;
+  etapa_c: string;
+  estado_c: string;
+  date_modified: string;
+}

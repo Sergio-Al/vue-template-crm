@@ -6,6 +6,7 @@ import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
 
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import CertificationDialog from '../components/Dialogs/CertificationDialog.vue';
+import moment from 'moment';
 
 const table = useCertificationsTableStore();
 const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
@@ -140,91 +141,93 @@ const openItemSelected = (id: string, title: string) => {
               Nro: {{ propsTable.row.name }}
             </span>
           </q-td>
-          <q-td key="etapa_c" :props="propsTable">
-            <div class="column">
-              <div>
-                <q-badge
-                  :color="setEtapaColor(propsTable.row.etapa_c)"
-                  :label="propsTable.row.etapa_c"
-                />
-              </div>
-              <span class="text-caption">
-                <span class="text-weight-bold">Estado:</span>
-                {{ propsTable.row.estado_c }}
-              </span>
-              <span class="text-caption">{{
-                (propsTable.row.fecha_creacion &&
-                  propsTable.row.fecha_creacion.substring(0, 10)) ||
-                propsTable.row?.date_added
-              }}</span>
-            </div>
-          </q-td>
-
           <q-td key="tipo_tramite_c" :props="propsTable">
-            {{ propsTable.row.tipo_tramite_c }}
+            <span class="text-grey">{{ propsTable.row.tipo_tramite_c }}</span>
           </q-td>
-          <q-td key="solicitante" :props="propsTable">
-            <div class="row items-center">
-              <div class="col-1">
-                <q-avatar
-                  size="24px"
-                  font-size="24px"
-                  color="primary"
-                  text-color="white"
-                  icon="person"
-                />
-              </div>
-              <div class="column q-pl-sm ellipsis col-11">
-                <span class="ellipsis-item">
-                  {{ propsTable.row.solicitante }}
-                </span>
-                <span class="ellipsis-item text-grey">
-                  {{ propsTable.row.cargo }}
-                </span>
-              </div>
-            </div>
-          </q-td>
-          <q-td key="producto_c" :props="propsTable">
-            <div class="column">
-              <span>
-                {{ propsTable.row.producto_c }}
-              </span>
-              <span class="text-caption"
-                ><span class="text-weight-bold">Fabricante</span>
-                {{ propsTable.row.fabricante_c }}</span
-              >
+          <q-td key="user_id1_c" :props="propsTable">
+            <div
+              style="
+                max-width: 150px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              "
+            >
+              <q-avatar
+                class="q-mr-sm"
+                size="sm"
+                color="primary"
+                text-color="white"
+                icon="person"
+              />
+              <span>{{ propsTable.row.profesional_acreditado.name }}</span>
             </div>
           </q-td>
           <q-td key="tipo_producto_c" :props="propsTable">
-            <q-badge
-              outline
-              :color="setTipoColor(propsTable.row.tipo_producto_c)"
-              >{{ propsTable.row.tipo_producto_c }}</q-badge
-            >
-            <br />
-            <span class="text-caption"
-              ><span class="text-weight-bold">Cant. de requisitos:</span>
-              10</span
-            >
-          </q-td>
-          <q-td key="cumplimiento_req" :props="propsTable">
-            <span class="text-weight-bold">100 %</span>
-          </q-td>
-          <q-td key="id" :props="propsTable">
-            <div class="column">
-              <span>
-                <span class="text-weight-bold">Cod Misa:</span>
-                {{ propsTable.row.cod_misa_c }}
-              </span>
-              <span>
-                <span class="text-weight-bold">Nro de Ruta:</span>
-                {{ propsTable.row.nro_ruta_c }}
-              </span>
+            <div class="row">
+              <q-chip dense square outline color="positive" text-color="white">
+                {{ propsTable.row.tipo_producto_c }}
+              </q-chip>
             </div>
-            <q-badge dark color="green" class="q-px-md"
-              ><span class="text-weight-bold q-mr-sm">Nro. Cert.</span
-              >{{ propsTable.row.nro_cert }}</q-badge
+          </q-td>
+          <q-td key="etapa_c" :props="propsTable">
+            <q-chip
+              v-if="propsTable.row.etapa_c"
+              dense
+              square
+              outline
+              color="positive"
+              text-color="white"
             >
+              {{ propsTable.row.etapa_c }}
+            </q-chip>
+          </q-td>
+          <q-td key="estado_c" :props="propsTable">
+            <span>{{ propsTable.row.estado_c }}</span>
+          </q-td>
+          <q-td
+            v-if="propsTable.row.date_entered_c"
+            key="date_entered_c"
+            :props="propsTable"
+          >
+            <span>{{
+              moment(propsTable.row.date_entered_c).format('DD/MM/YYYY')
+            }}</span>
+          </q-td>
+          <q-td key="req" :props="propsTable">
+            <span> 30 %</span>
+          </q-td>
+          <q-td key="producto_id_c" :props="propsTable">
+            <div class="row">
+              <span>{{ propsTable.row.producto.name }}</span>
+              <div>
+                <span class="text-bold">Fabricante: </span>
+                {{ propsTable.row.producto.name }}
+              </div>
+            </div>
+          </q-td>
+          <q-td key="hance_solicitud_id_c" :props="propsTable">
+            <div>{{ propsTable.row.hance_solicitud_id_c }}</div>
+          </q-td>
+          <q-td key="options" :props="propsTable">
+            <q-btn color="primary" icon="more_vert" round outline size="sm">
+              <q-menu auto-close :offset="[110, 0]">
+                <q-list dense>
+                  <q-item clickable>
+                    <div class="row items-center">
+                      <q-icon name="remove" class="q-mr-sm" />
+                      <q-item-section>Eliminar</q-item-section>
+                    </div>
+                  </q-item>
+                  <q-item clickable>
+                    <div class="row items-center">
+                      <q-icon name="info" class="q-mr-sm" />
+                      <q-item-section>Ver</q-item-section>
+                    </div>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
           </q-td>
         </q-tr>
       </template>
