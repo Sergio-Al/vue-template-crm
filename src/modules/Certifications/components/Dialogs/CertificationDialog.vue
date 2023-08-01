@@ -8,6 +8,7 @@ import { useCertificationStore } from '../../store/certificationStore';
 import ViewGeneral from '../../views/ViewGeneral.vue';
 import ViewGeneralData from '../../views/ViewGeneralData.vue';
 import ViewDataManufacturer from '../../views/ViewDataManufacturer.vue';
+import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
 import { Certification } from '../../utils/types';
 import { getCertificationRequest } from '../../services/useCertificationsService';
 </script>
@@ -16,27 +17,21 @@ import { getCertificationRequest } from '../../services/useCertificationsService
 //* variables
 const tabsDefinition = [
   {
-    name: 'general',
-    component: ViewGeneral,
-    label: 'Solicitud',
-    enabledForCreation: true,
-  },
-  {
     name: 'dataGeneral',
     component: ViewGeneralData,
-    label: 'Datos Generales',
+    label: 'Información General',
     enabledForCreation: true,
   },
   {
     name: 'dataManufacturer',
     component: ViewDataManufacturer,
-    label: 'Datos del Fabricante',
+    label: 'Fabricante',
     enabledForCreation: false,
   },
 ];
 
 const showCloseAlert = ref(false);
-
+const activeTab = ref('dataGeneral');
 const certificationStore = useCertificationStore();
 const certificationTableStore = useCertificationsTableStore();
 
@@ -132,7 +127,7 @@ defineExpose({
   <dialog-component
     size-dialog="dialog-xl"
     v-model="open"
-    :footerDisabled="false"
+    :footerDisabled="true"
     :headerDisabled="false"
     :iconDialog="iconDialog"
     :persistent="false"
@@ -181,7 +176,7 @@ defineExpose({
       </q-toolbar>
 
       <q-tabs
-        v-model="activeTabName"
+        v-model="activeTab"
         @update:modelValue="swapCurrentTab"
         inline-label
         mobile-arrows
@@ -200,7 +195,6 @@ defineExpose({
           :key="index"
           :name="tab.name"
           :label="tab.label"
-          :disable="!id"
         >
         </q-tab>
       </q-tabs>
@@ -215,74 +209,28 @@ defineExpose({
         :class="$q.platform.is.mobile ? 'q-pa-none' : 'q-pa-none'"
         style="margin-top: -50px"
       >
-        <component
+        <!-- <ViewGeneralSkeleton /> -->
+        <q-tab-panels v-model="activeTab" animated>
+          <q-tab-panel name="dataGeneral">
+            <ViewGeneralData
+              @submitComplete="updateData"
+              @update-view="assignCurrentView"
+              ref="generalFormRef"
+            />
+          </q-tab-panel>
+          <q-tab-panel name="dataManufacturer">
+            <ViewDataManufacturer />
+          </q-tab-panel>
+        </q-tab-panels>
+        <!-- <component
           :is="activeTabComponent"
           :id="id"
           @submitComplete="updateData"
           @update-view="assignCurrentView"
           ref="generalFormRef"
-        />
+        /> -->
       </q-page>
     </template>
-
-    <template #footer v-if="loadingInfo">
-      <span class="text-primary">Cargando Información</span>
-    </template>
-
-    <template
-      #footer
-      v-else-if="!!currentView && currentView === 'ManufacturerData'"
-    >
-      <q-btn color="primary" class="q-mr-md" @click="saveCurrentForm"
-        >Finalizar</q-btn
-      >
-    </template>
-
-    <template
-      #footer
-      v-else-if="!!currentView && currentView === 'GeneralData'"
-    >
-      <q-btn
-        color="primary"
-        class="q-mr-md"
-        @click="
-          () => {
-            activeTabName = 'dataManufacturer';
-            swapCurrentTab('dataManufacturer');
-          }
-        "
-        >Continuar</q-btn
-      >
-    </template>
-
-    <template #footer v-else-if="isEditing && currentView === ''">
-      <q-btn color="primary" class="q-mr-md" @click="saveCurrentForm"
-        >Guardar</q-btn
-      >
-      <q-btn color="negative" v-close-popup>Cancelar</q-btn>
-    </template>
-
-    <template
-      #footer
-      v-else-if="
-        !!id &&
-        Object.keys(certificationData).length > 0 &&
-        !+certificationData.aprobacion &&
-        currentView == ''
-      "
-    >
-      <q-btn
-        color="primary"
-        class="q-mr-md"
-        @click="
-          () => {
-            (activeTabName = 'dataGeneral'), swapCurrentTab('dataGeneral');
-          }
-        "
-        >Aceptar</q-btn
-      >
-      <q-btn color="negative" v-close-popup>Rechazar</q-btn></template
-    >
   </dialog-component>
 
   <!-- ******alert antes de cerrar -->
