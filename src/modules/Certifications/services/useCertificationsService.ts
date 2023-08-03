@@ -1,10 +1,12 @@
 import {
+  axios_GLOBAL,
   axios_LB_04,
   axios_NS_07,
   axios_PREFERENCES,
 } from 'src/conections/axiosCRM';
 
 import { userStore } from 'src/modules/Users/store/UserStore';
+import { axios_LB_01 } from 'src/conections/axiosCRM';
 import type {
   Certification,
   CertificationDB,
@@ -45,12 +47,12 @@ export const updateMassiveData = async (data: any) => {
 export const deleteMassiveData = async (data: any) => {
   try {
     // DEV-1 request
-    data.items.forEach(async (element: any) => {
-      await axios_NS_07.delete(`certification-request/${element.id}`);
-    });
     // data.items.forEach(async (element: any) => {
-    //   await axios_NS_07.delete(`certifications/${element.id}`);
+    //   await axios_NS_07.delete(`certification-request/${element.id}`);
     // });
+    data.items.forEach(async (element: any) => {
+      await axios_NS_07.delete(`solicitud/${element.id}`);
+    });
     return;
   } catch (error) {
     throw error;
@@ -58,20 +60,22 @@ export const deleteMassiveData = async (data: any) => {
 };
 
 export const getTableData = async (params: Params) => {
-  console.log(params);
   try {
+    console.log(params);
     // DEV-1 request
     // const { data } = await axios_NS_07.get('/certification-request');
     // console.log(data);
     // return data
-    return await certificationsPromise();
+    
+    //return await certificationsPromise();
 
     //return certicationsList;
-    // const { data } = await axios_NS_07.get(
-    //   `/certificacion?params=${JSON.stringify(params)}`
-    // );
-    // //console.log(data);
-    // return data;
+
+    const { data } = await axios_NS_07.get(
+      `/certificacion/advanced?params=${JSON.stringify(params)}`
+    );
+    //console.log(data);
+    return data;
   } catch (error) {
     throw error;
   }
@@ -136,14 +140,10 @@ export const updateTablePreferences = async (id: string, data: any) => {
 export const createCertificationRequest = async (
   solicitud_certification: Partial<CertificationRequest>
 ) => {
-  console.log('Creacion de solicitud', solicitud_certification);
-  solicitud_certification.etapa_c = 'nueva';
-  solicitud_certification.estado_c = 'pendiente';
-
-  // const { data } = await axios_NS_07.post(
-  //   'certification-request',
-  //   solicitud_certification
-  // );
+  solicitud_certification.estado_aprobacion_c = 'pending';
+  const last_value = await getLastNumberCertificationRequest();
+  const nro_cert = parseInt(last_value.split('/')[0])+1;
+  solicitud_certification.name = `${nro_cert.toString()}/${new Date().getFullYear()}`;
 
   console.log(solicitud_certification);
 
@@ -151,12 +151,36 @@ export const createCertificationRequest = async (
     '/solicitud',
     solicitud_certification
   );
+  
+  const comment = {
+    assigned_user_id: solicitud_certification.assigned_user_id,
+    bean_id: data.id,
+    bean_module: 'HANCE_SolicitudCertificacion',
+    description:solicitud_certification.description,
+    relevance:'medium',
+    visualizacion_c:'interno',
+    created_by:solicitud_certification.assigned_user_id
+  }
+  console.log(comment);
+  await axios_GLOBAL.post(`/comments-new`, {comment});
+  //TODO: guardar comentario
+
   return data;
 };
 
+const getLastNumberCertificationRequest = async () =>{
+  try{
+    const { data } = await axios_NS_07.get(`/solicitud/last-number`);
+    return data[0].name;
+  }
+  catch(e){
+    throw e;
+  }
+}
+
 export const getCertificationRequest = async (id: string) => {
   try {
-    const response = await axios_NS_07.get(`/solicitud/${id}`);
+    const { data } = await axios_NS_07.get(`/solicitud/${id}`);
     //const { data } = await axios_NS_07.get(`/certification-request/${id}`);
     return data;
   } catch (error) {
@@ -190,11 +214,12 @@ export const updateCertificationRequest = async (
   id: string,
   body: Partial<CertificationRequest>
 ) => {
+  console.log(body);
   try {
     // DEV-1 request
     console.log(body);
     const { data } = await axios_NS_07.patch(
-      `certification-request/${id}`,
+      `solicitud/${id}`,
       body
     );
     return data;
@@ -207,7 +232,7 @@ export const updateCertificationRequest = async (
 export const deleteCertificationRequest = async (id: string) => {
   try {
     // DEV-1 request
-    const { data } = await axios_NS_07.delete(`certification-request/${id}`);
+    const { data } = await axios_NS_07.delete(`solicitud/${id}`);
     return data;
   } catch (error) {
     console.log(error);
@@ -217,14 +242,15 @@ export const deleteCertificationRequest = async (id: string) => {
 
 export const getUser = async (id: string) => {
   try {
-    // const response = await axios_NS07('user/id');
-    const response = {
-      id: '25e1d045-64e8-60d1-4ba0-63d81c7bb46c',
-      fullname: 'Erik',
-    };
-    return response;
+    const { data } = await axios_NS_07.get(`users/${id}`);
+    //console.log(response);
+    // const response = {
+    //   id: '25e1d045-64e8-60d1-4ba0-63d81c7bb46c',
+    //   fullname: 'Erik',
+    // };
+    return data;
 
-    return user;
+    //return user;
   } catch (error) {}
 };
 
@@ -232,26 +258,35 @@ export async function getUsers(
   value: string,
   options: RecordOptionsModel = {}
 ): Promise<SearchUser[]> {
-  const {
-    module = '',
-    user_iddivision = '',
-    user_idamercado = '',
-    user_idgrupocliente = '',
-  } = options;
-  const formattedModule = module.charAt(0).toUpperCase() + module.slice(1);
-  const bodyOptions = {
-    value,
-    module: formattedModule,
-    user_iddivision,
-    user_idamercado,
-    user_idgrupocliente,
-  };
+  // const {
+  //   module = '',
+  //   user_iddivision = '',
+  //   user_idamercado = '',
+  //   user_idgrupocliente = '',
+  // } = options;
+  // const formattedModule = module.charAt(0).toUpperCase() + module.slice(1);
+  // const bodyOptions = {
+  //   value,
+  //   module: formattedModule,
+  //   user_iddivision,
+  //   user_idamercado,
+  //   user_idgrupocliente,
+  // };
   try {
-    const { data } = await axios_LB_04.patch<GuestsRecordResponse>(
-      '/search-user-mitings/1/100/desc/{val}',
-      bodyOptions
-    );
-    return data.search_users;
+    // const { data } = await axios_LB_04.patch<GuestsRecordResponse>(
+    //   '/search-user-mitings/1/100/desc/{val}',
+    //   bodyOptions
+    // );
+    // return data.search_users;
+    const { data } = await axios_NS_07.get<SearchUser[]>('/users', {
+      params: {
+        name: value,
+        idCompany:'139c3fdd-c676-3071-b88c-64b0022b6839'
+      },
+    });
+    console.log(data);
+    return data;
+
   } catch (error) {
     throw error;
   }

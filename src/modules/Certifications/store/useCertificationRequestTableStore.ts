@@ -192,7 +192,7 @@ export const useCertificationRequestTableStore = defineStore(
         // const data = await getCertificationRequests(params);
         const data = await getCertificationRequests(params);
         //console.log('peticion de lista de solicitantes');
-        console.log(data);
+        //console.log(data);
         data_table.value.rows = data;
         // pagination.value = data.length;
         pagination.value.rowsNumber = data.length;

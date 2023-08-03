@@ -196,7 +196,6 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="user_id_c" :props="propsTable">
             <div
               style="
-                max-width: 100px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -210,6 +209,8 @@ const openItemSelected = (id: string, title: string) => {
                 icon="person"
               />
               <span>{{ propsTable.row.solicitante }}</span>
+              <br />
+              <span class="text-caption text-grey">{{propsTable.row.cargo}}</span>
             </div>
           </q-td>
           <q-td key="division" :props="propsTable">

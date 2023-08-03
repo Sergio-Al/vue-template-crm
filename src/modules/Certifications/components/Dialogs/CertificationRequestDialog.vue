@@ -11,6 +11,7 @@ import type { CertificationRequest } from '../../utils/types';
 import {
   createCertificationRequest,
   updateCertificationRequest,
+  getCertificationRequest,
 } from '../../services/useCertificationsService';
 
 interface Emits {
@@ -48,7 +49,7 @@ const createCertification = async (data: Partial<CertificationRequest>) => {
     });
     const response = await createCertificationRequest(data);
     // console.log(data);
-    // const response = await certificationRequestPromise(localId.value);
+    //const response = await certificationRequestPromise(localId.value);
     localId.value = response.id;
     emits('update');
     await getCertification();
@@ -95,7 +96,7 @@ const {
   execute: getCertification,
 } = useAsyncState(
   async () => {
-    return await certificationRequestPromise(localId.value);
+    return await getCertificationRequest(localId.value);
   },
   {} as CertificationRequest,
   {

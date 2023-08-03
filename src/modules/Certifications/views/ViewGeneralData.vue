@@ -5,6 +5,7 @@ import CardProcedureType from '../components/Cards/CardProcedureType.vue';
 import CardProductType from '../components/Cards/CardProductType.vue';
 
 import AssignedSingleUser2 from 'src/components/AssignedUsers/AssignedSingleUser2.vue';
+import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
 
 interface Props {
   id?: string;
@@ -33,11 +34,17 @@ onMounted(() => {
           </div>
         </div>
         <div class="col-12 col-md-6">
-          <AssignedSingleUser2
+          <!--<AssignedSingleUser2
             ref="assignedSingleUserRef"
-            :module="'HANCE_Certificaciones'"
+            :module="'HANCE_Certificacion'"
             :module-id="''"
             :withList="false"
+            @changeUser="() => {}"
+          />-->
+          <AssignedUser
+             ref="assignedSingleUserRef"
+            :module="'HANCE_Certificacion'"
+            :module-id="''"
             @changeUser="() => {}"
           />
         </div>

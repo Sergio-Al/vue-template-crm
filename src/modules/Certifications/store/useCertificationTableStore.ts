@@ -62,10 +62,10 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           visible: true,
         },
         {
-          name: 'user_id1_c',
+          name: 'profesional_acreditado',
           align: 'left',
           label: 'Profesional acreditado',
-          field: 'user_id1_c',
+          field: 'profesional_acreditado',
           sortable: true,
           visible: true,
         },
@@ -94,34 +94,42 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           visible: true,
         },
         {
-          name: 'date_entered_c',
+          name: 'fecha_creacion',
           align: 'center',
           label: 'Fecha de Creación',
-          field: 'date_entered_c',
+          field: 'fecha_creacion',
           sortable: true,
           visible: true,
         },
         {
-          name: 'req',
+          name: 'cumplimiento_req',
           align: 'center',
           label: 'Cumplimiento de requisitos',
-          field: 'req',
+          field: 'cumplimiento_req',
           sortable: true,
           visible: true,
         },
         {
-          name: 'producto_id_c',
+          name: 'producto_c',
           align: 'center',
           label: 'Producto',
-          field: 'producto_id_c',
+          field: 'producto_c',
           sortable: true,
           visible: true,
         },
         {
-          name: 'hance_solicitud_id_c',
+          name: 'proveedor',
+          align: 'center',
+          label: 'Producto',
+          field: 'proveedor',
+          sortable: true,
+          visible: true,
+        },
+        {
+          name: 'nro_solicitud',
           align: 'center',
           label: 'Nro. solicitud',
-          field: 'hance_solicitud_id_c',
+          field: 'nro_solicitud',
           sortable: true,
           visible: true,
         },
@@ -136,28 +144,32 @@ export const useCertificationsTableStore = defineStore('certification_table', {
       ],
     },
     visible_fields: [
+      'id',
       'name',
       'tipo_tramite_c',
-      'user_id1_c',
+      'profesional_acreditado',
       'tipo_producto_c',
       'etapa_c',
       'estado_c',
-      'date_entered_c',
-      'req',
-      'producto_id_c',
-      'hance_solicitud_id_c',
+      'fecha_creacion',
+      'cumplimiento_req',
+      'producto_c',
+      'nro_solicitud',
+      'id_solicitud',
+      'proveedor'
     ],
     visible_columns: [
       'name',
       'tipo_tramite_c',
-      'user_id1_c',
+      'profesional_acreditado',
       'tipo_producto_c',
       'etapa_c',
       'estado_c',
-      'date_entered_c',
-      'req',
-      'producto_id_c',
-      'hance_solicitud_id_c',
+      'producto_c',
+      'fecha_creacion',
+      'nro_solicitud',
+      'cumplimiento_req',
+      'nro_solicitud',
       'options',
     ],
   }),
@@ -188,7 +200,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
       filter: Filter;
     }) {
       try {
-        this.loading = true;
+        //this.loading = true;
         const { pagination, filter } = props;
         const { page, rowsPerPage, sortBy, descending } = pagination;
         const params = {
@@ -202,6 +214,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         console.log(data);
         this.data_table.rows = data;
         this.pagination.rowsNumber = data.length;
+        //this.loading = false;
       } catch (error) {
         console.log(error);
       } finally {

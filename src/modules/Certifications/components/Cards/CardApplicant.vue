@@ -36,10 +36,10 @@ const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
 
 const inputData = ref({ ...props.data });
-inputData.value.iddivision_c = '04';
+//inputData.value.iddivision_c = '';
 //inputData.value.user_id_c = '5c19df6d-0cf0-6e23-7c01-629fb9d01588';
 
-const users = ref<User[] | undefined>(undefined);
+let users = ref<any[] | undefined>(undefined);
 
 //* Methods
 const restoreValues = async () => {
@@ -58,9 +58,10 @@ const filterFn = async (
       users.value = [];
     } else {
       const response = await getUsers(val);
+      console.log(response);
       users.value = response;
       //users.value = [{ id: '1', fullname: 'Dan dd' }];
-      console.log(users.value);
+      //console.log(users.value);
     }
   });
 };
@@ -71,25 +72,33 @@ const formatData = async () => {
       'YYYY-MM-DD'
     );
   }
+}
+
+onMounted(async () => {
+
+  await getListDivisiones();
+  await getRegionales();
   divisionList.value = listDivisiones.value;
 
   //console.log(divisionList.value);
 
   if (!!props.id) {
+    inputData.value.date_entered = inputData.value.date_entered?.substring(0,10);
   } else {
     if (userCRM) {
-      console.log(userCRM);
+      //console.log(userCRM);
       const { id, nombres, apellidos, iddivision, idamercado, idregional } =
         userCRM;
       inputData.value.user_id_c = id;
+      inputData.value.user_id = id;
       users.value = [{ id, fullname: `${nombres} ${apellidos}` }];
       //valores por defecto aqui
       inputData.value.idamercado_c = idamercado;
       inputData.value.iddivision_c = iddivision;
       //inputData.value.idregional_c=idregional;
       inputData.value.idregional_c = '';
+      inputData.value.date_entered = new Date().toISOString().substring(0, 10);
     }
-    inputData.value.date_entered = new Date().toISOString().substring(0, 10);
   }
 
   console.log(inputData.value);
@@ -97,9 +106,8 @@ const formatData = async () => {
   // buscar solicitante y asignar a users[] (options)
   if (!!inputData.value.user_id_c) {
     if (!!props.id) {
-      const response = await getUser(inputData.value.user_id_c);
-      console.log(response);
-      users.value = [response];
+      const response:any = await getUser(inputData.value.user_id_c);
+      users.value = [response[0]];
     }
     // const response = await getUser(inputData.value.user_id_c);
     //   console.log(response);
@@ -108,12 +116,16 @@ const formatData = async () => {
 
   //listAreaMercado.value = await useDivAreaMercado(inputData.value.iddivision_c);
 
-  const aux = await listRegionales.value.find(
+  const aux:any = await listRegionales.value.find(
     (element: any) => element.cod_pais == 'BO'
   );
+
+  // console.log(listRegionales.value);
+  // console.log(aux);
+
   listRegional.value = aux.regiones;
-  console.log(listRegional.value);
-};
+  // console.log(listRegional.value);
+});
 
 const closeDate = () => {
   dateRef.value?.hide();
@@ -138,27 +150,19 @@ onMounted(async () => {
 });
 
 const amercadoList = computed(() => {
-  // if (types_doc.value.length === 0) return [];
-  // return types_doc.value.filter((r: any) =>
-  //   r.value.toLowerCase().includes(dataConcat.toLowerCase())
-  // );
-  // divisionList
-  //console.log('division seleccionada' +inputData.value.iddivision_c);
-  //console.log('listado de divisiones' +divisionList.value);
-  //inputData.value.idamercado_c = '';
+
   const result: any = divisionList.value.filter(
     (element: any) => element.cod_div == inputData.value.iddivision_c
   );
   const aux = { ...result[0] };
-  //console.log(a.value[0].amercado);
   return aux.amercado;
-  //return a;
 });
 
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): Partial<CertificationRequest> => ({
     user_id_c: inputData.value.user_id_c,
+    user_id : userCRM.id,
     date_entered: inputData.value.date_entered,
     iddivision_c: inputData.value.iddivision_c,
     idamercado_c: inputData.value.idamercado_c,
@@ -227,8 +231,7 @@ defineExpose({
               <q-item-section>
                 <q-item-label>{{ scope.opt.fullname }}</q-item-label>
                 <q-item-label caption
-                  >Email: {{ scope.opt.email_address }}</q-item-label
-                >
+                  >Email: {{ scope.opt.email_address }}</q-item-label>
               </q-item-section>
             </q-item>
           </template>
@@ -331,15 +334,15 @@ defineExpose({
           </template>
         </q-select>
         <q-input
-          type="date"
           v-model="inputData.date_entered"
           class="col-12 col-sm-6"
           label="Fecha"
           outlined
           dense
           readonly
+          type="date"
         >
-        </q-input>
+        </q-input>        
         <q-select
           class="col-12 col-sm-6"
           outlined
@@ -363,7 +366,7 @@ defineExpose({
           :options="amercadoList"
           type="text"
           label="Área de mercado"
-          option-value="value"
+          option-value="cod_amercado"
           option-label="label"
           emit-value
           map-options

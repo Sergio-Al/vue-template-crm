@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { axios_PREFERENCES } from 'src/conections/axiosCRM';
 import { Notification } from 'src/composables';
 import { userStore } from 'src/modules/Users/store/UserStore';
+import { getCertificationRequest } from '../services/useCertificationsService';
 
 const { userCRM } = userStore();
 
