@@ -6,6 +6,7 @@ import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
 
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import CertificationDialog from '../components/Dialogs/CertificationDialog.vue';
+import moment from 'moment';
 
 const table = useCertificationsTableStore();
 const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
@@ -137,94 +138,102 @@ const openItemSelected = (id: string, title: string) => {
               class="text-primary text-weight-bold text-break cursor-pointer"
               @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
-              Nro: {{ propsTable.row.name }}
+              {{ propsTable.row.name }}
             </span>
           </q-td>
-          <q-td key="etapa_c" :props="propsTable">
-            <div class="column">
-              <div>
-                <q-badge
-                  :color="setEtapaColor(propsTable.row.etapa_c)"
-                  :label="propsTable.row.etapa_c"
-                />
-              </div>
-              <span class="text-caption">
-                <span class="text-weight-bold">Estado:</span>
-                {{ propsTable.row.estado_c }}
-              </span>
-              <span class="text-caption">{{
-                (propsTable.row.fecha_creacion &&
-                  propsTable.row.fecha_creacion.substring(0, 10)) ||
-                propsTable.row?.date_added
-              }}</span>
-            </div>
-          </q-td>
-
           <q-td key="tipo_tramite_c" :props="propsTable">
-            {{ propsTable.row.tipo_tramite_c }}
+            <span>{{ propsTable.row.tipo_tramite_c }}</span>
           </q-td>
-          <q-td key="solicitante" :props="propsTable">
-            <div class="row items-center">
-              <div class="col-1">
-                <q-avatar
-                  size="24px"
-                  font-size="24px"
-                  color="primary"
-                  text-color="white"
-                  icon="person"
-                />
-              </div>
-              <div class="column q-pl-sm ellipsis col-11">
-                <span class="ellipsis-item">
-                  {{ propsTable.row.solicitante }}
-                </span>
-                <span class="ellipsis-item text-grey">
-                  {{ propsTable.row.cargo }}
-                </span>
-              </div>
+          <q-td key="profesional_acreditado" :props="propsTable">
+            <div
+              style="
+                max-width: 150px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              "
+              class="row"
+            >
+            <div class="col-3">
+              <q-avatar
+                class="q-mr-sm"
+                size="sm"
+                color="primary"
+                text-color="white"
+                icon="person"
+              />
             </div>
-          </q-td>
-          <q-td key="producto_c" :props="propsTable">
-            <div class="column">
-              <span>
-                {{ propsTable.row.producto_c }}
-              </span>
-              <span class="text-caption"
-                ><span class="text-weight-bold">Fabricante</span>
-                {{ propsTable.row.fabricante_c }}</span
-              >
+            <div class="col-9">
+              <span>{{ propsTable.row.profesional_acreditado }}</span>
+              <br />
+              <span class="text-caption">{{propsTable.row.cargo}}</span>
+            </div>
+              
             </div>
           </q-td>
           <q-td key="tipo_producto_c" :props="propsTable">
-            <q-badge
+            <div class="row">
+              <q-chip dense square outline color="positive" text-color="white">
+                {{ propsTable.row.tipo_producto_c }}
+              </q-chip>
+            </div>
+          </q-td>
+          <q-td key="etapa_c" :props="propsTable">
+            <q-chip
+              v-if="propsTable.row.etapa_c"
+              dense
+              square
               outline
-              :color="setTipoColor(propsTable.row.tipo_producto_c)"
-              >{{ propsTable.row.tipo_producto_c }}</q-badge
+              color="positive"
+              text-color="white"
             >
-            <br />
-            <span class="text-caption"
-              ><span class="text-weight-bold">Cant. de requisitos:</span>
-              10</span
-            >
+              {{ propsTable.row.etapa_c }}
+            </q-chip>
+          </q-td>
+          <q-td key="estado_c" :props="propsTable">
+            <span>{{ propsTable.row.estado_c }}</span>
+          </q-td>
+          <q-td
+            v-if="propsTable.row.fecha_creacion"
+            key="fecha_creacion"
+            :props="propsTable"
+          >
+            <span>{{propsTable.row.fecha_creacion}}</span>
           </q-td>
           <q-td key="cumplimiento_req" :props="propsTable">
-            <span class="text-weight-bold">100 %</span>
+            <span> 30 %</span>
           </q-td>
-          <q-td key="id" :props="propsTable">
-            <div class="column">
-              <span>
-                <span class="text-weight-bold">Cod Misa:</span>
-                {{ propsTable.row.cod_misa_c }}
-              </span>
-              <span>
-                <span class="text-weight-bold">Nro de Ruta:</span>
-                {{ propsTable.row.nro_ruta_c }}
-              </span>
+          <q-td key="producto_c" :props="propsTable">
+            <div class="row flex-center">
+              <span>{{ propsTable.row.producto_c }}</span>
+              <div>
+                <span class="text-bold">Fabricante: </span>
+                {{ propsTable.row.proveedor }}
+              </div>
             </div>
-            <q-badge dark color="green" class="q-px-md"
-              ><span class="text-weight-bold q-mr-sm">Nro. Cert.</span
-              >{{ propsTable.row.nro_cert }}</q-badge
-            >
+          </q-td>
+          <q-td key="nro_solicitud" :props="propsTable">
+            <span class="text-primary text-weight-bold">{{ propsTable.row.nro_solicitud }}</span>
+          </q-td>
+          <q-td key="options" :props="propsTable">
+            <q-btn color="primary" icon="more_vert" round outline size="sm">
+              <q-menu auto-close :offset="[110, 0]">
+                <q-list dense>
+                  <q-item clickable>
+                    <div class="row items-center">
+                      <q-icon name="remove" class="q-mr-sm" />
+                      <q-item-section>Eliminar</q-item-section>
+                    </div>
+                  </q-item>
+                  <q-item clickable>
+                    <div class="row items-center">
+                      <q-icon name="info" class="q-mr-sm" />
+                      <q-item-section>Ver</q-item-section>
+                    </div>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
           </q-td>
         </q-tr>
       </template>
@@ -246,7 +255,7 @@ const openItemSelected = (id: string, title: string) => {
             <!-- <q-btn icon="more_vert" dense flat size="sm" /> -->
           </q-card-section>
           <q-separator />
-          <q-card-section horizontal>
+          <!--<q-card-section horizontal>
             <q-card-section class="card-info row q-pa-sm">
               <div class="text-grey-9 col-12">
                 <small class="text-grey-6"> Cuenta</small> <br />
@@ -279,8 +288,9 @@ const openItemSelected = (id: string, title: string) => {
                 <span>
                   <q-icon name="priority_high" size="50px" color="grey-5" />
                 </span>
-              </q-circular-progress>
-              <!-- <q-circular-progress
+              </q-circular-progress>-->
+
+             <!--<q-circular-progress
                 show-value
                 font-size="15px"
                 :value="propsTable.row.salud ?? 0"
@@ -307,7 +317,7 @@ const openItemSelected = (id: string, title: string) => {
                   </small>
                 </q-badge>
               </div> -->
-            </q-card-section>
+            <!--</q-card-section>
           </q-card-section>
           <q-card-section class="flex justify-between q-pa-sm">
             <span class="text-grey-7">
@@ -320,7 +330,7 @@ const openItemSelected = (id: string, title: string) => {
               <q-icon name="event" size="sm" color="grey-7" />
               {{ propsTable.row.fecha_cierre }}
             </span>
-          </q-card-section>
+          </q-card-section>-->
         </q-card>
       </template>
       <template v-slot:buttons>

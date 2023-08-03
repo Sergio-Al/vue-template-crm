@@ -287,7 +287,8 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       phone_alternate: '',
       website: '',
       ownership: '',
-      user_id_c: userCRM.id,
+      user_id_c: '',
+      user_id: userCRM.id,
       assigned_user_id: '',
     };
   };

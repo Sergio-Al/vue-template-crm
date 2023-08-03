@@ -196,7 +196,6 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="user_id_c" :props="propsTable">
             <div
               style="
-                max-width: 100px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;

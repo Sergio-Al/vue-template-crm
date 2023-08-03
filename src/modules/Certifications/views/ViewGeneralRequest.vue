@@ -5,6 +5,9 @@ import CardApplicant from '../components/Cards/CardApplicant.vue';
 import type { CertificationRequest } from '../utils/types';
 import CardProduct from '../components/Cards/CardProduct.vue';
 import AssignedSingleUser2 from 'src/components/AssignedUsers/AssignedSingleUser2.vue';
+
+import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
+
 import { userStore } from 'src/modules/Users/store/UserStore';
 import CommentsList from 'src/components/Comments/CommentsList.vue';
 import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
@@ -104,15 +107,21 @@ const onSubmit = () => {
           </div>
         </div>
         <div class="col-12 col-md-6">
-          <AssignedSingleUser2
+          <!--<AssignedSingleUser2
             ref="assignedSingleUserRef"
-            :module="'HANCE_Certificaciones'"
+            :module="'HANCE_SolicitudCertificacion'"
             :module-id="props.data?.assigned_user_id || ''"
             :withList="false"
             @changeUser="onChangeUserAssigned"
+          />-->
+          <AssignedUser
+             ref="assignedSingleUserRef"
+            :module="'HANCE_SolicitudCertificacion'"
+            :module-id="props.data?.assigned_user_id || ''"
+            @changeUser="onChangeUserAssigned"
           />
           <q-separator inset></q-separator>
-          <div class="row">
+          <div class="row q-mt-md">
             <div class="q-gutter-y-md col-12">
               <q-card>
                 <q-card-section style="padding: 0px">

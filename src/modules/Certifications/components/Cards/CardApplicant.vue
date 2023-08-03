@@ -108,7 +108,6 @@ onMounted(async () => {
     if (!!props.id) {
       const response:any = await getUser(inputData.value.user_id_c);
       users.value = [response[0]];
-
     }
     // const response = await getUser(inputData.value.user_id_c);
     //   console.log(response);

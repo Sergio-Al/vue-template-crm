@@ -31,6 +31,7 @@ import {
   manufacturerFiltered,
   productsFiltered,
   certificationsRequestPromise,
+  certificationsPromise,
 } from '../utils/dummyData';
 
 const { userCRM } = userStore();
@@ -60,14 +61,18 @@ export const deleteMassiveData = async (data: any) => {
 
 export const getTableData = async (params: Params) => {
   try {
+    console.log(params);
     // DEV-1 request
     // const { data } = await axios_NS_07.get('/certification-request');
     // console.log(data);
-    // return data;
+    // return data
+    
+    //return await certificationsPromise();
 
     //return certicationsList;
+
     const { data } = await axios_NS_07.get(
-      `/certificacion?params=${JSON.stringify(params)}`
+      `/certificacion/advanced?params=${JSON.stringify(params)}`
     );
     //console.log(data);
     return data;

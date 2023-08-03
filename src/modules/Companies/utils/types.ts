@@ -240,12 +240,14 @@ export interface ChildCompany {
 
 export interface User {
   id?: string;
-  first_name: string;
-  last_name: string;
-  iddivision_c: string;
-  idregional_c: string;
-  idamercado_c: string;
-  id_empresa_c: string;
+  first_name?: string;
+  last_name?: string;
+  fullname:string;
+  iddivision_c?: string;
+  idregional_c?: string;
+  idamercado_c?: string;
+  id_empresa_c?: string;
+  email_address?:string;
 }
 
 export interface CompanyDocument {

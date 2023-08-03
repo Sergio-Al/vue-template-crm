@@ -54,14 +54,6 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           visible: true,
         },
         {
-          name: 'etapa_c',
-          align: 'center',
-          label: 'Etapa',
-          field: 'etapa_c',
-          sortable: true,
-          visible: true,
-        },
-        {
           name: 'tipo_tramite_c',
           align: 'left',
           label: 'Tipo de tramite',
@@ -70,68 +62,115 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           visible: true,
         },
         {
-          name: 'solicitante',
+          name: 'profesional_acreditado',
           align: 'left',
-          label: 'Solicitante',
-          field: 'solicitante',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'producto_c',
-          align: 'left',
-          label: 'Producto',
-          field: 'producto_c',
+          label: 'Profesional acreditado',
+          field: 'profesional_acreditado',
           sortable: true,
           visible: true,
         },
         {
           name: 'tipo_producto_c',
-          align: 'center',
-          label: 'Tipo de producto',
+          align: 'left',
+          label: 'Tipo de Producto',
           field: 'tipo_producto_c',
+          sortable: true,
+          visible: true,
+        },
+        {
+          name: 'etapa_c',
+          align: 'left',
+          label: 'Etapa',
+          field: 'etapa_c',
+          sortable: true,
+          visible: true,
+        },
+        {
+          name: 'estado_c',
+          align: 'center',
+          label: 'Estado',
+          field: 'estado_c',
+          sortable: true,
+          visible: true,
+        },
+        {
+          name: 'fecha_creacion',
+          align: 'center',
+          label: 'Fecha de Creación',
+          field: 'fecha_creacion',
           sortable: true,
           visible: true,
         },
         {
           name: 'cumplimiento_req',
           align: 'center',
-          label: 'Cumplimiento de Requisitos',
+          label: 'Cumplimiento de requisitos',
           field: 'cumplimiento_req',
           sortable: true,
           visible: true,
         },
         {
-          name: 'id',
+          name: 'producto_c',
           align: 'center',
-          label: 'Certificación',
-          field: 'id',
+          label: 'Producto',
+          field: 'producto_c',
+          sortable: true,
+          visible: true,
+        },
+        {
+          name: 'proveedor',
+          align: 'center',
+          label: 'Producto',
+          field: 'proveedor',
+          sortable: true,
+          visible: true,
+        },
+        {
+          name: 'nro_solicitud',
+          align: 'center',
+          label: 'Nro. solicitud',
+          field: 'nro_solicitud',
+          sortable: true,
+          visible: true,
+        },
+        {
+          name: 'options',
+          align: 'center',
+          label: 'Acciones',
+          field: 'options',
           sortable: true,
           visible: true,
         },
       ],
     },
     visible_fields: [
-      'name',
-      'etapa_c',
-      'tipo_tramite_c',
-      'producto_c',
-      'solicitante',
-      'tipo_producto_c',
-      'fabricante_c',
-      'cumplimiento_req',
       'id',
+      'name',
+      'tipo_tramite_c',
+      'profesional_acreditado',
+      'tipo_producto_c',
+      'etapa_c',
+      'estado_c',
+      'fecha_creacion',
+      'cumplimiento_req',
+      'producto_c',
+      'nro_solicitud',
+      'id_solicitud',
+      'proveedor'
     ],
     visible_columns: [
       'name',
-      'etapa_c',
       'tipo_tramite_c',
-      'producto_c',
-      'solicitante',
+      'profesional_acreditado',
       'tipo_producto_c',
-      'fabricante_c',
+      'etapa_c',
+      'estado_c',
+      'producto_c',
+      'fecha_creacion',
+      'nro_solicitud',
       'cumplimiento_req',
-      'id',
+      'nro_solicitud',
+      'options',
     ],
   }),
   actions: {
@@ -161,7 +200,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
       filter: Filter;
     }) {
       try {
-        this.loading = true;
+        //this.loading = true;
         const { pagination, filter } = props;
         const { page, rowsPerPage, sortBy, descending } = pagination;
         const params = {
@@ -172,9 +211,10 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           filter: filter,
         };
         const data = await getTableData(params);
-        console.log(data)
+        console.log(data);
         this.data_table.rows = data;
         this.pagination.rowsNumber = data.length;
+        //this.loading = false;
       } catch (error) {
         console.log(error);
       } finally {

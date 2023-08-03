@@ -27,6 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
   child: false,
 });
 const emits = defineEmits<Emits>();
+const exist_delegate = ref(true);
 
 const companyStore = useCompaniesStore();
 //const childCompanyStore = useChildCompaniesStore();
@@ -39,11 +40,14 @@ const userSelected = ref<User | null>(null);
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 
 const assignInfo = (id: string) => {
-  //console.log(id);
+  console.log(id);
   if (!!users.value) {
     const userToSelect = users.value.find((user) => user.id === id) as User;
     userSelected.value = userToSelect;
+    delegate.value = id;
+    console.log(delegate.value);
   }
+  
 };
 
 const filterFn = async (
@@ -77,12 +81,26 @@ const abortFilterFn = () => {
 //   }
 // };
 
-const assignUser = async (id: string) => {
-  const user = await getUser(id);
-  // user.fullname = user.nombres + ' ' + user.apellidos;
-  // console.log(user);
-  userSelected.value = user;
+const assignUser = async (idUser: string) => {
+  // const user = await getUser(idUser);
 
+  // const {id, fullname} = user;
+
+  //  const response:any = [{id, fullname}];
+
+  //  users.value = [response[0]];
+  //  console.log(users.value);
+
+   const response:any = await getUser(idUser);
+   
+   console.log(response);
+   users.value = [response];
+   console.log(users.value);
+      
+  // // user.fullname = user.nombres + ' ' + user.apellidos;
+  // // console.log(user);
+
+  userSelected.value = {fullname:response.fullname, email_address:response.email_address};
 };
 
 const assignDefaultUsers = async () => {
@@ -94,6 +112,7 @@ const assignDefaultUsers = async () => {
   if (!!props.id) {
     defaultUsers.value = await companyStore.onGetCompanyUsers(props.id, '');
     users.value = defaultUsers.value;
+    return;
   }
 };
 
@@ -102,10 +121,27 @@ const restoreValues = () => {
 };
 
 onMounted(async () => {
-  if (props.userId) {
-    assignUser(props.userId);
+  if(props.id){
+    if(props.userId){
+      assignUser(props.userId);
+      exist_delegate.value = true;
+    }
+    else{
+      await assignDefaultUsers();
+      const long_array:any = users.value?.length;
+      if(long_array > 0){
+        exist_delegate.value = true;
+        assignDefaultUsers();
+      }
+      else{
+        exist_delegate.value = false;
+      }
+    }
   }
-  assignDefaultUsers();
+  else{
+    exist_delegate.value = false;
+  }
+
 });
 
 defineExpose({
@@ -169,14 +205,14 @@ defineExpose({
           @blur="assignDefaultUsers"
           @filter="filterFn"
           @filter-abort="abortFilterFn"
-          :hint="!props.id ? '' : 'Seleccione el usuario'"
+          :hint="!props.userId ? '' : 'Seleccione el usuario'"
           emit-value
           map-options
           option-label="fullname"
           option-value="id"
           v-model="delegate"
           outlined
-          :disable="!props.id"
+          :disable="!exist_delegate"
           dense
           hide-dropdown-icon
           use-chips
@@ -217,7 +253,7 @@ defineExpose({
           </template>
         </q-select>
       </q-card-section>
-      <q-card-section v-if="!!props.userId || !!delegate">
+      <q-card-section v-if="!!delegate">
         <q-card class="my-card" flat bordered>
           <q-card-section horizontal>
             <q-card-section class="q-pt-xs">
