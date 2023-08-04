@@ -77,6 +77,7 @@ const setEtapaColor = (etapa: string): string => {
   const colorMap: { [key: string]: string } = {
     Nueva: 'orange',
     Revisión: 'blue',
+    'Enviada a Misa': 'info',
     Finalizada: 'green',
   };
 
@@ -84,11 +85,12 @@ const setEtapaColor = (etapa: string): string => {
 };
 
 const setTipoColor = (tipo: string): string => {
+  console.log(tipo);
   const colorMap: { [key: string]: string } = {
-    DISPOSITIVO: 'green',
-    EQUIPO: 'blue',
-    MEDICAMENTO: 'orange',
-    COSMÉTICO: 'purple',
+    dispositivo: 'blue',
+    equipo: 'purple',
+    medicamento: 'green',
+    cosmetico: 'black',
   };
 
   return colorMap[tipo] || 'grey';
@@ -172,26 +174,30 @@ const openItemSelected = (id: string, title: string) => {
             </div>
           </q-td>
           <q-td key="tipo_producto_c" :props="propsTable">
-            <div class="row">
-              <q-chip dense square outline color="positive" text-color="white">
-                {{ propsTable.row.tipo_producto_c }}
+            <div class="row flex-center">
+              <q-chip dense square outline :color="setTipoColor(propsTable.row.tipo_producto_c)">
+                {{ propsTable.row.tipo_producto_c.toUpperCase() }}
               </q-chip>
+              <span class="text-caption">Cant. de Requisitos <span class="text-weight-bold">10</span></span>
             </div>
           </q-td>
           <q-td key="etapa_c" :props="propsTable">
-            <q-chip
-              v-if="propsTable.row.etapa_c"
-              dense
-              square
-              outline
-              color="positive"
-              text-color="white"
-            >
-              {{ propsTable.row.etapa_c }}
-            </q-chip>
+            <div class="row flex-center">
+              <q-chip
+                v-if="propsTable.row.etapa_c"
+                dense
+                square
+                outline
+                :color="setEtapaColor(propsTable.row.etapa_c)"
+                text-color="white"
+              >
+                {{ propsTable.row.etapa_c.toUpperCase() }}
+              </q-chip>
+              </div>
           </q-td>
           <q-td key="estado_c" :props="propsTable">
             <span>{{ propsTable.row.estado_c }}</span>
+            <div class="text-caption"><span class="text-weight-bold">Fecha de Actualización:</span>{{ propsTable.row.fecha_actualizacion_estado }}</div>
           </q-td>
           <q-td
             v-if="propsTable.row.fecha_creacion"
@@ -206,14 +212,24 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="producto_c" :props="propsTable">
             <div class="row flex-center">
               <span>{{ propsTable.row.producto_c }}</span>
-              <div>
+              <div class="text-caption">
                 <span class="text-bold">Fabricante: </span>
                 {{ propsTable.row.proveedor }}
               </div>
             </div>
           </q-td>
           <q-td key="nro_solicitud" :props="propsTable">
-            <span class="text-primary text-weight-bold">{{ propsTable.row.nro_solicitud }}</span>
+            <span v-if="propsTable.row.nro_solicitud" class="text-primary text-weight-bold">{{ propsTable.row.nro_solicitud }}</span>
+            <span v-else class="text-grey">En espera</span>
+          </q-td>
+          <q-td key="certificacion" :props="propsTable">
+            <div class="row flex-center">
+              <q-badge v-if="propsTable.row.nro_cert_c" rounded color="info" class="q-py-sm q-px-md cursor">
+                <q-icon  class="q-mr-sm text-h6" name="text_snippet"></q-icon>
+                {{propsTable.row.nro_cert_c}}
+              </q-badge>
+              <span v-else class="text-grey">En espera</span>
+            </div>
           </q-td>
           <q-td key="options" :props="propsTable">
             <q-btn color="primary" icon="more_vert" round outline size="sm">

@@ -55,7 +55,7 @@ export const useCertificationRequestTableStore = defineStore(
         {
           name: 'name',
           align: 'left',
-          label: 'Nro',
+          label: 'Nro. Solicitud',
           field: 'name',
           sortable: true,
           visible: true,
@@ -111,7 +111,7 @@ export const useCertificationRequestTableStore = defineStore(
         {
           name: 'nro_certificacion',
           align: 'center',
-          label: 'Certificacion',
+          label: 'Nro. Reg. Certificación',
           field: 'nro_certificacion',
           sortable: true,
           visible: true,
