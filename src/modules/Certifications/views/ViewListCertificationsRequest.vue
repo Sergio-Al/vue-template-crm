@@ -17,6 +17,9 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const tab = ref('');
+const state = ref('');
+
 // const table = useCertificationRequestTableStore();
 // const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
 //   useCertificationsTableStore();
@@ -153,7 +156,25 @@ const openItemSelected = (id: string, title: string) => {
 </script>
 
 <template>
-  <div :class="$q.platform.is.desktop ? 'q-pa-md' : 'q-pa-sm'">
+  
+  <div :class="$q.platform.is.desktop ? 'q-pa-md q-pt-lg' : 'q-pa-sm q-pt-lg'">
+        <q-card>
+          <q-tabs
+          v-model="tab"
+          align="justify"
+          dense
+          class="text-grey-7"
+          active-color="primary"
+          indicator-color="orange"
+          >
+            <q-tab name="" label="TODAS" />
+            <q-tab name="pending" label="PENDIENTE" />
+            <q-tab name="approved" label="APROBADA" />
+            <q-tab name="observed" label="OBSERVADA" />
+            <q-tab name="rejected" label="RECHAZADA" />
+          </q-tabs>
+        </q-card>
+
     <table-component
       :rows="data_table.rows"
       :columns="data_table.columns"
@@ -177,6 +198,7 @@ const openItemSelected = (id: string, title: string) => {
       @openDialog="openDialog"
       v-if="true"
     >
+
       <template #rows="{ propsTable }">
         <q-tr :props="propsTable">
           <q-td class="text-left">
@@ -237,11 +259,12 @@ const openItemSelected = (id: string, title: string) => {
               size="md"
               text-color="white"
             >
-              {{ propsTable.row.state_aprobacion }}
+              {{ propsTable.row.state_aprobacion.toUpperCase() }}
             </q-chip>
           </q-td>
           <q-td key="nro_certificacion" :props="propsTable">
-            <span class="text-weight-bold text-primary">{{ propsTable.row.nro_certificacion }}</span>
+            <span v-if="propsTable.row.nro_certificacion" class="text-weight-bold text-primary">{{ propsTable.row.nro_certificacion }}</span>
+            <span v-else class="text-grey">En espera</span>
           </q-td>
           <q-td key="options" :props="propsTable">
             <q-btn color="primary" icon="more_vert" round outline size="sm">

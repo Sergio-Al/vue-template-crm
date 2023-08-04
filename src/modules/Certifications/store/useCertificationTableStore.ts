@@ -48,7 +48,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         {
           name: 'name',
           align: 'left',
-          label: 'Nro de solicitud',
+          label: 'Nro de Registro',
           field: 'name',
           sortable: true,
           visible: true,
@@ -134,6 +134,14 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           visible: true,
         },
         {
+          name: 'certificacion',
+          align: 'center',
+          label: 'Certificación Emitida',
+          field: 'certificacion',
+          sortable: true,
+          visible: true,
+        },
+        {
           name: 'options',
           align: 'center',
           label: 'Acciones',
@@ -170,6 +178,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
       'nro_solicitud',
       'cumplimiento_req',
       'nro_solicitud',
+      'certificacion',
       'options',
     ],
   }),
