@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import CardManufacturerData from '../components/Cards/CardManufacturerData.vue';
 import CardManufacturerDocs from '../components/Cards/CardManufacturerDocs.vue';
+import DirectionCard from 'src/components/MainCard/DirectionCard.vue';
+import { CertificacionBody } from '../utils/types';
 
 interface Props {
   id?: string;
@@ -9,13 +11,30 @@ interface Props {
 
 interface Emits {
   (e: 'updateView', value: string): void;
+  (e: 'create'): void;
 }
 
 const props = withDefaults(defineProps<Props>(), { id: '' });
 const emits = defineEmits<Emits>();
 
+const cardManufacturerDataRef = ref<InstanceType<
+  typeof CardManufacturerData
+> | null>(null);
+const directionCardComponentRef = ref<InstanceType<
+  typeof DirectionCard
+> | null>(null);
+
 onMounted(() => {
   emits('updateView', 'ManufacturerData');
+});
+
+defineExpose({
+  exposeData: (): Partial<CertificacionBody> => ({
+    ...cardManufacturerDataRef.value?.exposeData(),
+    billing_address_street:
+      directionCardComponentRef.value?.captureCurrentData()
+        .address_street_generated_c,
+  }),
 });
 </script>
 <template>
@@ -24,7 +43,11 @@ onMounted(() => {
       <div class="row q-col-gutter-lg q-pa-md">
         <div class="col-xs-12 col-sm-12 col-md-6">
           <div class="row q-gutter-y-md">
-            <CardManufacturerData :id="props.id" class="col-12" />
+            <CardManufacturerData
+              ref="cardManufacturerDataRef"
+              :id="props.id"
+              class="col-12"
+            />
             <direction-card-component
               ref="directionCardComponentRef"
               hide-extra-banner
@@ -52,7 +75,7 @@ onMounted(() => {
         :class="$q.dark.isActive ? 'bg-dark' : 'bg-grey-4'"
       >
         <q-toolbar class="justify-center">
-          <q-btn color="primary" class="q-mr-md" @click="() => {}">
+          <q-btn color="primary" class="q-mr-md" @click="emits('create')">
             Finalizar
           </q-btn>
         </q-toolbar>

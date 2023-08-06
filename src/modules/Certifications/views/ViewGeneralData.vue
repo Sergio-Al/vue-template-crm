@@ -1,25 +1,47 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import CardGeneralData from '../components/Cards/CardGeneralData.vue';
 import CardProcedureType from '../components/Cards/CardProcedureType.vue';
 import CardProductType from '../components/Cards/CardProductType.vue';
 
-import AssignedSingleUser2 from 'src/components/AssignedUsers/AssignedSingleUser2.vue';
 import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
+import { CertificacionBody } from '../utils/types';
 
 interface Props {
   id?: string;
+  data: CertificacionBody;
 }
 
 interface Emits {
-  (e: 'updateView', value: string): void;
+  (e: 'create', value: Partial<CertificacionBody>): void;
+  (e: 'update', value: Partial<CertificacionBody>): void;
 }
+
+const cardGeneralDataRef = ref<InstanceType<typeof CardGeneralData> | null>(
+  null
+);
+const cardProcedureTypeRef = ref<InstanceType<typeof CardProcedureType> | null>(
+  null
+);
+const cardProductTypeRef = ref<InstanceType<typeof CardProductType> | null>(
+  null
+);
+const assignedSingleUserRef = ref<InstanceType<typeof AssignedUser> | null>(
+  null
+);
 
 const props = withDefaults(defineProps<Props>(), { id: '' });
 const emits = defineEmits<Emits>();
 
-onMounted(() => {
-  emits('updateView', 'GeneralData');
+// onMounted(() => {});
+
+defineExpose({
+  exposeData: (): Partial<CertificacionBody> => ({
+    ...cardGeneralDataRef.value?.exposeData(),
+    tipo_tramite_c: cardProcedureTypeRef.value?.exposeData(),
+    tipo_producto_c: cardProductTypeRef.value?.exposeData(),
+    assigned_user_id: assignedSingleUserRef.value?.assignedUser.id || '',
+  }),
 });
 </script>
 <template>
@@ -28,9 +50,22 @@ onMounted(() => {
       <div class="row q-col-gutter-lg q-pa-md">
         <div class="col-xs-12 col-sm-12 col-md-6">
           <div class="row q-gutter-y-md">
-            <CardGeneralData :id="props.id" class="col-12" />
-            <CardProcedureType class="col-12" />
-            <CardProductType class="col-12" />
+            <CardGeneralData
+              ref="cardGeneralDataRef"
+              :id="props.id"
+              :data="props.data"
+              class="col-12"
+            />
+            <CardProcedureType
+              ref="cardProcedureTypeRef"
+              class="col-12"
+              :data="props.data"
+            />
+            <CardProductType
+              ref="cardProductTypeRef"
+              class="col-12"
+              :data="props.data"
+            />
           </div>
         </div>
         <div class="col-12 col-md-6">
@@ -42,7 +77,9 @@ onMounted(() => {
             @changeUser="() => {}"
           />-->
           <AssignedUser
-             ref="assignedSingleUserRef"
+            title="Profesional Acreditado"
+            hide-chip
+            ref="assignedSingleUserRef"
             :module="'HANCE_Certificacion'"
             :module-id="''"
             @changeUser="() => {}"

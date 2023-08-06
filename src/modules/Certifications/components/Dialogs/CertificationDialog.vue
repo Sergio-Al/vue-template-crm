@@ -9,69 +9,68 @@ import ViewGeneral from '../../views/ViewGeneral.vue';
 import ViewGeneralData from '../../views/ViewGeneralData.vue';
 import ViewDataManufacturer from '../../views/ViewDataManufacturer.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
-import { Certification } from '../../utils/types';
-import { getCertificationRequest } from '../../services/useCertificationsService';
+import { CertificacionBody, Certification } from '../../utils/types';
+import {
+  getCertificationRequest,
+  createCertificationService,
+} from '../../services/useCertificationsService';
+import { useAsyncState } from '@vueuse/core';
+import { useQuasar } from 'quasar';
 </script>
 
 <script lang="ts" setup>
+interface Emits {
+  (e: 'udpate'): void;
+}
+
+const emits = defineEmits<Emits>();
 //* variables
 const tabsDefinition = [
   {
     name: 'dataGeneral',
-    component: ViewGeneralData,
     label: 'Información General',
     enabledForCreation: true,
   },
   {
     name: 'dataManufacturer',
-    component: ViewDataManufacturer,
     label: 'Fabricante',
     enabledForCreation: false,
   },
 ];
 
+const $q = useQuasar();
 const showCloseAlert = ref(false);
 const activeTab = ref('dataGeneral');
 const certificationStore = useCertificationStore();
-const certificationTableStore = useCertificationsTableStore();
 
-//* Composable values
-const {
-  id,
-  open,
-  titleDialog,
-  iconDialog,
-  activeTabName,
-  activeTabComponent,
-  swapCurrentTab,
-  openDialogTab,
-  resetValues,
-} = useDialogTabs(tabsDefinition, {
-  titleDialog: 'Solicitud de Certificación',
-  iconDialog: 'pen',
-});
+const titleDialog = ref('Certificación');
+const open = ref(false);
+const localId = ref('');
 
-const certificationData = ref({} as Certification);
-const loadingInfo = ref(false);
-const currentView = ref('');
+const openDialogTab = (id?: string, data?: Partial<CertificacionBody>) => {
+  if (!!id) {
+    localId.value = id;
+    getCertification();
+  }
+
+  if (!!data) {
+    certificationData.value = data;
+  }
+  open.value = true;
+};
+
 //* reference variables
-const generalFormRef = ref<InstanceType<typeof ViewGeneral> | null>(null);
+const generalFormRef = ref<InstanceType<typeof ViewGeneralData> | null>(null);
+const dataManufacturerRef = ref<InstanceType<
+  typeof ViewDataManufacturer
+> | null>(null);
 //* computed variables
-const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
+// const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
 //* methods
 const clearData = () => {
   console.log('cleaning data');
-  id.value = '';
+  localId.value = '';
   certificationStore.clearData();
-  resetValues();
-};
-
-const saveCurrentForm = async () => {
-  try {
-    await generalFormRef.value?.onSubmit();
-  } catch (error) {
-    Notification('negative', 'Error al guardar', '');
-  }
 };
 
 const onCloseDialog = () => {
@@ -79,43 +78,44 @@ const onCloseDialog = () => {
   open.value = false;
 };
 
-const updateData = (idValue: string) => {
-  certificationTableStore.reloadList();
-  id.value = idValue;
-  titleDialog.value = 'Detalles';
+const createCertification = async () => {
+  const body: Partial<CertificacionBody> = {
+    ...generalFormRef.value?.exposeData(),
+    ...dataManufacturerRef.value?.exposeData(),
+  };
+
+  try {
+    $q.loading.show({
+      message: 'Guardando datos',
+    });
+    await createCertificationService(body);
+  } catch (error) {
+    $q.notify({
+      type: 'negative',
+      message: 'Error al crear la certificación',
+    });
+  } finally {
+    $q.loading.hide();
+  }
 };
 
-const assignCurrentView = (page: string) => {
-  currentView.value = page;
+const updateCertification = (data: Partial<CertificacionBody>) => {
+  console.log(data);
 };
 
-watch(id, async (id: string) => {
-  if (!id) {
-    try {
-      loadingInfo.value = true;
-      const response = await getCertificationRequest(id);
-      console.log(response);
-      certificationData.value = response;
-    } catch (error) {
-    } finally {
-      loadingInfo.value = false;
-    }
-  }
-});
-
-onMounted(async () => {
-  if (!id.value) {
-    try {
-      loadingInfo.value = true;
-      const response = await getCertificationRequest(id.value);
-      console.log(response);
-      certificationData.value = response;
-    } catch (error) {
-    } finally {
-      loadingInfo.value = false;
-    }
-  }
-});
+const {
+  state: certificationData,
+  isLoading,
+  execute: getCertification,
+} = useAsyncState(
+  async () => {
+    return await getCertificationRequest(localId.value);
+  },
+  {
+    iddivision_c: '04',
+  } as CertificacionBody,
+  { immediate: false }
+);
 
 defineExpose({
   clearData,
@@ -129,7 +129,7 @@ defineExpose({
     v-model="open"
     :footerDisabled="true"
     :headerDisabled="false"
-    :iconDialog="iconDialog"
+    :iconDialog="'mail'"
     :persistent="false"
     @before-hide="clearData"
   >
@@ -177,7 +177,6 @@ defineExpose({
 
       <q-tabs
         v-model="activeTab"
-        @update:modelValue="swapCurrentTab"
         inline-label
         mobile-arrows
         :class="
@@ -209,17 +208,21 @@ defineExpose({
         :class="$q.platform.is.mobile ? 'q-pa-none' : 'q-pa-none'"
         style="margin-top: -50px"
       >
-        <!-- <ViewGeneralSkeleton /> -->
-        <q-tab-panels v-model="activeTab" animated>
+        <ViewGeneralSkeleton v-if="isLoading" />
+        <q-tab-panels v-model="activeTab" animated keep-alive>
           <q-tab-panel name="dataGeneral">
             <ViewGeneralData
-              @submitComplete="updateData"
-              @update-view="assignCurrentView"
+              :data="certificationData"
+              @create="createCertification"
+              @update="updateCertification"
               ref="generalFormRef"
             />
           </q-tab-panel>
           <q-tab-panel name="dataManufacturer">
-            <ViewDataManufacturer />
+            <ViewDataManufacturer
+              ref="dataManufacturerRef"
+              @create="createCertification"
+            />
           </q-tab-panel>
         </q-tab-panels>
         <!-- <component

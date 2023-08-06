@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { CertificacionBody } from '../../utils/types';
+
+interface Props {
+  data: CertificacionBody;
+}
+
+const props = defineProps<Props>();
 
 const productTypes = [
   {
@@ -40,7 +47,11 @@ const productTypes = [
   },
 ];
 
-const value = ref<string>('cyan');
+const value = ref<string>(props.data.tipo_tramite_c || '');
+
+defineExpose({
+  exposeData: (): string => value.value,
+});
 </script>
 
 <template>

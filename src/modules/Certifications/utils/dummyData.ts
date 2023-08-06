@@ -1,12 +1,15 @@
 import { axios_NS_07 } from 'src/conections/axiosCRM';
 //import { CertificationMain } from './dummyData';
 import {
+  CertificacionBody,
   Certification,
   CertificationModel,
   CertificationRequest,
+  EmpresaParticipacion,
   Manufacturer,
   Product,
 } from './types';
+import { SearchUser } from 'src/components/types';
 
 export const amercado = [
   {
@@ -624,6 +627,25 @@ export const productData = (): Product => {
 
 export const CertificationMain = [
   {
+    id: 'e5878814-d3c9-3334-f72b-64b19395a007',
+    name: '5002/2023',
+    tipo_tramite_c: 'Inscripción',
+    profesional_acreditado: 'Gabriela Pamela Loza Carrasco',
+    cargo: 'Ejecutivo de Ventas',
+    tipo_producto_c: 'dispositivo',
+    etapa_c: 'Enviada a Misa',
+    estado_c: 'Observada',
+    fecha_creacion: '14/07/2023',
+    producto_c: 'tomografo',
+    id_proveedor: '8AF31262-4956-41E7-ADB0-ED0B5F7219E',
+    proveedor: 'DRAGER CHILE LIMITADA',
+    id_solicitud: '4ae1b2f1-f632-7329-3d02-64c96206d4b8',
+    nro_solicitud: '1007/2023',
+    cod_misa_c: 'Sin información',
+    nro_ruta_c: 'Sin información',
+    nro_cert_c: 'Sin información',
+  },
+  {
     name: '5001/2023',
     user_id_c: '1u',
     date_entered_c: '2023-07-31 00:00:00',
@@ -759,7 +781,7 @@ export const productPromise = (): Promise<Product> => {
 //   console.log(id);
 //   return new Promise(async (resolve) => {
 //     const { data } = await axios_NS_07.get(`/solicitud/${id}`);
-//     resolve(data); 
+//     resolve(data);
 //     // TODO: llamada a servicio
 //     // devolver con resolve
 
@@ -787,5 +809,108 @@ export const certificationsPromise = (): Promise<CertificationModel[]> => {
     setTimeout(() => {
       resolve(CertificationMain);
     }, 500);
+  });
+};
+
+export const getUsersPromise = (): Promise<SearchUser[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          module: 'Sales',
+          id: '1234',
+          date_entered: '2023-08-04',
+          fullname: 'John Doe',
+          email_address: 'john.doe@example.com',
+          phone: '555-123-4567',
+          email: '1',
+          whatsapp: '0',
+          title: 'Sales Representative',
+          primary_item: true,
+        },
+        {
+          module: 'Support',
+          id: '5678',
+          date_entered: '2023-08-04',
+          fullname: 'Jane Smith',
+          email_address: 'jane.smith@example.com',
+          phone: '555-987-6543',
+          email: '0',
+          whatsapp: '1',
+          title: 'Support Specialist',
+          primary_item: false,
+        },
+        // Add more dummy data objects as needed...
+      ]);
+    }, 500);
+  });
+};
+
+export const getEmpresaParticipacionPromise = (): Promise<
+  EmpresaParticipacion[]
+> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: '1',
+          name: 'ABC Company',
+          razon_social_c: 'Razón Social 1',
+          direccion_c: 'Address 1',
+          resolucion_ministerial_c: 'Resolución 1',
+        },
+        {
+          id: '2',
+          name: 'XYZ Corporation',
+          razon_social_c: 'Razón Social 2',
+          direccion_c: 'Address 2',
+          resolucion_ministerial_c: 'Resolución 2',
+        },
+        {
+          id: '3',
+          name: 'Sample Inc.',
+          razon_social_c: 'Razón Social 3',
+          direccion_c: 'Address 3',
+          resolucion_ministerial_c: 'Resolución 3',
+        },
+        // Add more dummy data objects as needed...
+      ]);
+    }, 500);
+  });
+};
+
+export const createCertificationPromise = (): Promise<CertificacionBody> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        id: 'ID_1',
+        assigned_user_id: '1',
+        billing_address_street: 'Street_1',
+        billing_address_country: 'Country_1',
+        cod_misa_c: 'CodMisa_1',
+        date_entered: '2023-08-06',
+        date_planning_cert_c: '2023-08-10',
+        date_real_cert_c: '2023-08-15',
+        date_register_misa_c: '2023-08-20',
+        email1: 'email_1@example.com',
+        estado_c: 'Estado_1',
+        etapa_c: 'Etapa_1',
+        hance_empresa_id_c: '1',
+        hance_proveedor_id_c: '1',
+        idamercado_c: 'IDMercado_1',
+        iddivision_c: 'IDDivision_1',
+        idgrupocliente_c: 'IDGrupoCliente_1',
+        idregional_c: 'IDRegional_1',
+        licence: 'Licence_1',
+        name: 'Name_1',
+        nro_cert_c: 'CertNumber_1',
+        nro_ruta_c: 'RutaNumber_1',
+        tipo_producto_c: 'TipoProducto_1',
+        tipo_tramite_c: 'TipoTramite_1',
+        phone_office: 'Phone_1',
+        user_id_c: 'Solicitante_1',
+        user_id_l_c: 'ProfesionalAcreditado_1',
+      });
+    }, 2000);
   });
 };
