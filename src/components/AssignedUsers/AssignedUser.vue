@@ -26,10 +26,14 @@ const props = withDefaults(
     moduleId?: string;
     defaultUserId?: string;
     autoUpdateDisabled?: boolean;
+    title?: string;
+    hideChip?: boolean;
   }>(),
   {
     type: 'single',
     autoUpdateDisabled: false,
+    title: 'Usuario Asignado',
+    hideChip: false,
   }
 );
 
@@ -220,9 +224,9 @@ defineExpose({
         <q-card-section class="full-width q-py-xs">
           <div class="row q-mt-sm flex justify-between">
             <span class="text-caption text-weight-medium">
-              Usuario Asignado
+              {{ props.title }}
             </span>
-            <div>
+            <div v-if="!props.hideChip">
               <q-chip
                 v-if="type === 'single'"
                 outline

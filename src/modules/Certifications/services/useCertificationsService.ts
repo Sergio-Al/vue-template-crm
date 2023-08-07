@@ -11,6 +11,7 @@ import type {
   Certification,
   CertificationDB,
   CertificationRequest,
+  CertificacionBody,
   Manufacturer,
   Params,
   Product,
@@ -32,6 +33,9 @@ import {
   productsFiltered,
   certificationsRequestPromise,
   certificationsPromise,
+  getUsersPromise,
+  getEmpresaParticipacionPromise,
+  createCertificationPromise,
 } from '../utils/dummyData';
 
 const { userCRM } = userStore();
@@ -66,10 +70,10 @@ export const getTableData = async (params: Params) => {
     // const { data } = await axios_NS_07.get('/certification-request');
     // console.log(data);
     // return data
-    
-    //return await certificationsPromise();
 
-    //return certicationsList;
+    return await certificationsPromise();
+
+    // return certicationsList;
 
     const { data } = await axios_NS_07.get(
       `/certificacion/advanced?params=${JSON.stringify(params)}`
@@ -142,7 +146,7 @@ export const createCertificationRequest = async (
 ) => {
   solicitud_certification.estado_aprobacion_c = 'pending';
   const last_value = await getLastNumberCertificationRequest();
-  const nro_cert = parseInt(last_value.split('/')[0])+1;
+  const nro_cert = parseInt(last_value.split('/')[0]) + 1;
   solicitud_certification.name = `${nro_cert.toString()}/${new Date().getFullYear()}`;
 
   console.log(solicitud_certification);
@@ -151,32 +155,31 @@ export const createCertificationRequest = async (
     '/solicitud',
     solicitud_certification
   );
-  
+
   const comment = {
     assigned_user_id: solicitud_certification.assigned_user_id,
     bean_id: data.id,
     bean_module: 'HANCE_SolicitudCertificacion',
-    description:solicitud_certification.description,
-    relevance:'medium',
-    visualizacion_c:'interno',
-    created_by:solicitud_certification.assigned_user_id
-  }
+    description: solicitud_certification.description,
+    relevance: 'medium',
+    visualizacion_c: 'interno',
+    created_by: solicitud_certification.assigned_user_id,
+  };
   console.log(comment);
-  await axios_GLOBAL.post(`/comments-new`, {comment});
+  await axios_GLOBAL.post('/comments-new', { comment });
   //TODO: guardar comentario
 
   return data;
 };
 
-const getLastNumberCertificationRequest = async () =>{
-  try{
-    const { data } = await axios_NS_07.get(`/solicitud/last-number`);
+const getLastNumberCertificationRequest = async () => {
+  try {
+    const { data } = await axios_NS_07.get('/solicitud/last-number');
     return data[0].name;
-  }
-  catch(e){
+  } catch (e) {
     throw e;
   }
-}
+};
 
 export const getCertificationRequest = async (id: string) => {
   try {
@@ -218,10 +221,7 @@ export const updateCertificationRequest = async (
   try {
     // DEV-1 request
     console.log(body);
-    const { data } = await axios_NS_07.patch(
-      `solicitud/${id}`,
-      body
-    );
+    const { data } = await axios_NS_07.patch(`solicitud/${id}`, body);
     return data;
   } catch (error) {
     console.log(error);
@@ -273,6 +273,7 @@ export async function getUsers(
   //   user_idgrupocliente,
   // };
   try {
+    return await getUsersPromise();
     // const { data } = await axios_LB_04.patch<GuestsRecordResponse>(
     //   '/search-user-mitings/1/100/desc/{val}',
     //   bodyOptions
@@ -281,16 +282,19 @@ export async function getUsers(
     const { data } = await axios_NS_07.get<SearchUser[]>('/users', {
       params: {
         name: value,
-        idCompany:'139c3fdd-c676-3071-b88c-64b0022b6839'
+        idCompany: '139c3fdd-c676-3071-b88c-64b0022b6839',
       },
     });
     console.log(data);
     return data;
-
   } catch (error) {
     throw error;
   }
 }
+
+export const getParticipants = async (value: string) => {
+  return await getEmpresaParticipacionPromise();
+};
 
 export const getManufacturer = async (id: string) => {
   // const response = await axios_NS07(`/manufacturer/${id}`)
@@ -331,7 +335,7 @@ export const getProducts = async (params: Partial<Product>) => {
   return productsFiltered;
 };
 
-export const getCertificationRequests = async (params:any) => {
+export const getCertificationRequests = async (params: any) => {
   try {
     const { data } = await axios_NS_07.get(
       `/solicitud/advanced?params=${JSON.stringify(params)}`
@@ -343,4 +347,11 @@ export const getCertificationRequests = async (params:any) => {
   } catch (error) {
     throw error;
   }
+};
+
+export const createCertificationService = async (
+  body: Partial<CertificacionBody>
+) => {
+  console.log(body);
+  return await createCertificationPromise();
 };

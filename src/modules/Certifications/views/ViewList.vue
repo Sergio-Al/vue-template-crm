@@ -101,7 +101,7 @@ const openDialog = () => {
 };
 
 const openItemSelected = (id: string, title: string) => {
-  certificationDialogRef.value?.openDialogTab(id, title);
+  certificationDialogRef.value?.openDialogTab(id, { iddivision_c: '03' });
 };
 </script>
 
@@ -156,29 +156,36 @@ const openItemSelected = (id: string, title: string) => {
               "
               class="row"
             >
-            <div class="col-3">
-              <q-avatar
-                class="q-mr-sm"
-                size="sm"
-                color="primary"
-                text-color="white"
-                icon="person"
-              />
-            </div>
-            <div class="col-9">
-              <span>{{ propsTable.row.profesional_acreditado }}</span>
-              <br />
-              <span class="text-caption">{{propsTable.row.cargo}}</span>
-            </div>
-              
+              <div class="col-3">
+                <q-avatar
+                  class="q-mr-sm"
+                  size="sm"
+                  color="primary"
+                  text-color="white"
+                  icon="person"
+                />
+              </div>
+              <div class="col-9">
+                <span>{{ propsTable.row.profesional_acreditado }}</span>
+                <br />
+                <span class="text-caption">{{ propsTable.row.cargo }}</span>
+              </div>
             </div>
           </q-td>
           <q-td key="tipo_producto_c" :props="propsTable">
             <div class="row flex-center">
-              <q-chip dense square outline :color="setTipoColor(propsTable.row.tipo_producto_c)">
+              <q-chip
+                dense
+                square
+                outline
+                :color="setTipoColor(propsTable.row.tipo_producto_c)"
+              >
                 {{ propsTable.row.tipo_producto_c.toUpperCase() }}
               </q-chip>
-              <span class="text-caption">Cant. de Requisitos <span class="text-weight-bold">10</span></span>
+              <span class="text-caption"
+                >Cant. de Requisitos
+                <span class="text-weight-bold">10</span></span
+              >
             </div>
           </q-td>
           <q-td key="etapa_c" :props="propsTable">
@@ -193,18 +200,21 @@ const openItemSelected = (id: string, title: string) => {
               >
                 {{ propsTable.row.etapa_c.toUpperCase() }}
               </q-chip>
-              </div>
+            </div>
           </q-td>
           <q-td key="estado_c" :props="propsTable">
             <span>{{ propsTable.row.estado_c }}</span>
-            <div class="text-caption"><span class="text-weight-bold">Fecha de Actualización:</span>{{ propsTable.row.fecha_actualizacion_estado }}</div>
+            <div class="text-caption">
+              <span class="text-weight-bold">Fecha de Actualización:</span
+              >{{ propsTable.row.fecha_actualizacion_estado }}
+            </div>
           </q-td>
           <q-td
             v-if="propsTable.row.fecha_creacion"
             key="fecha_creacion"
             :props="propsTable"
           >
-            <span>{{propsTable.row.fecha_creacion}}</span>
+            <span>{{ propsTable.row.fecha_creacion }}</span>
           </q-td>
           <q-td key="cumplimiento_req" :props="propsTable">
             <span> 30 %</span>
@@ -219,14 +229,23 @@ const openItemSelected = (id: string, title: string) => {
             </div>
           </q-td>
           <q-td key="nro_solicitud" :props="propsTable">
-            <span v-if="propsTable.row.nro_solicitud" class="text-primary text-weight-bold">{{ propsTable.row.nro_solicitud }}</span>
+            <span
+              v-if="propsTable.row.nro_solicitud"
+              class="text-primary text-weight-bold"
+              >{{ propsTable.row.nro_solicitud }}</span
+            >
             <span v-else class="text-grey">En espera</span>
           </q-td>
           <q-td key="certificacion" :props="propsTable">
             <div class="row flex-center">
-              <q-badge v-if="propsTable.row.nro_cert_c" rounded color="info" class="q-py-sm q-px-md cursor">
-                <q-icon  class="q-mr-sm text-h6" name="text_snippet"></q-icon>
-                {{propsTable.row.nro_cert_c}}
+              <q-badge
+                v-if="propsTable.row.nro_cert_c"
+                rounded
+                color="info"
+                class="q-py-sm q-px-md cursor"
+              >
+                <q-icon class="q-mr-sm text-h6" name="text_snippet"></q-icon>
+                {{ propsTable.row.nro_cert_c }}
               </q-badge>
               <span v-else class="text-grey">En espera</span>
             </div>
@@ -306,7 +325,7 @@ const openItemSelected = (id: string, title: string) => {
                 </span>
               </q-circular-progress>-->
 
-             <!--<q-circular-progress
+          <!--<q-circular-progress
                 show-value
                 font-size="15px"
                 :value="propsTable.row.salud ?? 0"
@@ -333,7 +352,7 @@ const openItemSelected = (id: string, title: string) => {
                   </small>
                 </q-badge>
               </div> -->
-            <!--</q-card-section>
+          <!--</q-card-section>
           </q-card-section>
           <q-card-section class="flex justify-between q-pa-sm">
             <span class="text-grey-7">

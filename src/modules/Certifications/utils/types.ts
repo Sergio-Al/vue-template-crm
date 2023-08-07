@@ -234,8 +234,8 @@ export interface CertificationRequest {
   nro_ruta_c: string;
   producto_c: string;
   referencia_prods: string;
-  user_id?:string;
-  user_id_c?:string;
+  user_id?: string;
+  user_id_c?: string;
 }
 
 export interface CertificationTable {
@@ -297,4 +297,42 @@ export interface CertificationModel {
   etapa_c: string;
   estado_c: string;
   date_modified: string;
+}
+
+export interface EmpresaParticipacion {
+  id: string;
+  name: string; // a company name
+  razon_social_c: string;
+  direccion_c: string;
+  resolucion_ministerial_c: string;
+}
+
+export interface CertificacionBody {
+  id: string;
+  assigned_user_id: string; // profesional acreditado
+  billing_address_street: string;
+  billing_address_country: string;
+  cod_misa_c: string;
+  date_entered: string;
+  date_planning_cert_c: string;
+  date_real_cert_c: string;
+  date_register_misa_c: string;
+  email1: string;
+  estado_c: string;
+  etapa_c: string;
+  hance_empresa_id_c: string; // participacion como
+  hance_proveedor_id_c: string; // fabricante
+  idamercado_c: string;
+  iddivision_c: string;
+  idgrupocliente_c: string;
+  idregional_c: string;
+  licence: string;
+  name: string;
+  nro_cert_c: string;
+  nro_ruta_c: string;
+  tipo_producto_c: string;
+  tipo_tramite_c: string;
+  phone_office: string;
+  user_id_c: string; // SOLICITANTE
+  user_id_l_c: string; // profesional acreditado
 }

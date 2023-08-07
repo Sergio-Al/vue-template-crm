@@ -5,7 +5,6 @@ import { useQuasar } from 'quasar';
 
 import ViewGeneralRequest from '../../views/ViewGeneralRequest.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
-import { certificationRequestPromise } from '../../utils/dummyData';
 
 import type { CertificationRequest } from '../../utils/types';
 import {
