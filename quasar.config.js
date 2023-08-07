@@ -86,6 +86,7 @@ module.exports = configure(function (ctx) {
         CRM4_LB_03: dotenv.parsed.CRM4_LB_03,
         CRM4_LB_04: dotenv.parsed.CRM4_LB_04,
         CRM4_LB_05: dotenv.parsed.CRM4_LB_05,
+        CRM4_LB_06: dotenv.parsed.CRM4_LB_06,
         CRM4_LB_GLOBAL: dotenv.parsed.CRM4_LB_GLOBAL,
         CRM4_LB_USERS_PREFERENCES: dotenv.parsed.CRM4_LB_USERS_PREFERENCES,
         CRM4_NS_07: dotenv.parsed.CRM4_NS_07,

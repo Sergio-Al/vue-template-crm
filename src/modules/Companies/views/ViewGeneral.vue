@@ -4,7 +4,6 @@ import { Loading, QInput, useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 
 // global-components
-
 import { useCompaniesStore } from '../store/companyStore';
 import CommentsList from 'src/components/Comments/CommentsList.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
@@ -21,6 +20,8 @@ import { storeToRefs } from 'pinia';
 import { Company } from '../utils/types';
 import DirectionCard from 'src/components/MainCard/DirectionCard.vue';
 import CardDelegate from '../components/Cards/CardDelegate.vue';
+import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
+
 </script>
 <script lang="ts" setup>
 const props = defineProps<{
@@ -208,14 +209,23 @@ const emits = defineEmits<{
     </div>
     <div class="col-12 col-md-6">
       <div class="row q-gutter-y-md">
-        <CardDelegate
+        <!--<CardDelegate
           class="col-12"
           ref="cardDelegateRef"
           :id="localId"
           :show-controls="!!localId"
           :user-id="cardOwner"
           @update="updateAssigned"
-        />
+        />-->
+        <div class="col-12">
+          <AssignedUser
+             ref="cardDelegateRef"
+            :module="'HANCE_Empresa'"
+            :module-id="localId"
+            @changeUser="() => {}"
+          />
+        </div>
+        
         <div class="q-gutter-y-md col-12">
           <q-card>
             <q-card-section style="padding: 0px">

@@ -16,9 +16,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
-const tab = ref('');
-const state = ref('');
+//const state = ref('');
 
 // const table = useCertificationRequestTableStore();
 // const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
@@ -33,7 +31,11 @@ const {
   pagination,
   visible_columns,
   visible_fields,
+  state_tab,
 } = storeToRefs(certificationRequestTableStore);
+
+//const tab = state_tab.value;
+
 const {
   clearFilterData,
   deleteMultiple,
@@ -153,6 +155,11 @@ const openDialog = (id?: string) => {
 const openItemSelected = (id: string, title: string) => {
   certificationDialogRef.value?.openDialogTab(id, title);
 };
+
+const filterState = ()=>{
+  //console.log(value);
+  reloadList();
+}
 </script>
 
 <template>
@@ -160,17 +167,18 @@ const openItemSelected = (id: string, title: string) => {
   <div :class="$q.platform.is.desktop ? 'q-pa-md q-pt-lg' : 'q-pa-sm q-pt-lg'">
         <q-card>
           <q-tabs
-          v-model="tab"
+          v-model="state_tab"
           align="justify"
           dense
           class="text-grey-7"
           active-color="primary"
           indicator-color="orange"
+          @click="reloadList()"
           >
             <q-tab name="" label="TODAS" />
             <q-tab name="pending" label="PENDIENTE" />
             <q-tab name="approved" label="APROBADA" />
-            <q-tab name="observed" label="OBSERVADA" />
+            <q-tab name="kept" label="OBSERVADA" />
             <q-tab name="rejected" label="RECHAZADA" />
           </q-tabs>
         </q-card>

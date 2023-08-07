@@ -26,6 +26,7 @@ export const useCertificationRequestTableStore = defineStore(
   () => {
     const loading = ref(false);
     const mongo_id = ref('');
+    const state_tab = ref('');
     const pagination = ref({
       page: 1,
       sortBy: 'date_entered',
@@ -204,6 +205,8 @@ export const useCertificationRequestTableStore = defineStore(
     }
 
     async function reloadList() {
+      data_filter.value.state_aprobacion = state_tab.value;
+
       await getListCertificationRequest({
         pagination: pagination.value,
         filter: data_filter.value,
@@ -363,6 +366,7 @@ export const useCertificationRequestTableStore = defineStore(
       pagination,
       visible_columns,
       visible_fields,
+      state_tab,
 
       // actions
       clearFilterData,

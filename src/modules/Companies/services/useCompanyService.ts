@@ -40,15 +40,8 @@ export const getTableData = async (params: Params) => {
 };
 
 export const getCompanyDocuments = async (id: string, child:boolean) => {
-  let response:any='';
   try {
-    if(child){
-      response = await axios_NS_07.get(`participacion/documents/${id}`);
-    }
-    else{
-      response = await axios_NS_07.get(`empresas/documents/${id}`);
-    }
-    const { data } = response
+    const { data } = await axios_NS_07.get(`/documentos/search/${child?'HANCE_EmpresaParticipacion':'HANCE_Empresa'}/${id}`);
     return data;
   } catch (error) {
     throw error;
@@ -56,9 +49,7 @@ export const getCompanyDocuments = async (id: string, child:boolean) => {
 };
 
 export const getCompanyChild = async (id: string) => {
-  console.log(id);
   try {
-    // const { data } = await axios_NS_07.get(`/participacion/parent/${id}`);
     const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
     return data;
   } catch (error) {
