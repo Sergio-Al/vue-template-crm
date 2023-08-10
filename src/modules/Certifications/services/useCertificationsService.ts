@@ -36,6 +36,7 @@ import {
   getUsersPromise,
   getEmpresaParticipacionPromise,
   createCertificationPromise,
+  certificationRequestPromise,
 } from '../utils/dummyData';
 
 const { userCRM } = userStore();
@@ -183,6 +184,7 @@ const getLastNumberCertificationRequest = async () => {
 
 export const getCertificationRequest = async (id: string) => {
   try {
+    return await certificationRequestPromise(id);
     const { data } = await axios_NS_07.get(`/solicitud/${id}`);
     //const { data } = await axios_NS_07.get(`/certification-request/${id}`);
     return data;

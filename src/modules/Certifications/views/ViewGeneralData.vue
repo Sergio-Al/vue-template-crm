@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import CardGeneralData from '../components/Cards/CardGeneralData.vue';
 import CardProcedureType from '../components/Cards/CardProcedureType.vue';
 import CardProductType from '../components/Cards/CardProductType.vue';
+import CardRequest from '../components/Cards/CardRequest.vue';
 
 import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
 import { CertificacionBody } from '../utils/types';
@@ -10,6 +11,7 @@ import { CertificacionBody } from '../utils/types';
 interface Props {
   id?: string;
   data: CertificacionBody;
+  requestId?: string;
 }
 
 interface Emits {
@@ -30,7 +32,7 @@ const assignedSingleUserRef = ref<InstanceType<typeof AssignedUser> | null>(
   null
 );
 
-const props = withDefaults(defineProps<Props>(), { id: '' });
+const props = withDefaults(defineProps<Props>(), { id: '', requestId: '' });
 const emits = defineEmits<Emits>();
 
 // onMounted(() => {});
@@ -83,6 +85,11 @@ defineExpose({
             :module="'HANCE_Certificacion'"
             :module-id="''"
             @changeUser="() => {}"
+          />
+          <CardRequest
+            v-if="!!props.requestId"
+            :request-id="props.requestId"
+            class="q-mt-md"
           />
         </div>
       </div>

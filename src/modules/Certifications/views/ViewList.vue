@@ -7,6 +7,7 @@ import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import CertificationDialog from '../components/Dialogs/CertificationDialog.vue';
 import moment from 'moment';
+import { CertificacionBody } from '../utils/types';
 
 const table = useCertificationsTableStore();
 const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
@@ -96,12 +97,14 @@ const setTipoColor = (tipo: string): string => {
   return colorMap[tipo] || 'grey';
 };
 
-const openDialog = () => {
-  certificationDialogRef.value?.openDialogTab();
-};
-
-const openItemSelected = (id: string, title: string) => {
-  certificationDialogRef.value?.openDialogTab(id, { iddivision_c: '03' });
+const openDialog = (
+  id?: string,
+  requestId?: string,
+  data?: Partial<CertificacionBody>
+) => {
+  certificationDialogRef.value?.openDialogTab(id, data, {
+    certificationId: requestId,
+  });
 };
 </script>
 
@@ -138,7 +141,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="name" :props="propsTable" :style="'width: 100px;'">
             <span
               class="text-primary text-weight-bold text-break cursor-pointer"
-              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
+              @click="openDialog(propsTable.row.id)"
             >
               {{ propsTable.row.name }}
             </span>
@@ -282,7 +285,7 @@ const openItemSelected = (id: string, title: string) => {
             <q-checkbox flat v-model="propsTable.selected" dense />
             <span
               class="q-ml-md text-ellipsis text-blue-10 cursor-pointer"
-              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
+              @click="openDialog(propsTable.row.id)"
             >
               {{ propsTable.row.name }}
             </span>
