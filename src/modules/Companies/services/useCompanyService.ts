@@ -40,15 +40,8 @@ export const getTableData = async (params: Params) => {
 };
 
 export const getCompanyDocuments = async (id: string, child:boolean) => {
-  let response:any='';
   try {
-    if(child){
-      response = await axios_NS_07.get(`participacion/documents/${id}`);
-    }
-    else{
-      response = await axios_NS_07.get(`empresas/documents/${id}`);
-    }
-    const { data } = response
+    const { data } = await axios_NS_07.get(`/documentos/search/${child?'HANCE_EmpresaParticipacion':'HANCE_Empresa'}/${id}`);
     return data;
   } catch (error) {
     throw error;
@@ -56,9 +49,7 @@ export const getCompanyDocuments = async (id: string, child:boolean) => {
 };
 
 export const getCompanyChild = async (id: string) => {
-  console.log(id);
   try {
-    // const { data } = await axios_NS_07.get(`/participacion/parent/${id}`);
     const { data } = await axios_NS_07.get(`/participacion/child/${id}`);
     return data;
   } catch (error) {
@@ -199,7 +190,7 @@ export const getOneCompany = async (id: string) => {
   }
 };
 
-export const getCompanyUsers = async (id: string, filter:string) => {
+export const getCompanyUsers = async (id: string, filter:any='') => {
   try {
     const { data } = await axios_NS_07.get(`empresas/list-users/${id}?params=${filter}`);
 
@@ -277,9 +268,7 @@ export const getContactsAccount = async (account_id: string) => {
 
 export const deleteMassiveData = async (data: any) => {
   try {
-    data.items.forEach(async (element: any) => {
-      await axios_NS_07.delete(`empresas/${element.id}`);
-    });
+    await axios_NS_07.post(`empresas/delete-multiple`, data);
   } catch (error) {
     throw error;
   }
@@ -387,16 +376,12 @@ export const deleteChildCompany = async (id: string) => {
 
 export const assignUsersToChildCompany = async (
   id: string,
-  userIds: string[]
+  userIds: any
 ) => {
   try {
-    const { status } = await axios_NS_07.post(`/participacion/asignar/${id}`, {
+    await axios_NS_07.post(`/participacion/asignar/${id}`, {
       userIds,
     });
-    if(status == 201){
-      return 1;
-    }
-    return 0;
   } catch (error) {
     throw error;
   }
@@ -443,5 +428,15 @@ export const deleteDocumentCompany = async(data:any)=>{
   }
   catch (error) {
     throw error;
+  }
+}
+
+export const deleteDocumentVersion = async (idVersion:string)=>{
+  try{
+    await axios_NS_07.post(`/documentos/version-delete/${idVersion}`);
+    return;
+  }
+  catch(e){
+    throw e;
   }
 }

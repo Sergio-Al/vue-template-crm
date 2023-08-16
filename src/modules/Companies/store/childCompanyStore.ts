@@ -29,7 +29,7 @@ export const useChildCompaniesStore = defineStore(
 
     const cardOwner = computed(() => {
       //console.log(payload.value.assigned_user_id);
-      return childPayload.value.user_id_c;
+      return childPayload.value.assigned_user_id;
     });
 
     const cardInfo = computed(() => {
@@ -37,7 +37,9 @@ export const useChildCompaniesStore = defineStore(
         name: childPayload.value.name,
         razon_social_c: childPayload.value.razon_social_c,
         resolucion_ministerial_c: childPayload.value.resolucion_ministerial_c,
-        identificacion_fiscal_c: childPayload.value.identificacion_fiscal_c
+        resolucion_ministerial_date_c: childPayload.value.resolucion_ministerial_date_c,
+        identificacion_fiscal_c: childPayload.value.identificacion_fiscal_c,
+        user_id: userCRM.id
       };
     });
 
@@ -49,8 +51,6 @@ export const useChildCompaniesStore = defineStore(
         phone_alternate: childPayload.value.phone_alternate,
       };
     });
-
-
 
     //actions
 

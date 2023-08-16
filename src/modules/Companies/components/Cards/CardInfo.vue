@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { QInput, useQuasar } from 'quasar';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 
 import { Company } from '../../utils/types';
+import moment from 'moment';
 
 interface Props {
   id: string;
@@ -12,13 +13,14 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const $q = useQuasar();
+//const $q = useQuasar();
 //const { userCRM, getCompany } = useCompany();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const razonSocialInputRef = ref<InstanceType<typeof QInput> | null>(null);
 const nameInputRef = ref<InstanceType<typeof QInput> | null>(null);
 
 const inputData = ref({ ...props.data });
+//inputData.value.resolucion_ministerial_date_c = new Date(inputData.value.resolucion_ministerial_date_c).toISOString();
 
 //* Methods
 const validateInputs = async () => {
@@ -58,7 +60,7 @@ defineExpose({
           ref="razonSocialInputRef"
           v-model="inputData.razon_social_c"
           type="text"
-          class="col-12 col-sm-12"
+          class="col-12 col-sm-12 q-py-sm"
           label="Razón Social"
           outlined
           dense
@@ -68,27 +70,35 @@ defineExpose({
           ref="nameInputRef"
           v-model="inputData.name"
           type="text"
-          class="col-12 col-sm-12"
+          class="col-12 col-sm-6 q-py-sm"
           label="Nombre Comercial"
           outlined
           dense
           :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
+          v-model="inputData.identificacion_fiscal_c"
+          type="text"
+          class="col-12 col-sm-6 q-py-sm"
+          label="Nro. de Identificacion Fiscal"
+          outlined
+          dense
+        />
+        <q-input
           v-model="inputData.resolucion_ministerial_c"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Nro. de Resolución Ministerial"
           outlined
           dense
         />
         <q-input
-          v-model="inputData.identificacion_fiscal_c"
-          type="text"
-          class="col-12 col-sm-6"
-          label="Nro. de Identificacion Fiscal"
+          v-model="inputData.resolucion_ministerial_date_c"
+          class="col-12 col-sm-6 q-py-sm"
+          label="Fecha de Resolución Ministerial"
           outlined
           dense
+          type="date"
         />
       </div>
     </template>
@@ -98,7 +108,7 @@ defineExpose({
         <q-input
           v-model="inputData.razon_social_c"
           type="text"
-          class="col-12 col-sm-12"
+          class="col-12 col-sm-12 q-py-sm"
           label="Razón Social"
           outlined
           dense
@@ -107,17 +117,8 @@ defineExpose({
         <q-input
           v-model="inputData.name"
           type="text"
-          class="col-12 col-sm-12"
+          class="col-12 col-sm-6 q-py-sm"
           label="Nombre Comercial"
-          outlined
-          dense
-          readonly
-        />
-        <q-input
-          v-model="inputData.resolucion_ministerial_c"
-          type="text"
-          class="col-12 col-sm-6"
-          label="Nro. de Resolución Ministerial"
           outlined
           dense
           readonly
@@ -125,10 +126,28 @@ defineExpose({
         <q-input
           v-model="inputData.identificacion_fiscal_c"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Nro. de Identificacion Fiscal"
           outlined
           dense
+          readonly
+        />
+        <q-input
+          v-model="inputData.resolucion_ministerial_c"
+          type="text"
+          class="col-12 col-sm-6 q-py-sm"
+          label="Nro. de Resolución Ministerial"
+          outlined
+          dense
+          readonly
+        />
+        <q-input
+          v-model="inputData.resolucion_ministerial_date_c"
+          class="col-12 col-sm-6 q-py-sm"
+          label="Fecha de Resolución Ministerial"
+          outlined
+          dense
+          type="date"
           readonly
         />
       </div>

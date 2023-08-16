@@ -55,12 +55,13 @@ const onDeleteMultiple = async (selected: base[]) => {
   const items = selected.map((el: base) => {
     return { id: el.id };
   });
+
   await table.deleteMultiple(items);
 
-  setTimeout(() => {
-    table.reloadList();
-  }, 1000);
-  //table.reloadList();
+  // setTimeout(() => {
+  //   table.reloadList();
+  // }, 1000);
+  table.reloadList();
 };
 
 const onUpdateMultiple = (selected: base[]) => {
@@ -191,7 +192,11 @@ onMounted(async () => {
               </span>
           </q-td>
           <q-td key="resolucion_ministerial_c" :props="propsTable">
-            {{ propsTable.row.resolucion_ministerial_c }}
+            <div class="text-center">
+              {{ propsTable.row.resolucion_ministerial_c }}
+              <br>
+              <span class="text-caption">Fecha: <span class="text-grey">{{propsTable.row.resolucion_ministerial_date_c}}</span></span>
+            </div>
           </q-td>
           <q-td key="website" :props="propsTable">
             <q-chip
@@ -229,10 +234,12 @@ onMounted(async () => {
                 />
               </div>
               <div class="column q-pl-sm ellipsis col-11">
-                <span v-if="propsTable.row.representante" class="ellipsis-item text-break">
-                  {{ propsTable.row.representante }}
+                <span v-if="propsTable.row.representante != ' '" class="ellipsis-item text-break">
+                  {{ propsTable.row.representante}}
+                  <br>
+                  <span class="text-grey">{{propsTable.row.title}}</span>
                 </span>
-                <span v-else color="red">Sin representante</span>
+                <span v-else class="text-red">Sin representante</span>
               </div>
             </div>
           </q-td>
@@ -276,7 +283,7 @@ onMounted(async () => {
 </template>
 <style scoped>
   .text-break {
-    width:300px;
+    width:500px;
     line-break: auto;
     white-space: normal;
     font-size: 1.1em;

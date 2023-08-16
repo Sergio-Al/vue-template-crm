@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { useCertificationsTableStore } from '../store/useCertificationTableStore';
+import { useCertificationsTableStore, userCRM } from '../store/useCertificationTableStore';
 import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
 
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
@@ -85,7 +85,6 @@ const setEtapaColor = (etapa: string): string => {
 };
 
 const setTipoColor = (tipo: string): string => {
-  console.log(tipo);
   const colorMap: { [key: string]: string } = {
     dispositivo: 'blue',
     equipo: 'purple',
@@ -101,12 +100,29 @@ const openDialog = () => {
 };
 
 const openItemSelected = (id: string, title: string) => {
-  certificationDialogRef.value?.openDialogTab(id, { iddivision_c: '03' });
+  certificationDialogRef.value?.openDialogTab(id, { iddivision_c: userCRM.iddivision });
 };
 </script>
 
 <template>
   <div :class="$q.platform.is.desktop ? 'q-pa-md' : 'q-pa-sm'">
+    <q-card>
+          <q-tabs
+          v-model="table.state_tab"
+          align="justify"
+          dense
+          class="text-grey-7"
+          active-color="primary"
+          indicator-color="orange"
+          @click="reloadList()"
+          >
+            <q-tab name="" label="TODAS" />
+            <q-tab name="revision" label="REVISIÓN" />
+            <q-tab name="enviadamisa" label="ENVIADA A MISA" />
+            <q-tab name="finalizada" label="FINALIZADA" />
+          </q-tabs>
+        </q-card>
+
     <table-component
       :rows="table.data_table.rows"
       :columns="table.data_table.columns"
@@ -168,12 +184,12 @@ const openItemSelected = (id: string, title: string) => {
               <div class="col-9">
                 <span>{{ propsTable.row.profesional_acreditado }}</span>
                 <br />
-                <span class="text-caption">{{ propsTable.row.cargo }}</span>
+                <span class="text-caption text-grey">{{ propsTable.row.cargo }}</span>
               </div>
             </div>
           </q-td>
           <q-td key="tipo_producto_c" :props="propsTable">
-            <div class="row flex-center">
+            <div class="row flex-center" v-if="propsTable.row.tipo_producto_c">
               <q-chip
                 dense
                 square
@@ -368,6 +384,7 @@ const openItemSelected = (id: string, title: string) => {
           </q-card-section>-->
         </q-card>
       </template>
+      
       <template v-slot:buttons>
         <q-btn
           color="primary"

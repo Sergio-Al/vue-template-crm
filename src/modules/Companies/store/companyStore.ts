@@ -16,7 +16,8 @@ import {
   getCompanyDocuments,
   getVersions,
   deleteDocumentCompany,
-  getLastVersionDocument
+  getLastVersionDocument,
+  deleteDocumentVersion
 } from '../services/useCompanyService';
 import type { ChildCompany, Company } from '../utils/types';
 
@@ -37,6 +38,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     direccion_c: '',
     email1: '',
     resolucion_ministerial_c: '',
+    resolucion_ministerial_date_c: '',
     identificacion_fiscal_c: '',
     phone_office: '',
     phone_alternate: '',
@@ -55,6 +57,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       name: payload.value.name,
       razon_social_c: payload.value.razon_social_c,
       resolucion_ministerial_c: payload.value.resolucion_ministerial_c,
+      resolucion_ministerial_date_c: payload.value.resolucion_ministerial_date_c,
       identificacion_fiscal_c: payload.value.identificacion_fiscal_c,
       user_id: payload.value.user_id,
       user_id_c: payload.value.user_id_c,
@@ -274,6 +277,20 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     }
   }
 
+  const onDeleteDocumentVersion = async(idVersion:string)=>{
+    try{
+      await deleteDocumentVersion(idVersion);
+      Notification(
+        'positive',
+        'check_circle',
+        `<strong> Acción exitosa¡ </strong> <br/> Se eliminó la versión`
+      );
+    }
+    catch(e){
+
+    }
+  }
+
   const clearData = () => {
     payload.value = {
       id: '',
@@ -282,6 +299,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
       direccion_c: '',
       email1: '',
       resolucion_ministerial_c: '',
+      resolucion_ministerial_date_c: '',
       identificacion_fiscal_c: '',
       phone_office: '',
       phone_alternate: '',
@@ -318,6 +336,7 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     onGetVersions,
     onDeleteDocumentCompany,
     onGetLastVersionDocument,
-    formatoFecha
+    formatoFecha,
+    onDeleteDocumentVersion
   };
 });

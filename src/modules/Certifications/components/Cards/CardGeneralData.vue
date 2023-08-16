@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import moment from 'moment';
 import { ref, computed, onMounted } from 'vue';
 import {
   CertificacionBody,
@@ -12,6 +13,13 @@ import {
 
 import { useDivision } from 'src/composables/useLanguage';
 import { ViewCard } from 'src/modules/Accounts/components';
+
+import { userStore } from 'src/modules/Users/store/UserStore';
+import { useCertificationStore } from '../../store/certificationStore';
+
+const certificationStore = useCertificationStore();
+
+const { userCRM } = userStore();
 
 interface Props {
   id: string;
@@ -27,6 +35,7 @@ const inputParticipant = ref({} as EmpresaParticipacion);
 const users = ref<User[] | undefined>(undefined);
 const participants = ref<EmpresaParticipacion[] | undefined>(undefined);
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
+const oneParticipant = ref<boolean>(false);
 
 const amercadoList = computed(() => {
   const result: any = listDivisiones.value.filter(
@@ -55,29 +64,30 @@ const filterFn = async (
   });
 };
 
-const filterParticipante = async (
-  val: string,
-  update: (callback: () => void) => void,
-  abort: () => void
-) => {
-  update(async () => {
-    console.log('here');
-    if (val === '') {
-      if (!!participants.value && participants.value.length > 0) return;
-      participants.value = [];
-    } else {
-      const term = val;
-      const response = await getParticipants(term);
-      participants.value = response;
-    }
-  });
-};
+// const filterParticipante = async (
+//   val: string,
+//   update: (callback: () => void) => void,
+//   abort: () => void
+// ) => {
+//   update(async () => {
+//     console.log('here');
+//     if (val === '') {
+//       if (!!participants.value && participants.value.length > 0) return;
+//       participants.value = [];
+//     } else {
+//       const term = val;
+//       const response = await getParticipants(term);
+//       participants.value = response;
+//     }
+//   });
+// };
 
 const abortFilterFn = () => {
   // console.log('delayed filter aborted')
 };
 
 const assignParticipacion = (id: string) => {
+  console.log(id);
   const empresaParticipacion = participants.value?.find((p) => p.id === id);
   if (!!empresaParticipacion) inputParticipant.value = empresaParticipacion;
 };
@@ -91,8 +101,77 @@ const removeParticipante = () => {
   inputParticipant.value = {} as EmpresaParticipacion;
 };
 
+const formatDirection = computed(() => {
+  // if (localDataCurrent.value.address_street_generated_c)
+  //   return localDataCurrent.value.address_street_generated_c
+  //     .replace('_gnrtd', '')
+  //     .replaceAll(',|', '');
+  // else return '';
+  if (inputParticipant.value.direccion_c)
+    return inputParticipant.value.direccion_c
+      .replace('_gnrtd', '')
+      .replaceAll(',|', '');
+  else return '';
+});
+
+// const clearData = () => {
+//     inputData.value = {
+//       name: '',
+//       assigned_user_id: '',
+//       etapa_c: '',
+//       estado_c: '',
+//       tipo_tramite_c: '',
+//       user_id_c: '',
+//       tipo_producto_c: '',
+//       iddivision_c: '',
+//       idamercado_c: '',
+//       idregional_c: '',
+//       date_entered: moment().format('DD/MM/YYYY'),
+//       date_register_misa_c: '',
+//       date_planning_cert_c: '',
+//       date_real_cert_c: '',
+//       hance_empresa_id_c: '',
+//       cod_misa_c: '',
+//       nro_ruta_c: ''
+//     };
+//   };
+
 onMounted(async () => {
+  const { id } = userCRM;
+
+  console.log(props);
+  
+  if(!!props.id){
+    //existe la certificacion
+    console.log('existe la cert, cargar su data')
+  }
+  else{
+    inputData.value.date_entered = new Date().toISOString().substring(0,10);
+    inputData.value.iddivision_c = userCRM.iddivision;
+    inputData.value.idamercado_c = userCRM.idamercado;
+
+    if (!!id) {
+      const response = await getParticipants(id);
+      if(response.length == 1){
+        oneParticipant.value = true;
+        inputData.value.hance_empresa_id_c = response[0].id;
+        inputParticipant.value.name = response[0].name;
+        inputParticipant.value.razon_social_c = response[0].razon_social_c;
+        inputParticipant.value.direccion_c = response[0].direccion_c;
+        inputParticipant.value.titular = response[0].titular;
+        inputParticipant.value.resolucion_ministerial_c = response[0].resolucion_ministerial_c;
+        inputParticipant.value.resolucion_ministerial_date_c = response[0].resolucion_ministerial_date_c;
+        //solo es uno, asignar inofrmacion a los campos
+      }else{
+        participants.value = response;
+      }
+    } else {
+      participants.value = [];
+    }
+  }
+
   await getListDivisiones();
+
 });
 
 defineExpose({
@@ -118,7 +197,6 @@ defineExpose({
     <template #edit>
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-select
-          :hint="!!inputData.user_id_c ? 'usuario Seleccionado' : ''"
           :options="users"
           @filter-abort="abortFilterFn"
           @filter="filterFn"
@@ -178,7 +256,7 @@ defineExpose({
           type="date"
         >
         </q-input>
-        <q-select
+        <!--<q-select
           :hint="
             !!inputData.hance_empresa_id_c ? 'Participante Seleccionado' : ''
           "
@@ -236,7 +314,56 @@ defineExpose({
               </q-item-section>
             </q-item>
           </template>
+        </q-select> -->
+        <q-select v-if="!oneParticipant"
+          class="col-12 col-sm-6"
+          outlined
+          dense
+          v-model="inputData.hance_empresa_id_c"
+          :options="participants"
+          label="Participación Como"
+          option-value="id"
+          option-label="name"
+          emit-value
+          fill-input
+          map-options
+          hide-selected
+          input-debounce="500"
+          use-chips
+          use-input
+          @update:model-value="assignParticipacion"
+        >
+          <template #no-option>
+            <span class="text-grey-8 q-pa-lg">Sin opciones</span>
+          </template>
+
+          <template #option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section avatar>
+                <q-icon name="person" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ scope.opt.name }}</q-item-label>
+                <q-item-label caption
+                  >Razón social: {{ scope.opt.razon_social_c }}</q-item-label
+                >
+                <q-item-label caption
+                  >Resolución Ministerial:
+                  {{ scope.opt.resolucion_ministerial_c }}</q-item-label
+                >
+              </q-item-section>
+            </q-item>
+          </template>
         </q-select>
+        <q-input
+          v-else
+          v-model="inputParticipant.name"
+          class="col-12 col-sm-6"
+          label="Participación Como"
+          outlined
+          dense
+          readonly
+        />
         <q-input
           v-model="inputParticipant.razon_social_c"
           class="col-12 col-sm-6"
@@ -247,9 +374,18 @@ defineExpose({
         >
         </q-input>
         <q-input
-          v-model="inputParticipant.direccion_c"
+          v-model="formatDirection"
           class="col-12 col-sm-6"
           label="Dirección"
+          outlined
+          dense
+          readonly
+        >
+        </q-input>
+        <q-input
+          v-model="inputParticipant.titular"
+          class="col-12 col-sm-6"
+          label="Nombre del Titular"
           outlined
           dense
           readonly
@@ -259,6 +395,15 @@ defineExpose({
           v-model="inputParticipant.resolucion_ministerial_c"
           class="col-12 col-sm-6"
           label="Resolución ministerial"
+          outlined
+          dense
+          readonly
+        >
+        </q-input>
+        <q-input
+          v-model="inputParticipant.resolucion_ministerial_date_c"
+          class="col-12 col-sm-6"
+          label="Fecha de Resolución Ministerial"
           outlined
           dense
           readonly
@@ -431,6 +576,15 @@ defineExpose({
           v-model="inputParticipant.resolucion_ministerial_c"
           class="col-12 col-sm-6"
           label="Resolución ministerial"
+          outlined
+          dense
+          readonly
+        >
+        </q-input>
+        <q-input
+          v-model="inputParticipant.resolucion_ministerial_date_c"
+          class="col-12 col-sm-6"
+          label="Fecha de Resolución Ministerial"
           outlined
           dense
           readonly

@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue';
 import CardGeneralData from '../components/Cards/CardGeneralData.vue';
 import CardProcedureType from '../components/Cards/CardProcedureType.vue';
 import CardProductType from '../components/Cards/CardProductType.vue';
+import CardRequest from '../components/Cards/CardRequest.vue';
+import CardSchema from '../components/Cards/CardSchema.vue';
 
 import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
 import { CertificacionBody } from '../utils/types';
@@ -15,6 +17,7 @@ interface Props {
 interface Emits {
   (e: 'create', value: Partial<CertificacionBody>): void;
   (e: 'update', value: Partial<CertificacionBody>): void;
+  (e: 'continue'): void;
 }
 
 const cardGeneralDataRef = ref<InstanceType<typeof CardGeneralData> | null>(
@@ -29,17 +32,23 @@ const cardProductTypeRef = ref<InstanceType<typeof CardProductType> | null>(
 const assignedSingleUserRef = ref<InstanceType<typeof AssignedUser> | null>(
   null
 );
+const cardRequestRef = ref<InstanceType<typeof CardRequest> | null>(
+  null
+);
 
 const props = withDefaults(defineProps<Props>(), { id: '' });
 const emits = defineEmits<Emits>();
 
-// onMounted(() => {});
+onMounted(() => {
+  console.log(props.data);
+});
 
 defineExpose({
   exposeData: (): Partial<CertificacionBody> => ({
     ...cardGeneralDataRef.value?.exposeData(),
     tipo_tramite_c: cardProcedureTypeRef.value?.exposeData(),
     tipo_producto_c: cardProductTypeRef.value?.exposeData(),
+    hance_solicitudcertificacion_id_c: cardRequestRef.value?.exposeData(),
     assigned_user_id: assignedSingleUserRef.value?.assignedUser.id || '',
   }),
 });
@@ -68,14 +77,7 @@ defineExpose({
             />
           </div>
         </div>
-        <div class="col-12 col-md-6">
-          <!--<AssignedSingleUser2
-            ref="assignedSingleUserRef"
-            :module="'HANCE_Certificacion'"
-            :module-id="''"
-            :withList="false"
-            @changeUser="() => {}"
-          />-->
+        <div class="col-12 col-md-6 q-gutter-y-md">
           <AssignedUser
             title="Profesional Acreditado"
             hide-chip
@@ -83,6 +85,26 @@ defineExpose({
             :module="'HANCE_Certificacion'"
             :module-id="''"
             @changeUser="() => {}"
+          />
+         
+          <!--<AssignedSingleUser2
+            ref="assignedSingleUserRef"
+            :module="'HANCE_Certificacion'"
+            :module-id="''"
+            :withList="false"
+            @changeUser="() => {}"
+          />-->
+          
+          <CardRequest
+          ref="cardRequestRef"
+          :id="props.id"
+          :data="props.data"
+          class="col-12"
+          />
+          <CardSchema
+          :id="props.id"
+          :data="props.data"
+          class="col-12"
           />
         </div>
       </div>
@@ -99,7 +121,7 @@ defineExpose({
         :class="$q.dark.isActive ? 'bg-dark' : 'bg-grey-4'"
       >
         <q-toolbar class="justify-center">
-          <q-btn color="primary" class="q-mr-md" @click="() => {}">
+          <q-btn color="primary" class="q-mr-md" @click="() => { emits('continue')}">
             Continuar
           </q-btn>
         </q-toolbar>

@@ -7,7 +7,7 @@ import {
 } from 'src/conections/axiosCRM';
 import { PhoneModel, ModuleActivity } from '../components/types/index';
 import Notification from 'src/modules/Prospects/utils/notify';
-import { axios_LB_01, axios_LB_06 } from 'src/conections/axiosCRM';
+import { axios_LB_01, axios_LB_06, axios_NS_07 } from 'src/conections/axiosCRM';
 export interface genericModel {
   [key: string]: string;
 }
@@ -350,6 +350,18 @@ export const ActivityServices = () => {
       console.log(error);
     }
   };
+   // PARA OBTENER FILTRO DE SOLICITUDES
+   const getFiltroSol = async (params: any) => {
+    try {
+      const { data } = await axios_NS_07.get(
+        `/solicitud/advanced?params=${JSON.stringify(params)}`
+      );
+      //console.log(data);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return {
     saveCall,
     getPhonesProspect,
@@ -375,6 +387,7 @@ export const ActivityServices = () => {
     getFiltroCon,
     getFiltroLed,
     getFiltroOpo,
+    getFiltroSol,
     getFiltroAtri,
     getFiltroConAtri,
     getFiltroHanpProveedor,

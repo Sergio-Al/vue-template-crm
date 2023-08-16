@@ -84,6 +84,13 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
   {
+    name: 'fecha_creacion',
+    align: 'left',
+    label: 'Fecha de Registro',
+    field: 'fecha_creacion',
+    sortable: true,
+  },
+  {
     name: 'options',
     align: 'center',
     label: 'Acciones',
@@ -99,6 +106,11 @@ const documentSelected = ref<Document>({} as Document);
 
 const openDialog = () => {
   documentDialog.value = true;
+};
+
+const closeDialog = () => {
+  documentDialog.value = false;
+  reloadList();
 };
 
 // const openDocumentVersionDialog = (id: string, data: Document) => {
@@ -119,9 +131,7 @@ const {
   execute,
 } = useAsyncState(async () => {
 
-  const response = await companyStore.onGetCompanyDocuments(props.id, props.child);
-  //console.log(response);
-  return response;
+  return await companyStore.onGetCompanyDocuments(props.id, props.child);
   //return convierteFechaDoc(response);
 }, []);
 
@@ -198,9 +208,21 @@ const setColorType = (type: string): string => {
 //     version:1
 //   },
 // ];
+
 </script>
 
 <template>
+  <AlertComponent
+     v-model="showConfirmed"
+    v-bind="propsCreateAlert"
+    @confirm="deleteDocument"
+    @denegate="onCancelRelation"
+  >
+     <template #body>
+      <span> ¿Está seguro de eliminar el documento?  </span>
+    </template>
+  </AlertComponent>
+
   <div class="q-pa-md q-py-lg flex fixed-height">
     <q-table
       style="flex-grow: 1; width: inherit"
@@ -291,22 +313,21 @@ const setColorType = (type: string): string => {
             </span>
           </q-td>
           <q-td key="categoria_doc" :props="props" :style="'width: 150px;'">
-            <p class="q-my-sm">
+            <span class="q-my-sm">
               {{ props.row.categoria_doc }}
-            </p>
-            <p class="text-caption q-my-sm"><span class="text-weight-bold">Tipo:</span> {{ props.row.tipo_doc }}</p>
+            </span>
+            <br>
+            <span class="text-caption q-my-sm"><span class="text-weight-bold">Tipo:</span> {{ props.row.tipo_doc }}</span>
           </q-td>
           <q-td key="division" :props="props" :style="'width: 150px;'">
-            <p class="q-my-sm">
-              {{ props.row.division_c }}
-            </p>
-            <p class="text-caption q-my-sm"><span class="text-weight-bold">A. Mercado:</span> Desconocido</p>
+            {{ props.row.division_c }}
           </q-td>
           <q-td key="active_date" :props="props" :style="'width: 150px;'">
-            <p class="q-my-sm"><span class="text-weight-bold">F. Inicio:  </span>{{ props.row.active_date }}</p>
-            <p class="text-caption q-my-sm">
+            <span class="q-my-sm"><span class="text-weight-bold">F. Inicio:  </span>{{ props.row.active_date }}</span>
+            <br>
+            <span class="text-caption q-my-sm">
               <span class="text-weight-bold">F. Culminación:  </span> {{ props.row.exp_date }}
-            </p>
+            </span>
           </q-td>
           <q-td key="status_id" :props="props" :style="'width: 150px;'">
             <q-badge outline :color="setColorState(props.row.status_id)" class="q-px-md q-py-sm">
@@ -322,7 +343,7 @@ const setColorType = (type: string): string => {
           </q-td>
           <q-td key="responsable" :props="props" :style="'width: 150px;'">
             <div class="row">
-              <div class="col-2">
+              <div class="col-3">
                 <q-avatar
                   size="24px"
                   font-size="24px"
@@ -331,13 +352,17 @@ const setColorType = (type: string): string => {
                   icon="person"
                 />
               </div>
-              <div class="col-10">
+              <div class="col-9">
                 <span>
                   {{ props.row.responsable }}
                 </span>
+                <br>
+                <span class="text-grey">{{props.row.title}}</span>
               </div>
             </div>
-            <span class="text-caption"><span class="text-weight-bold">Fecha de Registro:</span> {{ props.row.fecha_creacion }}</span>
+          </q-td>
+          <q-td key="fecha_creacion" :props="props">
+            <div class="text-center">{{ props.row.fecha_creacion }}</div>
           </q-td>
           <q-td key="options" :props="props" :style="'width: 150px;'">
             <q-btn
@@ -352,17 +377,6 @@ const setColorType = (type: string): string => {
               >
                 <q-tooltip> Eliminar </q-tooltip>
               </q-btn>
-
-              <AlertComponent
-                v-model="showConfirmed"
-                v-bind="propsCreateAlert"
-                @confirm="deleteDocument"
-                @denegate="onCancelRelation"
-              >
-                <template #body>
-                  <span> ¿Está seguro de eliminar el documento?  </span>
-                </template>
-              </AlertComponent>
           </q-td>
         </q-tr>
         <q-tr v-if="props.expand" :props="props">
@@ -386,7 +400,11 @@ const setColorType = (type: string): string => {
     </q-table>
   </div>
   <q-dialog v-model="documentDialog" persistent>
-    <AddDocument :id="props.id" :child="props.child" />
+    <AddDocument 
+    :id="props.id" 
+    :child="props.child"
+    @closeDialog = 'closeDialog'
+    />
   </q-dialog>
   <q-dialog v-model="documentVersionDialog" persistent>
     <AddDocument

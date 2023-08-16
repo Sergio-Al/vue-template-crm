@@ -115,6 +115,11 @@ export interface Certification {
 }
 
 export interface Filter extends Partial<Certification> {
+  name?:string;
+  solicitante?:string;
+  producto_c?:string;
+  fabricante_c?:string;
+  iddivision_c?:string;
   created_by?: string[];
   modified_by?: string[];
   assigned_to?: string[];
@@ -218,7 +223,9 @@ export interface CertificationRequest {
   estado_c: string;
   etapa_c: string;
   fabricante_c: string;
+  id_fabricante_c:string;
   hance_certificacion_id_c: string;
+  hance_solicitudcertificacion_id_c: string;
   hance_empresa_id_c: string;
   id: string;
   id_empresa_c: string;
@@ -305,34 +312,38 @@ export interface EmpresaParticipacion {
   razon_social_c: string;
   direccion_c: string;
   resolucion_ministerial_c: string;
+  fecha_resolucion?:string;
+  titular?:string;
+  resolucion_ministerial_date_c?:string;
 }
 
 export interface CertificacionBody {
-  id: string;
+  id?: string;
   assigned_user_id: string; // profesional acreditado
-  billing_address_street: string;
-  billing_address_country: string;
-  cod_misa_c: string;
+  billing_address_street?: string;
+  billing_address_country?: string;
+  cod_misa_c?: string;
   date_entered: string;
-  date_planning_cert_c: string;
-  date_real_cert_c: string;
-  date_register_misa_c: string;
-  email1: string;
-  estado_c: string;
-  etapa_c: string;
+  date_planning_cert_c?: string;
+  date_real_cert_c?: string;
+  date_register_misa_c?: string;
+  email1?: string;
+  estado_c?: string;
+  etapa_c?: string;
   hance_empresa_id_c: string; // participacion como
-  hance_proveedor_id_c: string; // fabricante
+  hance_proveedor_id_c?: string; // fabricante
+  hance_solicitudcertificacion_id_c?: string; //
   idamercado_c: string;
   iddivision_c: string;
-  idgrupocliente_c: string;
+  idgrupocliente_c?: string;
   idregional_c: string;
-  licence: string;
+  licence?: string;
   name: string;
-  nro_cert_c: string;
-  nro_ruta_c: string;
-  tipo_producto_c: string;
-  tipo_tramite_c: string;
-  phone_office: string;
-  user_id_c: string; // SOLICITANTE
-  user_id_l_c: string; // profesional acreditado
+  nro_cert_c?: string;
+  nro_ruta_c?: string;
+  tipo_producto_c?: string;
+  tipo_tramite_c?: string;
+  phone_office?: string;
+  user_id_c?: string; // SOLICITANTE
+  user_idl_c?: string;
 }

@@ -1,5 +1,5 @@
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
-import { axios_LB_01, axios_GLOBAL } from 'src/conections/axiosCRM';
+import { axios_LB_01, axios_GLOBAL, axios_NS_07 } from 'src/conections/axiosCRM';
 import {
   AssignedUserModelResponse,
   AssignedUserModel,
@@ -77,8 +77,26 @@ export const getListUsers = async (division?: string, a_mercado?: string) => {
         a_mercado: a_mercado || userCRM.idamercado,
       })}`
     );
-
+    console.log(data.data);
     return data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getListUsersCompany = async (idCompany:any) => {
+  try {
+    // const { data } = await axios_LB_01.get<{ data: AssignedUserModel[] }>(
+    //   `/users/division/amercado?params=${JSON.stringify({
+    //     division: division || userCRM.iddivision,
+    //     a_mercado: a_mercado || userCRM.idamercado,
+    //   })}`
+    // );
+    // console.log(data.data);
+    // return data.data;
+    const { data } = await axios_NS_07.get(`/empresas/list-users/company/${idCompany}`);
+    console.log(data);
+    return data;
   } catch (error) {
     throw error;
   }

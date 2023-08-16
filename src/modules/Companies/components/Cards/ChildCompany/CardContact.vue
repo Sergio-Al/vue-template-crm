@@ -44,7 +44,7 @@ defineExpose({
         <q-input
           v-model="inputData.website"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Sitio Web"
           outlined
           dense
@@ -53,7 +53,7 @@ defineExpose({
         <q-input
           v-model="inputData.email1"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Correo Electrónico"
           outlined
           dense
@@ -62,7 +62,7 @@ defineExpose({
         <q-input
           v-model="inputData.phone_office"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Teléfono Principal"
           outlined
           dense
@@ -70,15 +70,11 @@ defineExpose({
         <q-input
           v-model="inputData.phone_alternate"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Teléfono Alternativo"
           outlined
           dense
         />
-
-        <div class="col-12">
-          <q-separator dark color="grey-4" />
-        </div>
       </div>
     </template>
 
@@ -87,7 +83,7 @@ defineExpose({
         <q-input
           v-model="inputData.website"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Sitio Web"
           outlined
           dense
@@ -97,7 +93,7 @@ defineExpose({
         <q-input
           v-model="inputData.email1"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Correo Electrónico"
           outlined
           dense
@@ -107,7 +103,7 @@ defineExpose({
         <q-input
           v-model="inputData.phone_office"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Teléfono Principal"
           outlined
           dense
@@ -116,7 +112,7 @@ defineExpose({
         <q-input
           v-model="inputData.phone_alternate"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Teléfono Alternativo"
           outlined
           dense

@@ -6,7 +6,7 @@ import {
 } from 'src/conections/axiosCRM';
 
 import { userStore } from 'src/modules/Users/store/UserStore';
-import { axios_LB_01 } from 'src/conections/axiosCRM';
+import { axios_LB_01, axios_NS_07 } from 'src/conections/axiosCRM';
 import type {
   Certification,
   CertificationDB,
@@ -48,15 +48,47 @@ export const updateMassiveData = async (data: any) => {
   }
 };
 
+export const updateStateCertificationRequest = async(id:string, state:string)=>{
+  try{
+    await axios_NS_07.patch(`/solicitud/state/${id}`, {estado_aprobacion_c:state});
+    return;
+  }
+  catch(e){
+    throw e;
+  }
+}
+
 export const deleteMassiveData = async (data: any) => {
   try {
     // DEV-1 request
     // data.items.forEach(async (element: any) => {
     //   await axios_NS_07.delete(`certification-request/${element.id}`);
     // });
-    data.items.forEach(async (element: any) => {
-      await axios_NS_07.delete(`solicitud/${element.id}`);
-    });
+
+    // data.items.forEach(async (element: any) => {
+      
+    // });
+
+    await axios_NS_07.post(`certificacion/delete-multiple`, data);
+    return;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteMassiveDataRequest = async (data: any) => {
+  try {
+    // DEV-1 request
+    // data.items.forEach(async (element: any) => {
+    //   await axios_NS_07.delete(`certification-request/${element.id}`);
+    // });
+
+    // data.items.forEach(async (element: any) => {
+      
+    // });
+
+    await axios_NS_07.post(`solicitud/delete-multiple`, data);
+
     return;
   } catch (error) {
     throw error;
@@ -71,7 +103,7 @@ export const getTableData = async (params: Params) => {
     // console.log(data);
     // return data
 
-    return await certificationsPromise();
+    //return await certificationsPromise();
 
     // return certicationsList;
 
@@ -181,9 +213,55 @@ const getLastNumberCertificationRequest = async () => {
   }
 };
 
+export const createComment = async(userId:string, module:any, description:any, moduleId:string)=>{
+  const comment = {
+    assigned_user_id: userId,
+    bean_id: moduleId,
+    bean_module: module,
+    description,
+    relevance: 'medium',
+    visualizacion_c: 'interno',
+    created_by: userId,
+  };
+  try{
+    await axios_GLOBAL.post(`/comments-new`, {comment});
+    //console.log(data);
+    //return;
+  }
+  catch(e){
+    throw e
+  }
+}
+
 export const getCertificationRequest = async (id: string) => {
   try {
     const { data } = await axios_NS_07.get(`/solicitud/${id}`);
+    console.log(data);
+    //const { data } = await axios_NS_07.get(`/certification-request/${id}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+  //console.log(response);
+  // return certification;
+};
+
+export const getCertificationRequestCustomized = async (id: string) => {
+  try {
+    const { data } = await axios_NS_07.get(`/solicitud/customized/${id}`);
+    console.log(data);
+    //const { data } = await axios_NS_07.get(`/certification-request/${id}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+  //console.log(response);
+  // return certification;
+};
+
+export const getCertification = async (id: string) => {
+  try {
+    const { data } = await axios_NS_07.get(`/certificacion/${id}`);
     //const { data } = await axios_NS_07.get(`/certification-request/${id}`);
     return data;
   } catch (error) {
@@ -217,7 +295,6 @@ export const updateCertificationRequest = async (
   id: string,
   body: Partial<CertificationRequest>
 ) => {
-  console.log(body);
   try {
     // DEV-1 request
     console.log(body);
@@ -273,11 +350,13 @@ export async function getUsers(
   //   user_idgrupocliente,
   // };
   try {
-    return await getUsersPromise();
+    // return await getUsersPromise();
+    
     // const { data } = await axios_LB_04.patch<GuestsRecordResponse>(
     //   '/search-user-mitings/1/100/desc/{val}',
     //   bodyOptions
     // );
+
     // return data.search_users;
     const { data } = await axios_NS_07.get<SearchUser[]>('/users', {
       params: {
@@ -292,14 +371,22 @@ export async function getUsers(
   }
 }
 
-export const getParticipants = async (value: string) => {
-  return await getEmpresaParticipacionPromise();
+export const getParticipants = async (idUser: string) => {
+  //devuelve las empresas y subempresas en donde participa el usuario
+  //return await getEmpresaParticipacionPromise();
+  try{
+    const {data} = await axios_NS_07.get(`/users/companies/${idUser}`);
+    return data;
+  }
+  catch(e){
+    throw e;
+  }
 };
 
 export const getManufacturer = async (id: string) => {
-  // const response = await axios_NS07(`/manufacturer/${id}`)
+  const { data } = await axios_NS_07.get(`/proveedor/${id}`)
   // return response;
-  return manufacturer;
+  return data;
 };
 
 export const getManufacturerContact = async (id: string) => {
@@ -323,12 +410,13 @@ export const getManufacturers = async (params: Partial<Manufacturer>) => {
     const { data } = await axios_NS_07.get(
       `proveedor/advanced?params=${JSON.stringify(params)}`
     );
-    console.log(data);
+    //console.log(data);
     return data;
   } catch (e) {
     throw e;
   }
 };
+
 
 export const getProducts = async (params: Partial<Product>) => {
   console.log(params);
@@ -355,3 +443,24 @@ export const createCertificationService = async (
   console.log(body);
   return await createCertificationPromise();
 };
+
+export const getLastSchema = async(base:string)=>{
+  const type = 'HANCE_Certificacion';
+  try{
+    const { data } = await axios_NS_07.get(`esquemadoc/last_schema/${type}/${base}`);
+    return data[0];
+  }
+  catch(e){
+    throw e;
+  }
+}
+
+export const getDocumentsSchema = async (id:string)=>{
+  try{
+    const { data } = await axios_NS_07.get(`esquemadoc/documents_schema/${id}`)
+    return data;
+  }
+  catch(e){
+    throw e;
+  }
+}
