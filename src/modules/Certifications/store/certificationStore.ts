@@ -12,6 +12,7 @@ import {
   deleteCertificationRequest,
   getLastSchema,
   getDocumentsSchema,
+  getListSchemas
 } from '../services/useCertificationsService';
 import { Certification, CertificationDB } from '../utils/types';
 
@@ -216,6 +217,17 @@ export const useCertificationStore = defineStore('certification-store', () => {
     }
   }
 
+  const onGetListSchemas = async (tramite:string)=>{
+     try{
+      const response = await getListSchemas(tramite);
+      console.log(response);
+      return response;
+     }
+     catch(e){
+       throw e;
+     }
+  }
+
   const getBase = (tramite:string, producto:string)=>{
     let value = '';
      if(producto == 'dispositivo'){
@@ -305,5 +317,6 @@ export const useCertificationStore = defineStore('certification-store', () => {
     onGetLastSchema,
     onGetDocumentsSchema,
     clearData,
+    onGetListSchemas
   };
 });

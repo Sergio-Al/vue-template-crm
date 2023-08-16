@@ -8,7 +8,7 @@ import { getUsers, getUser } from '../../services/useCertificationsService';
 
 import { CertificationDB, CertificationRequest, User } from '../../utils/types';
 import { userStore } from 'src/modules/Users/store/UserStore';
-import { useCertificationStore } from '../../store/certificationStore'
+import { useCertificationStore } from '../../store/certificationStore';
 import { useAsyncState } from '@vueuse/core';
 
 import CardSchemasSelect from './CardSchemasSelect.vue';
@@ -44,6 +44,7 @@ const inputData = ref({ ...props.data });
 
 const tramite = ref<string>('inscripcion');
 const producto = ref<string>('dispositivo');
+
 const documentsSchema = ref<any>([]);
 const showSchemas = ref<boolean>(false);
 
@@ -100,6 +101,10 @@ const columns = [
 //   console.log(schema.value)
 // });
 
+const assignSchema = ()=>{
+  console.log('se asigna el esquema');
+}
+
 const {
   state: schema,
   isLoading,
@@ -109,7 +114,7 @@ const {
 
   documentsSchema.value = await certificationStore.onGetDocumentsSchema(response.id);
 
-  console.log(documentsSchema.value);
+  //console.log(documentsSchema.value);
  
   return response;
 }, []);
@@ -164,7 +169,7 @@ defineExpose({
 
 <template>
     <q-dialog v-model="showSchemas">
-       <CardSchemasSelect />
+       <CardSchemasSelect @select="assignSchema" :tramite="schema.tramite" />
     </q-dialog>
     <q-card class="my-card" :loading="isLoading">
     <q-card-section> 

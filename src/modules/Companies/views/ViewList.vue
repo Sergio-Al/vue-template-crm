@@ -76,7 +76,6 @@ const onSubmitDataFilter = () => {
   //console.log('busqueda');
   try {
     table.data_filter = advancedFilterRef.value?.dataFilter;
-    console.log(table.data_filter);
     table.setFilterData();
     table.reloadList();
   } catch (error) {
