@@ -10,6 +10,9 @@ import {
   getCertificationRequest,
   updateCertificationRequest,
   deleteCertificationRequest,
+  getLastSchema,
+  getDocumentsSchema,
+  getListSchemas
 } from '../services/useCertificationsService';
 import { Certification, CertificationDB } from '../utils/types';
 
@@ -193,6 +196,73 @@ export const useCertificationStore = defineStore('certification-store', () => {
     }
   };
 
+  const onGetLastSchema = async(tramite:string, producto:string)=>{
+      const tramiteResult = getBase(tramite, producto)
+      try{
+        const data = await getLastSchema(tramiteResult);
+        return data;
+      }
+      catch(e){
+        throw e;
+      }
+  }
+
+  const onGetDocumentsSchema = async (id:string)=>{
+    try{
+      const response = await getDocumentsSchema(id); 
+      return response;
+    }
+    catch(e){
+      throw e;
+    }
+  }
+
+  const onGetListSchemas = async (tramite:string)=>{
+     try{
+      const response = await getListSchemas(tramite);
+      console.log(response);
+      return response;
+     }
+     catch(e){
+       throw e;
+     }
+  }
+
+  const getBase = (tramite:string, producto:string)=>{
+    let value = '';
+     if(producto == 'dispositivo'){
+       switch(tramite){
+         case 'inscripcion':
+            value = 'RegistroSanitario';
+            break;
+         case 'reinscripcion':
+            value = 'RegistroSanitario';
+            break;
+         case 'rectificacion':
+            value = 'Rectificacion';
+            break;
+         default:
+            break;
+       }
+     }
+     else{
+      switch(tramite){
+        case 'inscripcion':
+           value = 'CertificadoComercializacion';
+           break;
+        case 'reinscripcion':
+           value = 'CertificadoComercializacion';
+           break;
+        case 'rectificacion':
+           value = 'Rectificacion';
+           break;
+        default:
+           break;
+      }
+     }
+     return value;
+  }
+
   const clearData = () => {
     payload.value = {
       id: '',
@@ -244,6 +314,9 @@ export const useCertificationStore = defineStore('certification-store', () => {
     onGetCertificationRequest,
     onUpdateCertificationRequest,
     onDeleteCertificationRequest,
+    onGetLastSchema,
+    onGetDocumentsSchema,
     clearData,
+    onGetListSchemas
   };
 });

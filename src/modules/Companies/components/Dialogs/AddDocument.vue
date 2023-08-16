@@ -12,6 +12,12 @@ interface Props {
   documentData?: Document;
 }
 
+interface Emits {
+  (e: 'close-dialog', id: string): void;
+}
+
+const emits = defineEmits<Emits>();
+
 const expansionItemRef = ref<InstanceType<typeof QExpansionItem> | null>();
 
 const props = withDefaults(defineProps<Props>(), {
@@ -71,6 +77,10 @@ const columns: QTableColumn[] = [
   },
 ];
 
+const update = ()=>{
+  emits('close-dialog', '1');
+}
+
 </script>
 
 <template>
@@ -124,6 +134,7 @@ const columns: QTableColumn[] = [
             :header-id="props.id"
             :header-child="props.child"
             :default-data="props.documentData"
+            @update = "update"
           />
         </q-expansion-item>
       </q-page>

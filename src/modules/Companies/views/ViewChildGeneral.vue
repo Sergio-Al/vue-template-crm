@@ -8,7 +8,7 @@ import { computed, ref } from 'vue';
 import { useChildCompaniesStore } from '../store/childCompanyStore';
 import CommentsList from 'src/components/Comments/CommentsList.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
-// import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
+import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
 
 // module-components
 import CardDocuments from '../components/Cards/CardDocuments.vue';
@@ -55,7 +55,6 @@ const isSomeCardEditing = computed(() => {
   ].some((value) => !!value);
 });
 
-//se dispara cuando carga el componente
 const { isLoading, execute } = useAsyncState(async () => {
   if (!!localId.value) {
     return await childCompanyStore.onGetChildCompany(localId.value);
@@ -214,7 +213,7 @@ const emits = defineEmits<{
           child
           :id="localId"
           :show-controls="!!localId"
-          :user-id="childPayload ? childPayload.user_id_c : ''"
+          :user-id="childPayload ? childPayload.assigned_user_id : ''"
           @update="updateAssigned"
         />
         <div class="q-gutter-y-md col-12">
@@ -258,10 +257,11 @@ const emits = defineEmits<{
                 >
                   <CommentsList
                     :id="localId"
-                    :descCRM3="'comentario prueba participacion'"
-                    :modulo="'HANCE_Certficaciones'"
+                    :descCRM3="'comentario prueba empresa participación'"
+                    :modulo="'HANCE_EmpresaParticipacion'"
                   >
                   </CommentsList>
+                  <!-- <CardComment /> -->
                 </q-tab-panel>
                 <q-tab-panel
                   name="comentarios"
@@ -284,12 +284,28 @@ const emits = defineEmits<{
                   </q-input>
                 </q-tab-panel>
                 <q-tab-panel name="Activities">
-                  <!-- <ActivitiesComponent
-                  :id="localId"
-                  :idUser="userCRM.id"
-                  module="Opportunities"
-                ></ActivitiesComponent> -->
-                  <div>Activities component</div>
+                  <ActivitiesComponent
+                    :id="localId"
+                    :idUser="cardInfo.user_id"
+                    module="HANCE_EmpresaParticipacion"
+                  ></ActivitiesComponent>
+                </q-tab-panel>
+                <q-tab-panel name="historychanges">
+                  <q-card class="my-card">
+                    <q-card-section>
+                      <div class="text-h6">Historial de cambios</div>
+                      <div class="text-subtitle2">Sub Empresa</div>
+                    </q-card-section>
+                    <q-card-section>
+                      Se mostrara el historial de cambios
+                    </q-card-section>
+                  </q-card>
+                </q-tab-panel>
+                <q-tab-panel name="historychanges" v-if="!!localId">
+                  <ViewChangecontrol :id="localId"></ViewChangecontrol>
+                </q-tab-panel>
+                <q-tab-panel name="historychanges" v-else>
+                  <ViewChangecontrol :id="'0'"></ViewChangecontrol>
                 </q-tab-panel>
               </q-tab-panels>
             </q-card-section>

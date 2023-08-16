@@ -852,25 +852,27 @@ export const getEmpresaParticipacionPromise = (): Promise<
     setTimeout(() => {
       resolve([
         {
-          id: '1',
-          name: 'ABC Company',
-          razon_social_c: 'Razón Social 1',
-          direccion_c: 'Address 1',
-          resolucion_ministerial_c: 'Resolución 1',
+          id: '139c3fdd-c676-3071-b88c-64b0022b6839',
+          name: 'HANSA LTDA',
+          razon_social_c: 'HANSA LTDA',
+          direccion_c: 'Yanacocha Esq. Mercado No 1004',
+          resolucion_ministerial_c: '0423',
+          fecha_resolucion_ministerial_c:'09/24/1999',
+          titular:'Patricio Kyllman Diekelmann'
         },
         {
-          id: '2',
-          name: 'XYZ Corporation',
-          razon_social_c: 'Razón Social 2',
-          direccion_c: 'Address 2',
-          resolucion_ministerial_c: 'Resolución 2',
+          id: '21206e27-9e50-c28c-30a6-64b00679af8e',
+          name: 'MIPRO LTDA',
+          razon_social_c: 'MIPRO LTDA',
+          direccion_c: 'Yanacocha Esq. Mercado No 1004',
+          resolucion_ministerial_c: '12345',
         },
         {
           id: '3',
-          name: 'Sample Inc.',
-          razon_social_c: 'Razón Social 3',
-          direccion_c: 'Address 3',
-          resolucion_ministerial_c: 'Resolución 3',
+          name: 'CIBO LTDA',
+          razon_social_c: 'MIPRO LTDA',
+          direccion_c: 'Yanacocha Esq. Mercado No 1004',
+          resolucion_ministerial_c: '12345',
         },
         // Add more dummy data objects as needed...
       ]);
@@ -913,3 +915,88 @@ export const createCertificationPromise = (): Promise<CertificacionBody> => {
     }, 2000);
   });
 };
+
+export const rowsSchema = [
+  {
+    nro: '2.1',
+    name: 'Formulario de Solicitud para registro y control de calidad de Medicamentos (DINAMED Form 005)',
+    module: 'Certificaciones',
+    auto: false,
+    binding: true,
+  },
+  {
+    nro: '1',
+    name: 'Formulario 012, 025, 027, Formato Unico',
+    module: 'Certificaciones',
+    auto: false,
+    binding: true,
+  },
+  {
+    nro: '2',
+    name: 'Anexo al Formulario 012',
+    module: 'Certificaciones',
+    auto: false,
+    binding: false,
+  },
+  {
+    nro: '3',
+    name: 'Anexo al Formulario 027',
+    module: 'Certificaciones',
+    auto: false,
+    binding: false,
+  },
+  {
+    nro: '4',
+    name: 'Anexo al Formato Unico',
+    module: 'Certificaciones',
+    auto: false,
+    binding: false,
+  },
+  {
+    nro: '5',
+    name: 'Pago por Concepto de Servicio',
+    module: 'Certificaciones',
+    auto: false,
+    binding: true,
+  },
+  {
+    nro: '6',
+    name: 'Nota de Solicitud',
+    module: 'Certificaciones',
+    auto: false,
+    binding: true,
+  },
+  {
+    nro: '7',
+    name: 'Documentación de Respaldo',
+    module: 'Certificaciones',
+    auto: false,
+    binding: true,
+  },
+]
+
+export const rowsDocsProveedor = [
+  {
+    id: '1',
+    name: 'File de Cliente Olympus',
+    category: 'File de Cliente',
+    tipo:'Formulario',
+    division: '04 Soluciones Medicas',
+    amercado:'01 Imagenología',
+    date_start: '01/01/2023',
+    date_end: '31/12/2023',
+    state:'Pendiente'
+  },
+  {
+    id: '2',
+    name: 'Marketing Olympus',
+    category: 'Marketing',
+    tipo:'Marca',
+    division: '04 Soluciones Medicas',
+    amercado:'01 Imagenología',
+    date_start: '01/06/2020',
+    date_end: '12/08/2023',
+    state:'En Revisión'
+  },
+]
+

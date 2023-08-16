@@ -1,23 +1,23 @@
 import { Company } from './types';
 
-export const companies: Company[] = [
-  {
-    razon_social_c: 'asdfadsf',
-    resolucion_ministerial_c: 'dddd',
-    identificacion_fiscal_c: 'ddddafd',
-    modified_user_id: 'dasfadsfds',
-    created_by: 'adsfads',
-    comment: 'comentario',
-    address: 'Av Bolivia',
-    assigned_user_id: '1',
-    id: 'b7977d14-d177-4420-870d-23e42d3b2827',
-    name: 'Voonte',
-    direccion_c: '73 Northland Alley',
-    email1: 'gpeel0@craigslist.org',
-    phone: '9993434324',
-    phone_alternate: '861-886-7772',
-  },
-];
+// export const companies: Company[] = [
+//   {
+//     razon_social_c: 'asdfadsf',
+//     resolucion_ministerial_c: 'dddd',
+//     identificacion_fiscal_c: 'ddddafd',
+//     modified_user_id: 'dasfadsfds',
+//     created_by: 'adsfads',
+//     comment: 'comentario',
+//     address: 'Av Bolivia',
+//     assigned_user_id: '1',
+//     id: 'b7977d14-d177-4420-870d-23e42d3b2827',
+//     name: 'Voonte',
+//     direccion_c: '73 Northland Alley',
+//     email1: 'gpeel0@craigslist.org',
+//     phone: '9993434324',
+//     phone_alternate: '861-886-7772'
+//   },
+// ];
 
 export const childCompanies = [
   {
@@ -651,12 +651,12 @@ export const documentTypeList = [
   {
     id: '1',
     label: 'Público',
-    value: 'publico',
+    value: 'Publico',
   },
   {
     id: '2',
     label: 'Privado',
-    value: 'privado',
+    value: 'Privado',
   },
 ];
 

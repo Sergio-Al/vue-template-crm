@@ -16,9 +16,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
-const tab = ref('');
-const state = ref('');
+//const state = ref('');
 
 // const table = useCertificationRequestTableStore();
 // const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
@@ -33,7 +31,11 @@ const {
   pagination,
   visible_columns,
   visible_fields,
+  state_tab,
 } = storeToRefs(certificationRequestTableStore);
+
+//const tab = state_tab.value;
+
 const {
   clearFilterData,
   deleteMultiple,
@@ -106,7 +108,7 @@ const onRequestTable = async (val: { pagination: any; filter: any }) => {
 
 const onClearDataFilter = () => {
   try {
-    // filterAdvancedRef.value?.clearFilter();
+    //advancedFilterRef.value?.clearFilter();
     clearFilterData();
     setFilterData();
     reloadList();
@@ -115,36 +117,37 @@ const onClearDataFilter = () => {
   }
 };
 
-const setEtapaColor = (etapa: string): string => {
-  const colorMap: { [key: string]: string } = {
-    Nueva: 'orange',
-    Revisión: 'blue',
-    Finalizada: 'green',
-  };
+// const setEtapaColor = (etapa: string): string => {
+//   const colorMap: { [key: string]: string } = {
+//     Nueva: 'orange',
+//     Revisión: 'blue',
+//     Finalizada: 'green',
+//   };
 
-  return colorMap[etapa] || 'blue';
-};
+//   return colorMap[etapa] || 'blue';
+// };
 
 const setEstadoColor = (estado: string): string => {
   const colorEstado: { [key: string]: string } = {
-    Pendiente: 'amber',
-    Aprobado: 'green',
-    Rechazado: 'red',
+    Pendiente: 'orange',
+    Aprobada: 'green',
+    Rechazada: 'red',
+    Observada: 'red'
   };
 
   return colorEstado[estado] || 'blue';
 };
 
-const setTipoColor = (tipo: string): string => {
-  const colorMap: { [key: string]: string } = {
-    DISPOSITIVO: 'green',
-    EQUIPO: 'blue',
-    MEDICAMENTO: 'orange',
-    COSMÉTICO: 'purple',
-  };
+// const setTipoColor = (tipo: string): string => {
+//   const colorMap: { [key: string]: string } = {
+//     DISPOSITIVO: 'green',
+//     EQUIPO: 'blue',
+//     MEDICAMENTO: 'orange',
+//     COSMÉTICO: 'purple',
+//   };
 
-  return colorMap[tipo] || 'grey';
-};
+//   return colorMap[tipo] || 'grey';
+// };
 
 const openDialog = (id?: string) => {
   certificationRequestDialogRef.value?.openDialogTab(id);
@@ -153,6 +156,11 @@ const openDialog = (id?: string) => {
 const openItemSelected = (id: string, title: string) => {
   certificationDialogRef.value?.openDialogTab(id, title);
 };
+
+const filterState = ()=>{
+  //console.log(value);
+  reloadList();
+}
 </script>
 
 <template>
@@ -160,17 +168,18 @@ const openItemSelected = (id: string, title: string) => {
   <div :class="$q.platform.is.desktop ? 'q-pa-md q-pt-lg' : 'q-pa-sm q-pt-lg'">
         <q-card>
           <q-tabs
-          v-model="tab"
+          v-model="data_filter.state_aprobacion"
           align="justify"
           dense
           class="text-grey-7"
           active-color="primary"
           indicator-color="orange"
+          @click="reloadList()"
           >
             <q-tab name="" label="TODAS" />
             <q-tab name="pending" label="PENDIENTE" />
             <q-tab name="approved" label="APROBADA" />
-            <q-tab name="observed" label="OBSERVADA" />
+            <q-tab name="kept" label="OBSERVADA" />
             <q-tab name="rejected" label="RECHAZADA" />
           </q-tabs>
         </q-card>
@@ -215,7 +224,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="date_entered" :props="propsTable">
             <span>{{ propsTable.row.date_entered }}</span>
           </q-td>
-          <q-td key="user_id_c" :props="propsTable">
+          <q-td key="assigned_user_id" :props="propsTable">
             <div
               style="
                 white-space: nowrap;
@@ -223,27 +232,37 @@ const openItemSelected = (id: string, title: string) => {
                 text-overflow: ellipsis;
               "
             >
-              <q-avatar
-                class="q-mr-sm"
-                size="xs"
-                color="primary"
-                text-color="white"
-                icon="person"
-              />
-              <span>{{ propsTable.row.solicitante }}</span>
-              <br />
-              <span class="text-caption text-grey">{{propsTable.row.cargo}}</span>
+            <div class="row">
+              <div class="col-3">
+                <q-avatar
+                  class="q-mr-sm"
+                  size="sm"
+                  color="primary"
+                  text-color="white"
+                  icon="person"
+                />
+              </div>
+              <div class="col-9 text-left">
+                <span>{{ propsTable.row.solicitante }}</span>
+                <br>
+                <span class="text-caption text-grey">{{propsTable.row.cargo}}</span>
+              </div>
+            </div>
+              
             </div>
           </q-td>
           <q-td key="division" :props="propsTable">
             <span>{{ propsTable.row.division }}</span>
+            <br />
+            <span class="text-caption"><span class="text-grey">Area de Mercado:</span> {{ propsTable.row.amercado }}</span>
           </q-td>
-          <q-td key="idamercado_c" :props="propsTable">
-            <span>{{ propsTable.row.idamercado_c }}</span>
+
+          <!--<q-td key="idamercado_c" :props="propsTable">
           </q-td>
           <q-td key="idregional_c" :props="propsTable">
             <span>{{ propsTable.row.idregional_c }}</span>
-          </q-td>
+          </q-td>-->
+
           <q-td key="producto_c" :props="propsTable">
             <span>{{ propsTable.row.producto_c }}</span>
           </q-td>
@@ -493,7 +512,7 @@ const openItemSelected = (id: string, title: string) => {
       </template>
       <template #filterContent>
         <AdvancedFilter
-          ref="filterAdvancedRef"
+          ref="advancedFilterRef"
           @submitFilter="onSubmitDataFilter"
         />
       </template>

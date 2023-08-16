@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useAdvancedFilter } from '../../composables';
-import { useCertificationsTableStore } from '../../store/useCertificationTableStore';
+import { useCertificationRequestTableStore } from '../../store/useCertificationRequestTableStore';
 
 import DateRangeComponent from 'src/components/DateRange/DateRangeComponent.vue';
 
@@ -12,7 +12,7 @@ const {
   clearFilter: clearData,
   todos,
 } = useAdvancedFilter();
-const tableStore = useCertificationsTableStore();
+const tableStore = useCertificationRequestTableStore();
 
 const show_more_input = ref(false);
 const dynamicInput = ref<InstanceType<typeof DateRangeComponent> | null>(null);

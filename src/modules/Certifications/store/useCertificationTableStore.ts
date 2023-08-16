@@ -16,13 +16,15 @@ import {
 import { axios_PREFERENCES } from 'src/conections/axiosCRM';
 import { Notification } from 'src/composables';
 import { userStore } from 'src/modules/Users/store/UserStore';
+import { ref } from 'vue';
 
-const { userCRM } = userStore();
+export const { userCRM } = userStore();
 
 export const useCertificationsTableStore = defineStore('certification_table', {
   state: () => ({
     loading: false,
     mongo_id: '',
+    state_tab: '',
     pagination: {
       page: 1,
       sortBy: 'fecha_creacion',
@@ -232,6 +234,8 @@ export const useCertificationsTableStore = defineStore('certification_table', {
     },
 
     async reloadList() {
+      this.data_filter.etapa_c = this.state_tab;
+
       await this.getListCertifications({
         pagination: this.pagination,
         filter: this.data_filter,

@@ -36,6 +36,7 @@ defineExpose({
       name:inputData.value.name,
       razon_social_c:inputData.value.razon_social_c,
       resolucion_ministerial_c:inputData.value.resolucion_ministerial_c,
+      resolucion_ministerial_date_c:inputData.value.resolucion_ministerial_date_c,
       identificacion_fiscal_c:inputData.value.identificacion_fiscal_c
     } as ChildCompany
   )
@@ -59,7 +60,7 @@ defineExpose({
         <q-input
           v-model="inputData.razon_social_c"
           type="text"
-          class="col-12 col-sm-12"
+          class="col-12 col-sm-12 q-py-sm"
           label="Razón Social"
           outlined
           dense
@@ -68,25 +69,33 @@ defineExpose({
         <q-input
           v-model="inputData.name"
           type="text"
-          class="col-12 col-sm-12"
+          class="col-12 col-sm-6 q-py-sm"
           label="Nombre Comercial"
           outlined
           dense
           :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
+          v-model="inputData.identificacion_fiscal_c"
+          type="text"
+          class="col-12 col-sm-6 q-py-sm"
+          label="Nro. de Identificacion Fiscal"
+          outlined
+          dense
+        />
+        <q-input
           v-model="inputData.resolucion_ministerial_c"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Nro. de Resolución Ministerial"
           outlined
           dense
         />
         <q-input
-          v-model="inputData.identificacion_fiscal_c"
-          type="text"
-          class="col-12 col-sm-6"
-          label="Nro. de Identificacion Fiscal"
+          v-model="inputData.resolucion_ministerial_date_c"
+          type="date"
+          class="col-12 col-sm-6 q-py-sm"
+          label="Fecha de Resolución Ministerial"
           outlined
           dense
         />
@@ -98,7 +107,7 @@ defineExpose({
         <q-input
           v-model="inputData.razon_social_c"
           type="text"
-          class="col-12 col-sm-12"
+          class="col-12 col-sm-12 q-py-sm"
           label="Razón Social"
           outlined
           dense
@@ -107,17 +116,8 @@ defineExpose({
         <q-input
           v-model="inputData.name"
           type="text"
-          class="col-12 col-sm-12"
+          class="col-12 col-sm-6 q-py-sm"
           label="Nombre Comercial"
-          outlined
-          dense
-          readonly
-        />
-        <q-input
-          v-model="inputData.resolucion_ministerial_c"
-          type="text"
-          class="col-12 col-sm-6"
-          label="Nro. de Resolución Ministerial"
           outlined
           dense
           readonly
@@ -125,8 +125,26 @@ defineExpose({
         <q-input
           v-model="inputData.identificacion_fiscal_c"
           type="text"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Nro. de Identificacion Fiscal"
+          outlined
+          dense
+          readonly
+        />
+        <q-input
+          v-model="inputData.resolucion_ministerial_c"
+          type="text"
+          class="col-12 col-sm-6 q-py-sm"
+          label="Nro. de Resolución Ministerial"
+          outlined
+          dense
+          readonly
+        />
+        <q-input
+          v-model="inputData.resolucion_ministerial_date_c"
+          type="date"
+          class="col-12 col-sm-6 q-py-sm"
+          label="Fecha de Resolución Ministerial"
           outlined
           dense
           readonly

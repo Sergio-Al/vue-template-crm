@@ -122,6 +122,8 @@ export const useCertificationsStore = defineStore('certifications', {
       'id',
     ],
   }),
+
+  
   actions: {
     async getUserConfig() {
       // const configuration = await getTablePreferences();

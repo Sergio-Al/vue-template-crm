@@ -100,6 +100,7 @@ const reset = () => {
 
 onMounted(async () => {
   if (!!props.id) {
+    //console.log(inputData.value.hance_empresa_id_c);
     if (!!inputData.value.hance_empresa_id_c) {
       const manufacturerSelected = await getManufacturer(
         inputData.value.hance_empresa_id_c

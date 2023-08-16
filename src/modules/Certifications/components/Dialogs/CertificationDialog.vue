@@ -8,15 +8,21 @@ import ViewDataManufacturer from '../../views/ViewDataManufacturer.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
 import { CertificacionBody } from '../../utils/types';
 import {
-  getCertificationRequest,
+  getCertification,
   createCertificationService,
 } from '../../services/useCertificationsService';
 </script>
 
 <script lang="ts" setup>
-interface DialogOptions {
-  certificationId?: string;
+interface Props {
+  idSolicitud: string;
 }
+
+interface DialogOptions {
+  solicitudId?: string;
+}
+
+const props = defineProps<Props>();
 
 interface Emits {
   (e: 'udpate'): void;
@@ -60,16 +66,18 @@ const openDialogTab = (
   data?: Partial<CertificacionBody>,
   options: DialogOptions = {}
 ) => {
-  const { certificationId = '' } = options;
-  certificationRequestId.value = certificationId;
+  const { solicitudId = '' } = options;
+  certificationRequestId.value = solicitudId;
   if (!!id) {
     localId.value = id;
-    getCertification();
+    getCertification2();
   }
 
   if (!!data) {
     certificationData.value = data;
   }
+
+  console.log(props);
   open.value = true;
 };
 
@@ -109,15 +117,25 @@ const updateCertification = (data: Partial<CertificacionBody>) => {
   emits('udpate');
 };
 
+const goTabManufacturer = () => {
+  console.log('validar');
+  activeTab.value = 'dataManufacturer';
+};
+
 const {
   state: certificationData,
   isLoading,
-  execute: getCertification,
+  execute: getCertification2,
 } = useAsyncState(
   async () => {
-    return await getCertificationRequest(localId.value);
+    const a = await getCertification(localId.value);
+    console.log(a);
+    return a;
   },
-  {} as CertificacionBody,
+  {
+    hance_solicitudcertificacion_id_c: props.idSolicitud,
+    iddivision_c: '04',
+  } as CertificacionBody,
   { immediate: false }
 );
 
@@ -205,6 +223,7 @@ defineExpose({
               :request-id="certificationRequestId"
               @create="createCertification"
               @update="updateCertification"
+              @continue="goTabManufacturer"
               ref="generalFormRef"
             />
           </q-tab-panel>

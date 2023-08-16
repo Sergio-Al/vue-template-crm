@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { QTableColumn } from 'quasar';
+import { QTableColumn, useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 
 import { availableUsers } from '../../utils/dummyData';
@@ -17,6 +17,8 @@ interface Props {
 interface Emits {
   (e: 'selectUser', id: User[]): void;
 }
+
+const $q = useQuasar();
 
 const props = withDefaults(defineProps<Props>(), { users: () => [] });
 
@@ -77,6 +79,7 @@ const companyStore = useCompaniesStore();
 
 const userFiltered = ref<string>('');
 const selected = ref<User[]>(props.users || []);
+const selected_aux = ref<User[]>(props.users || []);
 //const users = ref(availableUsers);
 
 const {
@@ -87,6 +90,35 @@ const {
   if(!userFiltered.value) userFiltered.value = ''
   return await companyStore.onGetCompanyUsers(props.parentId, userFiltered.value);
 }, []);
+
+const verifySelected=()=>{
+  //console.log(selected.value);
+  const aux = ref<any>([]);
+  aux.value = selected.value.filter(element => !selected_aux.value.includes(element));
+
+  if(aux.value.length>0){
+    emits('selectUser', aux.value);
+  }
+  else{
+    $q.notify({
+          type: 'warning',
+          message: 'Selección de usuarios',
+          caption: 'No se seleccionó ningun usuario nuevo',
+        });
+  }
+
+  // if(selected.value.every(element => selected_aux.value.includes(element))){
+  //   $q.notify({
+  //         type: 'warning',
+  //         message: 'Selección de usuarios',
+  //         caption: 'No se seleccionó ningun usuario nuevo',
+  //       });
+  // }
+  // else{
+  //   //solo enviar aquellos que son diferentes a los existentes
+  //   emits('selectUser', selected.value);
+  // }
+}
 </script>
 
 <template>
@@ -124,11 +156,8 @@ const {
         color="primary"
         icon="group_add"
         label="Confirmar"
-        v-close-popup
         @click="
-          () => {
-            emits('selectUser', selected);
-          }
+          verifySelected()
         "
       />
     </q-footer>
