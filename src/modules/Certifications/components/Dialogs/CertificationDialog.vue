@@ -11,7 +11,7 @@ import ViewDataManufacturer from '../../views/ViewDataManufacturer.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
 import { CertificacionBody, Certification } from '../../utils/types';
 import {
-  getCertificationRequest,
+  getCertification,
   createCertificationService,
 } from '../../services/useCertificationsService';
 import { useAsyncState } from '@vueuse/core';
@@ -19,6 +19,13 @@ import { useQuasar } from 'quasar';
 </script>
 
 <script lang="ts" setup>
+
+interface Props {
+  idSolicitud:string
+}
+
+const props = defineProps<Props>();
+
 interface Emits {
   (e: 'udpate'): void;
 }
@@ -50,12 +57,14 @@ const localId = ref('');
 const openDialogTab = (id?: string, data?: Partial<CertificacionBody>) => {
   if (!!id) {
     localId.value = id;
-    getCertification();
+    getCertification2();
   }
 
   if (!!data) {
     certificationData.value = data;
   }
+
+  console.log(props)
   open.value = true;
 };
 
@@ -68,7 +77,6 @@ const dataManufacturerRef = ref<InstanceType<
 // const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
 //* methods
 const clearData = () => {
-  console.log('cleaning data');
   localId.value = '';
   certificationStore.clearData();
 };
@@ -103,15 +111,23 @@ const updateCertification = (data: Partial<CertificacionBody>) => {
   console.log(data);
 };
 
+const goTabManufacturer = ()=>{
+  console.log('validar');
+  activeTab.value = 'dataManufacturer';
+}
+
 const {
   state: certificationData,
   isLoading,
-  execute: getCertification,
+  execute: getCertification2,
 } = useAsyncState(
   async () => {
-    return await getCertificationRequest(localId.value);
+    const a = await getCertification(localId.value);
+    console.log(a)
+    return a;
   },
   {
+    hance_solicitudcertificacion_id_c:props.idSolicitud,
     iddivision_c: '04',
   } as CertificacionBody,
   { immediate: false }
@@ -215,6 +231,7 @@ defineExpose({
               :data="certificationData"
               @create="createCertification"
               @update="updateCertification"
+              @continue="goTabManufacturer"
               ref="generalFormRef"
             />
           </q-tab-panel>

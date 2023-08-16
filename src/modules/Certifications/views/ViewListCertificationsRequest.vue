@@ -117,36 +117,37 @@ const onClearDataFilter = () => {
   }
 };
 
-const setEtapaColor = (etapa: string): string => {
-  const colorMap: { [key: string]: string } = {
-    Nueva: 'orange',
-    Revisión: 'blue',
-    Finalizada: 'green',
-  };
+// const setEtapaColor = (etapa: string): string => {
+//   const colorMap: { [key: string]: string } = {
+//     Nueva: 'orange',
+//     Revisión: 'blue',
+//     Finalizada: 'green',
+//   };
 
-  return colorMap[etapa] || 'blue';
-};
+//   return colorMap[etapa] || 'blue';
+// };
 
 const setEstadoColor = (estado: string): string => {
   const colorEstado: { [key: string]: string } = {
-    Pendiente: 'amber',
-    Aprobado: 'green',
-    Rechazado: 'red',
+    Pendiente: 'orange',
+    Aprobada: 'green',
+    Rechazada: 'red',
+    Observada: 'red'
   };
 
   return colorEstado[estado] || 'blue';
 };
 
-const setTipoColor = (tipo: string): string => {
-  const colorMap: { [key: string]: string } = {
-    DISPOSITIVO: 'green',
-    EQUIPO: 'blue',
-    MEDICAMENTO: 'orange',
-    COSMÉTICO: 'purple',
-  };
+// const setTipoColor = (tipo: string): string => {
+//   const colorMap: { [key: string]: string } = {
+//     DISPOSITIVO: 'green',
+//     EQUIPO: 'blue',
+//     MEDICAMENTO: 'orange',
+//     COSMÉTICO: 'purple',
+//   };
 
-  return colorMap[tipo] || 'grey';
-};
+//   return colorMap[tipo] || 'grey';
+// };
 
 const openDialog = (id?: string) => {
   certificationRequestDialogRef.value?.openDialogTab(id);
@@ -223,7 +224,7 @@ const filterState = ()=>{
           <q-td key="date_entered" :props="propsTable">
             <span>{{ propsTable.row.date_entered }}</span>
           </q-td>
-          <q-td key="user_id_c" :props="propsTable">
+          <q-td key="assigned_user_id" :props="propsTable">
             <div
               style="
                 white-space: nowrap;
@@ -231,27 +232,37 @@ const filterState = ()=>{
                 text-overflow: ellipsis;
               "
             >
-              <q-avatar
-                class="q-mr-sm"
-                size="xs"
-                color="primary"
-                text-color="white"
-                icon="person"
-              />
-              <span>{{ propsTable.row.solicitante }}</span>
-              <br />
-              <span class="text-caption text-grey">{{propsTable.row.cargo}}</span>
+            <div class="row">
+              <div class="col-3">
+                <q-avatar
+                  class="q-mr-sm"
+                  size="sm"
+                  color="primary"
+                  text-color="white"
+                  icon="person"
+                />
+              </div>
+              <div class="col-9 text-left">
+                <span>{{ propsTable.row.solicitante }}</span>
+                <br>
+                <span class="text-caption text-grey">{{propsTable.row.cargo}}</span>
+              </div>
+            </div>
+              
             </div>
           </q-td>
           <q-td key="division" :props="propsTable">
             <span>{{ propsTable.row.division }}</span>
+            <br />
+            <span class="text-caption"><span class="text-grey">Area de Mercado:</span> {{ propsTable.row.amercado }}</span>
           </q-td>
-          <q-td key="idamercado_c" :props="propsTable">
-            <span>{{ propsTable.row.idamercado_c }}</span>
+
+          <!--<q-td key="idamercado_c" :props="propsTable">
           </q-td>
           <q-td key="idregional_c" :props="propsTable">
             <span>{{ propsTable.row.idregional_c }}</span>
-          </q-td>
+          </q-td>-->
+
           <q-td key="producto_c" :props="propsTable">
             <span>{{ propsTable.row.producto_c }}</span>
           </q-td>

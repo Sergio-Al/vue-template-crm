@@ -5,11 +5,16 @@ import CardAddVersion from './CardAddVersion.vue';
 
 import type { Document } from '../../utils/types';
 
-import { documentList } from '../../utils/dummyData';
+//import { documentList } from '../../utils/dummyData';
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import { useAsyncState } from '@vueuse/core';
 
 import { useCompaniesStore } from '../../store/companyStore';
+import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
+
+const {
+ onDeleteDocumentVersion
+} = useCompaniesStore();
 
 interface Props {
   id: string;
@@ -21,6 +26,18 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const showConfirmed = ref<boolean>(false);
+
+const propsCreateAlert = {
+  title: 'Alerta de confirmación',
+  icon: 'person',
+  iconSize: 'md',
+  message: '',
+  iconColor: 'red',
+  btnColor: 'red',
+  btnText: 'Si, estoy seguro',
+};
+
 const loading = ref(false);
 const documentPath = ref('upload/0');
 const link = ref('');
@@ -28,10 +45,25 @@ const link2 = ref('');
 const newVersionDialog = ref(false);
 
 const companyStore = useCompaniesStore();
+const idVersion = ref();
 
 const previewDocument = (fileName: string) => {
   documentPath.value = `${HANSACRM3_URL}/index.php?entryPoint=download&id=${fileName}&type=Documents&view_doc=view`;
   //documentPath.value = `public/img/${fileName}`;
+};
+
+const deleteVersion = async () => {
+  try {
+    isLoading.value = true;
+    //console.log('se eliminará', idVersion.value);
+
+    await onDeleteDocumentVersion(idVersion.value);
+    reloadList();
+  } catch (error) {
+    console.log('error');
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 onMounted(() => {
@@ -54,8 +86,27 @@ const convierteFechaDoc = (docs:[]) => {
   return docs;
 }
 
+const reloadList = ()=>{
+  execute();
+}
+
+
+const onCancelRelation = () => {
+  console.log('se canceló');
+};
+
 </script>
 <template>
+  <AlertComponent
+   v-model="showConfirmed"
+   v-bind="propsCreateAlert"
+   @confirm="deleteVersion"
+   @denegate="onCancelRelation"
+    >
+      <template #body>
+        <span> ¿Está seguro de eliminar la versión del documento ? </span>
+      </template>
+    </AlertComponent>
   <q-card class="my-card">
     <q-card-section>
       <div class="row">
@@ -97,11 +148,31 @@ const convierteFechaDoc = (docs:[]) => {
                       >
                       <q-item-label caption lines="1"
                         >Fecha de Creación:
-                        <span class="text-weight-bold text-black">{{ row.fecha_creacion }}</span></q-item-label
+                        <span class="text-weight-medium text-black">{{ row.fecha_creacion }}</span></q-item-label
                       >
                       <q-item-label caption lines="1"
-                        >Responsable: <span class="text-weight-bold text-black">{{ row.nombre_usuario }}</span></q-item-label
+                        >Responsable: <span class="text-weight-medium text-black">{{ row.nombre_usuario }}</span></q-item-label
                       >
+                    </q-item-section>
+                      
+                    <q-item-section side>
+                      <q-btn color="black" icon="more_vert" flat round size="md">
+                        <q-menu auto-close :offset="[0, 0]">
+                          <q-list dense>
+                            <q-item clickable>
+                              <div class="row items-center">
+                                <q-item-section
+        
+                                @click="()=>{
+                                  showConfirmed = true;
+                                  idVersion = row.id_doc_version;
+                                }"
+                                >Quitar</q-item-section>
+                              </div>
+                            </q-item>
+                          </q-list>
+                        </q-menu>
+                      </q-btn>
                     </q-item-section>
                   </q-item>
                   <q-separator inset />

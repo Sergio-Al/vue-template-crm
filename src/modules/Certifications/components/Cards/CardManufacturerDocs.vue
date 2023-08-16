@@ -2,7 +2,7 @@
 import moment from 'moment';
 import { ref } from 'vue';
 
-import { manufacturerDocuments } from '../../utils/dummyData';
+import { rowsDocsProveedor } from '../../utils/dummyData';
 
 interface DocumentInfo {
   name: string;
@@ -14,7 +14,20 @@ interface DocumentInfo {
 const date = ref(moment().format('DD/MM/YYYY'));
 const currentDate = moment();
 
-const documents = ref<DocumentInfo[]>(manufacturerDocuments);
+//const documents = ref<DocumentInfo[]>(manufacturerDocuments);
+
+const columns = [
+  {
+    name: 'index',
+    label: '#',
+    field: 'index'
+  },
+  { name: 'name', align: 'left', label: 'Nombre', field: 'name', sortable: true },
+  { name: 'category', align: 'center', label: 'Categoría', field: 'category', sortable: true },
+  { name: 'division', align: 'center', label: 'División', field: 'division', sortable: true },
+  { name: 'validity', align: 'center', label: 'Validéz', field: 'validity', sortable: true },
+  { name: 'state', align: 'center', label: 'Estado', field: 'state', sortable: true }
+]
 
 const isDateExpired = (date: string) => {
   if (!!date) {
@@ -28,11 +41,64 @@ const isDateExpired = (date: string) => {
 <template>
   <!-- <div class="row q-gutter-y-md col-12"> -->
   <q-card>
-    <q-card-section>Documentacion del fabricante</q-card-section>
+    <q-card-section>
+      <q-icon size="sm" color="primary" name="insert_drive_file" />
+      Documentación del Fabricante
+    </q-card-section>
     <q-separator spaced inset />
-    <div v-if="documents.length === 0" class="q-pa-md text-grey-8">
-      Sin documentos
-    </div>
+    <q-card-section class="q-pt-xs">
+      <div class="row justify-end q-pt-xs">
+        <q-btn color="primary" label="SUBIR DOCUMENTO" icon="cloud_upload" />
+      </div>
+      <div class="q-pa-sm">
+            <q-table
+                style="height: 400px"
+                flat bordered
+                :rows="rowsDocsProveedor"
+                :columns="columns"
+                row-key="index"
+                virtual-scroll
+                :rows-per-page-options="[0]"
+                >
+            <template>
+            </template>
+            <template #body="propsTable">
+                <q-tr :props="propsTable">
+                    <q-td key="index" :props="propsTable">
+                        {{propsTable.row.index}}
+                    </q-td>
+                    <q-td key="name" :props="propsTable">
+                      <span class="text-break">
+                        {{propsTable.row.name}}
+                      </span>
+                    </q-td>
+                    <q-td key="category" :props="propsTable">
+                        {{propsTable.row.category}}
+                    </q-td>
+                    <q-td key="division" :props="propsTable">
+                        {{propsTable.row.division}}
+                        <br />
+                        <span class="text-caption"><span class="text-grey">Área de Mercado: </span>{{propsTable.row.amercado}}</span>
+                    </q-td>
+                    <q-td key="validity" :props="propsTable">
+                        <span class="text-caption"><span class="text-grey">F. Inicio: </span>{{propsTable.row.date_start}}</span>
+                        <br />
+                        <span class="text-caption"><span class="text-grey">F. Fin: </span>{{propsTable.row.date_end}}</span>
+                    </q-td>
+                    <q-td key="state" :props="propsTable">
+                      <q-badge outline color="primary">
+                        {{propsTable.row.state}}
+                      </q-badge>
+                    </q-td>
+                </q-tr>
+            </template>
+
+            </q-table>
+        </div>
+    </q-card-section>
+    
+
+    <!--
     <div v-for="(document, index) in documents" :key="index" class="q-pa-sm">
       <q-card
         :class="
@@ -82,19 +148,17 @@ const isDateExpired = (date: string) => {
           <span class="text-bold">{{ document.expiration_date }}</span>
         </div>
       </q-card>
-    </div>
-    <!-- <div class="q-pa-sm">
-      <q-card class="bg-red-2">
-        <q-card-section>
-          <div class="text-h6">Our Changing Planet</div>
-          <div class="text-subtitle2">by John Doe</div>
-        </q-card-section>
-        <q-card-section>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit
-        </q-card-section>
-      </q-card>
-    </div> -->
+    </div>-->
+
   </q-card>
 
   <!-- </div> -->
 </template>
+<style scoped>
+  .text-break {
+    width:500px;
+    line-break: auto;
+    white-space: normal;
+    font-size: 1.1em;
+  }
+</style>

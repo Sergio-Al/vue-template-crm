@@ -19,7 +19,8 @@ import { useAsyncState } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { Company } from '../utils/types';
 import DirectionCard from 'src/components/MainCard/DirectionCard.vue';
-import CardDelegate from '../components/Cards/CardDelegate.vue';
+//import CardDelegate from '../components/Cards/CardDelegate.vue';
+import AssignedSingleUser2 from 'src/components/AssignedUsers/AssignedSingleUser2.vue';
 import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
 
 </script>
@@ -42,7 +43,10 @@ const cardContactRef = ref<InstanceType<typeof CardContact> | null>(null);
 const directionCardComponentRef = ref<InstanceType<
   typeof DirectionCard
 > | null>(null);
-const cardDelegateRef = ref<InstanceType<typeof CardDelegate> | null>(null);
+//const cardDelegateRef = ref<InstanceType<typeof CardDelegate> | null>(null);
+const assignedSingleUserRef = ref<InstanceType<
+  typeof AssignedSingleUser2
+> | null>(null);
 
 const commentRef = ref<InstanceType<typeof QInput> | null>(null);
 
@@ -53,14 +57,17 @@ const isSomeCardEditing = computed(() => {
     cardContactRef.value?.isEditing,
     cardInfoRef.value?.isEditing,
     directionCardComponentRef.value?.isEditing,
-    cardDelegateRef.value?.isEditing,
+    //cardDelegateRef.value?.isEditing,
+    //cardAssignedUserRef.value?.isEditing,
   ].some((value) => !!value);
 });
 
-//se dispara cuando carga el componente
 const { isLoading, execute } = useAsyncState(async () => {
+  console.log(localId.value);
   if (!!localId.value) {
-    return await companyStore.onGetCompany(localId.value);
+    const a = await companyStore.onGetCompany(localId.value);
+    console.log(a)
+    return a;
   }
 }, {});
 
@@ -70,6 +77,7 @@ const validateCards = async () => {
     const infoCardValidation = await cardInfoRef.value.validateInputs();
     validCards.push(infoCardValidation);
   }
+  
   if (cardContactRef.value?.isEditing) {
     const cardContactValidation = await cardContactRef.value.validateInputs();
     validCards.push(cardContactValidation);
@@ -96,7 +104,8 @@ const onSubmit = async () => {
   const cardInfoData = cardInfoRef.value?.exposeData();
   const cardContactData = cardContactRef.value?.exposeData();
   const directionData = directionCardComponentRef.value?.captureCurrentData();
-  const assignedUser = cardDelegateRef.value?.exposeData();
+  //const assignedUser = cardDelegateRef.value?.exposeData();
+  const assignedUser = assignedSingleUserRef.value?.assignedUser.id || '1';
 
   if (!!cardInfoData || !!cardContactData) {
     if (!!localId.value) {
@@ -119,6 +128,7 @@ const onSubmit = async () => {
       }
     }
     else{
+      console.log('creando...')
       //crear
       try {
         Loading.show({
@@ -129,7 +139,7 @@ const onSubmit = async () => {
           ...cardContactData,
           comment: commentCreate.value,
           direccion_c: directionData?.address_street_generated_c,
-          assigned_user_id: assignedUser,
+          //assigned_user_id: assignedUser, //no tiene usuarios aun, no registra responsable
         } as Company;
 
         const newCompany = await companyStore.onCreateCompany(body);
@@ -203,7 +213,8 @@ const emits = defineEmits<{
           :id-local="localId"
           :data="cardAddress"
           :options="[]"
-          class="col-12"
+          :title="'Dirección de la Empresa'"
+          class="col-12 q-pb-md"
         />
       </div>
     </div>
@@ -219,13 +230,13 @@ const emits = defineEmits<{
         />-->
         <div class="col-12">
           <AssignedUser
-             ref="cardDelegateRef"
+             :title = "'Titular'"
+             ref="assignedSingleUserRef"
             :module="'HANCE_Empresa'"
             :module-id="localId"
             @changeUser="() => {}"
           />
         </div>
-        
         <div class="q-gutter-y-md col-12">
           <q-card>
             <q-card-section style="padding: 0px">

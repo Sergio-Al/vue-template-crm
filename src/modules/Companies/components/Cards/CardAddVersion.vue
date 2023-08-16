@@ -84,7 +84,7 @@ const onSubmit = async () => {
 
 <template>
   <q-card class="q-pa-sm" style="min-width: fit-content">
-    <q-card-section class="text-h6"> Subir nueva versión </q-card-section>
+    <q-card-section class="text-h6">Subir nueva versión</q-card-section>
     <div class="row q-col-gutter-md q-px-md q-py-md">
       <q-input
         class="col-12 col-md-6"

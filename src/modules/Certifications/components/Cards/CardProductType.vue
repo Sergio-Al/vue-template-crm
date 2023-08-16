@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { CertificacionBody } from '../../utils/types';
+//import { useCertificationStore } from '../../store/certificationStore';
 
 interface Props {
   data: CertificacionBody;
@@ -47,11 +48,16 @@ const productTypes = [
   },
 ];
 
-const value = ref<string>(props.data.tipo_tramite_c || '');
+const value = ref<string>(props.data.tipo_tramite_c || 'dispositivo');
+
+const changeValue = ()=>{
+  console.log(value.value)
+}
 
 defineExpose({
   exposeData: (): string => value.value,
 });
+
 </script>
 
 <template>
@@ -77,6 +83,7 @@ defineExpose({
             :val="product.value"
             :color="product.color"
             :disable="product.disabled"
+            @click="changeValue"
           />
         </div>
       </q-item>

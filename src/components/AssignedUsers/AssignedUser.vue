@@ -6,14 +6,12 @@ import { useQuasar } from 'quasar';
 import { AssignedUserModel } from '../types/index';
 import {
   getListUsers,
+  getListUsersCompany,
   getFormattedUser,
-} from '../../services/AssignedUserService';
-
-import {
   getAssignedUser,
   getUserLogged,
-  // getUserImage,
 } from '../../services/AssignedUserService';
+
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 
 import AlertComponent from '../MainAlert/AlertComponent.vue';
@@ -57,6 +55,7 @@ const $q = useQuasar();
 const { undo, history } = useRefHistory(assignedUser, {
   capacity: 10,
 });
+
 const { isLoading } = useAsyncState(async () => {
   if (props.type === 'single') {
     if (!!props.module && !!props.moduleId)
@@ -68,7 +67,7 @@ const { isLoading } = useAsyncState(async () => {
         $q.notify({
           type: 'negative',
           message: 'Error en la captura',
-          caption: 'No se capturo el usario de forma correcta',
+          caption: 'No se capturo el usuario de forma correcta',
         });
       }
     else {
@@ -157,7 +156,9 @@ const cancelChange = () => {
 };
 
 onMounted(async () => {
-  if (props.type === 'single') assignedUserOptions.value = await getListUsers();
+  if (props.type === 'single') 
+      //assignedUserOptions.value = await getListUsers();
+      assignedUserOptions.value = await getListUsersCompany(props.moduleId);
 });
 
 defineExpose({
@@ -236,7 +237,7 @@ defineExpose({
                 icon="shop"
                 class="q-py-none q-my-none"
               >
-                Vendedor principal
+                {{props.title}}
               </q-chip>
             </div>
           </div>

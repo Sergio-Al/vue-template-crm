@@ -133,7 +133,7 @@ const seeLess = (index: number) => {
 onMounted(async () => {
   let dateStart = moment(rangeDate.value.from).format('YYYY-MM-DD');
   let dateEnd = moment(rangeDate.value.to).format('YYYY-MM-DD');
-  // getActivities.value = await Get_list_Activities(id.value, dateStart, dateEnd);
+  getActivities.value = await Get_list_Activities(id.value, dateStart, dateEnd);
   ActiveSqeleton.value = true;
   addatribute();
 });

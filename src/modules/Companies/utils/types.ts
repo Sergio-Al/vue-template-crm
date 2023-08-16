@@ -139,6 +139,8 @@ export interface BasicInformation {
   iddivision_c: string;
   idgrupocliente_c?: string;
   idregional_c?: string;
+  id?:string;
+  parentCompany?:string;
 
   // estado_proyecto_c?: string;
 }
@@ -208,6 +210,7 @@ export interface Company {
   razon_social_c: string;
   direccion_c: string;
   resolucion_ministerial_c: string;
+  resolucion_ministerial_date_c: string;
   identificacion_fiscal_c?: string;
   modified_user_id?: string;
   created_by?: string;
@@ -227,6 +230,7 @@ export interface ChildCompany {
   direccion_c: string;
   razon_social_c: string;
   resolucion_ministerial_c: string;
+  resolucion_ministerial_date_c: string;
   identificacion_fiscal_c?: string;
   ownership: string;
   phone_office: string;
@@ -281,7 +285,7 @@ export interface Document {
 
 export interface Contact {
   website: string;
-  email: string;
+  email1: string;
   phone_office: string;
   phone_alternate?: string;
 }

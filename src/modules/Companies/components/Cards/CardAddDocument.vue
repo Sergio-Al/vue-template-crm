@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue';
-import { useQuasar, QUploader } from 'quasar';
+import { useQuasar, QUploader, QInput } from 'quasar';
 
 import { useAsyncState } from '@vueuse/core';
 
@@ -32,7 +32,11 @@ const emits = defineEmits<Emits>();
 
 const $q = useQuasar();
 const { userCRM } = userStore();
+const nameInputRef = ref<InstanceType<typeof QInput> | null>(null);
+const categoryInputRef = ref<InstanceType<typeof QInput> | null>(null);
+const typeInputRef = ref<InstanceType<typeof QInput> | null>(null);
 const uploadFileRef = ref<InstanceType<typeof QUploader> | null>();
+
 
 const companyStore = useCompaniesStore();
 const { getListDivisiones, listDivisiones } = useDivision();
@@ -50,20 +54,29 @@ const status_doc = [
 ];
 //const types_doc = ['2.1.1 Fotocopia de Representación Legal', '2.1.2 Certificado de Libre Venta'];
 const types_doc = ref([]);
+const divisionList = ref([]);
 
-const data = ref({ category: '', version: 2, iddivision_c:userCRM.iddivision, active_date: new Date().toISOString().substring(0,10)  } as Document);
+
+const data = ref({ 
+  category: '', 
+  version: 1, 
+  iddivision_c:userCRM.iddivision, 
+  idamercado_c:userCRM.idamercado, 
+  active_date: new Date().toISOString().substring(0,10), status_id:'Activo', 
+  document_type:'Publico'  
+} as Document);
 //const headerId = ref<string>('');
 
-const divisionList = ref([]);
+
 //const amercadoList = ref([]);
 
-const toBase64 = (file: File) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
+// const toBase64 = (file: File) =>
+//   new Promise((resolve, reject) => {
+//     const reader = new FileReader();
+//     reader.readAsDataURL(file);
+//     reader.onload = () => resolve(reader.result);
+//     reader.onerror = reject;
+//   });
 
 const types_filter = computed(() => {
   const dataConcat = data.value.category.value + '_';
@@ -116,6 +129,10 @@ const uploadFiles = async (file: File[]) => {
         file[0]
       );
     await axiosCRM3.post('', body);
+    // console.log('se guardó con exito');
+    $q.loading.hide();
+    emits('update', '1'); // '1' es un id falso divisionList
+
   } catch (error) {
     console.log('error al guardar');
     // $q.notify({
@@ -127,9 +144,44 @@ const uploadFiles = async (file: File[]) => {
   }
 };
 
+const validate = async()=>{
+  const validCards: (boolean | undefined)[] = [];
+
+  const nameInput = await nameInputRef.value?.validate();
+  validCards.push(nameInput);
+  const categoryInput = await categoryInputRef.value?.validate();
+  validCards.push(nameInput);
+  const typeInput = await typeInputRef.value?.validate();
+  validCards.push(nameInput);
+
+  // if(nameInputRef.value?.validate()){
+    
+  // }
+  // if(categoryInputRef.value?.validate()){
+
+  // }
+  // if(typeInputRef.value?.validate()){
+
+  // }
+  return validCards.every((card) => !!card);
+}
+
 const onSubmit = async () => {
-  uploadFileRef.value?.upload();
-  emits('update', '1'); // '1' es un id falso divisionList
+  const validacion = await validate();
+  if(validacion){
+
+    uploadFileRef.value?.upload();
+    //verifica existencia de document
+    
+    //actualiza
+  }
+  else{
+    $q.notify({
+      type: 'warning',
+      message: 'Error de validación',
+      caption: 'Algunos campos necesitan ser llenados',
+    });
+  }
 };
 
 onMounted(async () => {
@@ -158,14 +210,15 @@ onMounted(async () => {
   <q-card class="q-pa-sm" style="min-width: fit-content">
     <div class="row q-col-gutter-md q-px-md q-py-md">
       <q-input
+        ref="nameInputRef"
         class="col-12 col-md-12"
         v-model="data.description"
         type="text"
         outlined
         dense
         label="Nombre del Documento"
+        :rules="[(val) => !!val || 'Campo requerido']"
       />
-
       <q-input
         class="col-12 col-md-6"
         v-model="data.active_date"
@@ -231,6 +284,7 @@ onMounted(async () => {
         map-options
       />
       <q-select
+        ref="categoryInputRef"
         class="col-12 col-md-6"
         outlined
         v-model="data.category"
@@ -238,8 +292,10 @@ onMounted(async () => {
         dense
         label="Categoría"
         :disable="defaultExists"
+        :rules="[(val) => !!val || 'Campo requerido']"
       />
       <q-select
+        ref="typeInputRef"
         class="col-12 col-md-6"
         v-model="data.type"
         type="text"
@@ -250,6 +306,7 @@ onMounted(async () => {
         option-label="label"
         label="Tipo"
         :disable="defaultExists"
+        :rules="[(val) => !!val || 'Campo requerido']"
       />
       <q-uploader
         :factory="uploadFiles"
@@ -263,7 +320,7 @@ onMounted(async () => {
       />
     </div>
     <q-card-actions vertical align="left">
-      <q-btn v-close-popup label="Guardar" color="primary" @click="onSubmit" />
+      <q-btn label="Guardar" color="primary" @click="onSubmit" />
     </q-card-actions>
   </q-card>
 </template>

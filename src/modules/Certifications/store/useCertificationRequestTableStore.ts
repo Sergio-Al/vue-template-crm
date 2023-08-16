@@ -8,7 +8,7 @@ import {
 } from '../utils/types';
 import {
   updateMassiveData,
-  deleteMassiveData,
+  deleteMassiveDataRequest,
   getTableData,
   getTablePreferences,
   saveTablePreferences,
@@ -36,12 +36,13 @@ export const useCertificationRequestTableStore = defineStore(
     });
     const data_filter = ref({
       name: '',
-      user_id_c: '',
+      assigned_user_id: '',
       division: '',
       idamercado_c: '',
       idregional_c: '',
       producto_c: '',
       fabricante_c: '',
+      solicitante:'',
       state_aprobacion: '',
       nro_certificacion: '',
       referencia_prods: '',
@@ -50,6 +51,7 @@ export const useCertificationRequestTableStore = defineStore(
       assigned_to: [],
       creation_date: { from: '', to: '', operator: '', option: '' },
     });
+
     const data_table = ref({
       rows: [],
       columns: [
@@ -70,10 +72,10 @@ export const useCertificationRequestTableStore = defineStore(
           visible: true,
         },
         {
-          name: 'user_id_c',
+          name: 'assigned_user_id',
           align: 'center',
           label: 'Solicitante',
-          field: 'user_id_c',
+          field: 'assigned_user_id',
           sortable: true,
           visible: true,
         },
@@ -126,10 +128,11 @@ export const useCertificationRequestTableStore = defineStore(
         },
       ],
     });
+
     const visible_fields = ref([
       'name',
       'date_entered',
-      'user_id_c',
+      'assigned_user_id',
       'solicitante',
       'division',
       'idamercado_c',
@@ -142,7 +145,7 @@ export const useCertificationRequestTableStore = defineStore(
     const visible_columns = ref([
       'name',
       'date_entered',
-      'user_id_c',
+      'assigned_user_id',
       'solicitante',
       'division',
       'idamercado_c',
@@ -262,13 +265,12 @@ export const useCertificationRequestTableStore = defineStore(
 
     async function deleteMultiple(selectItems: { id: string }[]) {
       loading.value = true;
-
       try {
         const dataSend = {
           user_id: userCRM.id,
           items: selectItems,
         };
-        await deleteMassiveData(dataSend);
+        await deleteMassiveDataRequest(dataSend);
         await reloadList();
         Notification(
           'positive',
@@ -331,7 +333,7 @@ export const useCertificationRequestTableStore = defineStore(
     async function clearFilterData() {
       data_filter.value = {
         name: '',
-        user_id_c: '',
+        assigned_user_id: '',
         division: '',
         idamercado_c: '',
         idregional_c: '',
@@ -340,6 +342,7 @@ export const useCertificationRequestTableStore = defineStore(
         state_aprobacion: '',
         nro_certificacion: '',
         referencia_prods: '',
+        solicitante:'',
         created_by: [],
         modified_by: [],
         assigned_to: [],

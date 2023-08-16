@@ -73,11 +73,11 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
   {
-    name: 'ownership',
+    name: 'representante',
     required: true,
     align: 'left',
     label: 'Representante',
-    field: 'ownership',
+    field: 'representante',
     sortable: true,
   },
 ];
@@ -155,7 +155,9 @@ const {
   execute,
 } = useAsyncState(async () => {
   const parentId = props.id;
-  return await companyStore.onGetListCompaniesChild(parentId);
+  const a = await companyStore.onGetListCompaniesChild(parentId);
+  console.log(a)
+  return a;
 }, []);
 </script>
 
@@ -211,38 +213,58 @@ const {
               </q-tooltip>
             </q-chip>
             </div>
-            <div v-else-if="col.name === 'ownership'">
+
+            <div v-else-if="col.name === 'representante'">
               <div class="row items-center ">
-              <div class="col-2">
-                <q-avatar
-                  size="24px"
-                  font-size="24px"
-                  color="primary"
-                  text-color="white"
-                  icon="person"
-                />
-              </div>
-              <div class="column q-pl-sm ellipsis col-10">
-                <span v-if="props.row.representante" class="ellipsis-item text-break">
-                  {{ props.row.representante }}
-                </span>
-                <span v-else color="red">Sin representante</span>
+                <div class="col-2">
+                  <q-avatar
+                    size="24px"
+                    font-size="24px"
+                    color="primary"
+                    text-color="white"
+                    icon="person"
+                  />
+                </div>  
+                <div class="column q-pl-sm ellipsis col-10">
+                  <div v-if="props.row.representante">
+                    <span class="text-break">
+                      {{ props.row.representante }}
+                    </span><br />
+                    <span class="text-break text-grey">
+                      {{ props.row.title }}
+                    </span>
+                  </div>
+                  <span v-else class="text-red">Sin representante</span>
+                </div>
               </div>
             </div>
-            </div>
+
             <div v-else-if="col.name === 'direccion_c'">
               <div>
                 {{ directionFormat(col.value) }}
               </div>
             </div>
+
             <div v-else-if="col.name === 'phone_office'">
-              <span>
+              <span v-if="props.row.phone_office">
                 <q-icon name="phone" size="1.5em" color="primary" /> {{ props.row.phone_office }}
               </span><br>
               <span v-if="props.row.phone_alternate">
                 <q-icon name="phone" size="1.5em" color="primary" /> {{ props.row.phone_alternate }}
               </span>
             </div>
+
+            <div v-else-if="col.name === 'resolucion_ministerial_c'">
+              <div class="text-center">
+                <span>
+                {{ props.row.resolucion_ministerial_c }}
+                </span><br>
+                <span class="text-caption text-grey" v-if="props.row.resolucion_ministerial_date_c">
+                  Fecha: {{props.row.resolucion_ministerial_date_c}}
+                </span>
+              </div>
+            </div>
+
             <span v-else>{{ col.value }}</span>
           </q-td>
           <q-td auto-width>

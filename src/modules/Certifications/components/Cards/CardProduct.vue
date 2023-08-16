@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
+import { useQuasar, QInput } from 'quasar';
 import { computed, ref, onMounted } from 'vue';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
@@ -11,23 +11,52 @@ import { getProduct } from '../../services/useCertificationsService';
 import { manufacturers, productListData } from '../../utils/dummyData';
 import CardRelationManufacturer from './CardRelationManufacturer.vue';
 
+import {
+  getManufacturer
+} from '../../services/useCertificationsService';
+
+import {
+  Manufacturer,
+} from '../../utils/types';
+
 interface Props {
   id: string;
   data: Partial<CertificationRequest>;
 }
 
-const props = defineProps<Props>();
+const modeFab = ref<boolean>(false);
+const props = withDefaults(defineProps<Props>(), {
+  data: () => ({ hance_empresa_id_c: '' }),
+});
+
 const $q = useQuasar();
 //const { userCRM, getCompany } = useCompany();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
-
 const inputData = ref({ ...props.data });
 const productCodes = ref<{ id: string }[]>([]);
-
 const productList = ref([]);
 const manufacturerList = ref([]);
 
+const productInputRef = ref<InstanceType<typeof QInput> | null>(null);
+const manufacturerInputRef = ref<InstanceType<typeof QInput> | null>(null);
+const cardRelationManufacturerRef = ref<InstanceType<typeof CardRelationManufacturer> | null>(null);
+
 //* Methods
+const validateInputs = async () => {
+  const validatedFields = await Promise.all([
+    productInputRef.value?.validate(),
+    //manufacturerInputRef.value?.validate()
+  ]);
+  return validatedFields.every((field) => !!field);
+};
+
+const manufacturersList = ref<any>([]);
+const manufacturerSelected = (data: Manufacturer) => {
+  //inputData.value.hance_empresa_id_c = data.;
+
+  //inputData.value.telefono_fabricante_c = data.phone_office;
+};
+
 const filterManufacturer = async (
   val: string,
   update: (callback: () => void) => void,
@@ -97,18 +126,32 @@ const removeProductByIndex = (index: number) => {
 };
 
 onMounted(async () => {
+
   if (!!props.id) {
     if (!!inputData.value.referencia_prods) {
       const product = inputData.value.referencia_prods.split(',|');
       productCodes.value = product.map((code: string) => ({ id: code }));
     }
+    if (!!inputData.value.hance_empresa_id_c) {
+      const manufacturerSelected:any = await getManufacturer(
+        inputData.value.hance_empresa_id_c
+      );
+      manufacturersList.value = [manufacturerSelected];
+    }
+    else{
+      modeFab.value = true;
+    }
   }
 });
 
+//const cardRelationManufacturer = cardRelationManufacturerRef.value?.exposeData();
+
 defineExpose({
+  validateInputs,
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): Partial<CertificationRequest> => ({
-    fabricante_c: inputData.value.fabricante_c,
+    hance_empresa_id_c: modeFab.value?inputData.value.fabricante_c:cardRelationManufacturerRef.value?.state.id,
+    fabricante_c: modeFab.value?inputData.value.fabricante_c:cardRelationManufacturerRef.value?.state.title,
     producto_c: inputData.value.producto_c,
     referencia_prods:
       productCodes.value.map((code: { id: string }) => code.id).join(',|') ||
@@ -131,21 +174,44 @@ defineExpose({
     <template #edit>
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
+        <div class="col-1">
+          <q-checkbox v-model="modeFab">
+            <q-tooltip>
+              Ingreso Manual
+            </q-tooltip>
+          </q-checkbox>
+        </div>
+        <div class="col-11" v-if="modeFab">
+          <q-input
+            ref="manufacturerInputRef"
+            class="col-12 col-sm-12"
+            dense
+            label="Fabricante"
+            outlined
+            type="text"
+            v-model="inputData.fabricante_c"
+            :rules="[(val) => !!val || 'Campo requerido']"
+          />
+        </div>
+        <div class="col-11 q-pb-md" v-else>
+          <CardRelationManufacturer
+            ref="cardRelationManufacturerRef"
+            v-model:id="inputData.hance_empresa_id_c"
+            module-name="Fabricante"
+            edit-mode
+            error-message="Se necesita un fabricante"
+            @assigned="manufacturerSelected"
+          />
+        </div>
         <q-input
-          class="col-12 col-sm-12"
+          ref="productInputRef"
+          class="col-12 col-sm-12 q-py-sm"
           dense
-          label="Fabricante"
-          outlined
-          type="text"
-          v-model="inputData.fabricante_c"
-        />
-        <q-input
-          class="col-12 col-sm-12"
-          dense
-          label="Nombre del Producto"
+          label="Referencia a Producto"
           outlined
           type="text"
           v-model="inputData.producto_c"
+          :rules="[(val) => !!val || 'Campo requerido']"
         />
         <!-- <q-select
           :hint="!!inputData.fabricante_c ? 'Fabricante seleccionado' : ''"
@@ -284,15 +350,24 @@ defineExpose({
     <template #read>
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-input
-          class="col-12 col-sm-12"
-          dense
-          label="Fabricante"
-          outlined
-          type="text"
-          v-model="inputData.fabricante_c"
-          readonly
-        />
+        <div class="col-1">
+          <q-checkbox v-model="modeFab" disabled>
+            <q-tooltip>
+              Ingreso Manual
+            </q-tooltip>
+          </q-checkbox>
+        </div>
+        <div class="col-11">
+          <q-input
+            class="col-12 col-sm-12"
+            dense
+            label="Fabricante"
+            outlined
+            type="text"
+            v-model="inputData.fabricante_c"
+            readonly
+          />
+        </div>
         <q-input
           class="col-12 col-sm-12"
           dense

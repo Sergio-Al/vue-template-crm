@@ -47,7 +47,7 @@ const procedureTypes = [
   },
 ];
 
-const value = ref<string>(props.data.tipo_tramite_c || '');
+const value = ref<string>(props.data.tipo_tramite_c || 'inscripcion');
 
 defineExpose({
   exposeData: (): string => value.value,

@@ -178,14 +178,14 @@ defineExpose({
     :initial-status="props.id ? 'read' : 'edit'"
     icon-name="info"
     ref="baseCardRef"
-    title="Solicitante"
+    title="Información"
     @cancel-change="restoreValues"
     @edit-change="restoreValues"
   >
     <template #edit>
       <!-- Modo edicion -->
-      <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-select
+      <div class="row q-col-gutter-md q-px-sm q-py-sm">
+        <!--<q-select
           :hint="!!inputData.user_id_c ? 'usuario Seleccionado' : ''"
           :options="users"
           @filter-abort="abortFilterFn"
@@ -235,10 +235,11 @@ defineExpose({
               </q-item-section>
             </q-item>
           </template>
-        </q-select>
+        </q-select>-->
+
         <q-input
           v-model="inputData.date_entered"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-md"
           label="Fecha"
           outlined
           dense
@@ -247,7 +248,7 @@ defineExpose({
         >
         </q-input>
         <q-select
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-md"
           outlined
           dense
           v-model="inputData.iddivision_c"
@@ -261,7 +262,7 @@ defineExpose({
         >
         </q-select>
         <q-select
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-xs"
           outlined
           dense
           v-model="inputData.idamercado_c"
@@ -275,7 +276,7 @@ defineExpose({
         >
         </q-select>
         <q-select
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-xs"
           outlined
           dense
           v-model="inputData.idregional_c"
@@ -293,7 +294,7 @@ defineExpose({
     <template #read>
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
-        <q-select
+        <!--<q-select
           :hint="!!inputData.user_id_c ? 'usuario Seleccionado' : ''"
           :options="users"
           @filter-abort="abortFilterFn"
@@ -333,6 +334,7 @@ defineExpose({
             </q-item>
           </template>
         </q-select>
+      -->
         <q-input
           v-model="inputData.date_entered"
           class="col-12 col-sm-6"

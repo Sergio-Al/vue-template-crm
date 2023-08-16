@@ -3,6 +3,9 @@ import { ref, onMounted } from 'vue';
 import CardManufacturerData from '../components/Cards/CardManufacturerData.vue';
 import CardManufacturerDocs from '../components/Cards/CardManufacturerDocs.vue';
 import DirectionCard from 'src/components/MainCard/DirectionCard.vue';
+import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
+import CardRequest from '../components/Cards/CardRequest.vue';
+
 import { CertificacionBody } from '../utils/types';
 
 interface Props {
@@ -59,7 +62,25 @@ defineExpose({
           </div>
         </div>
         <div class="col-12 col-md-6">
-          <CardManufacturerDocs />
+          <AssignedUser
+            title="Profesional Acreditado"
+            hide-chip
+            ref="assignedSingleUserRef"
+            :module="'HANCE_Certificacion'"
+            :module-id="''"
+            @changeUser="() => {}"
+            class="col-12"
+          />
+          <div class="row q-gutter-y-md q-mt-xs">
+            <CardRequest
+            :id="props.id"
+            :data="props.data"
+            class="col-12"
+            />
+            <CardManufacturerDocs
+            class="col-12"
+            />
+          </div>
         </div>
       </div>
     </q-page-container>

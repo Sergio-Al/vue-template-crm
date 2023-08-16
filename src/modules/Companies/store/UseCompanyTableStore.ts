@@ -223,7 +223,7 @@ export const useCompanyTableStore = defineStore('company_table', {
         Notification(
           'positive',
           'check_circle',
-          `<strong> Acción exitosa¡ </strong> <br/> ${
+          `<strong> Acción exitosa! </strong> <br/> ${
             selectItems.length > 1
               ? `Se eliminaron ${selectItems.length} registros de la tabla.`
               : 'Se eliminó un registro de la tabla.'

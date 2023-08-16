@@ -121,22 +121,21 @@ const isDelegateMissing = computed(() => {
 
 // event functions
 const selectUser = async (users: User[]) => {
+  openDialog.value = false;
   const userIds = users.map((user) => user.id);
   try {
     if (props.child) {
       isLoading.value = true;
-      const response = await assignUsersToChildCompany(props.id, userIds);
-      console.log(response);
-      if(response == 1){
-        $q.notify({
+      await assignUsersToChildCompany(props.id, userIds);
+      $q.notify({
           type: 'positive',
           message: 'Se han asignado nuevos usuarios a la empresa',
-        });
-        isLoading.value = false;
-        reloadList();
-      }
+      });
+      isLoading.value = false;
+      //cerrar dialog
+      reloadList();
     } else {
-      // await assignUsersToCompany(props.id, userIds);
+      // asignar usuarios a empresa
     }
   } catch (error) {
     console.log(error);

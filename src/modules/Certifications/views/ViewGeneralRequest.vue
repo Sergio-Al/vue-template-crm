@@ -11,6 +11,7 @@ import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
 import { userStore } from 'src/modules/Users/store/UserStore';
 import CommentsList from 'src/components/Comments/CommentsList.vue';
 import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
+import { useQuasar } from 'quasar';
 
 interface Props {
   data?: CertificationRequest;
@@ -23,6 +24,8 @@ interface Emits {
 
 const props = defineProps<Props>();
 const emits = defineEmits<Emits>();
+
+const $q = useQuasar();
 
 // variables
 const { userCRM } = userStore();
@@ -63,17 +66,44 @@ const onChangeUserAssigned = (id: string) => {
   console.log(id);
 };
 
-const onSubmit = () => {
-  // validation...
+const validateCards = async () => {
+  const validCards: (boolean | undefined)[] = [];
+  
+  if (cardProductRef.value?.isEditing) {
+    const cardProductValidation = await cardProductRef.value.validateInputs();
+    validCards.push(cardProductValidation);
+  }
+  return validCards.every((card) => !!card);
+};
 
+const onSubmit = async () => {
   const cardApplicantData = cardApplicantRef.value?.exposeData();
   const cardProductData = cardProductRef.value?.exposeData();
+
+  // validation...
+  const areCardsValid = await validateCards();
+  if (!areCardsValid) {
+    $q.notify({
+      type: 'warning',
+      message: 'Error de validación',
+      caption: 'Algunos campos necesitan ser llenados',
+    });
+    return;
+  }
+  else if(!cardProductData?.referencia_prods){
+    $q.notify({
+      type: 'warning',
+      message: 'Error de validación',
+      caption: 'Debe adicionar al menos un item',
+    });
+    return;
+  }
 
   const body: Partial<CertificationRequest> = {
     ...props.data,
     ...cardApplicantData,
     ...cardProductData,
-    assigned_user_id: assignedSingleUserRef.value?.dataSend.id || '1',
+    assigned_user_id: assignedSingleUserRef.value?.assignedUser.id || '1',
   };
 
   // send data
@@ -89,8 +119,8 @@ const onSubmit = () => {
 <template>
   <q-layout view="hHh lpR fFf">
     <q-page-container>
-      <div class="row q-col-gutter-lg q-pa-md">
-        <div class="col-xs-12 col-sm-12 col-md-6">
+      <div class="row q-col-gutter-lg q-pb-sm q-pl-sm q-pr-sm">
+        <div class="col-xs-12 col-sm-12 col-md-6 q-pt-sm">
           <div class="row q-gutter-y-md">
             <CardApplicant
               class="col-12"
@@ -106,7 +136,7 @@ const onSubmit = () => {
             />
           </div>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 q-pt-sm">
           <!--<AssignedSingleUser2
             ref="assignedSingleUserRef"
             :module="'HANCE_SolicitudCertificacion'"
@@ -115,9 +145,10 @@ const onSubmit = () => {
             @changeUser="onChangeUserAssigned"
           />-->
           <AssignedUser
+            :title="'Solicitante'"
              ref="assignedSingleUserRef"
             :module="'HANCE_SolicitudCertificacion'"
-            :module-id="props.data?.assigned_user_id || ''"
+            :module-id="props.data?.id || ''"
             @changeUser="onChangeUserAssigned"
           />
           <q-separator inset></q-separator>
@@ -175,7 +206,7 @@ const onSubmit = () => {
                     </q-tab-panel>
                     <q-tab-panel
                       name="comentarios"
-                      style="min-height: 500px"
+                      style="min-height: 300px"
                       class="q-pd-sm"
                       v-else
                     >

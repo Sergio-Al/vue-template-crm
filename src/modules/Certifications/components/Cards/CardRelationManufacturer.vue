@@ -6,6 +6,7 @@ import { getRecordModuleInfo } from 'src/services/GlobalService';
 import { Manufacturer } from '../../utils/types';
 import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
 import AdvancedFilterManufacturer from 'src/components/Filters/AdvancedFilterManufacturer.vue';
+import { getManufacturer } from 'src/modules/Certifications/services/useCertificationsService';
 
 import { manufacturerPromise } from '../../utils/dummyData';
 
@@ -37,6 +38,7 @@ const advancedFilterManufacturerRef = ref<InstanceType<
 > | null>(null);
 
 const defaultData = {
+  id:'',
   title: '',
   subtitle1: '',
   description: '',
@@ -59,9 +61,12 @@ const getContactDetail = async (id: string, assign = false) => {
   //   allData: false,
   //   fields: ['name', 'assigned_user_name', 'phone_mobile', 'website'],
   // });
-  const response = await manufacturerPromise();
+  //const response = await manufacturerPromise();
+  const response = await getManufacturer(id);
+  console.log(response);
 
   const contact = {
+    id: response.id as string,
     title: response.name as string,
     description: response.name as string,
     phone_mobile: response.phone_office,
@@ -113,10 +118,11 @@ const reset = () => {
 };
 
 const { state, isLoading, execute } = useAsyncState(async () => {
+  console.log(props)
   if (props.id) {
-    console.log(props.id);
+    //console.log(props.id);
     const response = await getContactDetail(props.id);
-    console.log(response);
+    //console.log(response);
     return response;
   }
   return defaultData;
@@ -195,6 +201,7 @@ defineExpose({
             >
               {{ state.title }}
             </a>
+            <span v-if="state.phone_mobile" class="text-caption text-grey text-weight-bold"><q-icon name="phone" />  {{state.phone_mobile}}</span>
           </q-item-label>
 
           <q-item-label v-else> Seleccionado </q-item-label>
