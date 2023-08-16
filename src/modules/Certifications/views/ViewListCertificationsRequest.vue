@@ -108,7 +108,7 @@ const onRequestTable = async (val: { pagination: any; filter: any }) => {
 
 const onClearDataFilter = () => {
   try {
-    // filterAdvancedRef.value?.clearFilter();
+    //advancedFilterRef.value?.clearFilter();
     clearFilterData();
     setFilterData();
     reloadList();
@@ -168,7 +168,7 @@ const filterState = ()=>{
   <div :class="$q.platform.is.desktop ? 'q-pa-md q-pt-lg' : 'q-pa-sm q-pt-lg'">
         <q-card>
           <q-tabs
-          v-model="state_tab"
+          v-model="data_filter.state_aprobacion"
           align="justify"
           dense
           class="text-grey-7"
@@ -512,7 +512,7 @@ const filterState = ()=>{
       </template>
       <template #filterContent>
         <AdvancedFilter
-          ref="filterAdvancedRef"
+          ref="advancedFilterRef"
           @submitFilter="onSubmitDataFilter"
         />
       </template>

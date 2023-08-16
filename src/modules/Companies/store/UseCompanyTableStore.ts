@@ -102,15 +102,22 @@ export const useCompanyTableStore = defineStore('company_table', {
         },
       ],
     },
-    visible_fields: ['name', 'direccion_c', 'phone_office'],
-    visible_columns: [
-      'name',
+    visible_fields: [
       'razon_social_c',
-      'direccion_c',
-      'resolucion_ministerial_c',
+      'name', 
+      'direccion_c', 
+      'resolucion_ministerial_c', 
+      'phone_office', 
+      'representante'
+    ],
+    visible_columns: [
+      'razon_social_c',
+      'name', 
+      'direccion_c', 
+      'resolucion_ministerial_c', 
       'website',
-      'phone_office',
-      'representante',
+      'phone_office', 
+      'representante'
     ],
   }),
   actions: {
@@ -147,6 +154,7 @@ export const useCompanyTableStore = defineStore('company_table', {
           order: descending ? 'desc' : 'asc',
           filter,
         };
+
         const data = await getTableData(params);
         this.data_table.rows = data;
         this.pagination.rowsNumber = data.length;

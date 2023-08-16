@@ -37,7 +37,7 @@ export const useCertificationRequestTableStore = defineStore(
     const data_filter = ref({
       name: '',
       assigned_user_id: '',
-      division: '',
+      division: userCRM.iddivision,
       idamercado_c: '',
       idregional_c: '',
       producto_c: '',
@@ -131,16 +131,11 @@ export const useCertificationRequestTableStore = defineStore(
 
     const visible_fields = ref([
       'name',
-      'date_entered',
-      'assigned_user_id',
       'solicitante',
       'division',
-      'idamercado_c',
-      'idregional_c',
       'producto_c',
       'fabricante_c',
       'state_aprobacion',
-      'nro_certificacion',
     ]);
     const visible_columns = ref([
       'name',
@@ -208,7 +203,14 @@ export const useCertificationRequestTableStore = defineStore(
     }
 
     async function reloadList() {
-      data_filter.value.state_aprobacion = state_tab.value;
+      // if(!!data_filter.value.state_aprobacion){
+      //   data_filter.value.state_aprobacion = state_tab.value;
+      // }
+
+      //data_filter.value.state_aprobacion = state_tab.value;
+      // console.log(userCRM);
+      // console.log(data_filter);
+      // return;
 
       await getListCertificationRequest({
         pagination: pagination.value,
@@ -334,7 +336,7 @@ export const useCertificationRequestTableStore = defineStore(
       data_filter.value = {
         name: '',
         assigned_user_id: '',
-        division: '',
+        division: userCRM.iddivision,
         idamercado_c: '',
         idregional_c: '',
         producto_c: '',
@@ -348,6 +350,7 @@ export const useCertificationRequestTableStore = defineStore(
         assigned_to: [],
         creation_date: { from: '', to: '', operator: '', option: '' },
       };
+
       try {
         await axios_PREFERENCES.patch(
           `/tables-users-preferences/${mongo_id.value}`,

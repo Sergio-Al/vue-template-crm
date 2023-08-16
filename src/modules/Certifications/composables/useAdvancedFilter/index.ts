@@ -3,11 +3,12 @@ import { ref, onMounted, watch } from 'vue';
 import {
   useTipoCliente,
   useTipoCuenta,
-  useRubro,
-  useUserDivision,
-  useTipoDocumento,
-  usePais,
-  useRegimenTributario,
+  //useRubro,
+  //useUserDivision,
+  //useTipoDocumento,
+  //usePais,
+  //useRegimenTributario,
+  useDivision,
   useDateRange,
 } from 'src/composables/useLanguage';
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
@@ -18,26 +19,37 @@ import { storeToRefs } from 'pinia';
 export const useAdvancedFilter = () => {
   const { listTipoCliente, getListTipoCliente, filterTipoCliente } =
     useTipoCliente();
-  const { listTipoCuenta, getListTipoCuenta } = useTipoCuenta();
-  const { listRubro, listSubrubro, getListRubro, getListSubrubro } = useRubro();
-  const { listUsers, getListUsers, filterUsers } = useUserDivision();
-  const { listTipoDocumento, getListTipoDocumento } = useTipoDocumento();
-  const { listPais, listRegion, getListPais, getListRegion } = usePais();
-  const { listRegimenTributario, getListRegimenTributario } =
-    useRegimenTributario();
+  //const { listTipoCuenta, getListTipoCuenta } = useTipoCuenta();
+  // const { listRubro, listSubrubro, getListRubro, getListSubrubro } = useRubro();
+  // const { listUsers, getListUsers, filterUsers } = useUserDivision();
+  // const { listTipoDocumento, getListTipoDocumento } = useTipoDocumento();
+  // const { listPais, listRegion, getListPais, getListRegion } = usePais();
+  // const { listRegimenTributario, getListRegimenTributario } =
+  //   useRegimenTributario();
+  const { listDivisiones, getListDivisiones } =
+  useDivision();
   const certificationsTableStore = useCertificationsTableStore();
   const { listDateRange, getListDateRange } = useDateRange();
 
   const literalDate = ref('');
 
+  const listStates = [
+    {value:'', label:'Todas'},
+    {value:'pending', label:'Pendiente'},
+    {value:'kept', label:'Observado'},
+    {value:'approved', label:'Aprobado'},
+    {value:'rejected', label:'Rechazado'}
+  ]
+
   onMounted(async () => {
-    await getListTipoCliente();
-    await getListTipoCuenta();
-    await getListRubro();
-    await getListUsers(userStore().userCRM.iddivision);
-    await getListTipoDocumento();
-    await getListPais();
-    await getListRegimenTributario();
+    // await getListTipoCliente();
+    // await getListTipoCuenta();
+    // await getListRubro();
+    // await getListUsers(userStore().userCRM.iddivision);
+    // await getListTipoDocumento();
+    // await getListPais();
+    // await getListRegimenTributario();
+    await getListDivisiones();
     await getListDateRange();
   });
   /**
@@ -51,36 +63,74 @@ export const useAdvancedFilter = () => {
       input: 'q-input',
       label: 'Nro de solicitud',
       clearable: true,
-      field: 'nro_solicitud',
+      field: 'name',
+      visible: true,
+    },
+    // {
+    //   input: 'q-select',
+    //    label: 'Fecha de Solicitud',
+    //    clearable: true,
+    //    field: 'date_entered',
+    //    visible: false,
+    //    withInput: true,
+    //    options_dense: true,
+    //    emit_value: true,
+    //    map_options: true,
+    //    option_label: 'label',
+    //    option_value: 'value',
+    //    options: listDateRange,
+    // },
+    {
+      input: 'q-input',
+      label: 'Solicitante',
+      clearable: true,
+      field: 'solicitante',
+      visible: true,
+    },
+    // {
+    //   input: 'q-input',
+    //   label: 'División',
+    //   clearable: true,
+    //   field: 'division',
+    //   visible: true,
+    // },
+    {
+      input: 'q-select',
+      field: 'division',
+      label: 'División',
+      clearable: true,
+      option_label: 'label',
+      option_value: 'cod_div',
+      visible: true,
+      emit_value: true,
+      map_options: true,
+      options: listDivisiones,
+    },
+    {
+      input: 'q-input',
+      label: 'Referencia a Producto',
+      clearable: true,
+      field: 'producto_c',
       visible: true,
     },
     {
       input: 'q-input',
-      label: 'Etapa',
+      label: 'Fabricante',
       clearable: true,
-      field: 'etapa',
+      field: 'fabricante_c',
       visible: true,
     },
     {
-      input: 'q-input',
-      label: 'Tipo de trámite',
+      input: 'q-select',
+      field: 'state_aprobacion',
+      label: 'Estado',
       clearable: true,
-      field: 'tipo_tramite',
+      option_label: 'label',
+      option_value: 'value',
       visible: true,
-    },
-    {
-      input: 'q-input',
-      label: 'Producto',
-      clearable: true,
-      field: 'id_producto',
-      visible: true,
-    },
-    {
-      input: 'q-input',
-      label: 'Aprobacion',
-      clearable: true,
-      field: 'aprobacion',
-      visible: false,
+      emit_value: true,
+      map_options: true,
+      options: listStates,
     },
     //   {
     //     input: 'q-select',
@@ -318,68 +368,68 @@ export const useAdvancedFilter = () => {
     //   },
   ]);
 
-  const form_modules = ref([
-    {
-      input: 'q-select',
-      field: 'tipocuenta_c',
-      label: 'Contacto',
-      clearable: false,
-      option_label: 'label',
-      option_value: 'cod_c',
-      visible: false,
-      emit_value: true,
-      map_options: true,
-      options: listTipoCuenta,
-    },
-    {
-      input: 'q-select',
-      field: 'tipocuenta_c',
-      label: 'Cotizaciones',
-      clearable: false,
-      option_label: 'label',
-      option_value: 'cod_c',
-      visible: false,
-      emit_value: true,
-      map_options: true,
-      options: listTipoCuenta,
-    },
-    {
-      input: 'q-select',
-      field: 'tipocuenta_c',
-      label: 'Campaña',
-      clearable: false,
-      option_label: 'label',
-      option_value: 'cod_c',
-      visible: false,
-      emit_value: true,
-      map_options: true,
-      options: listTipoCuenta,
-    },
-    {
-      input: 'q-select',
-      field: 'tipocuenta_c',
-      label: 'Propectos',
-      clearable: false,
-      option_label: 'label',
-      option_value: 'cod_c',
-      visible: false,
-      emit_value: true,
-      map_options: true,
-      options: listTipoCuenta,
-    },
-    {
-      input: 'q-select',
-      field: 'tipocuenta_c',
-      label: 'Oportunidades',
-      clearable: false,
-      option_label: 'label',
-      option_value: 'cod_c',
-      visible: false,
-      emit_value: true,
-      map_options: true,
-      options: listTipoCuenta,
-    },
-  ]);
+  // const form_modules = ref([
+  //   {
+  //     input: 'q-select',
+  //     field: 'tipocuenta_c',
+  //     label: 'Contacto',
+  //     clearable: false,
+  //     option_label: 'label',
+  //     option_value: 'cod_c',
+  //     visible: false,
+  //     emit_value: true,
+  //     map_options: true,
+  //     options: listTipoCuenta,
+  //   },
+  //   {
+  //     input: 'q-select',
+  //     field: 'tipocuenta_c',
+  //     label: 'Cotizaciones',
+  //     clearable: false,
+  //     option_label: 'label',
+  //     option_value: 'cod_c',
+  //     visible: false,
+  //     emit_value: true,
+  //     map_options: true,
+  //     options: listTipoCuenta,
+  //   },
+  //   {
+  //     input: 'q-select',
+  //     field: 'tipocuenta_c',
+  //     label: 'Campaña',
+  //     clearable: false,
+  //     option_label: 'label',
+  //     option_value: 'cod_c',
+  //     visible: false,
+  //     emit_value: true,
+  //     map_options: true,
+  //     options: listTipoCuenta,
+  //   },
+  //   {
+  //     input: 'q-select',
+  //     field: 'tipocuenta_c',
+  //     label: 'Propectos',
+  //     clearable: false,
+  //     option_label: 'label',
+  //     option_value: 'cod_c',
+  //     visible: false,
+  //     emit_value: true,
+  //     map_options: true,
+  //     options: listTipoCuenta,
+  //   },
+  //   {
+  //     input: 'q-select',
+  //     field: 'tipocuenta_c',
+  //     label: 'Oportunidades',
+  //     clearable: false,
+  //     option_label: 'label',
+  //     option_value: 'cod_c',
+  //     visible: false,
+  //     emit_value: true,
+  //     map_options: true,
+  //     options: listTipoCuenta,
+  //   },
+  // ]);
 
   const { data_filter: dataFilter } = storeToRefs(certificationsTableStore);
 
@@ -450,7 +500,7 @@ export const useAdvancedFilter = () => {
     HANSACRM3_URL,
     form,
     dataFilter,
-    form_modules,
+    //form_modules,
     // clearFilter,
   };
 };

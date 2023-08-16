@@ -1,12 +1,12 @@
 import {
   axios_GLOBAL,
+  axios_LB_01,
   axios_LB_04,
   axios_NS_07,
   axios_PREFERENCES,
 } from 'src/conections/axiosCRM';
 
 import { userStore } from 'src/modules/Users/store/UserStore';
-import { axios_LB_01, axios_NS_07 } from 'src/conections/axiosCRM';
 import type {
   Certification,
   CertificationDB,
@@ -424,6 +424,7 @@ export const getProducts = async (params: Partial<Product>) => {
 };
 
 export const getCertificationRequests = async (params: any) => {
+  console.log(params);
   try {
     const { data } = await axios_NS_07.get(
       `/solicitud/advanced?params=${JSON.stringify(params)}`
@@ -458,6 +459,16 @@ export const getLastSchema = async(base:string)=>{
 export const getDocumentsSchema = async (id:string)=>{
   try{
     const { data } = await axios_NS_07.get(`esquemadoc/documents_schema/${id}`)
+    return data;
+  }
+  catch(e){
+    throw e;
+  }
+}
+
+export const getListSchemas = async(value:string)=>{
+  try{
+    const {data} = await axios_NS_07.get(`/esquemadoc/schemas-type/HANCE_Certificacion/${value}`)
     return data;
   }
   catch(e){
