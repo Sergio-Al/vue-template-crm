@@ -83,6 +83,7 @@ const openDialogTab = (
 
 const clearData = () => {
   localId.value = '';
+  certificationRequestId.value = '';
   certificationData.value = {} as CertificacionBody;
 };
 
