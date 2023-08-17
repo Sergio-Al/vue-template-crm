@@ -775,22 +775,21 @@ export const productPromise = (): Promise<Product> => {
   });
 };
 
-// export const certificationRequestPromise = (
-//   id: string
-// ): Promise<CertificationRequest> => {
-//   console.log(id);
-//   return new Promise(async (resolve) => {
-//     const { data } = await axios_NS_07.get(`/solicitud/${id}`);
-//     resolve(data);
-//     // TODO: llamada a servicio
-//     // devolver con resolve
+export const certificationRequestPromise = (
+  id: string
+): Promise<CertificationRequest> => {
+  console.log(id);
+  return new Promise(async (resolve) => {
+    // const { data } = await axios_NS_07.get(`/solicitud/${id}`);
+    // resolve(data);
+    // TODO: llamada a servicio
+    // devolver con resolve
 
-//     // setTimeout(() => {
-//     //   resolve(certificationRequest);
-//     // }, 500);
-//   }
-//   );
-// };
+    setTimeout(() => {
+      resolve(certificationRequest);
+    }, 500);
+  });
+};
 
 export const certificationsRequestPromise = (): Promise<
   CertificationRequest[]
