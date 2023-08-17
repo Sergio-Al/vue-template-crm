@@ -34,9 +34,26 @@ const assignedSingleUserRef = ref<InstanceType<typeof AssignedUser> | null>(
   null
 );
 const cardRequestRef = ref<InstanceType<typeof CardRequest> | null>(null);
+const cardSchemaRef = ref<InstanceType<typeof CardSchema> | null>(null);
 
 const props = withDefaults(defineProps<Props>(), { id: '', requestId: '' });
 const emits = defineEmits<Emits>();
+const procedureValue = ref(props.data.tipo_tramite_c || '');
+const productValue = ref(props.data.tipo_producto_c || '');
+
+const captureData = (procedure?: string, product?: string) => {
+  if (!!procedure) {
+    procedureValue.value = procedure;
+  }
+
+  if (!!product) {
+    productValue.value = product;
+  }
+
+  if (procedureValue.value && !!productValue.value) {
+    cardSchemaRef.value?.changeSchema(procedureValue.value, productValue.value);
+  }
+};
 
 onMounted(() => {
   console.log(props.data);
@@ -68,11 +85,13 @@ defineExpose({
               ref="cardProcedureTypeRef"
               class="col-12"
               :data="props.data"
+              @change="(value: string) => captureData(value, undefined)"
             />
             <CardProductType
               ref="cardProductTypeRef"
               class="col-12"
               :data="props.data"
+              @change="(value: string) => captureData(undefined, value)"
             />
           </div>
         </div>
@@ -100,7 +119,12 @@ defineExpose({
             :data="props.data"
             class="col-12"
           />
-          <CardSchema :id="props.id" :data="props.data" class="col-12" />
+          <CardSchema
+            ref="cardSchemaRef"
+            :id="props.id"
+            :data="props.data"
+            class="col-12"
+          />
         </div>
       </div>
     </q-page-container>

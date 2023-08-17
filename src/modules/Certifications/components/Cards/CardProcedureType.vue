@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { CertificacionBody } from '../../utils/types';
 
 interface Props {
   data: CertificacionBody;
 }
 
+interface Emits {
+  (e: 'change', value: string): void;
+}
+
 const props = defineProps<Props>();
+const emits = defineEmits<Emits>();
 
 const procedureTypes = [
   {
@@ -49,6 +54,14 @@ const procedureTypes = [
 
 const value = ref<string>(props.data.tipo_tramite_c || 'inscripcion');
 
+const changeValue = () => {
+  emits('change', value.value);
+};
+
+onMounted(() => {
+  emits('change', value.value);
+});
+
 defineExpose({
   exposeData: (): string => value.value,
 });
@@ -77,6 +90,7 @@ defineExpose({
             :val="procedure.value"
             :color="procedure.color"
             :disable="procedure.disabled"
+            @click="changeValue"
           />
         </div>
       </q-item>

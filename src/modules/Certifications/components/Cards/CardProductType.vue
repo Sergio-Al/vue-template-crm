@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { CertificacionBody } from '../../utils/types';
 //import { useCertificationStore } from '../../store/certificationStore';
 
@@ -7,7 +7,12 @@ interface Props {
   data: CertificacionBody;
 }
 
+interface Emits {
+  (e: 'change', value: string): void;
+}
+
 const props = defineProps<Props>();
+const emits = defineEmits<Emits>();
 
 const productTypes = [
   {
@@ -50,14 +55,18 @@ const productTypes = [
 
 const value = ref<string>(props.data.tipo_tramite_c || 'dispositivo');
 
-const changeValue = ()=>{
-  console.log(value.value)
-}
+const changeValue = () => {
+  console.log(value.value);
+  emits('change', value.value);
+};
+
+onMounted(() => {
+  emits('change', value.value);
+});
 
 defineExpose({
   exposeData: (): string => value.value,
 });
-
 </script>
 
 <template>
