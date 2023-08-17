@@ -6,7 +6,10 @@ import { useQuasar } from 'quasar';
 import ViewGeneralRequest from '../../views/ViewGeneralRequest.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
 
-import type { CertificationRequest } from '../../utils/types';
+import type {
+  CertificacionBody,
+  CertificationRequest,
+} from '../../utils/types';
 import {
   createCertificationRequest,
   updateCertificationRequest,
@@ -33,13 +36,13 @@ const showDialogKept = ref<boolean>(false);
 const showAlertAprobar = ref<boolean>(false);
 const showAlertCrear = ref<boolean>(false);
 let propsCreateAlert = {
-      title: 'Solicitud de Certificación',
-      icon: 'info',
-      iconSize: 'md',
-      message: '',
-      iconColor: 'info',
-      btnColor: 'primary',
-      btnText: 'Si',
+  title: 'Solicitud de Certificación',
+  icon: 'info',
+  iconSize: 'md',
+  message: '',
+  iconColor: 'info',
+  btnColor: 'primary',
+  btnText: 'Si',
 };
 
 const certificationDialogRef = ref<InstanceType<
@@ -49,8 +52,12 @@ const certificationDialogRef = ref<InstanceType<
 //const actionConfirm = ref<any>('aprobar');
 //let msgAlert = '¿Esta seguro de aprobar la Solicitud de Certificación?';
 
-const openDialogCertification = () => {
-  certificationDialogRef.value?.openDialogTab();
+const openDialogCertification = (
+  id?: string,
+  data?: Partial<CertificacionBody>,
+  solicitudId?: string
+) => {
+  certificationDialogRef.value?.openDialogTab(id, data, { solicitudId });
 };
 
 const openDialogTab = (id?: string) => {
@@ -118,7 +125,7 @@ const updateCertification = async (data: Partial<CertificationRequest>) => {
 
 const setColorState = (state: string): string => {
   const colorMap: { [key: string]: string } = {
-    pending : 'orange',
+    pending: 'orange',
     kept: 'red',
     approved: 'green',
     rejected: 'red',
@@ -129,7 +136,7 @@ const setColorState = (state: string): string => {
 
 const setTextColorState = (state: string): string => {
   const colorMap: { [key: string]: string } = {
-    pending : 'text-orange',
+    pending: 'text-orange',
     kept: 'text-red',
     approved: 'text-green',
     rejected: 'text-red',
@@ -138,58 +145,57 @@ const setTextColorState = (state: string): string => {
   return colorMap[state] || 'text-orange';
 };
 
-const changeState = (value:number)=>{
-  if(value == 1){
+const changeState = (value: number) => {
+  if (value == 1) {
     showAlertAprobar.value = true;
-  }
-  else if(value == 2){
+  } else if (value == 2) {
     showDialogKept.value = true;
     //todo: abrir dialog para realizar observacion
     //el estado cambia a observado y se guarda el comentario
   }
-}
+};
 
-const aprobarSolicitud = async() =>{
+const aprobarSolicitud = async () => {
   //cambiar de estado a aprobado
   await updateStateCertificationRequest(localId.value, 'approved');
   $q.notify({
-      color: 'positive',
-      message: 'Aprobación de solicitud',
-      caption: 'Se aprobó la solicitud con éxito',
-    });
+    color: 'positive',
+    message: 'Aprobación de solicitud',
+    caption: 'Se aprobó la solicitud con éxito',
+  });
   getCertification();
   emits('update');
   showAlertCrear.value = true;
-}
+};
 
-const crearCertificacion = () =>{
-  openDialogCertification();
-}
+const crearCertificacion = () => {
+  openDialogCertification(undefined, undefined, localId.value);
+};
 
 const openAlertCertification = () => {
   //abrir dialog de creacion de certificacion
-  console.log('se abrira el dialog de creacion de certificación')
+  console.log('se abrira el dialog de creacion de certificación');
   showAlert.value = false;
 };
 
 const state_request = computed(() => {
   const state = certificationData.value.estado_aprobacion_c;
-  let value = ''
-  switch(state){
+  let value = '';
+  switch (state) {
     case 'pending':
-      value='PENDIENTE';
+      value = 'PENDIENTE';
       break;
     case 'approved':
-      value='APROBADA';
+      value = 'APROBADA';
       break;
     case 'kept':
-      value='OBSERVADA';
+      value = 'OBSERVADA';
       break;
     case 'rejected':
-      value='RECHAZADA';
+      value = 'RECHAZADA';
       break;
     default:
-      value = ''
+      value = '';
       break;
   }
   return value;
@@ -221,7 +227,6 @@ defineExpose({
 // const saludo = ()=>{
 //   console.log('este es un saludo')
 // }
-
 </script>
 
 <template>
@@ -247,7 +252,7 @@ defineExpose({
     </template>
   </AlertComponent>
   <CertificationDialog :idSolicitud="localId" ref="certificationDialogRef" />
-  
+
   <dialog-component
     size-dialog="dialog-xl"
     v-model="open"
@@ -278,31 +283,47 @@ defineExpose({
         class="header-dialog"
         :class="$q.dark.isActive ? 'bg-dark' : 'bg-primary'"
       >
-      <q-circular-progress
-      show-value
-      font-size="16px"
-      class="text-red q-ma-md"
-      :value="100"
-      size="55px"
-      :thickness="0.07"
-      color="orange"
-      track-color="grey-3"
-    >
-      <q-icon name="shield" color="white" size="lg"></q-icon>
-    </q-circular-progress>
-        
+        <q-circular-progress
+          show-value
+          font-size="16px"
+          class="text-red q-ma-md"
+          :value="100"
+          size="55px"
+          :thickness="0.07"
+          color="orange"
+          track-color="grey-3"
+        >
+          <q-icon name="shield" color="white" size="lg"></q-icon>
+        </q-circular-progress>
 
         <q-toolbar-title
           class="header-dialog q-py-sm q-pl-lg"
           :class="$q.dark.isActive ? 'text-red' : 'text-white'"
         >
-          <div v-if="certificationData" >
+          <div v-if="certificationData">
             <p class="text-h6 q-my-none">{{ titleDialog }}</p>
-            <p v-if="certificationData.name" class="text-subtitle1 text-grey q-my-none">
-              <q-icon :color="setColorState(certificationData.estado_aprobacion_c)" name="circle" size="xs" />
+            <p
+              v-if="certificationData.name"
+              class="text-subtitle1 text-grey q-my-none"
+            >
+              <q-icon
+                :color="setColorState(certificationData.estado_aprobacion_c)"
+                name="circle"
+                size="xs"
+              />
               {{ `Solicitud Nro. ${certificationData.name}` }}
             </p>
-            <p class="text-subtitle1 text-weight-medium q-my-none" :class="setTextColorState(certificationData.estado_aprobacion_c)"><q-icon class="q-mr-sm" size="xs" name="info" :color="setColorState(certificationData.estado_aprobacion_c)"/>{{state_request || 'PENDIENTE'}}</p>
+            <p
+              class="text-subtitle1 text-weight-medium q-my-none"
+              :class="setTextColorState(certificationData.estado_aprobacion_c)"
+            >
+              <q-icon
+                class="q-mr-sm"
+                size="xs"
+                name="info"
+                :color="setColorState(certificationData.estado_aprobacion_c)"
+              />{{ state_request || 'PENDIENTE' }}
+            </p>
           </div>
           <div class="flex" v-else>
             <span>{{ titleDialog }}</span>
@@ -331,7 +352,13 @@ defineExpose({
         />
       </q-page>
     </template>
-    <template #footer v-if="certificationData.id && certificationData.estado_aprobacion_c == 'pending'">
+    <template
+      #footer
+      v-if="
+        certificationData.id &&
+        certificationData.estado_aprobacion_c == 'pending'
+      "
+    >
       <q-btn color="primary" class="q-mr-md" @click="changeState(1)"
         >Aprobar</q-btn
       >
@@ -345,9 +372,10 @@ defineExpose({
     </template>-->
   </dialog-component>
 
-  <q-dialog v-model="showDialogKept"  persistent>
-    <CardAddKept 
-    :idSolicitud="certificationData.id" 
-    @update="getCertification" />
+  <q-dialog v-model="showDialogKept" persistent>
+    <CardAddKept
+      :idSolicitud="certificationData.id"
+      @update="getCertification"
+    />
   </q-dialog>
 </template>

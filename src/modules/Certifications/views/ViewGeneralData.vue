@@ -12,6 +12,7 @@ import { CertificacionBody } from '../utils/types';
 interface Props {
   id?: string;
   data: CertificacionBody;
+  requestId?: string;
 }
 
 interface Emits {
@@ -32,12 +33,27 @@ const cardProductTypeRef = ref<InstanceType<typeof CardProductType> | null>(
 const assignedSingleUserRef = ref<InstanceType<typeof AssignedUser> | null>(
   null
 );
-const cardRequestRef = ref<InstanceType<typeof CardRequest> | null>(
-  null
-);
+const cardRequestRef = ref<InstanceType<typeof CardRequest> | null>(null);
+const cardSchemaRef = ref<InstanceType<typeof CardSchema> | null>(null);
 
-const props = withDefaults(defineProps<Props>(), { id: '' });
+const props = withDefaults(defineProps<Props>(), { id: '', requestId: '' });
 const emits = defineEmits<Emits>();
+const procedureValue = ref(props.data.tipo_tramite_c || '');
+const productValue = ref(props.data.tipo_producto_c || '');
+
+const captureData = (procedure?: string, product?: string) => {
+  if (!!procedure) {
+    procedureValue.value = procedure;
+  }
+
+  if (!!product) {
+    productValue.value = product;
+  }
+
+  if (procedureValue.value && !!productValue.value) {
+    cardSchemaRef.value?.changeSchema(procedureValue.value, productValue.value);
+  }
+};
 
 onMounted(() => {
   console.log(props.data);
@@ -69,11 +85,13 @@ defineExpose({
               ref="cardProcedureTypeRef"
               class="col-12"
               :data="props.data"
+              @change="(value: string) => captureData(value, undefined)"
             />
             <CardProductType
               ref="cardProductTypeRef"
               class="col-12"
               :data="props.data"
+              @change="(value: string) => captureData(undefined, value)"
             />
           </div>
         </div>
@@ -86,7 +104,7 @@ defineExpose({
             :module-id="''"
             @changeUser="() => {}"
           />
-         
+
           <!--<AssignedSingleUser2
             ref="assignedSingleUserRef"
             :module="'HANCE_Certificacion'"
@@ -94,17 +112,18 @@ defineExpose({
             :withList="false"
             @changeUser="() => {}"
           />-->
-          
+
           <CardRequest
-          ref="cardRequestRef"
-          :id="props.id"
-          :data="props.data"
-          class="col-12"
+            ref="cardRequestRef"
+            :id="props.requestId"
+            :data="props.data"
+            class="col-12"
           />
           <CardSchema
-          :id="props.id"
-          :data="props.data"
-          class="col-12"
+            ref="cardSchemaRef"
+            :id="props.id"
+            :data="props.data"
+            class="col-12"
           />
         </div>
       </div>
@@ -121,7 +140,15 @@ defineExpose({
         :class="$q.dark.isActive ? 'bg-dark' : 'bg-grey-4'"
       >
         <q-toolbar class="justify-center">
-          <q-btn color="primary" class="q-mr-md" @click="() => { emits('continue')}">
+          <q-btn
+            color="primary"
+            class="q-mr-md"
+            @click="
+              () => {
+                emits('continue');
+              }
+            "
+          >
             Continuar
           </q-btn>
         </q-toolbar>

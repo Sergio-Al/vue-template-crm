@@ -1,27 +1,25 @@
 <script lang="ts">
+import { ref } from 'vue';
+import { useQuasar } from 'quasar';
+import { useAsyncState } from '@vueuse/core';
 import { AlertComponent } from 'src/components';
-import { Notification } from 'src/composables';
-import { useDialogTabs } from 'src/composables/Dialog/useDialog';
-import { computed, ref, watch, onMounted } from 'vue';
-import { useCertificationsTableStore } from '../../store/useCertificationTableStore';
-import { useCertificationStore } from '../../store/certificationStore';
-import ViewGeneral from '../../views/ViewGeneral.vue';
 import ViewGeneralData from '../../views/ViewGeneralData.vue';
 import ViewDataManufacturer from '../../views/ViewDataManufacturer.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
-import { CertificacionBody, Certification } from '../../utils/types';
+import { CertificacionBody } from '../../utils/types';
 import {
   getCertification,
   createCertificationService,
 } from '../../services/useCertificationsService';
-import { useAsyncState } from '@vueuse/core';
-import { useQuasar } from 'quasar';
 </script>
 
 <script lang="ts" setup>
-
 interface Props {
-  idSolicitud:string
+  idSolicitud: string;
+}
+
+interface DialogOptions {
+  solicitudId?: string;
 }
 
 const props = defineProps<Props>();
@@ -48,13 +46,28 @@ const tabsDefinition = [
 const $q = useQuasar();
 const showCloseAlert = ref(false);
 const activeTab = ref('dataGeneral');
-const certificationStore = useCertificationStore();
 
 const titleDialog = ref('Certificación');
 const open = ref(false);
 const localId = ref('');
+const certificationRequestId = ref('');
 
-const openDialogTab = (id?: string, data?: Partial<CertificacionBody>) => {
+//* reference variables
+const generalFormRef = ref<InstanceType<typeof ViewGeneralData> | null>(null);
+const dataManufacturerRef = ref<InstanceType<
+  typeof ViewDataManufacturer
+> | null>(null);
+//* computed variables
+// const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
+
+//* methods
+const openDialogTab = (
+  id?: string,
+  data?: Partial<CertificacionBody>,
+  options: DialogOptions = {}
+) => {
+  const { solicitudId = '' } = options;
+  certificationRequestId.value = solicitudId;
   if (!!id) {
     localId.value = id;
     getCertification2();
@@ -64,21 +77,14 @@ const openDialogTab = (id?: string, data?: Partial<CertificacionBody>) => {
     certificationData.value = data;
   }
 
-  console.log(props)
+  console.log(props);
   open.value = true;
 };
 
-//* reference variables
-const generalFormRef = ref<InstanceType<typeof ViewGeneralData> | null>(null);
-const dataManufacturerRef = ref<InstanceType<
-  typeof ViewDataManufacturer
-> | null>(null);
-//* computed variables
-// const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
-//* methods
 const clearData = () => {
   localId.value = '';
-  certificationStore.clearData();
+  certificationRequestId.value = '';
+  certificationData.value = {} as CertificacionBody;
 };
 
 const onCloseDialog = () => {
@@ -109,12 +115,13 @@ const createCertification = async () => {
 
 const updateCertification = (data: Partial<CertificacionBody>) => {
   console.log(data);
+  emits('udpate');
 };
 
-const goTabManufacturer = ()=>{
+const goTabManufacturer = () => {
   console.log('validar');
   activeTab.value = 'dataManufacturer';
-}
+};
 
 const {
   state: certificationData,
@@ -123,11 +130,11 @@ const {
 } = useAsyncState(
   async () => {
     const a = await getCertification(localId.value);
-    console.log(a)
+    console.log(a);
     return a;
   },
   {
-    hance_solicitudcertificacion_id_c:props.idSolicitud,
+    hance_solicitudcertificacion_id_c: props.idSolicitud,
     iddivision_c: '04',
   } as CertificacionBody,
   { immediate: false }
@@ -150,21 +157,6 @@ defineExpose({
     @before-hide="clearData"
   >
     <template #header>
-      <!-- <q-card class="bg-primary" flat>
-        <q-item>
-          <q-item-section avatar>
-            <q-skeleton type="QAvatar" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>
-              <q-skeleton type="text" />
-            </q-item-label>
-            <q-item-label caption>
-              <q-skeleton type="text" />
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-card> -->
       <q-toolbar
         class="header-dialog"
         :class="$q.dark.isActive ? 'bg-dark' : 'bg-primary'"
@@ -229,6 +221,7 @@ defineExpose({
           <q-tab-panel name="dataGeneral">
             <ViewGeneralData
               :data="certificationData"
+              :request-id="certificationRequestId"
               @create="createCertification"
               @update="updateCertification"
               @continue="goTabManufacturer"
@@ -242,13 +235,6 @@ defineExpose({
             />
           </q-tab-panel>
         </q-tab-panels>
-        <!-- <component
-          :is="activeTabComponent"
-          :id="id"
-          @submitComplete="updateData"
-          @update-view="assignCurrentView"
-          ref="generalFormRef"
-        /> -->
       </q-page>
     </template>
   </dialog-component>

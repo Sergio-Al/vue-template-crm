@@ -19,10 +19,9 @@ import {
   useRegionales,
 } from 'src/composables/useLanguage';
 
-import
-{
+import {
   getCertificationRequest,
-  getCertificationRequestCustomized
+  getCertificationRequestCustomized,
 } from '../../services/useCertificationsService';
 import { useAsyncState } from '@vueuse/core';
 
@@ -52,9 +51,9 @@ const bloqueado = ref(true);
 //const { userCRM, getCompany } = useCompany();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
-const requestDialogRef = ref<InstanceType<typeof CertificationRequestDialog> | null>(
-    null
-  );
+const requestDialogRef = ref<InstanceType<
+  typeof CertificationRequestDialog
+> | null>(null);
 
 const inputData = ref({ ...props.data });
 //inputData.value.iddivision_c = '';
@@ -96,23 +95,25 @@ const inputData = ref({ ...props.data });
 // }
 
 const verDialogItem = async (id: string) => {
-    await requestDialogRef.value?.openDialogTab(id)
-  };
+  await requestDialogRef.value?.openDialogTab(id);
+};
 
 const { isLoading } = useAsyncState(async () => {
   if (!!props.data.hance_solicitudcertificacion_id_c)
-      try {
-        const response = await getCertificationRequestCustomized(props.data.hance_solicitudcertificacion_id_c);
-        //console.log(response);
-        certificationRequest.value = response[0];
-        return response;
-      } catch (error) {
-        $q.notify({
-          type: 'warning',
-          message: 'Error en la captura',
-          caption: 'No se encontró la solicitud',
-        });
-      }
+    try {
+      const response = await getCertificationRequestCustomized(
+        props.data.hance_solicitudcertificacion_id_c
+      );
+      //console.log(response);
+      certificationRequest.value = response[0];
+      return response;
+    } catch (error) {
+      $q.notify({
+        type: 'warning',
+        message: 'Error en la captura',
+        caption: 'No se encontró la solicitud',
+      });
+    }
 }, null as null | CertificationRequest);
 
 onMounted(async () => {
@@ -192,7 +193,7 @@ const openDialogSol = () => {
 };
 
 const selectRelaSol = (item: any) => {
-  console.log(item)
+  console.log(item);
   certificationRequest.value.name = String(item.name);
   certificationRequest.value.id = String(item.id);
   certificationRequest.value.solicitante = String(item.solicitante);
@@ -238,7 +239,6 @@ defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): string => certificationRequest.value,
 });
-
 </script>
 
 <template>
@@ -279,16 +279,26 @@ defineExpose({
         <q-card-section class="full-width q-py-xs">
           <div class="row q-mt-sm flex justify-between">
             <span class="text-caption text-weight-medium">
-              Solicitud
-            </span>
+              Solicitud {{ props.id || 'no' }}</span
+            >
           </div>
           <div class="assigned-user q-mt-none q-mb-none">
-            <span class="text-subtitle-1 text-font-weight">Nro.<span class="text-primary q-pl-sm"> {{certificationRequest.name || 'Sin asignar'}}</span></span>
+            <span class="text-subtitle-1 text-font-weight"
+              >Nro.<span class="text-primary q-pl-sm">
+                {{ certificationRequest.name || 'Sin asignar' }}</span
+              ></span
+            >
           </div>
-          <div v-if="certificationRequest.name" class="text-caption text-weight-light text-grey-9">
+          <div
+            v-if="certificationRequest.name"
+            class="text-caption text-weight-light text-grey-9"
+          >
             Solicitante: {{ certificationRequest.solicitante }}
           </div>
-          <div v-if="certificationRequest.name" class="text-caption text-weight-light text-grey-9">
+          <div
+            v-if="certificationRequest.name"
+            class="text-caption text-weight-light text-grey-9"
+          >
             Fecha de Creación: {{ certificationRequest.fecha_creacion }}
           </div>
         </q-card-section>
@@ -297,63 +307,61 @@ defineExpose({
       <q-separator />
 
       <q-card-actions class="card-actions justify-between">
-          <q-btn
-            style="font-size: 13px"
-            icon="edit"
-            @click="toggleFilter"
-            flat
-            color="primary"
-          >
-            <span class="q-ml-xs"> Cambiar Solicitud </span>
-          </q-btn>
-          <q-btn
-            style="font-size: 13px"
-            icon="visibility"
-            @click="verDialogItem(certificationRequest.id)"
-            label="Ver"
-            color="primary"
-            outline
-            :disabled="!certificationRequest.id"
-          >
-          </q-btn>
-
+        <q-btn
+          style="font-size: 13px"
+          icon="edit"
+          @click="toggleFilter"
+          flat
+          color="primary"
+        >
+          <span class="q-ml-xs"> Cambiar Solicitud </span>
+        </q-btn>
+        <q-btn
+          style="font-size: 13px"
+          icon="visibility"
+          @click="verDialogItem(certificationRequest.id)"
+          label="Ver"
+          color="primary"
+          outline
+          :disabled="!certificationRequest.id"
+        >
+        </q-btn>
       </q-card-actions>
       <q-card-section v-if="showFilter">
         <q-input
-              outlined
-              v-model="certificationRequest.name"
-              label="Solicitud de Certificación"
-              class="col-md-6 col-sm-12"
-              :readonly="bloqueado"
+          outlined
+          v-model="certificationRequest.name"
+          label="Solicitud de Certificación"
+          class="col-md-6 col-sm-12"
+          :readonly="bloqueado"
+          dense
+          label-slot
+        >
+          <template v-slot:prepend>
+            <q-avatar>
+              <q-icon name="work" size="sm" />
+            </q-avatar>
+          </template>
+          <template v-slot:after>
+            <q-btn
               dense
-              label-slot
-            >
-              <template v-slot:prepend>
-                <q-avatar>
-                  <q-icon name="work" size="sm" />
-                </q-avatar>
-              </template>
-              <template v-slot:after>
-                <q-btn
-                  dense
-                  outline
-                  icon="north_west"
-                  color="primary"
-                  @click="openDialogSol"
-                  :disable="bloqueado"
-                />
-                <q-btn
-                  dense
-                  outline
-                  icon="close"
-                  color="negative"
-                  @click="clearSol"
-                  :disable="bloqueado"
-                />
-              </template>
+              outline
+              icon="north_west"
+              color="primary"
+              @click="openDialogSol"
+              :disable="bloqueado"
+            />
+            <q-btn
+              dense
+              outline
+              icon="close"
+              color="negative"
+              @click="clearSol"
+              :disable="bloqueado"
+            />
+          </template>
         </q-input>
       </q-card-section>
-
     </q-card>
   </div>
 </template>

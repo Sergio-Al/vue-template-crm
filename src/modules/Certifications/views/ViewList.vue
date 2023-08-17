@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { useCertificationsTableStore, userCRM } from '../store/useCertificationTableStore';
+import {
+  useCertificationsTableStore,
+  userCRM,
+} from '../store/useCertificationTableStore';
 import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
 
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import CertificationDialog from '../components/Dialogs/CertificationDialog.vue';
 import moment from 'moment';
+import { CertificacionBody } from '../utils/types';
 
 const table = useCertificationsTableStore();
 const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
@@ -61,13 +65,12 @@ const onRequestTable = async (val: { pagination: any; filter: any }) => {
   await getListCertifications(val);
 };
 
-const onClearDataFilter = () => {
+const onClearDataFilter = async () => {
   try {
     // filterAdvancedRef.value?.clearFilter();
-    console.log('here!!!');
-    table.clearFilterData();
-    table.setFilterData();
-    table.reloadList();
+    await table.clearFilterData();
+    await table.setFilterData();
+    await table.reloadList();
   } catch (error) {
     throw error;
   }
@@ -96,32 +99,37 @@ const setTipoColor = (tipo: string): string => {
 };
 
 const openDialog = () => {
+  // certificationDialogRef.value?.openDialogTab(undefined, undefined, {
+  //   solicitudId: '33', // id de prueba
+  // });
   certificationDialogRef.value?.openDialogTab();
 };
 
 const openItemSelected = (id: string, title: string) => {
-  certificationDialogRef.value?.openDialogTab(id, { iddivision_c: userCRM.iddivision });
+  certificationDialogRef.value?.openDialogTab(id, {
+    iddivision_c: userCRM.iddivision,
+  });
 };
 </script>
 
 <template>
   <div :class="$q.platform.is.desktop ? 'q-pa-md' : 'q-pa-sm'">
     <q-card>
-          <q-tabs
-          v-model="table.state_tab"
-          align="justify"
-          dense
-          class="text-grey-7"
-          active-color="primary"
-          indicator-color="orange"
-          @click="reloadList()"
-          >
-            <q-tab name="" label="TODAS" />
-            <q-tab name="revision" label="REVISIÓN" />
-            <q-tab name="enviadamisa" label="ENVIADA A MISA" />
-            <q-tab name="finalizada" label="FINALIZADA" />
-          </q-tabs>
-        </q-card>
+      <q-tabs
+        v-model="table.state_tab"
+        align="justify"
+        dense
+        class="text-grey-7"
+        active-color="primary"
+        indicator-color="orange"
+        @click="reloadList()"
+      >
+        <q-tab name="" label="TODAS" />
+        <q-tab name="revision" label="REVISIÓN" />
+        <q-tab name="enviadamisa" label="ENVIADA A MISA" />
+        <q-tab name="finalizada" label="FINALIZADA" />
+      </q-tabs>
+    </q-card>
 
     <table-component
       :rows="table.data_table.rows"
@@ -154,7 +162,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="name" :props="propsTable" :style="'width: 100px;'">
             <span
               class="text-primary text-weight-bold text-break cursor-pointer"
-              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
+              @click="openDialog(propsTable.row.id)"
             >
               {{ propsTable.row.name }}
             </span>
@@ -184,7 +192,9 @@ const openItemSelected = (id: string, title: string) => {
               <div class="col-9">
                 <span>{{ propsTable.row.profesional_acreditado }}</span>
                 <br />
-                <span class="text-caption text-grey">{{ propsTable.row.cargo }}</span>
+                <span class="text-caption text-grey">{{
+                  propsTable.row.cargo
+                }}</span>
               </div>
             </div>
           </q-td>
@@ -298,7 +308,7 @@ const openItemSelected = (id: string, title: string) => {
             <q-checkbox flat v-model="propsTable.selected" dense />
             <span
               class="q-ml-md text-ellipsis text-blue-10 cursor-pointer"
-              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
+              @click="openDialog(propsTable.row.id)"
             >
               {{ propsTable.row.name }}
             </span>
@@ -384,7 +394,7 @@ const openItemSelected = (id: string, title: string) => {
           </q-card-section>-->
         </q-card>
       </template>
-      
+
       <template v-slot:buttons>
         <q-btn
           color="primary"
