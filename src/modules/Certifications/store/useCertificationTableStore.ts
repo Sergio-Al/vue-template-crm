@@ -302,10 +302,9 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         Notification(
           'positive',
           'check_circle',
-          `<strong> Acción exitosa¡ </strong> <br/> ${
-            selectItems.length > 1
-              ? `Se eliminaron ${selectItems.length} registros de la tabla.`
-              : 'Se eliminó un registro de la tabla.'
+          `<strong> Acción exitosa¡ </strong> <br/> ${selectItems.length > 1
+            ? `Se eliminaron ${selectItems.length} registros de la tabla.`
+            : 'Se eliminó un registro de la tabla.'
           }`
         );
       } catch (error) {
@@ -339,10 +338,9 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         Notification(
           'positive',
           'check_circle',
-          `<strong> Acción exitosa¡ </strong> <br/> ${
-            selectItems.length > 1
-              ? `Se actualizaron ${selectItems.length} registros de la tabla.`
-              : 'Se actualizó un registro de la tabla.'
+          `<strong> Acción exitosa¡ </strong> <br/> ${selectItems.length > 1
+            ? `Se actualizaron ${selectItems.length} registros de la tabla.`
+            : 'Se actualizó un registro de la tabla.'
           }`
         );
       } catch (error) {
@@ -358,6 +356,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
     },
 
     async clearFilterData() {
+      this.state_tab = '';
       this.data_filter = {
         name: '',
         etapa_c: '',

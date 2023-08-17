@@ -65,13 +65,12 @@ const onRequestTable = async (val: { pagination: any; filter: any }) => {
   await getListCertifications(val);
 };
 
-const onClearDataFilter = () => {
+const onClearDataFilter = async () => {
   try {
     // filterAdvancedRef.value?.clearFilter();
-    console.log('here!!!');
-    table.clearFilterData();
-    table.setFilterData();
-    table.reloadList();
+    await table.clearFilterData();
+    await table.setFilterData();
+    await table.reloadList();
   } catch (error) {
     throw error;
   }
