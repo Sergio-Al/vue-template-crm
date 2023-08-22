@@ -17,6 +17,7 @@ interface Props {
   data: CertificacionBody;
   requestId?: string;
   manufacturerId?:string;
+  applicantId?:string;
 }
 
 interface Emits {
@@ -198,6 +199,7 @@ defineExpose({
               ref="cardGeneralDataRef"
               :id="props.id || ''"
               :data="certificationData"
+              :applicantId="applicantId"
               class="col-12"
             />
             <CardProcedureType

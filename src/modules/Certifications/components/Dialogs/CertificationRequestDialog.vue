@@ -207,7 +207,7 @@ const {
   async () => {
     console.log(localId.value);
     const a = await getCertificationRequest(localId.value);
-    console.log(a.id);
+    // console.log(a);
     return a;
   },
   {} as CertificationRequest,
@@ -371,7 +371,11 @@ defineExpose({
   <q-dialog v-model="showDialogKept">
     <CardAddKept
       :idSolicitud="certificationData.id"
-      @update="getCertification"
+      @update="()=>{
+        showDialogKept = false;
+        getCertification();
+        emits('update');
+      }"
     />
   </q-dialog>
 </template>

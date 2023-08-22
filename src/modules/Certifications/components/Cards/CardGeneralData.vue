@@ -27,6 +27,7 @@ const { userCRM } = userStore();
 interface Props {
   id: string;
   data: CertificacionBody;
+  applicantId:any;
 }
 
 const { getListDivisiones, listDivisiones } = useDivision();
@@ -170,6 +171,7 @@ onMounted(async () => {
     inputData.value.date_entered = moment(new Date()).format('YYYY-MM-DD');
     inputData.value.iddivision_c = userCRM.iddivision;
     inputData.value.idamercado_c = userCRM.idamercado;
+    inputData.value.user_id_c = props.applicantId;
 
     if(participants.value?.length == 1){
         const participant = participants.value[0];

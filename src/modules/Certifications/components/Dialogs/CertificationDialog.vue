@@ -31,6 +31,7 @@ interface Props {
 const props = defineProps<Props>();
 const certificationRequestId = ref<string>('');
 const manufacturerId = ref<string>('');
+const applicantId = ref<string>('');
 
 interface Emits {
   (e: 'udpate'): void;
@@ -73,11 +74,11 @@ const openDialogTab = (
   data?: any,
   dataRequest?: any
 ) => { 
-
   if(!!dataRequest){
-    const { id = '', hance_empresa_id_c='' } = dataRequest;
+    const { id='', hance_empresa_id_c='', assigned_user_id='' } = dataRequest;
     certificationRequestId.value = id;
-    manufacturerId.value = hance_empresa_id_c
+    manufacturerId.value = hance_empresa_id_c;
+    applicantId.value = assigned_user_id;
   }
   if (!!idCert) {
     localId.value = idCert;
@@ -97,6 +98,7 @@ const clearData = () => {
   localId.value = '';
   certificationRequestId.value = '';
   manufacturerId.value = '';
+  applicantId.value = '';
   certificationData.value = {} as CertificacionBody;
   //certificationStore.clearData();
 };
@@ -251,6 +253,7 @@ defineExpose({
               :id="localId"
               :request-id="certificationRequestId"
               :manufacturer-id="manufacturerId"
+              :applicant-id="applicantId"
               @create="createCertification"
               @update="updateCertification"
               @continue="goTabManufacturer"

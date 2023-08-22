@@ -43,12 +43,12 @@ onMounted(async () => {
 const changeState = async()=>{
     try{
       let state = dataComment.value.avoid == 'yes'?'kept':'rejected';
-          await updateStateCertificationRequest(props.idSolicitud, state);
-          $q.notify({
-              color: 'info',
-              message: 'Solicitud de Certificación',
-              caption: 'Se cambió el estado de la solicitud',
-          })
+       await updateStateCertificationRequest(props.idSolicitud, state);
+       $q.notify({
+           color: 'info',
+           message: 'Solicitud de Certificación',
+           caption: 'Se cambió el estado de la solicitud',
+       })
     }
     catch(e){
        throw e
@@ -56,16 +56,23 @@ const changeState = async()=>{
 }
 
 const onSubmit = async () => {
-  
-  await createComment(
-    userCRM.id, 
-    "HANCE_SolicitudCertificacion", 
-    dataComment.value.comment, 
-    props.idSolicitud
-    );
-  await changeState();
+  try{
+    await changeState();
+    await createComment(
+      userCRM.id, 
+      "HANCE_SolicitudCertificacion", 
+      dataComment.value.comment, 
+      props.idSolicitud
+      );
+    
+  }
+  catch(e){
+    throw e
+  }
+  finally{
+    emits('update');
+  }
 
-  emits('update');
 };
 
 </script>
@@ -95,7 +102,7 @@ const onSubmit = async () => {
     </div>
 
     <q-card-actions align="center">
-        <q-btn label="Aceptar" color="primary" v-close-popup @click="onSubmit" />
+        <q-btn label="Aceptar" color="primary" @click="onSubmit" />
       <q-btn label="Cancelar" color="negative" v-close-popup />
     </q-card-actions>
   </q-card>

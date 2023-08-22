@@ -1,30 +1,16 @@
 import { defineStore } from 'pinia';
-import {
-  Filter,
-  Pagination,
-  PaginationTable,
-  UpdateMassiveModel,
-} from '../utils/types';
-import {
-  updateMassiveData,
-  deleteMassiveData,
-  getTableData,
-  getTablePreferences,
-  saveTablePreferences,
-  updateTablePreferences,
-} from '../services/useCertificationsService';
+
 import { axios_PREFERENCES } from 'src/conections/axiosCRM';
 import { Notification } from 'src/composables';
 import { userStore } from 'src/modules/Users/store/UserStore';
-import { ref } from 'vue';
+import { getCertificationRequest } from '../services/useCertificationsService';
 
-export const { userCRM } = userStore();
+const { userCRM } = userStore();
 
-export const useCertificationsTableStore = defineStore('certification_table', {
+export const useCertificationsCertStore = defineStore('certifications', {
   state: () => ({
     loading: false,
     mongo_id: '',
-    state_tab: '',
     pagination: {
       page: 1,
       sortBy: 'fecha_creacion',
@@ -33,12 +19,16 @@ export const useCertificationsTableStore = defineStore('certification_table', {
       rowsNumber: 10,
     },
     data_filter: {
+      account: '',
       name: '',
-      etapa_c: '',
-      tipo_tramite_c: '',
-      producto_c: '',
-      aprobacion_c: '',
-      id_empresa: '',
+      pst_code: '',
+      aio_code: '',
+      status: '',
+      start_date: '',
+      end_date: '',
+      country: '',
+      state: '',
+      city: '',
       created_by: [],
       modified_by: [],
       assigned_to: [],
@@ -50,7 +40,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         {
           name: 'name',
           align: 'left',
-          label: 'Nro de Registro',
+          label: 'Nro. de Certificación',
           field: 'name',
           sortable: true,
           visible: true,
@@ -58,7 +48,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         {
           name: 'tipo_tramite_c',
           align: 'left',
-          label: 'Tipo de tramite',
+          label: 'Tipo de trámite',
           field: 'tipo_tramite_c',
           sortable: true,
           visible: true,
@@ -76,7 +66,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           align: 'left',
           label: 'Tipo de Producto',
           field: 'tipo_producto_c',
-          sortable: true,
+          sortable: false,
           visible: true,
         },
         {
@@ -89,103 +79,77 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         },
         {
           name: 'estado_c',
-          align: 'center',
+          align: 'left',
           label: 'Estado',
           field: 'estado_c',
-          sortable: true,
+          sortable: false,
           visible: true,
         },
         {
-          name: 'fecha_creacion',
-          align: 'center',
+          name: 'date_entered',
+          align: 'left',
           label: 'Fecha de Creación',
-          field: 'fecha_creacion',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'cumplimiento_req',
-          align: 'center',
-          label: 'Cumplimiento de requisitos',
-          field: 'cumplimiento_req',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'producto_c',
-          align: 'center',
-          label: 'Producto',
-          field: 'producto_c',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'proveedor',
-          align: 'center',
-          label: 'Producto',
-          field: 'proveedor',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'nro_solicitud',
-          align: 'center',
-          label: 'Nro. solicitud',
-          field: 'nro_solicitud',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'certificacion',
-          align: 'center',
-          label: 'Certificación Emitida',
-          field: 'certificacion',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'options',
-          align: 'center',
-          label: 'Acciones',
-          field: 'options',
+          field: 'date_entered',
           sortable: true,
           visible: true,
         },
       ],
     },
     visible_fields: [
-      'id',
       'name',
       'tipo_tramite_c',
       'solicitante',
       'tipo_producto_c',
       'etapa_c',
       'estado_c',
-      'fecha_creacion',
-      'cumplimiento_req',
-      'producto_c',
-      'nro_solicitud',
-      'proveedor'
+      'date_entered'
     ],
     visible_columns: [
-      'name',
-      'tipo_tramite_c',
-      'solicitante',
-      'tipo_producto_c',
-      'etapa_c',
-      'estado_c',
-      'producto_c',
-      'fecha_creacion',
-      'nro_solicitud',
-      'cumplimiento_req',
-      'nro_solicitud',
-      'certificacion',
-      'options',
+        'name',
+        'tipo_tramite_c',
+        'solicitante',
+        'tipo_producto_c',
+        'etapa_c',
+        'estado_c',
+        'date_entered'
     ],
   }),
+
+  
   actions: {
     async getUserConfig() {
-      const configuration = await getTablePreferences();
+      // const configuration = await getTablePreferences();
+      const configuration = {
+        _id: 'code_1',
+        pagination: { rowsPerPage: 9, sortBy: 'nombre', descending: true },
+        visible_columns: ['nombre'],
+        data_filter: {
+          account: '',
+          name: '',
+          pst_code: '',
+          aio_code: '',
+          status: '',
+          start_date: '',
+          end_date: '',
+          country: '',
+          state: '',
+          city: '',
+          created_by: [],
+          modified_by: [],
+          assigned_to: [],
+          creation_date: { from: '', to: '', operator: '', option: '' },
+        },
+        visible_fields: [
+            'name',
+            'tipo_tramite_c',
+            'solicitante',
+            'tipo_producto_c',
+            'etapa_c',
+            'estado_c',
+            'date_entered'
+        ],
+      };
+
       if (configuration) {
         this.mongo_id = configuration._id;
         this.pagination.rowsPerPage = configuration.pagination.rowsPerPage;
@@ -196,21 +160,18 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         this.data_filter = configuration.data_filter;
         this.visible_fields = configuration.visible_fields;
       } else {
-        this.mongo_id = await saveTablePreferences({
-          pagination: this.pagination,
-          visible_columns: this.visible_columns,
-          data_filter: this.data_filter,
-          visible_fields: this.visible_fields,
-        });
+        // this.mongo_id = await saveTablePreferences({
+        //   pagination: this.pagination,
+        //   visible_columns: this.visible_columns,
+        //   data_filter: this.data_filter,
+        //   visible_fields: this.visible_fields,
+        // });
       }
     },
 
-    async getListCertifications(props: {
-      pagination: Pagination;
-      filter: Filter;
-    }) {
+    async getListCertifications(props: { pagination: any; filter: any }) {
       try {
-        //this.loading = true;
+        this.loading = true;
         const { pagination, filter } = props;
         const { page, rowsPerPage, sortBy, descending } = pagination;
         const params = {
@@ -220,11 +181,12 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           order: descending ? 'desc' : 'asc',
           filter: filter,
         };
-        const data = await getTableData(params);
-        console.log(data);
-        this.data_table.rows = data;
-        this.pagination.rowsNumber = data.length;
-        //this.loading = false;
+
+        // const data = await getTableData(params);
+        const data = { rows: [], total: 10 };
+
+        this.data_table.rows = data?.rows;
+        this.pagination.rowsNumber = data?.total;
       } catch (error) {
         console.log(error);
       } finally {
@@ -233,28 +195,26 @@ export const useCertificationsTableStore = defineStore('certification_table', {
     },
 
     async reloadList() {
-      this.data_filter.etapa_c = this.state_tab;
-
       await this.getListCertifications({
         pagination: this.pagination,
         filter: this.data_filter,
       });
     },
 
-    async setPagination(pagination: PaginationTable) {
+    async setPagination(pagination: any) {
       if (
         this.mongo_id &&
         (pagination.rowsPerPage !== this.pagination.rowsPerPage ||
           pagination.sortBy !== this.pagination.sortBy ||
           pagination.descending !== this.pagination.descending)
       ) {
-        await updateTablePreferences(this.mongo_id ?? '', {
-          pagination: {
-            sortBy: pagination.sortBy,
-            descending: pagination.descending,
-            rowsPerPage: pagination.rowsPerPage,
-          },
-        });
+        // await updateTablePreferences(this.mongo_id ?? '', {
+        //   pagination: {
+        //     sortBy: pagination.sortBy,
+        //     descending: pagination.descending,
+        //     rowsPerPage: pagination.rowsPerPage,
+        //   },
+        // });
         this.pagination.sortBy = pagination.sortBy;
         this.pagination.rowsPerPage = pagination.rowsPerPage;
         this.pagination.descending = pagination.descending;
@@ -262,16 +222,16 @@ export const useCertificationsTableStore = defineStore('certification_table', {
     },
 
     async setVisibleColumn(columns: string[]) {
-      await updateTablePreferences(this.mongo_id ?? '', {
-        visible_columns: columns,
-      });
+      // await updateTablePreferences(this.mongo_id ?? '', {
+      //   visible_columns: columns,
+      // });
       this.visible_columns = columns;
     },
 
     async setVisibleField(columns: string[]) {
-      await updateTablePreferences(this.mongo_id ?? '', {
-        visible_fields: columns,
-      });
+      // await updateTablePreferences(this.mongo_id ?? '', {
+      //   visible_fields: columns,
+      // });
       this.visible_fields = columns;
     },
 
@@ -296,14 +256,15 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           user_id: userCRM.id,
           items: selectItems,
         };
-        await deleteMassiveData(dataSend);
+        // await deleteMassiveData(dataSend);
         await this.reloadList();
         Notification(
           'positive',
           'check_circle',
-          `<strong> Acción exitosa¡ </strong> <br/> ${selectItems.length > 1
-            ? `Se eliminaron ${selectItems.length} registros de la tabla.`
-            : 'Se eliminó un registro de la tabla.'
+          `<strong> Acción exitosa¡ </strong> <br/> ${
+            selectItems.length > 1
+              ? `Se eliminaron ${selectItems.length} registros de la tabla.`
+              : 'Se eliminó un registro de la tabla.'
           }`
         );
       } catch (error) {
@@ -318,10 +279,7 @@ export const useCertificationsTableStore = defineStore('certification_table', {
       }
     },
 
-    async updateMultiple(
-      data: UpdateMassiveModel,
-      selectItems: { id: string }[]
-    ) {
+    async updateMultiple(data: any, selectItems: { id: string }[]) {
       this.loading = true;
 
       try {
@@ -332,14 +290,15 @@ export const useCertificationsTableStore = defineStore('certification_table', {
             user_id: userCRM.id,
           },
         };
-        await updateMassiveData(dataSend);
+        // await updateMassiveData(dataSend);
         await this.reloadList();
         Notification(
           'positive',
           'check_circle',
-          `<strong> Acción exitosa¡ </strong> <br/> ${selectItems.length > 1
-            ? `Se actualizaron ${selectItems.length} registros de la tabla.`
-            : 'Se actualizó un registro de la tabla.'
+          `<strong> Acción exitosa¡ </strong> <br/> ${
+            selectItems.length > 1
+              ? `Se actualizaron ${selectItems.length} registros de la tabla.`
+              : 'Se actualizó un registro de la tabla.'
           }`
         );
       } catch (error) {
@@ -355,14 +314,17 @@ export const useCertificationsTableStore = defineStore('certification_table', {
     },
 
     async clearFilterData() {
-      this.state_tab = '';
       this.data_filter = {
+        account: '',
         name: '',
-        etapa_c: '',
-        tipo_tramite_c: '',
-        producto_c: '',
-        aprobacion_c: '',
-        id_empresa: '',
+        pst_code: '',
+        aio_code: '',
+        status: '',
+        start_date: '',
+        end_date: '',
+        country: '',
+        state: '',
+        city: '',
         created_by: [],
         modified_by: [],
         assigned_to: [],
