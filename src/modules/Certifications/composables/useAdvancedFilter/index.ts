@@ -33,12 +33,25 @@ export const useAdvancedFilter = () => {
 
   const literalDate = ref('');
 
-  const listStates = [
+  const listEtapas = [
     {value:'', label:'Todas'},
-    {value:'pending', label:'Pendiente'},
-    {value:'kept', label:'Observado'},
-    {value:'approved', label:'Aprobado'},
-    {value:'rejected', label:'Rechazado'}
+    {value:'revision', label:'Revisión'},
+    {value:'enviadamisa', label:'Enviada a MISA'},
+    {value:'finalizada', label:'Finalizada'},
+  ]
+
+  const listTramites = [
+    {value:'', label:'Todos'},
+    {value:'inscripcion', label:'Inscripción'},
+    {value:'reinscripcion', label:'Reinscripción'},
+    {value:'rectificacion', label:'Rectificación'},
+    {value:'correccion', label:'Corrección'}
+  ]
+
+  const listProductos = [
+    {value:'', label:'Todos'},
+    {value:'dispositivo', label:'Dispositivo'},
+    {value:'equipo', label:'Equipo'},
   ]
 
   onMounted(async () => {
@@ -61,50 +74,53 @@ export const useAdvancedFilter = () => {
   const form = ref([
     {
       input: 'q-input',
-      label: 'Nro de solicitud',
+      label: 'Nro de Certificación',
       clearable: true,
       field: 'name',
       visible: true,
     },
-    // {
-    //   input: 'q-select',
-    //    label: 'Fecha de Solicitud',
-    //    clearable: true,
-    //    field: 'date_entered',
-    //    visible: false,
-    //    withInput: true,
-    //    options_dense: true,
-    //    emit_value: true,
-    //    map_options: true,
-    //    option_label: 'label',
-    //    option_value: 'value',
-    //    options: listDateRange,
-    // },
+    {
+      input: 'q-select',
+      field: 'tipo_tramite_c',
+      label: 'Tipo de Trámite',
+      clearable: true,
+      option_label: 'label',
+      option_value: 'value',
+      visible: true,
+      emit_value: true,
+      map_options: true,
+      options: listTramites,
+    },
+    {
+      input: 'q-select',
+      field: 'tipo_producto_c',
+      label: 'Tipo de Producto',
+      clearable: true,
+      option_label: 'label',
+      option_value: 'value',
+      visible: true,
+      emit_value: true,
+      map_options: true,
+      options: listProductos,
+    },
+    {
+      input: 'q-select',
+      field: 'etapa_c',
+      label: 'Etapa',
+      clearable: true,
+      option_label: 'label',
+      option_value: 'value',
+      visible: true,
+      emit_value: true,
+      map_options: true,
+      options: listEtapas,
+    },
     {
       input: 'q-input',
       label: 'Solicitante',
       clearable: true,
       field: 'solicitante',
       visible: true,
-    },
-    // {
-    //   input: 'q-input',
-    //   label: 'División',
-    //   clearable: true,
-    //   field: 'division',
-    //   visible: true,
-    // },
-    {
-      input: 'q-select',
-      field: 'division',
-      label: 'División',
-      clearable: true,
-      option_label: 'label',
-      option_value: 'cod_div',
-      visible: true,
-      emit_value: true,
-      map_options: true,
-      options: listDivisiones,
     },
     {
       input: 'q-input',
@@ -115,23 +131,12 @@ export const useAdvancedFilter = () => {
     },
     {
       input: 'q-input',
-      label: 'Fabricante',
+      label: 'Nro. de Solicitud',
       clearable: true,
-      field: 'fabricante_c',
+      field: 'solicitud',
       visible: true,
     },
-    {
-      input: 'q-select',
-      field: 'state_aprobacion',
-      label: 'Estado',
-      clearable: true,
-      option_label: 'label',
-      option_value: 'value',
-      visible: true,
-      emit_value: true,
-      map_options: true,
-      options: listStates,
-    },
+
     //   {
     //     input: 'q-select',
     //     field: 'account_type',

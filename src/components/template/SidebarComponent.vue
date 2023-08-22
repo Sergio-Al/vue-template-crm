@@ -13,7 +13,7 @@
         <a href="/#/companies"  class="text-weight-bold underline-none"><q-icon name="business" /> Empresas</a>
       </p>
       <p class="q-ml-lg">
-        <a href="/#/certifications/requests"  class="text-weight-bold underline-none"><q-icon name="edit" /> Solicitudes </a>
+        <a href="/#/requests"  class="text-weight-bold underline-none"><q-icon name="edit" /> Solicitudes </a>
       </p>
       <p class="q-ml-lg">
         <a href="/#/certifications"  class="text-weight-bold underline-none"><q-icon name="shield" /> Certificaciones</a>

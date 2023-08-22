@@ -1,2 +1,2 @@
-//export * from '../useCertificationsCert';
+export * from './useCertificationsRequests';
 export * from '../composables/useAdvancedFilter';

@@ -1,22 +1,21 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useAdvancedFilter } from '../../composablesCert';
-import { useCertificationsTableStore } from '../../store/useCertificationTableStore';
+import { useAdvancedFilter } from '../../composables';
+import { useCertificationRequestTableStore } from '../../store/useCertificationRequestTableStore';
 
-// import DateRangeComponent from 'src/components/DateRange/DateRangeComponent.vue';
+import DateRangeComponent from 'src/components/DateRange/DateRangeComponent.vue';
 
 const {
   form,
   dataFilter,
   HANSACRM3_URL,
-  clearFilterData: clearData,
+  clearFilter: clearData,
   todos,
 } = useAdvancedFilter();
-
-const tableStore = useCertificationsTableStore();
+const tableStore = useCertificationRequestTableStore();
 
 const show_more_input = ref(false);
-//const dynamicInput = ref<InstanceType<typeof DateRangeComponent> | null>(null);
+const dynamicInput = ref<InstanceType<typeof DateRangeComponent> | null>(null);
 
 const form_fields = ref([...tableStore.visible_fields]);
 onMounted(() => {
@@ -62,7 +61,7 @@ const setVisibleFields = () => {
 const selectAllInputs = () => {
   form_fields.value = [];
   if (todos.value) {
-    form_fields.value = form.value.map((el) => {
+    form_fields.value = form.value.map((el:any) => {
       el.visible = todos.value;
       return el.field;
     });
@@ -221,26 +220,8 @@ defineExpose({ dataFilter, getDataFilter, clearFilter });
           @click="cancelSelecction"
         />
       </q-card-actions>
-      <!-- <q-card-section class="q-pt-none">
-        <div class="text-h6 q-pt-none">Módulos relaciondos</div>
-        <hr />
-        <div class="q-col-gutter-sm">
-          <q-checkbox
-            v-for="(item, index) in form_modules"
-            :key="index"
-            keep-color
-            v-model="item['visible']"
-            :label="item['label']"
-            color="primary"
-            style="width: 33.3%"
-            disable
-            :val="item['visible']"
-          />
-        </div>
-      </q-card-section> -->
     </q-card>
   </q-dialog>
-  <!-- <pre>{{ dataFilter }}</pre> -->
 </template>
 
 <style lang="scss" scoped>

@@ -111,7 +111,7 @@ export const getTableData = async (params: Params) => {
     const { data } = await axios_NS_07.get(
       `/certificacion/advanced?params=${JSON.stringify(params)}`
     );
-    //console.log(data);
+    console.log(data);
     return data;
   } catch (error) {
     throw error;

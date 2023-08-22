@@ -6,7 +6,7 @@ import { userStore } from 'src/modules/Users/store/UserStore';
 //import type { Document } from '../../utils/types';
 //import { axiosCRM3 } from 'src/conections/axiosPRY';
 //import { axios_GLOBAL } from 'src/conections/axiosCRM';
-import { createComment, updateStateCertificationRequest } from '../../services/useCertificationsService';
+import { createComment, updateStateCertificationRequest } from '../../services/useCertificationRequestService';
 
 //import { dataFormatCRM3Basic } from 'src/conections/conexionCRM3';
 //import { useCompaniesStore } from '../../store/companyStore';

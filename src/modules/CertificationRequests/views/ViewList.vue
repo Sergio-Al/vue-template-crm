@@ -1,26 +1,57 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
 
-import {
-  useCertificationsTableStore,
-  userCRM,
-} from '../store/useCertificationTableStore';
+import { useCertificationRequestTableStore } from '../store/useCertificationRequestTableStore';
 import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
 
-import { HANSACRM3_URL } from 'src/conections/api_conectors';
-import CertificationDialog from '../components/Dialogs/CertificationDialog.vue';
-import moment from 'moment';
-import { CertificacionBody } from '../utils/types';
+import CertificationRequestDialog from '../components/Dialogs/CertificationRequestDialog.vue';
+import CertificationDialog from 'src/modules/Certifications/components/Dialogs/CertificationDialog.vue';
 
-const table = useCertificationsTableStore();
-const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
-  useCertificationsTableStore();
+interface Props {
+  nameModule: string;
+  idUser?: string;
+  menu?: boolean;
+}
+
+const props = defineProps<Props>();
+//const state = ref('');
+
+// const table = useCertificationRequestTableStore();
+// const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
+//   useCertificationsTableStore();
+
+const certificationRequestTableStore = useCertificationRequestTableStore();
+const {
+  data_filter,
+  data_table,
+  loading,
+  pagination,
+  visible_columns,
+} = storeToRefs(certificationRequestTableStore);
+
+const {
+  clearFilterData,
+  deleteMultiple,
+  getListCertificationRequest,
+  getUserConfig,
+  reloadList,
+  setFilterData,
+  setPagination,
+  setVisibleColumn,
+  setVisibleField,
+  updateMultiple,
+} = certificationRequestTableStore;
 
 const onSubmitDataFilter = () => {
   try {
-    table.data_filter = advancedFilterRef.value?.dataFilter;
-    table.setFilterData();
-    table.reloadList();
+    if (!advancedFilterRef.value?.dataFilter) {
+      console.log('no data on dataFilter', advancedFilterRef.value?.dataFilter);
+      return;
+    }
+    data_filter.value = advancedFilterRef.value?.dataFilter;
+    setFilterData();
+    reloadList();
   } catch (error) {
     throw error;
   }
@@ -31,9 +62,9 @@ const certificationDialogRef = ref<InstanceType<
   typeof CertificationDialog
 > | null>(null);
 
-// const updateMassiveRef = ref<InstanceType<
-//   typeof UpdateMassiveComponent
-// > | null>(null);
+const certificationRequestDialogRef = ref<InstanceType<
+  typeof CertificationRequestDialog
+> | null>(null);
 
 const onUpdateMultiple = (selected: { [key: string]: string }[]) => {
   const items = selected.map((el: { [key: string]: string }) => {
@@ -47,8 +78,8 @@ const onDeleteMultiple = async (selected: { [key: string]: string }[]) => {
   const items = selected.map((el: { [key: string]: string }) => {
     return { id: el.id };
   });
-  await table.deleteMultiple(items);
-  table.reloadList();
+  await deleteMultiple(items);
+  reloadList();
 };
 
 const onUpdateDataTable = async () => {
@@ -62,87 +93,76 @@ const onUpdateDataTable = async () => {
 const onRequestTable = async (val: { pagination: any; filter: any }) => {
   //console.log('request data table');
   await setPagination(val.pagination);
-  await getListCertifications(val);
+  await getListCertificationRequest(val);
 };
 
-const onClearDataFilter = async () => {
+const onClearDataFilter = () => {
   try {
-    // filterAdvancedRef.value?.clearFilter();
-    await table.clearFilterData();
-    await table.setFilterData();
-    await table.reloadList();
+    //advancedFilterRef.value?.clearFilter();
+    clearFilterData();
+    setFilterData();
+    reloadList();
   } catch (error) {
     throw error;
   }
 };
 
-const setEtapaColor = (etapa: string): string => {
-  const colorMap: { [key: string]: string } = {
-    Nueva: 'orange',
-    Revisión: 'blue',
-    'Enviada a Misa': 'info',
-    Finalizada: 'green',
+const setEstadoColor = (estado: string): string => {
+  const colorEstado: { [key: string]: string } = {
+    Pendiente: 'orange',
+    Aprobada: 'green',
+    Rechazada: 'red',
+    Observada: 'red'
   };
 
-  return colorMap[etapa] || 'blue';
-};
-
-const setTipoColor = (tipo: string): string => {
-  const colorMap: { [key: string]: string } = {
-    dispositivo: 'blue',
-    equipo: 'purple',
-    medicamento: 'green',
-    cosmetico: 'black',
-  };
-
-  return colorMap[tipo] || 'grey';
+  return colorEstado[estado] || 'blue';
 };
 
 const openDialog = () => {
-  // certificationDialogRef.value?.openDialogTab(undefined, undefined, {
-  //   solicitudId: '33', // id de prueba
-  // });
-  certificationDialogRef.value?.openDialogTab();
+  certificationRequestDialogRef.value?.openDialogTab();
 };
 
 const openItemSelected = (id: string, title: string) => {
-  console.log(id)
-  console.log(title)
-  certificationDialogRef.value?.openDialogTab(id, {
-    iddivision_c: userCRM.iddivision, title
-  });
+  certificationRequestDialogRef.value?.openDialogTab(id);
 };
+
+const filterState = ()=>{
+  //console.log(value);
+  reloadList();
+}
 </script>
 
 <template>
-  <div :class="$q.platform.is.desktop ? 'q-pa-md' : 'q-pa-sm'">
-    <q-card>
-      <q-tabs
-        v-model="table.data_filter.etapa_c"
-        align="justify"
-        dense
-        class="text-grey-7"
-        active-color="primary"
-        indicator-color="orange"
-        @click="reloadList()"
-      >
-        <q-tab name="" label="TODAS" />
-        <q-tab name="revision" label="REVISIÓN" />
-        <q-tab name="enviadamisa" label="ENVIADA A MISA" />
-        <q-tab name="finalizada" label="FINALIZADA" />
-      </q-tabs>
-    </q-card>
+  
+  <div :class="$q.platform.is.desktop ? 'q-pa-md q-pt-lg' : 'q-pa-sm q-pt-lg'">
+        <q-card>
+          <q-tabs
+          v-model="data_filter.state_aprobacion"
+          align="justify"
+          dense
+          class="text-grey-7"
+          active-color="primary"
+          indicator-color="orange"
+          @click="reloadList()"
+          >
+            <q-tab name="" label="TODAS" />
+            <q-tab name="pending" label="PENDIENTE" />
+            <q-tab name="approved" label="APROBADA" />
+            <q-tab name="kept" label="OBSERVADA" />
+            <q-tab name="rejected" label="RECHAZADA" />
+          </q-tabs>
+        </q-card>
 
     <table-component
-      :rows="table.data_table.rows"
-      :columns="table.data_table.columns"
-      :total="table.pagination.rowsNumber"
-      :rowsPerPage="table.pagination.rowsPerPage"
-      :sortBy="table.pagination.sortBy"
-      :descending="table.pagination.descending"
-      :visible="table.visible_columns"
-      :dataFilter="table.data_filter"
-      :loading="table.loading"
+      :rows="data_table.rows"
+      :columns="data_table.columns"
+      :total="pagination.rowsNumber"
+      :rowsPerPage="pagination.rowsPerPage"
+      :sortBy="pagination.sortBy"
+      :descending="pagination.descending"
+      :visible="visible_columns"
+      :dataFilter="data_filter"
+      :loading="loading"
       :defaultRows="false"
       :style="'height: 95dvh'"
       searchPlaceholder="Busqueda por: Nro. de solicitud"
@@ -156,6 +176,7 @@ const openItemSelected = (id: string, title: string) => {
       @openDialog="openDialog"
       v-if="true"
     >
+
       <template #rows="{ propsTable }">
         <q-tr :props="propsTable">
           <q-td class="text-left">
@@ -166,22 +187,21 @@ const openItemSelected = (id: string, title: string) => {
               class="text-primary text-weight-bold text-break cursor-pointer"
               @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
-              {{ propsTable.row.name }}
+             {{ propsTable.row.name || 'Sin Número' }}
             </span>
           </q-td>
-          <q-td key="tipo_tramite_c" :props="propsTable">
-            <span>{{ propsTable.row.tipo_tramite_c }}</span>
+          <q-td key="date_entered" :props="propsTable">
+            <span>{{ propsTable.row.date_entered }}</span>
           </q-td>
-          <q-td key="solicitante" :props="propsTable">
+          <q-td key="assigned_user_id" :props="propsTable">
             <div
               style="
-                max-width: 150px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
               "
-              class="row"
             >
+            <div class="row">
               <div class="col-3">
                 <q-avatar
                   class="q-mr-sm"
@@ -191,101 +211,53 @@ const openItemSelected = (id: string, title: string) => {
                   icon="person"
                 />
               </div>
-              <div class="col-9">
+              <div class="col-9 text-left">
                 <span>{{ propsTable.row.solicitante }}</span>
-                <br />
-                <span class="text-caption text-grey">{{
-                  propsTable.row.cargo
-                }}</span>
+                <br>
+                <span class="text-caption text-grey">{{propsTable.row.cargo}}</span>
               </div>
             </div>
-          </q-td>
-          <q-td key="tipo_producto_c" :props="propsTable">
-            <div class="row flex-center" v-if="propsTable.row.tipo_producto_c">
-              <q-chip
-                dense
-                square
-                outline
-                :color="setTipoColor(propsTable.row.tipo_producto_c)"
-              >
-                {{ propsTable.row.tipo_producto_c.toUpperCase() }}
-              </q-chip>
-              <span class="text-caption"
-                >Cant. de Requisitos
-                <span class="text-weight-bold">10</span></span
-              >
+              
             </div>
           </q-td>
-          <q-td key="etapa_c" :props="propsTable">
-            <div class="row flex-center">
-              <q-chip
-                v-if="propsTable.row.etapa_c"
-                dense
-                square
-                outline
-                :color="setEtapaColor(propsTable.row.etapa_c)"
-                text-color="white"
-              >
-                {{ propsTable.row.etapa_c.toUpperCase() }}
-              </q-chip>
-            </div>
-          </q-td>
-          <q-td key="estado_c" :props="propsTable">
-            <span>{{ propsTable.row.estado_c }}</span>
-            <div class="text-caption">
-              <span class="text-weight-bold">Fecha de Actualización:</span
-              >{{ propsTable.row.fecha_actualizacion_estado }}
-            </div>
-          </q-td>
-          <q-td
-            v-if="propsTable.row.fecha_creacion"
-            key="fecha_creacion"
-            :props="propsTable"
-          >
-            <span>{{ propsTable.row.fecha_creacion }}</span>
-          </q-td>
-          <q-td key="cumplimiento_req" :props="propsTable">
-            <q-linear-progress rounded size="15px" :value="0.6">
-              <div class="absolute-full flex flex-center">
-                <span class="text-white text-caption">60%</span>
-              </div>
-            </q-linear-progress>
-          </q-td>
-          <q-td key="producto_c" :props="propsTable">
-            <div class="row flex-center">
-              <span>{{ propsTable.row.producto_c }}</span>
-              <div class="text-caption">
-                <span class="text-bold">Fabricante: </span>
-                {{ propsTable.row.proveedor }}
-              </div>
-            </div>
-          </q-td>
-          <q-td key="nro_solicitud" :props="propsTable">
-            <span
-              v-if="propsTable.row.nro_solicitud"
-              class="text-primary text-weight-bold"
-              >{{ propsTable.row.nro_solicitud }}</span
+          <q-td key="state_aprobacion" :props="propsTable">
+            <q-chip
+              outline
+              square
+              :color="setEstadoColor(propsTable.row.state_aprobacion)"
+              dense
+              size="md"
+              text-color="white"
             >
-            <span v-else class="text-grey">En espera</span>
+              {{ propsTable.row.state_aprobacion.toUpperCase() }}
+            </q-chip>
           </q-td>
-          <q-td key="certificacion" :props="propsTable">
-            <div class="row flex-center">
-              <q-badge
-                v-if="propsTable.row.nro_cert_c"
-                rounded
-                color="info"
-                class="q-py-sm q-px-md cursor"
-              >
-                <q-icon class="q-mr-sm text-h6" name="text_snippet"></q-icon>
-                {{ propsTable.row.nro_cert_c }}
-              </q-badge>
-              <span v-else class="text-grey">En espera</span>
-            </div>
+          <q-td key="division" :props="propsTable">
+            <span>{{ propsTable.row.division }}</span>
+            <br />
+            <span class="text-caption"><span class="text-grey">Area de Mercado:</span> {{ propsTable.row.amercado }}</span>
+          </q-td>
+
+          <q-td key="producto_c" :props="propsTable">
+            <span>{{ propsTable.row.producto_c }}</span>
+          </q-td>
+          <q-td key="fabricante_c" :props="propsTable">
+            <span>{{ propsTable.row.fabricante_c }}</span>
+          </q-td>
+          <q-td key="nro_certificacion" :props="propsTable">
+            <span v-if="propsTable.row.nro_certificacion" class="text-weight-bold text-primary">{{ propsTable.row.nro_certificacion }}</span>
+            <span v-else class="text-grey">En espera</span>
           </q-td>
           <q-td key="options" :props="propsTable">
             <q-btn color="primary" icon="more_vert" round outline size="sm">
               <q-menu auto-close :offset="[110, 0]">
                 <q-list dense>
+                  <q-item clickable>
+                    <div class="row items-center">
+                      <q-icon name="check" class="q-mr-sm" />
+                      <q-item-section>Aprobar</q-item-section>
+                    </div>
+                  </q-item>
                   <q-item clickable>
                     <div class="row items-center">
                       <q-icon name="remove" class="q-mr-sm" />
@@ -302,6 +274,7 @@ const openItemSelected = (id: string, title: string) => {
               </q-menu>
             </q-btn>
           </q-td>
+
         </q-tr>
       </template>
 
@@ -314,7 +287,7 @@ const openItemSelected = (id: string, title: string) => {
             <q-checkbox flat v-model="propsTable.selected" dense />
             <span
               class="q-ml-md text-ellipsis text-blue-10 cursor-pointer"
-              @click="openDialog(propsTable.row.id)"
+              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
               {{ propsTable.row.name }}
             </span>
@@ -322,7 +295,7 @@ const openItemSelected = (id: string, title: string) => {
             <!-- <q-btn icon="more_vert" dense flat size="sm" /> -->
           </q-card-section>
           <q-separator />
-          <!--<q-card-section horizontal>
+          <q-card-section horizontal>
             <q-card-section class="card-info row q-pa-sm">
               <div class="text-grey-9 col-12">
                 <small class="text-grey-6"> Cuenta</small> <br />
@@ -355,36 +328,8 @@ const openItemSelected = (id: string, title: string) => {
                 <span>
                   <q-icon name="priority_high" size="50px" color="grey-5" />
                 </span>
-              </q-circular-progress>-->
-
-          <!--<q-circular-progress
-                show-value
-                font-size="15px"
-                :value="propsTable.row.salud ?? 0"
-                size="90px"
-                :thickness="0.2"
-                color="blue-8"
-                track-color="grey-3"
-                class="q-ma-sm text-bold"
-                rounded
-                @click="onGetIndicators(propsTable.row.id)"
-                v-else
-              >
-                <span> {{ propsTable.row.salud ?? 0 }}% </span>
               </q-circular-progress>
-              <div class="q-mt-sm col-12">
-                <q-badge
-                  class="q-pa-sm text-bold"
-                  v-bind="setStatusColor(propsTable.row.status)"
-                >
-                  <q-icon :name="setStatusColor(propsTable.row.status)?.icon" />
-
-                  <small class="q-ml-xs">
-                    {{ propsTable.row.estado }}
-                  </small>
-                </q-badge>
-              </div> -->
-          <!--</q-card-section>
+            </q-card-section>
           </q-card-section>
           <q-card-section class="flex justify-between q-pa-sm">
             <span class="text-grey-7">
@@ -397,10 +342,9 @@ const openItemSelected = (id: string, title: string) => {
               <q-icon name="event" size="sm" color="grey-7" />
               {{ propsTable.row.fecha_cierre }}
             </span>
-          </q-card-section>-->
+          </q-card-section>
         </q-card>
       </template>
-
       <template v-slot:buttons>
         <q-btn
           color="primary"
@@ -425,6 +369,14 @@ const openItemSelected = (id: string, title: string) => {
     </table-component>
     <TableSkeleton v-else />
   </div>
+  <CertificationRequestDialog
+    ref="certificationRequestDialogRef"
+    @update="
+      () => {
+        reloadList();
+      }
+    "
+  />
   <CertificationDialog ref="certificationDialogRef" />
 </template>
 
