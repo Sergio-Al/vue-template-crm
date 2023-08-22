@@ -390,6 +390,7 @@ export const assignUsersToChildCompany = async (
 export const getCategoryDocuments = async () => {
   try {
     const { data } = await axios_LB_05.get('/lang-es-document-category-doms');
+    // await data.forEach((element:any)=>(delete element.id))
     return data;
   } catch (error) {
     throw error;
@@ -435,6 +436,26 @@ export const deleteDocumentVersion = async (idVersion:string)=>{
   try{
     await axios_NS_07.post(`/documentos/version-delete/${idVersion}`);
     return;
+  }
+  catch(e){
+    throw e;
+  }
+}
+
+export const getDocument = async(id:string)=>{
+  try{
+    const { data } = await axios_NS_07.get(`/documentos/${id}`);
+    return data[0];
+  }
+  catch(e){
+    throw e;
+  }
+}
+
+export const updateDocument = async(id:string, item:any)=>{
+  try{
+    const { data } = await axios_NS_07.patch(`/documentos/${id}`, item);
+    return data;
   }
   catch(e){
     throw e;

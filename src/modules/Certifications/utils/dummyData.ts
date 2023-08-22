@@ -998,5 +998,71 @@ export const rowsDocsProveedor = [
     date_end: '12/08/2023',
     state:'En Revisión'
   },
+  {
+    id: '2',
+    name: 'Marketing Olympus',
+    category: 'Marketing',
+    tipo:'Marca',
+    division: '04 Soluciones Medicas',
+    amercado:'01 Imagenología',
+    date_start: '01/06/2020',
+    date_end: '12/08/2023',
+    state:'En Revisión'
+  },
+  {
+    id: '2',
+    name: 'Marketing Olympus',
+    category: 'Marketing',
+    tipo:'Marca',
+    division: '04 Soluciones Medicas',
+    amercado:'01 Imagenología',
+    date_start: '01/06/2020',
+    date_end: '12/08/2023',
+    state:'En Revisión'
+  },
+  {
+    id: '2',
+    name: 'Marketing Olympus',
+    category: 'Marketing',
+    tipo:'Marca',
+    division: '04 Soluciones Medicas',
+    amercado:'01 Imagenología',
+    date_start: '01/06/2020',
+    date_end: '12/08/2023',
+    state:'En Revisión'
+  },
+  {
+    id: '2',
+    name: 'Marketing Olympus',
+    category: 'Marketing',
+    tipo:'Marca',
+    division: '04 Soluciones Medicas',
+    amercado:'01 Imagenología',
+    date_start: '01/06/2020',
+    date_end: '12/08/2023',
+    state:'En Revisión'
+  },
+  {
+    id: '2',
+    name: 'Marketing Olympus',
+    category: 'Marketing',
+    tipo:'Marca',
+    division: '04 Soluciones Medicas',
+    amercado:'01 Imagenología',
+    date_start: '01/06/2020',
+    date_end: '12/08/2023',
+    state:'En Revisión'
+  },
+  {
+    id: '2',
+    name: 'Marketing Olympus',
+    category: 'Marketing',
+    tipo:'Marca',
+    division: '04 Soluciones Medicas',
+    amercado:'01 Imagenología',
+    date_start: '01/06/2020',
+    date_end: '12/08/2023',
+    state:'En Revisión'
+  },
 ]
 

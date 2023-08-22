@@ -53,8 +53,9 @@ const validateInputs = async () => {
 const manufacturersList = ref<any>([]);
 const manufacturerSelected = (data: Manufacturer) => {
   //inputData.value.hance_empresa_id_c = data.;
-
   //inputData.value.telefono_fabricante_c = data.phone_office;
+  console.log('llega la data al componente productos')
+  console.log(data);
 };
 
 const filterManufacturer = async (
@@ -351,7 +352,7 @@ defineExpose({
       <!-- Modo lectura -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <div class="col-1">
-          <q-checkbox v-model="modeFab" disabled>
+          <q-checkbox v-model="modeFab" disabled readonly>
             <q-tooltip>
               Ingreso Manual
             </q-tooltip>

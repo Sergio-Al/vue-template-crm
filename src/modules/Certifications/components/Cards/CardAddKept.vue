@@ -18,9 +18,8 @@ interface Props {
 interface Emits {
   (e: 'update'): void;
 }
-
-const props = defineProps<Props>();
 const emits = defineEmits<Emits>();
+const props = defineProps<Props>();
 const dataComment = ref<any>({comment:'', avoid:'no'})
 
 //const companyStore = useCompaniesStore();
@@ -29,6 +28,7 @@ const $q = useQuasar();
 const { userCRM } = userStore();
 
 onMounted(async () => {
+  console.log('card')
 //   const version = await companyStore.onGetLastVersionDocument(props.idDocument);
 //   data.value.version = parseInt(version)+1;
 });
@@ -42,14 +42,13 @@ onMounted(async () => {
 
 const changeState = async()=>{
     try{
-        let state = dataComment.value.avoid == 'yes'?'kept':'rejected';
-        await updateStateCertificationRequest(props.idSolicitud, state);
-        $q.notify({
-            color: 'info',
-            message: 'Solicitud de Certificación',
-            caption: 'Se cambió el estado de la solicitud',
-        })
-        return;
+      let state = dataComment.value.avoid == 'yes'?'kept':'rejected';
+          await updateStateCertificationRequest(props.idSolicitud, state);
+          $q.notify({
+              color: 'info',
+              message: 'Solicitud de Certificación',
+              caption: 'Se cambió el estado de la solicitud',
+          })
     }
     catch(e){
        throw e
@@ -57,17 +56,18 @@ const changeState = async()=>{
 }
 
 const onSubmit = async () => {
-    const a = await changeState();
-    const b = await createComment(
-        userCRM.id, 
-        "HANCE_SolicitudCertificacion", 
-        dataComment.value.comment, 
-        props.idSolicitud);
+  
+  await createComment(
+    userCRM.id, 
+    "HANCE_SolicitudCertificacion", 
+    dataComment.value.comment, 
+    props.idSolicitud
+    );
+  await changeState();
 
-  Promise.all([a, b]).then(() => {
-    emits('update'); // no hace el emit, si lo ponemos en la primera linea si
-  });
+  emits('update');
 };
+
 </script>
 
 <template>

@@ -75,7 +75,6 @@ const formatData = async () => {
 }
 
 onMounted(async () => {
-
   await getListDivisiones();
   await getRegionales();
   divisionList.value = listDivisiones.value;
@@ -119,9 +118,6 @@ onMounted(async () => {
   const aux:any = await listRegionales.value.find(
     (element: any) => element.cod_pais == 'BO'
   );
-
-  // console.log(listRegionales.value);
-  // console.log(aux);
 
   listRegional.value = aux.regiones;
   // console.log(listRegional.value);

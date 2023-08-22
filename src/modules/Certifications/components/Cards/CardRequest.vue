@@ -29,9 +29,11 @@ import { useAsyncState } from '@vueuse/core';
 //import { amercado, divisions, regional } from '../../utils/dummyData';
 
 interface Props {
-  id: string;
+  id?: string;
   data: any;
+  requestId?:string;
 }
+
 const advancedFilterSol = ref<InstanceType<typeof RelacionadoSol> | null>(null);
 
 const certificationRequest = ref({} as any);
@@ -42,7 +44,8 @@ const $q = useQuasar();
 
 const emits = defineEmits<{
   (event: 'idAccount', localIdValue: any): void;
-  (event: 'cambioStage', item: boolean): void;
+  //(event: 'cambioStage', item: boolean): void;
+  (event: 'change', value: string, value2:string): void;
 }>();
 
 const showFilter = ref(false);
@@ -99,25 +102,23 @@ const verDialogItem = async (id: string) => {
 };
 
 const { isLoading } = useAsyncState(async () => {
-  if (!!props.data.hance_solicitudcertificacion_id_c)
-    try {
-      const response = await getCertificationRequestCustomized(
-        props.data.hance_solicitudcertificacion_id_c
-      );
-      //console.log(response);
-      certificationRequest.value = response[0];
-      return response;
-    } catch (error) {
-      $q.notify({
-        type: 'warning',
-        message: 'Error en la captura',
-        caption: 'No se encontró la solicitud',
-      });
-    }
+  if (!!props.requestId)
+      try {
+        const response = await getCertificationRequestCustomized(props.requestId);
+        //console.log(response);
+        certificationRequest.value = response[0];
+        return response;
+      } catch (error) {
+        $q.notify({
+          type: 'warning',
+          message: 'Error en la captura',
+          caption: 'No se encontró la solicitud',
+        });
+      }
 }, null as null | CertificationRequest);
 
 onMounted(async () => {
-  console.log(inputData.value.hance_solicitudcertificacion_id_c);
+  console.log(props.requestId);
 
   // await getListDivisiones();
   // await getRegionales();
@@ -194,6 +195,9 @@ const openDialogSol = () => {
 
 const selectRelaSol = (item: any) => {
   console.log(item);
+  
+  emits('change', item.id_fabricante, item.assigned_user_id);
+
   certificationRequest.value.name = String(item.name);
   certificationRequest.value.id = String(item.id);
   certificationRequest.value.solicitante = String(item.solicitante);
@@ -201,6 +205,7 @@ const selectRelaSol = (item: any) => {
   //emits('idAccount', { idrequest: item.id });
 
   advancedFilterSol.value?.onClose();
+  toggleFilter();
 };
 
 const clearSol = () => {
@@ -269,17 +274,17 @@ defineExpose({
     </q-card>
   </div>-->
   <div>
-    <q-card class="my-card">
+    <q-card class="my-card" :loading="isLoading">
       <q-card-section horizontal>
-        <q-card-section class="col-auto flex flex-center">
-          <q-avatar size="60px" color="primary">
-            <q-icon name="work" color="white" size="35px" />
+        <q-card-section class="col-auto flex flex-center" >
+          <q-avatar size="50px" color="primary" >
+            <q-icon name="article" color="white" size="30px" />
           </q-avatar>
         </q-card-section>
-        <q-card-section class="full-width q-py-xs">
+        <q-card-section class="full-width q-py-md">
           <div class="row q-mt-sm flex justify-between">
             <span class="text-caption text-weight-medium">
-              Solicitud {{ props.id || 'no' }}</span
+              Solicitud</span
             >
           </div>
           <div class="assigned-user q-mt-none q-mb-none">
@@ -290,23 +295,21 @@ defineExpose({
             >
           </div>
           <div
-            v-if="certificationRequest.name"
             class="text-caption text-weight-light text-grey-9"
           >
-            Solicitante: {{ certificationRequest.solicitante }}
+            Solicitante: {{ certificationRequest.solicitante || '-' }}
           </div>
           <div
-            v-if="certificationRequest.name"
             class="text-caption text-weight-light text-grey-9"
           >
-            Fecha de Creación: {{ certificationRequest.fecha_creacion }}
+            Fecha de Creación: {{ certificationRequest.fecha_creacion || '-' }}
           </div>
         </q-card-section>
       </q-card-section>
 
       <q-separator />
 
-      <q-card-actions class="card-actions justify-between">
+      <q-card-actions class="card-actions justify-between q-py-md-custom">
         <q-btn
           style="font-size: 13px"
           icon="edit"
@@ -339,7 +342,7 @@ defineExpose({
         >
           <template v-slot:prepend>
             <q-avatar>
-              <q-icon name="work" size="sm" />
+              <q-icon name="article" size="sm" />
             </q-avatar>
           </template>
           <template v-slot:after>
@@ -366,12 +369,17 @@ defineExpose({
   </div>
 </template>
 
-<style lang="scss">
+<style scoped>
 .assigned-user {
   font-size: 1.04rem;
 }
 
-.card-actions {
-  padding: 5px;
+.q-py-md-custom{
+  padding:13px 10px;
 }
+
+.my-card{
+  min-height:187px;
+}
+
 </style>

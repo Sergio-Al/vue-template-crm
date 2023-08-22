@@ -112,7 +112,8 @@ export const useBusquedaSol = () => {
     producto_c: '',
     fabricante_c: '',
     solicitante: '', 
-    state_aprobacion:'approved'
+    state_aprobacion:'approved',
+    id_fabricante:''
   });
 
   const submitFilter = async (params: any) => {
@@ -149,7 +150,8 @@ export const useBusquedaSol = () => {
         producto_c: '',
         fabricante_c: '',
         solicitante: '',
-        state_aprobacion:'approved'
+        state_aprobacion:'approved',
+        id_fabricante:''
     };
   };
 

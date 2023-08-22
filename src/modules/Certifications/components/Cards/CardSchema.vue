@@ -25,7 +25,7 @@ import { rowsSchema } from '../../utils/dummyData';
 
 interface Props {
   id: string;
-  data: Partial<CertificationRequest>;
+  data: any;
 }
 
 // const { getListDivisiones, listDivisiones } = useDivision();
@@ -39,6 +39,7 @@ const certificationStore = useCertificationStore();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
 
+const localId = ref(props.id);
 const inputData = ref({ ...props.data });
 
 const tramite = ref<string>('inscripcion');
@@ -58,34 +59,19 @@ const columns = [
     field: 'posicion_c',
   },
   { name: 'id', align: 'center', label: 'Código', field: 'id', sortable: true },
-  {
-    name: 'documento_c',
-    align: 'left',
-    label: 'Nombre',
-    field: 'documento_c',
-    sortable: true,
-  },
-  {
-    name: 'modulo_c',
-    align: 'center',
-    label: 'Módulo',
-    field: 'modulo_c',
-    sortable: true,
-  },
-  {
-    name: 'auto',
-    align: 'center',
-    label: 'Generado por el sistema',
-    field: 'auto',
-    sortable: false,
-  },
-  {
-    name: 'obligatorio_c',
-    label: 'Obligatorio',
-    field: 'obligatorio_c',
-    sortable: false,
-  },
+  { name: 'documento_c', align: 'left', label: 'Nombre', field: 'documento_c', sortable: true },
+  { name: 'modulo_c', align: 'center', label: 'Módulo', field: 'modulo_c', sortable: true },
+  { name: 'auto', align: 'center', label: 'Generado por el sistema', field: 'auto', sortable: false },
+  { name: 'obligatorio_c', label: 'Obligatorio', field: 'obligatorio_c', sortable: false }
+
 ];
+
+onMounted(() => {
+  if(localId.value){
+    tramite.value = props.data.tipo_tramite_c;
+    producto.value = props.data.tipo_producto_c;
+  }
+});
 //* Methods
 // const restoreValues = async () => {
 //   if (props.data) inputData.value = { ...props.data };
@@ -123,9 +109,16 @@ const columns = [
 //   console.log(schema.value)
 // });
 
-const assignSchema = () => {
-  console.log('se asigna el esquema');
-};
+
+const assignSchema = (item:any)=>{
+  showSchemas.value = false;
+  schema.value = item;
+  getDocuments(item.id);
+}
+
+const getDocuments = async(id:string)=>{
+  documentsSchema.value = await certificationStore.onGetDocumentsSchema(id);
+}
 
 const {
   state: schema,
@@ -137,12 +130,8 @@ const {
     producto.value
   );
 
-  documentsSchema.value = await certificationStore.onGetDocumentsSchema(
-    response.id
-  );
-
-  //console.log(documentsSchema.value);
-
+  await getDocuments(response.id)
+ 
   return response;
 }, []);
 
@@ -180,6 +169,9 @@ const listRegional = ref([]);
 //   const aux = { ...result[0] };
 //   return aux.amercado;
 // });
+const reloadList = async()=>{
+  await execute();
+}
 
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
@@ -192,7 +184,9 @@ defineExpose({
     idregional_c: inputData.value.idregional_c,
   }),
   changeSchema: (procedure: string, product: string) => {
-    console.log(procedure, product);
+    tramite.value = procedure;
+    producto.value = product;
+    reloadList();
   },
 });
 </script>
@@ -249,7 +243,7 @@ defineExpose({
                 </q-item>
             </q-list>-->
         <div class="row q-px-sm">
-          <div class="col-1">
+          <div class="col-2 text-left">
             <q-circular-progress
               show-value
               font-size="12px"
@@ -263,7 +257,7 @@ defineExpose({
               <q-icon color="white" size="35px" name="toc" />
             </q-circular-progress>
           </div>
-          <div class="col-10">
+          <div class="col-8">
             <div class="q-ma-md">
               <div class="flex items-center text-white justify-between">
                 Esquema: {{ schema.name }}
@@ -279,7 +273,7 @@ defineExpose({
               </div>
             </div>
           </div>
-          <div class="col-1">
+          <div class="col-2 text-right">
             <q-btn
               @click="openDialogSchema"
               class="q-ma-md"
@@ -295,43 +289,42 @@ defineExpose({
       </q-card>
     </q-card-section>
     <q-card-section class="q-pb-md">
-      <div class="q-pa-sm">
-        <q-table
-          style="height: 400px"
-          flat
-          bordered
-          :rows="documentsSchema"
-          :columns="columns"
-          row-key="index"
-          virtual-scroll
-          :rows-per-page-options="[0]"
-        >
-          <template #body="propsTable">
-            <q-tr :props="propsTable">
-              <q-td key="posicion_c" :props="propsTable">
-                {{ propsTable.row.posicion_c }}
-              </q-td>
-              <q-td key="id" :props="propsTable">
-                {{ propsTable.row.documento_c.split('_')[1] }}
-              </q-td>
-              <q-td key="documento_c" :props="propsTable">
-                <span class="text-break">
-                  {{ propsTable.row.documento_c }}
-                </span>
-              </q-td>
-              <q-td key="modulo_c" :props="propsTable">
-                {{ propsTable.row.modulo_c }}
-              </q-td>
-              <q-td key="auto" :props="propsTable">
-                <q-checkbox v-model="propsTable.row.auto" disabled />
-              </q-td>
-              <q-td key="obligatorio_c" :props="propsTable">
-                <q-checkbox v-model="propsTable.row.obligatorio_c" disabled />
-              </q-td>
-            </q-tr>
-          </template>
-        </q-table>
-      </div>
+        <div class="q-pa-sm">
+            <q-table
+                style="height: 400px"
+                flat bordered
+                :rows="documentsSchema"
+                :columns="columns"
+                row-key="index"
+                :rows-per-page-options="[5,10,20]"
+                >
+            <template #body="propsTable">
+                <q-tr :props="propsTable">
+                    <q-td key="posicion_c" :props="propsTable">
+                        {{propsTable.row.posicion_c}}
+                    </q-td>
+                    <q-td key="id" :props="propsTable">
+                        {{propsTable.row.documento_c.split('_')[1]}}
+                    </q-td>
+                    <q-td key="documento_c" :props="propsTable">
+                        <span class="text-break">
+                            {{propsTable.row.documento_c}}
+                        </span>
+                    </q-td>
+                    <q-td key="modulo_c" :props="propsTable">
+                        {{propsTable.row.modulo_c}}
+                    </q-td>
+                    <q-td key="auto" :props="propsTable">
+                        <q-checkbox v-model="propsTable.row.auto" disabled />
+                    </q-td>
+                    <q-td key="obligatorio_c" :props="propsTable">
+                        <q-checkbox v-model="propsTable.row.obligatorio_c" disabled />
+                    </q-td>
+                </q-tr>
+            </template>
+
+            </q-table>
+        </div>
     </q-card-section>
   </q-card>
   <!--<div v-if="isLoading">

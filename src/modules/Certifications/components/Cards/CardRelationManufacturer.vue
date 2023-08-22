@@ -44,6 +44,8 @@ const defaultData = {
   description: '',
   phone_mobile: '',
   email1: '',
+  country:'',
+  city:''
 };
 const manufacturerFiltered = ref({} as Manufacturer);
 const selectManufacturerDialog = ref(false);
@@ -65,21 +67,23 @@ const getContactDetail = async (id: string, assign = false) => {
   const response = await getManufacturer(id);
   console.log(response);
 
-  const contact = {
+  const manufacturer = {
     id: response.id as string,
     title: response.name as string,
     description: response.name as string,
     phone_mobile: response.phone_office,
+    city:response.billing_address_city,
+    country:response.billing_address_country
   };
 
   if (assign) {
-    state.value = contact;
+    state.value = manufacturer;
     isLoading.value = false;
   }
 
   console.log(state.value);
 
-  return contact;
+  return manufacturer;
 };
 
 const openManufacturerFilter = () => {
@@ -98,7 +102,6 @@ const assignManufacturer = async () => {
     advancedFilterManufacturerRef.value?.onClose();
     await execute();
   }
-
   // getContactDetail(manufacturerFiltered.value.id, true);
 };
 
@@ -201,7 +204,10 @@ defineExpose({
             >
               {{ state.title }}
             </a>
-            <span v-if="state.phone_mobile" class="text-caption text-grey text-weight-bold"><q-icon name="phone" />  {{state.phone_mobile}}</span>
+            <span v-if="state.country" class="text-caption text-grey text-weight-bold">
+              <q-icon name="public" />
+              <span class="q-pl-sm">País:  {{state.country}} - {{state.city}}</span>
+            </span>
           </q-item-label>
 
           <q-item-label v-else> Seleccionado </q-item-label>

@@ -8,6 +8,7 @@ import type { Document } from '../../utils/types';
 interface Props {
   id?: string;
   documentId?: string;
+  documentName?:string;
   child?:boolean;
   documentData?: Document;
 }
@@ -24,11 +25,20 @@ const props = withDefaults(defineProps<Props>(), {
   id: '',
   child:false,
   documentId: '',
+  documentName: '',
   documentData: () => ({} as Document),
 });
 
 onMounted(() => {
+  if(!!props.documentId){
+    console.log('editar')
+  }
+  else{
+    console.log('nuevo')
+  }
+  
   console.log('mounted');
+  console.log(props);
   expansionItemRef.value?.show();
 });
 
@@ -106,7 +116,7 @@ const update = ()=>{
           size="lg"
           name="article"
         />
-        <q-toolbar-title>Adicionar nuevo documento</q-toolbar-title>
+        <q-toolbar-title>{{documentName || 'Adicionar nuevo documento'}}</q-toolbar-title>
         <q-btn flat round dense icon="close" v-close-popup />
       </q-toolbar>
       <q-separator />
@@ -127,13 +137,14 @@ const update = ()=>{
         <q-expansion-item
           ref="expansionItemRef"
           expand-separator
-          icon="add"
-          label="Añadir documento"
+          :icon="props.documentId?'edit':'add'"
+          :label="props.documentId?'Editar documento':'Añadir documento'"
         >
           <CardAddDocument
             :header-id="props.id"
             :header-child="props.child"
             :default-data="props.documentData"
+            :document-id="props.documentId"
             @update = "update"
           />
         </q-expansion-item>

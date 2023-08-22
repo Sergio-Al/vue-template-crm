@@ -649,14 +649,12 @@ export const divisionList = [
 
 export const documentTypeList = [
   {
-    id: '1',
     label: 'Público',
-    value: 'Publico',
+    value: 'publico',
   },
   {
-    id: '2',
     label: 'Privado',
-    value: 'Privado',
+    value: 'privado',
   },
 ];
 

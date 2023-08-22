@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue';
 import { useAsyncState } from '@vueuse/core';
 import { useQuasar } from 'quasar';
-
 import ViewGeneralRequest from '../../views/ViewGeneralRequest.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
 
@@ -35,6 +34,7 @@ const showDialogKept = ref<boolean>(false);
 
 const showAlertAprobar = ref<boolean>(false);
 const showAlertCrear = ref<boolean>(false);
+
 let propsCreateAlert = {
   title: 'Solicitud de Certificación',
   icon: 'info',
@@ -55,9 +55,9 @@ const certificationDialogRef = ref<InstanceType<
 const openDialogCertification = (
   id?: string,
   data?: Partial<CertificacionBody>,
-  solicitudId?: string
+  dataRequest?: any,
 ) => {
-  certificationDialogRef.value?.openDialogTab(id, data, { solicitudId });
+  certificationDialogRef.value?.openDialogTab(id, data, dataRequest);
 };
 
 const openDialogTab = (id?: string) => {
@@ -163,19 +163,13 @@ const aprobarSolicitud = async () => {
     message: 'Aprobación de solicitud',
     caption: 'Se aprobó la solicitud con éxito',
   });
-  getCertification();
+  await getCertification();
   emits('update');
   showAlertCrear.value = true;
 };
 
 const crearCertificacion = () => {
-  openDialogCertification(undefined, undefined, localId.value);
-};
-
-const openAlertCertification = () => {
-  //abrir dialog de creacion de certificacion
-  console.log('se abrira el dialog de creacion de certificación');
-  showAlert.value = false;
+  openDialogCertification(undefined, undefined, certificationData.value );
 };
 
 const state_request = computed(() => {
@@ -202,7 +196,6 @@ const state_request = computed(() => {
 });
 
 // const reloadList = async()=>{
-//   console.log('supuestamente cargamos')
 //   await getCertification();
 // }
 
@@ -212,7 +205,10 @@ const {
   execute: getCertification,
 } = useAsyncState(
   async () => {
-    return await getCertificationRequest(localId.value);
+    console.log(localId.value);
+    const a = await getCertificationRequest(localId.value);
+    console.log(a.id);
+    return a;
   },
   {} as CertificationRequest,
   {
@@ -372,7 +368,7 @@ defineExpose({
     </template>-->
   </dialog-component>
 
-  <q-dialog v-model="showDialogKept" persistent>
+  <q-dialog v-model="showDialogKept">
     <CardAddKept
       :idSolicitud="certificationData.id"
       @update="getCertification"
