@@ -169,8 +169,6 @@ const formInputs = ref([
 const onSubmit = async () => {
   console.log('submitting');
   try {
-    console.log(dataFilter.value)
-
     const body = {
       name : !!dataFilter.value.name?dataFilter.value.name:'',
       billing_address_street : !!dataFilter.value.billing_address_street?dataFilter.value.billing_address_street:'',

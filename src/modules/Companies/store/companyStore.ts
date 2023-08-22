@@ -17,7 +17,9 @@ import {
   getVersions,
   deleteDocumentCompany,
   getLastVersionDocument,
-  deleteDocumentVersion
+  deleteDocumentVersion,
+  getDocument,
+  updateDocument
 } from '../services/useCompanyService';
 import type { ChildCompany, Company } from '../utils/types';
 
@@ -291,6 +293,26 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     }
   }
 
+  const onGetDocument = async (id:string)=>{
+    try{
+      const response = await getDocument(id);
+      return response;
+    }
+    catch(e){
+      throw e;
+    }
+  }
+
+  const onUpdateDocument = async(id:string, data:any)=>{
+    try{
+      const response = await updateDocument(id, data);
+      return response;
+    }
+    catch(e){
+      throw e;
+    }
+  }
+
   const clearData = () => {
     payload.value = {
       id: '',
@@ -337,6 +359,8 @@ export const useCompaniesStore = defineStore('companies-store', () => {
     onDeleteDocumentCompany,
     onGetLastVersionDocument,
     formatoFecha,
-    onDeleteDocumentVersion
+    onDeleteDocumentVersion,
+    onGetDocument,
+    onUpdateDocument
   };
 });

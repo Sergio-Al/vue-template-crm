@@ -22,6 +22,8 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), { child: false });
 const companyStore = useCompaniesStore();
 const showConfirmed = ref(false);
+const documentId = ref<string>('');
+const documentName = ref<string>('')
 
 const propsCreateAlert = {
   title: 'Alerta de confirmación',
@@ -105,6 +107,14 @@ const currentDocumentVersionId = ref<string>('');
 const documentSelected = ref<Document>({} as Document);
 
 const openDialog = () => {
+  documentId.value = '';
+  documentName.value = '';
+  documentDialog.value = true;
+};
+
+const openItemSelected = (id: string, nombredoc:string) => {
+  documentId.value = id;
+  documentName.value = nombredoc;
   documentDialog.value = true;
 };
 
@@ -302,13 +312,10 @@ const setColorType = (type: string): string => {
             <span v-else>{{ col.value }}</span>
           </q-td>-->
           <q-td key="nombre_doc" :props="props" :style="'width: 250px;'">
-            <!--<span
-              class="text-blue-9 cursor-pointer"
+            <span
+              class="text-blue-9 cursor-pointer text-weight-bold"
               @click="openItemSelected(props.row.id, props.row.nombre_doc)"
             >
-              {{ props.row.nombre_doc }}
-            </span>-->
-            <span class="text-primary cursor-pointer text-weight-bold">
               {{ props.row.nombre_doc }}
             </span>
           </q-td>
@@ -403,6 +410,8 @@ const setColorType = (type: string): string => {
     <AddDocument 
     :id="props.id" 
     :child="props.child"
+    :documentId="documentId || ''"
+    :documentName="documentName || ''"
     @closeDialog = 'closeDialog'
     />
   </q-dialog>

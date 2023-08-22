@@ -106,8 +106,10 @@ const openDialog = () => {
 };
 
 const openItemSelected = (id: string, title: string) => {
+  console.log(id)
+  console.log(title)
   certificationDialogRef.value?.openDialogTab(id, {
-    iddivision_c: userCRM.iddivision,
+    iddivision_c: userCRM.iddivision, title
   });
 };
 </script>
@@ -162,7 +164,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="name" :props="propsTable" :style="'width: 100px;'">
             <span
               class="text-primary text-weight-bold text-break cursor-pointer"
-              @click="openDialog(propsTable.row.id)"
+              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
               {{ propsTable.row.name }}
             </span>
@@ -170,7 +172,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="tipo_tramite_c" :props="propsTable">
             <span>{{ propsTable.row.tipo_tramite_c }}</span>
           </q-td>
-          <q-td key="profesional_acreditado" :props="propsTable">
+          <q-td key="solicitante" :props="propsTable">
             <div
               style="
                 max-width: 150px;
@@ -190,7 +192,7 @@ const openItemSelected = (id: string, title: string) => {
                 />
               </div>
               <div class="col-9">
-                <span>{{ propsTable.row.profesional_acreditado }}</span>
+                <span>{{ propsTable.row.solicitante }}</span>
                 <br />
                 <span class="text-caption text-grey">{{
                   propsTable.row.cargo
@@ -243,7 +245,11 @@ const openItemSelected = (id: string, title: string) => {
             <span>{{ propsTable.row.fecha_creacion }}</span>
           </q-td>
           <q-td key="cumplimiento_req" :props="propsTable">
-            <span> 30 %</span>
+            <q-linear-progress rounded size="15px" :value="0.6">
+              <div class="absolute-full flex flex-center">
+                <span class="text-white text-caption">60%</span>
+              </div>
+            </q-linear-progress>
           </q-td>
           <q-td key="producto_c" :props="propsTable">
             <div class="row flex-center">

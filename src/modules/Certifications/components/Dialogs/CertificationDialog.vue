@@ -1,8 +1,9 @@
 <script lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { AlertComponent } from 'src/components';
+import { Notification } from 'src/composables';
 import ViewGeneralData from '../../views/ViewGeneralData.vue';
 import ViewDataManufacturer from '../../views/ViewDataManufacturer.vue';
 import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
@@ -11,18 +12,25 @@ import {
   getCertification,
   createCertificationService,
 } from '../../services/useCertificationsService';
+import { userStore } from 'src/modules/Users/store/UserStore';
+
+const { userCRM } = userStore();
+
 </script>
 
 <script lang="ts" setup>
 interface Props {
-  idSolicitud: string;
+  idSolicitud?: string;
 }
 
-interface DialogOptions {
-  solicitudId?: string;
-}
+// interface DialogOptions {
+//   solicitudId?: string;
+//   fabricanteId?: string;
+// }
 
 const props = defineProps<Props>();
+const certificationRequestId = ref<string>('');
+const manufacturerId = ref<string>('');
 
 interface Emits {
   (e: 'udpate'): void;
@@ -38,7 +46,7 @@ const tabsDefinition = [
   },
   {
     name: 'dataManufacturer',
-    label: 'Fabricante',
+    label: 'Seguimiento',
     enabledForCreation: false,
   },
 ];
@@ -50,7 +58,6 @@ const activeTab = ref('dataGeneral');
 const titleDialog = ref('Certificación');
 const open = ref(false);
 const localId = ref('');
-const certificationRequestId = ref('');
 
 //* reference variables
 const generalFormRef = ref<InstanceType<typeof ViewGeneralData> | null>(null);
@@ -62,30 +69,41 @@ const dataManufacturerRef = ref<InstanceType<
 
 //* methods
 const openDialogTab = (
-  id?: string,
-  data?: Partial<CertificacionBody>,
-  options: DialogOptions = {}
-) => {
-  const { solicitudId = '' } = options;
-  certificationRequestId.value = solicitudId;
-  if (!!id) {
-    localId.value = id;
-    getCertification2();
-  }
+  idCert?: string,
+  data?: any,
+  dataRequest?: any
+) => { 
 
+  if(!!dataRequest){
+    const { id = '', hance_empresa_id_c='' } = dataRequest;
+    certificationRequestId.value = id;
+    manufacturerId.value = hance_empresa_id_c
+  }
+  if (!!idCert) {
+    localId.value = idCert;
+    reload()
+  }
   if (!!data) {
-    certificationData.value = data;
+    //certificationData.value = data;
+    titleDialog.value = !!data.title?`Certificación ${data.title}`:'Certificación';
+    //console.log(certificationData);
   }
 
-  console.log(props);
+  //console.log(props)
   open.value = true;
 };
 
 const clearData = () => {
   localId.value = '';
   certificationRequestId.value = '';
+  manufacturerId.value = '';
   certificationData.value = {} as CertificacionBody;
+  //certificationStore.clearData();
 };
+
+const reload = async()=>{
+  await execute()
+}
 
 const onCloseDialog = () => {
   console.log('On close dialog');
@@ -123,19 +141,28 @@ const goTabManufacturer = () => {
   activeTab.value = 'dataManufacturer';
 };
 
+const saveCurrentForm = async () => {
+  try {
+    await generalFormRef.value?.onSubmit();
+  } catch (error) {
+    Notification('negative', 'Error al guardar', '');
+  }
+};
+
+const isEditing = computed(() => !!generalFormRef.value?.isSomeCardEditing);
+
 const {
   state: certificationData,
   isLoading,
-  execute: getCertification2,
+  execute,
 } = useAsyncState(
   async () => {
-    const a = await getCertification(localId.value);
-    console.log(a);
-    return a;
+    const response = await getCertification(localId.value);
+    return response;
   },
   {
     hance_solicitudcertificacion_id_c: props.idSolicitud,
-    iddivision_c: '04',
+    iddivision_c: userCRM.iddivision,
   } as CertificacionBody,
   { immediate: false }
 );
@@ -150,7 +177,7 @@ defineExpose({
   <dialog-component
     size-dialog="dialog-xl"
     v-model="open"
-    :footerDisabled="true"
+    :footerDisabled="!isEditing"
     :headerDisabled="false"
     :iconDialog="'mail'"
     :persistent="false"
@@ -217,11 +244,13 @@ defineExpose({
         style="margin-top: -50px"
       >
         <ViewGeneralSkeleton v-if="isLoading" />
-        <q-tab-panels v-model="activeTab" animated keep-alive>
+        <q-tab-panels v-else v-model="activeTab" animated keep-alive>
           <q-tab-panel name="dataGeneral">
             <ViewGeneralData
               :data="certificationData"
+              :id="localId"
               :request-id="certificationRequestId"
+              :manufacturer-id="manufacturerId"
               @create="createCertification"
               @update="updateCertification"
               @continue="goTabManufacturer"
@@ -236,6 +265,12 @@ defineExpose({
           </q-tab-panel>
         </q-tab-panels>
       </q-page>
+    </template>
+    <template #footer v-if="isEditing">
+      <q-btn color="primary" class="q-mr-md" @click="saveCurrentForm"
+        >Guardar</q-btn
+      >
+      <q-btn color="negative" v-close-popup>Cancelar</q-btn>
     </template>
   </dialog-component>
 

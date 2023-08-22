@@ -331,7 +331,7 @@ export interface CertificacionBody {
   estado_c?: string;
   etapa_c?: string;
   hance_empresa_id_c: string; // participacion como
-  hance_proveedor_id_c?: string; // fabricante
+  hanp_proveedores_id_c?: string; // fabricante
   hance_solicitudcertificacion_id_c?: string; //
   idamercado_c: string;
   iddivision_c: string;
@@ -344,6 +344,7 @@ export interface CertificacionBody {
   tipo_producto_c?: string;
   tipo_tramite_c?: string;
   phone_office?: string;
-  user_id_c?: string; // SOLICITANTE
+  user_id_c?: any; // SOLICITANTE
   user_idl_c?: string;
+  solicitante?:string;
 }

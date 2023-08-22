@@ -63,7 +63,7 @@ const isSomeCardEditing = computed(() => {
 });
 
 const { isLoading, execute } = useAsyncState(async () => {
-  console.log(localId.value);
+  //console.log(localId.value);
   if (!!localId.value) {
     const a = await companyStore.onGetCompany(localId.value);
     console.log(a)

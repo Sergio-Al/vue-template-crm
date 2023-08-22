@@ -29,7 +29,7 @@ import {
   manufacturer,
   manufacturerContact,
   product,
-  manufacturerFiltered,
+  //manufacturerFiltered,
   productsFiltered,
   certificationsRequestPromise,
   certificationsPromise,
@@ -215,19 +215,17 @@ const getLastNumberCertificationRequest = async () => {
 };
 
 export const createComment = async(userId:string, module:any, description:any, moduleId:string)=>{
-  const comment = {
-    assigned_user_id: userId,
-    bean_id: moduleId,
-    bean_module: module,
-    description,
-    relevance: 'medium',
-    visualizacion_c: 'interno',
-    created_by: userId,
-  };
   try{
+    const comment = {
+      assigned_user_id: userId,
+      bean_id: moduleId,
+      bean_module: module,
+      description,
+      relevance: 'medium',
+      visualizacion_c: 'interno',
+      created_by: userId,
+    };
     await axios_GLOBAL.post(`/comments-new`, {comment});
-    //console.log(data);
-    //return;
   }
   catch(e){
     throw e
@@ -236,7 +234,7 @@ export const createComment = async(userId:string, module:any, description:any, m
 
 export const getCertificationRequest = async (id: string) => {
   try {
-    return await certificationRequestPromise(id);
+    //return await certificationRequestPromise(id);
     const { data } = await axios_NS_07.get(`/solicitud/${id}`);
     console.log(data);
     //const { data } = await axios_NS_07.get(`/certification-request/${id}`);
@@ -333,6 +331,16 @@ export const getUser = async (id: string) => {
   } catch (error) {}
 };
 
+export const getUserLB = async(id:string)=>{
+  try{  
+    const {data} = await axios_LB_01.get(`/users/${id}`)
+    return data;
+  }
+  catch(e){
+    throw e;
+  }
+}
+
 export async function getUsers(
   value: string,
   options: RecordOptionsModel = {}
@@ -385,7 +393,8 @@ export const getParticipants = async (idUser: string) => {
   }
 };
 
-export const getManufacturer = async (id: string) => {
+export const getManufacturer = async (id: any) => {
+  console.log(id);
   const { data } = await axios_NS_07.get(`/proveedor/${id}`)
   // return response;
   return data;
@@ -404,21 +413,16 @@ export const getProduct = async (id: string) => {
 };
 
 export const getManufacturers = async (params: Partial<Manufacturer>) => {
-  // console.log(params);
-  // console.log(manufacturerFiltered);
-  // return manufacturerFiltered;
-
   try {
     const { data } = await axios_NS_07.get(
       `proveedor/advanced?params=${JSON.stringify(params)}`
     );
-    //console.log(data);
+    console.log(data);
     return data;
   } catch (e) {
     throw e;
   }
 };
-
 
 export const getProducts = async (params: Partial<Product>) => {
   console.log(params);
@@ -470,8 +474,19 @@ export const getDocumentsSchema = async (id:string)=>{
 
 export const getListSchemas = async(value:string)=>{
   try{
-    const {data} = await axios_NS_07.get(`/esquemadoc/schemas-type/HANCE_Certificacion/${value}`)
+    const {data} = await axios_NS_07.get(`/esquemadoc/schemas_type/HANCE_Certificacion/${value}`)
     return data;
+  }
+  catch(e){
+    throw e;
+  }
+}
+
+export const getParticipacionComo = async (id:string)=>{
+  try{
+      const  { data } = await axios_NS_07.get(`/empresas/empresa-participacion/${id}`);
+      console.log(data);
+      return data;
   }
   catch(e){
     throw e;

@@ -57,8 +57,7 @@ const isDateExpired = (date: string) => {
                 :rows="rowsDocsProveedor"
                 :columns="columns"
                 row-key="index"
-                virtual-scroll
-                :rows-per-page-options="[0]"
+                :rows-per-page-options="[5,10,20]"
                 >
             <template>
             </template>

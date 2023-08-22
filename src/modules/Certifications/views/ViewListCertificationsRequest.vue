@@ -138,23 +138,12 @@ const setEstadoColor = (estado: string): string => {
   return colorEstado[estado] || 'blue';
 };
 
-// const setTipoColor = (tipo: string): string => {
-//   const colorMap: { [key: string]: string } = {
-//     DISPOSITIVO: 'green',
-//     EQUIPO: 'blue',
-//     MEDICAMENTO: 'orange',
-//     COSMÉTICO: 'purple',
-//   };
-
-//   return colorMap[tipo] || 'grey';
-// };
-
-const openDialog = (id?: string) => {
-  certificationRequestDialogRef.value?.openDialogTab(id);
+const openDialog = () => {
+  certificationRequestDialogRef.value?.openDialogTab();
 };
 
 const openItemSelected = (id: string, title: string) => {
-  certificationDialogRef.value?.openDialogTab(id, title);
+  certificationRequestDialogRef.value?.openDialogTab(id);
 };
 
 const filterState = ()=>{
@@ -216,7 +205,7 @@ const filterState = ()=>{
           <q-td key="name" :props="propsTable" :style="'width: 100px;'">
             <span
               class="text-primary text-weight-bold text-break cursor-pointer"
-              @click="openDialog(propsTable.row.id)"
+              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
              {{ propsTable.row.name || 'Sin Número' }}
             </span>
@@ -251,6 +240,18 @@ const filterState = ()=>{
               
             </div>
           </q-td>
+          <q-td key="state_aprobacion" :props="propsTable">
+            <q-chip
+              outline
+              square
+              :color="setEstadoColor(propsTable.row.state_aprobacion)"
+              dense
+              size="md"
+              text-color="white"
+            >
+              {{ propsTable.row.state_aprobacion.toUpperCase() }}
+            </q-chip>
+          </q-td>
           <q-td key="division" :props="propsTable">
             <span>{{ propsTable.row.division }}</span>
             <br />
@@ -268,18 +269,6 @@ const filterState = ()=>{
           </q-td>
           <q-td key="fabricante_c" :props="propsTable">
             <span>{{ propsTable.row.fabricante_c }}</span>
-          </q-td>
-          <q-td key="state_aprobacion" :props="propsTable">
-            <q-chip
-              outline
-              square
-              :color="setEstadoColor(propsTable.row.state_aprobacion)"
-              dense
-              size="md"
-              text-color="white"
-            >
-              {{ propsTable.row.state_aprobacion.toUpperCase() }}
-            </q-chip>
           </q-td>
           <q-td key="nro_certificacion" :props="propsTable">
             <span v-if="propsTable.row.nro_certificacion" class="text-weight-bold text-primary">{{ propsTable.row.nro_certificacion }}</span>

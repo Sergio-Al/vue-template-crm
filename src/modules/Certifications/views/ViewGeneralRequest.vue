@@ -9,8 +9,8 @@ import AssignedSingleUser2 from 'src/components/AssignedUsers/AssignedSingleUser
 import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
 
 import { userStore } from 'src/modules/Users/store/UserStore';
-import CommentsList from 'src/components/Comments/CommentsList.vue';
 import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
+import CommentsList from 'src/components/Comments/CommentsList.vue';
 import { useQuasar } from 'quasar';
 
 interface Props {

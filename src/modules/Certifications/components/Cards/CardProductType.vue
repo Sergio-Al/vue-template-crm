@@ -53,7 +53,7 @@ const productTypes = [
   },
 ];
 
-const value = ref<string>(props.data.tipo_tramite_c || 'dispositivo');
+const value = ref<string>(props.data.tipo_producto_c || 'dispositivo');
 
 const changeValue = () => {
   console.log(value.value);

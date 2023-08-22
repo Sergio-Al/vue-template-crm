@@ -104,7 +104,7 @@ const onUpdateDataTable = async () => {
 };
 
 const openDialog = () => {
-  console.log('opening... dialog');
+  //console.log('opening... dialog');
   companyDialogRef.value?.openDialogTab();
 };
 

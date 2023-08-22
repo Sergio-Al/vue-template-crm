@@ -57,6 +57,7 @@ const { undo, history } = useRefHistory(assignedUser, {
 });
 
 const { isLoading } = useAsyncState(async () => {
+  console.log(props);
   if (props.type === 'single') {
     if (!!props.module && !!props.moduleId)
       try {
@@ -256,7 +257,7 @@ defineExpose({
 
       <q-separator />
 
-      <q-card-actions class="card-actions justify-between">
+      <q-card-actions style="padding:10px;" class="card-actions justify-between">
         <div>
           <q-btn
             style="font-size: 13px"
