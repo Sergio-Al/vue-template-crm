@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue';
-import { useQuasar, QPopupProxy } from 'quasar';
+import { useQuasar, QPopupProxy, QInput, QSelect } from 'quasar';
 import moment from 'moment';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
-import { getUsers, getUser } from '../../services/useCertificationRequestService';
+import { getUsers, getUser, getProfessional } from '../../services/useCertificationRequestService';
 
 import { CertificationRequest } from '../../utils/types';
 import { userStore } from 'src/modules/Users/store/UserStore';
@@ -25,13 +25,20 @@ const { getRegionales, listRegionales } = useRegionales();
 const { userCRM } = userStore();
 
 const props = defineProps<Props>();
-const $q = useQuasar();
+//const $q = useQuasar();
 
 //const { userCRM, getCompany } = useCompany();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
 
+const nameRequestInputRef = ref<InstanceType<typeof QInput> | null>(null);
+const divisionSelectRef = ref<InstanceType<typeof QSelect> | null>();
+const profesionalInputRef = ref<InstanceType<typeof QInput> | null>(null);
+
+
+
 const inputData = ref({ ...props.data });
+const inputProfesional = ref({id:'', name:'', email:''});
 //inputData.value.iddivision_c = '';
 //inputData.value.user_id_c = '5c19df6d-0cf0-6e23-7c01-629fb9d01588';
 
@@ -41,6 +48,15 @@ let users = ref<any[] | undefined>(undefined);
 const restoreValues = async () => {
   if (props.data) inputData.value = { ...props.data };
   await formatData();
+};
+
+const validateInputs = async () => {
+  const validatedFields = await Promise.all([
+  nameRequestInputRef.value?.validate(),
+  divisionSelectRef.value?.validate(),
+  profesionalInputRef.value?.validate(),
+  ]);
+  return validatedFields.every((field) => !!field);
 };
 
 const filterFn = async (
@@ -75,7 +91,7 @@ onMounted(async () => {
   await getRegionales();
   divisionList.value = listDivisiones.value;
 
-  //console.log(divisionList.value);
+  console.log(inputData.value);
 
   if (!!props.id) {
     inputData.value.date_entered = inputData.value.date_entered?.substring(0,10);
@@ -96,18 +112,21 @@ onMounted(async () => {
     }
   }
 
-  console.log(inputData.value);
-
   // buscar solicitante y asignar a users[] (options)
-  if (!!inputData.value.user_id_c) {
-    if (!!props.id) {
-      const response:any = await getUser(inputData.value.user_id_c);
-      users.value = [response[0]];
-    }
-    // const response = await getUser(inputData.value.user_id_c);
-    //   console.log(response);
-    //   users.value = [response];
+  // if (!!inputData.value.user_id_c) {
+  //   if (!!props.id) {
+  //     const response:any = await getUser(inputData.value.user_id_c);
+  //     users.value = [response[0]];
+  //   }
+  // }
+  ///console.log(inputData.value);
+
+  if(!!inputData.value.iddivision_c){
+    assignProfessional(inputData.value.iddivision_c);
+    //inputData.value.idamercado_c = userCRM.idamercado_c;
   }
+
+  console.log(userCRM)
 
   //listAreaMercado.value = await useDivAreaMercado(inputData.value.iddivision_c);
 
@@ -142,7 +161,6 @@ onMounted(async () => {
 });
 
 const amercadoList = computed(() => {
-
   const result: any = divisionList.value.filter(
     (element: any) => element.cod_div == inputData.value.iddivision_c
   );
@@ -150,12 +168,32 @@ const amercadoList = computed(() => {
   return aux.amercado;
 });
 
+const assignProfessional = async (e:any)=>{
+  const response = await getProfessional(e);
+  if(!!response){
+    inputProfesional.value.id = response.id;
+    inputProfesional.value.name = response.fullname;
+    inputProfesional.value.email = response.email;
+  }
+  else{
+    inputProfesional.value = {id:'', name:'', email:''}
+  }
+}
+
 defineExpose({
-  isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
+  validateInputs,
+  isEditing: computed(() => 
+    {
+      console.log(baseCardRef.value?.isEditing === 'edit')
+      return baseCardRef.value?.isEditing === 'edit'
+    }
+  ),
   exposeData: (): Partial<CertificationRequest> => ({
-    user_id_c: inputData.value.user_id_c,
+    //user_id_c: inputData.value.user_id_c,
     user_id : userCRM.id,
-    date_entered: inputData.value.date_entered,
+    //date_entered: inputData.value.date_entered,
+    name_request_c: inputData.value.name_request_c,
+    id_profesional_acreditado_c: inputProfesional.value.id,
     iddivision_c: inputData.value.iddivision_c,
     idamercado_c: inputData.value.idamercado_c,
     idregional_c: inputData.value.idregional_c,
@@ -176,7 +214,7 @@ defineExpose({
   >
     <template #edit>
       <!-- Modo edicion -->
-      <div class="row q-col-gutter-md q-px-sm q-py-sm">
+      <div class="row q-col-gutter-md q-px-sm q-py-md">
         <!--<q-select
           :hint="!!inputData.user_id_c ? 'usuario Seleccionado' : ''"
           :options="users"
@@ -230,20 +268,22 @@ defineExpose({
         </q-select>-->
 
         <q-input
-          v-model="inputData.date_entered"
-          class="col-12 col-sm-6 q-py-md"
-          label="Fecha"
+          v-model="inputData.name_request_c"
+          ref="nameRequestInputRef"
+          class="col-12 q-py-sm"
+          label="Referencia"
           outlined
           dense
           :rules="[(value: string) => !!value || 'Campo requerido']"
-          type="date"
+          type="text"
         >
         </q-input>
         <q-select
-          class="col-12 col-sm-6 q-py-md"
+          v-model="inputData.iddivision_c"
+          ref="divisionSelectRef"
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
-          v-model="inputData.iddivision_c"
           :options="divisionList"
           type="text"
           label="División"
@@ -251,10 +291,23 @@ defineExpose({
           option-label="label"
           emit-value
           map-options
+          @update:model-value = "assignProfessional"
         >
         </q-select>
+        <q-input
+          ref="profesionalInputRef"
+          v-model="inputProfesional.name"
+          class="col-12 col-md-6 col-lg-6 q-py-sm"
+          label="Profesional Acreditado"
+          outlined
+          readonly
+          dense
+          :rules="[(value: string) => !!value || 'Campo requerido']"
+          type="text"
+        >
+        </q-input>
         <q-select
-          class="col-12 col-sm-6 q-py-xs"
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
           v-model="inputData.idamercado_c"
@@ -268,7 +321,7 @@ defineExpose({
         >
         </q-select>
         <q-select
-          class="col-12 col-sm-6 q-py-xs"
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
           v-model="inputData.idregional_c"
@@ -288,17 +341,17 @@ defineExpose({
       <div class="row q-col-gutter-md q-px-md q-py-md">
 
         <q-input
-          v-model="inputData.date_entered"
-          class="col-12 col-sm-6"
-          label="Fecha"
+          v-model="inputData.name_request_c"
+          class="col-12 q-py-sm"
+          label="Referencia"
           outlined
-          dense
           readonly
-          type="date"
+          dense
+          type="text"
         >
         </q-input>        
         <q-select
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
           v-model="inputData.iddivision_c"
@@ -312,8 +365,17 @@ defineExpose({
           readonly
         >
         </q-select>
+        <q-input
+          v-model="inputProfesional.name"
+          class="col-12 col-md-6 col-lg-6 q-py-sm"
+          label="Profesional Acreditado"
+          outlined
+          readonly
+          dense
+          type="text"
+        />
         <q-select
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
           v-model="inputData.idamercado_c"
@@ -329,7 +391,7 @@ defineExpose({
         </q-select>
 
         <q-select
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
           v-model="inputData.idregional_c"

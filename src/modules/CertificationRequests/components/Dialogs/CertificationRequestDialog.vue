@@ -14,11 +14,13 @@ import {
   updateCertificationRequest,
   getCertificationRequest,
   updateStateCertificationRequest,
+  getCertificationByRequestId
 } from '../../services/useCertificationRequestService';
 
 import AlertComponent from 'src/components/MainAlert/AlertComponent.vue';
 import CertificationDialog from 'src/modules/Certifications/components/Dialogs/CertificationDialog.vue';
 import CardAddKept from './../Cards/CardAddKept.vue';
+import CardAddComment from './../Cards/CardAddComment.vue';
 
 interface Emits {
   (e: 'update'): void;
@@ -31,9 +33,13 @@ const open = ref(false);
 const titleDialog = ref('Solicitud de Certificación');
 const localId = ref('');
 const showDialogKept = ref<boolean>(false);
+const showDialogComment = ref<boolean>(false);
+const active = ref<boolean>(true);
 
 const showAlertAprobar = ref<boolean>(false);
 const showAlertCrear = ref<boolean>(false);
+//const haveCertification = ref<boolean>(false);
+const certification = ref<CertificacionBody>();
 
 let propsCreateAlert = {
   title: 'Solicitud de Certificación',
@@ -45,9 +51,11 @@ let propsCreateAlert = {
   btnText: 'Si',
 };
 
+
 const certificationDialogRef = ref<InstanceType<
   typeof CertificationDialog
 > | null>(null);
+const generalFormRef = ref<InstanceType<typeof ViewGeneral> | null>(null);
 
 //const actionConfirm = ref<any>('aprobar');
 //let msgAlert = '¿Esta seguro de aprobar la Solicitud de Certificación?';
@@ -83,8 +91,6 @@ const createCertification = async (data: Partial<CertificationRequest>) => {
       message: 'Creando solicitud',
     });
     const response = await createCertificationRequest(data);
-    // console.log(data);
-    //const response = await certificationRequestPromise(localId.value);
     localId.value = response.id;
     emits('update');
     await getCertification();
@@ -127,6 +133,7 @@ const setColorState = (state: string): string => {
   const colorMap: { [key: string]: string } = {
     pending: 'orange',
     kept: 'red',
+    amend: 'info',
     approved: 'green',
     rejected: 'red',
   };
@@ -138,6 +145,7 @@ const setTextColorState = (state: string): string => {
   const colorMap: { [key: string]: string } = {
     pending: 'text-orange',
     kept: 'text-red',
+    amend: 'info',
     approved: 'text-green',
     rejected: 'text-red',
   };
@@ -145,13 +153,23 @@ const setTextColorState = (state: string): string => {
   return colorMap[state] || 'text-orange';
 };
 
-const changeState = (value: number) => {
-  if (value == 1) {
-    showAlertAprobar.value = true;
-  } else if (value == 2) {
-    showDialogKept.value = true;
-    //todo: abrir dialog para realizar observacion
-    //el estado cambia a observado y se guarda el comentario
+const verDialogItem = (id:string)=>{
+  certificationDialogRef.value?.openDialogTab(id);
+}
+
+const actionState = (value: number) => {
+  switch(value){
+    case 1:
+      showAlertAprobar.value = true;
+      break;
+    case 2:
+      showDialogKept.value = true;
+      break;
+    case 3:
+      showDialogComment.value = true;
+      break;
+    default:
+      break;
   }
 };
 
@@ -188,6 +206,9 @@ const state_request = computed(() => {
     case 'rejected':
       value = 'RECHAZADA';
       break;
+    case 'amend':
+      value = 'CORREGIDA';
+      break;
     default:
       value = '';
       break;
@@ -195,9 +216,9 @@ const state_request = computed(() => {
   return value;
 });
 
-// const reloadList = async()=>{
-//   await getCertification();
-// }
+const reloadList = async()=>{
+  await getCertification();
+}
 
 const {
   state: certificationData,
@@ -205,10 +226,8 @@ const {
   execute: getCertification,
 } = useAsyncState(
   async () => {
-    console.log(localId.value);
-    const a = await getCertificationRequest(localId.value);
-    // console.log(a);
-    return a;
+    certification.value = await getCertificationByRequestId(localId.value);
+    return await getCertificationRequest(localId.value);
   },
   {} as CertificationRequest,
   {
@@ -216,13 +235,33 @@ const {
   }
 );
 
+const isEditing = computed(() =>
+  !!generalFormRef.value?.isSomeCardEditing
+);
+
+const changeState=async()=>{
+  let new_state = ''
+    if(certificationData.value.estado_aprobacion_c == 'kept'){
+      new_state = 'amend';
+    }
+
+  try{
+    await updateStateCertificationRequest(localId.value, new_state)
+    $q.notify({
+      color: 'positive',
+      message: 'Solicitud',
+      caption: 'Se actualizó su solicitud de manera exitosa',
+    });
+  }
+  catch(e){
+    throw e;
+  }
+}
+
 defineExpose({
   openDialogTab,
 });
 
-// const saludo = ()=>{
-//   console.log('este es un saludo')
-// }
 </script>
 
 <template>
@@ -247,12 +286,18 @@ defineExpose({
       <span> ¿Desea crear la certificación ahora? </span>
     </template>
   </AlertComponent>
-  <CertificationDialog :idSolicitud="localId" ref="certificationDialogRef" />
+  <CertificationDialog 
+    :idSolicitud="localId" 
+    ref="certificationDialogRef" 
+    @update="()=>{
+      emits('update');
+      reloadList();
+  }" />
 
   <dialog-component
     size-dialog="dialog-xl"
     v-model="open"
-    :footerDisabled="false"
+    :footerDisabled="active"
     :headerDisabled="false"
     :iconDialog="'mail'"
     :persistent="false"
@@ -342,24 +387,53 @@ defineExpose({
         <ViewGeneralSkeleton v-if="isLoading" />
         <ViewGeneral
           v-else
+          ref="generalFormRef"
           :data="certificationData"
           @create="createCertification"
           @update="updateCertification"
+          @update-state="()=>{
+            console.log('activar');
+            active = false
+          }"
         />
       </q-page>
     </template>
+
     <template
       #footer
-      v-if="
-        certificationData.id &&
-        certificationData.estado_aprobacion_c == 'pending'
-      "
+      v-if="active"
     >
-      <q-btn color="primary" class="q-mr-md" @click="changeState(1)"
+    {{active}}
+    <div v-if="
+        certificationData.id &&
+        (certificationData.estado_aprobacion_c == 'pending' || certificationData.estado_aprobacion_c == 'amend')
+      ">
+      <q-btn color="primary" class="q-mr-md" @click="actionState(1)"
         >Aprobar</q-btn
       >
-      <q-btn color="negative" @click="changeState(2)">Observar</q-btn>
+      <q-btn color="negative" @click="actionState(2)">Observar</q-btn>
+    </div>
+
+    <div v-else-if="certificationData.estado_aprobacion_c == 'kept'">
+      <q-btn color="primary" class="q-mr-md" @click="actionState(3)"
+        >Subsanar</q-btn
+      >
+      <q-btn color="negative" v-close-popup>Cancelar</q-btn>
+    </div>
+
+    <div v-else-if="certificationData.estado_aprobacion_c == 'approved'">
+      <span class="text-dark">La Solicitud ya fue <span class="text-green text-weight-bold">APROBADA</span></span>
+      <span class="text-dark" v-if="certification?.id">, el Nro. de certificación asociado es: <span @click="verDialogItem(certification.id)" class="text-primary text-weight-bold pointer">{{certification.name}}</span> </span>
+      <span class="text-dark" v-else>, sin embargo el registro no posee certificación asociada <span @click="crearCertificacion" class="text-primary pointer text-weight-bold">CREAR AHORA</span> </span>
+    </div>
+
+    <div v-else-if="certificationData.estado_aprobacion_c == 'rejected'">
+      <span class="text-dark">La solicitud fue <span class="text-red text-weight-bold">RECHAZADA</span> </span>
+    </div>
+
     </template>
+
+
     <!--<template #footer v-if="isEditing">
       <q-btn color="primary" class="q-mr-md" @click="saveCurrentForm"
         >Guardar</q-btn
@@ -378,4 +452,25 @@ defineExpose({
       }"
     />
   </q-dialog>
+  <q-dialog v-model="showDialogComment">
+    <CardAddComment
+      :idSolicitud="certificationData.id"
+      :title="'Corrección de Solicitud'"
+      :option="false"
+      @update="async()=>{
+        showDialogComment = false;
+        await changeState();
+        await getCertification();
+        //getCertification();
+        emits('update');
+      }"
+    />
+  </q-dialog>
+
 </template>
+
+<style lang="scss" scoped>
+  .pointer{
+    cursor:pointer;
+  }
+</style>

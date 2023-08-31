@@ -19,6 +19,7 @@ import { ViewCard } from 'src/modules/Accounts/components';
 import { userStore } from 'src/modules/Users/store/UserStore';
 import { useCertificationStore } from '../../store/certificationStore';
 import { axios_LB_01 } from 'src/conections/axiosCRM';
+import { QInput } from 'quasar';
 
 //const certificationStore = useCertificationStore();
 
@@ -39,7 +40,11 @@ const inputData = ref({...props.data} as CertificacionBody);
 const inputParticipant = ref({} as EmpresaParticipacion);
 const users = ref<User[] | undefined>(undefined);
 const participants = ref<EmpresaParticipacion[] | undefined>(undefined);
+
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
+const applicantInputRef = ref<InstanceType<typeof QInput> | null>(null);
+const participantInputRef = ref<InstanceType<typeof QInput> | null>(null);
+
 const oneParticipant = ref<boolean>(false);
 const date_entered_visual = ref('');
 const solicitante_visual  = ref();
@@ -69,6 +74,15 @@ const filterFn = async (
       console.log(users.value);
     }
   });
+};
+
+
+const validateInputs = async () => {
+  const validatedFields = await Promise.all([
+    applicantInputRef.value?.validate(),
+    participantInputRef.value?.validate()
+  ]);
+  return validatedFields.every((field) => !!field);
 };
 
 // const filterParticipante = async (
@@ -200,13 +214,14 @@ const restoreValues = () => {
 };
 
 defineExpose({
+  validateInputs,
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): Partial<CertificacionBody> => ({
     user_id_c: inputData.value.user_id_c,
     date_entered: inputData.value.date_entered,
     hance_empresa_id_c: inputData.value.hance_empresa_id_c,
     iddivision_c: inputData.value.iddivision_c,
-    idamercado_c: inputData.value.idamercado_c,
+    license_c: inputData.value.license_c,
   }),
   changeRequest : (idManufacturer:any, idSolicitante:string)=>{
     //console.log(idSolicitante);
@@ -226,19 +241,20 @@ defineExpose({
     @edit-change="restoreValues"
     >
     <template #edit>
-      <div class="row q-col-gutter-md q-px-md q-py-md">
+      <div class="row q-col-gutter-y-md q-col-gutter-x-sm q-pa-sm q-pt-md">
         <q-select
+          ref="applicantInputRef"
           :options="users"
           @filter-abort="abortFilterFn"
           @filter="filterFn"
-          class="col-12 col-sm-6"
+          class="col-12 q-py-sm"
           dense
           emit-value
           fill-input
           hide-dropdown-icon
           hide-selected
           input-debounce="500"
-          label="Solicitante"
+          label="* Solicitante"
           map-options
           option-label="fullname"
           option-value="id"
@@ -246,6 +262,7 @@ defineExpose({
           use-chips
           use-input
           v-model="inputData.user_id_c"
+          :rules="[(val) => !!val || 'Campo requerido']"
         >
           <template #append>
             <q-btn
@@ -278,15 +295,15 @@ defineExpose({
             </q-item>
           </template>
         </q-select>
-        <q-input
+        <!-- <q-input
           v-model="inputData.date_entered"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Fecha"
           outlined
           dense
           type="date"
         >
-        </q-input>
+        </q-input> -->
         <!--<q-select
           :hint="
             !!inputData.hance_empresa_id_c ? 'Participante Seleccionado' : ''
@@ -347,12 +364,13 @@ defineExpose({
           </template>
         </q-select> -->
         <q-select v-if="!oneParticipant"
-          class="col-12 col-sm-6"
+          ref="participantInputRef"
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
           v-model="inputData.hance_empresa_id_c"
           :options="participants"
-          label="Participación Como"
+          label="* Participación Como"
           option-value="id"
           option-label="name"
           emit-value
@@ -363,6 +381,7 @@ defineExpose({
           use-chips
           use-input
           @update:model-value="assignParticipacion"
+          :rules="[(val) => !!val || 'Campo requerido']"
         >
           <template #no-option>
             <span class="text-grey-8 q-pa-lg">Sin opciones</span>
@@ -390,14 +409,14 @@ defineExpose({
           v-else
           v-model="inputParticipant.name"
           class="col-12 col-sm-6"
-          label="Participación Como"
+          label="* Participación Como"
           outlined
           dense
           readonly
         />
         <q-input
           v-model="inputParticipant.razon_social_c"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Razón social"
           outlined
           dense
@@ -406,7 +425,7 @@ defineExpose({
         </q-input>
         <q-input
           v-model="formatDirection"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Dirección"
           outlined
           dense
@@ -415,7 +434,7 @@ defineExpose({
         </q-input>
         <q-input
           v-model="inputParticipant.titular"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Nombre del Titular"
           outlined
           dense
@@ -424,7 +443,7 @@ defineExpose({
         </q-input>
         <q-input
           v-model="inputParticipant.resolucion_ministerial_c"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Resolución ministerial"
           outlined
           dense
@@ -433,7 +452,7 @@ defineExpose({
         </q-input>
         <q-input
           v-model="formatDate"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Fecha de Resolución Ministerial"
           outlined
           dense
@@ -441,7 +460,7 @@ defineExpose({
         >
         </q-input>
         <q-select
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
           v-model="inputData.iddivision_c"
@@ -454,8 +473,16 @@ defineExpose({
           map-options
         >
         </q-select>
-        <q-select
-          class="col-12 col-sm-6"
+        <q-input
+          v-model="inputData.license_c"
+          class="col-12 col-sm-6 q-py-sm"
+          label="Licencia"
+          outlined
+          dense
+        >
+        </q-input>
+        <!--<q-select
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
           v-model="inputData.idamercado_c"
@@ -467,40 +494,40 @@ defineExpose({
           emit-value
           map-options
         >
-        </q-select>
+        </q-select>-->
       </div>
     </template>
     <template #read>
-      <div class="row q-col-gutter-md q-px-md q-py-md">
+      <div class="row q-col-gutter-y-md q-col-gutter-x-sm q-pa-sm q-pt-md">
         <q-input
           v-model="solicitante_visual"
-          class="col-12 col-sm-6"
-          label="Solicitante"
+          class="col-12 q-py-sm"
+          label="* Solicitante"
           outlined
           dense
           readonly
           type="text"
         />
-        <q-input
+        <!--<q-input
           v-model="date_entered_visual"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 col-md-6 q-py-sm"
           label="Fecha"
           outlined
           dense
           readonly
           type="text"
-        />
+        />-->
         <q-input
           v-model="inputParticipant.name"
-          class="col-12 col-sm-6"
-          label="Participación Como"
+          class="col-12 col-sm-6 q-py-sm"
+          label="* Participación Como"
           outlined
           dense
           readonly
         />
         <q-input
           v-model="inputParticipant.razon_social_c"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Razón social"
           outlined
           dense
@@ -509,7 +536,7 @@ defineExpose({
         </q-input>
         <q-input
           v-model="formatDirection"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Dirección"
           outlined
           dense
@@ -518,7 +545,7 @@ defineExpose({
         </q-input>
         <q-input
           v-model="inputParticipant.titular"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Nombre del Titular"
           outlined
           dense
@@ -527,7 +554,7 @@ defineExpose({
         </q-input>
         <q-input
           v-model="inputParticipant.resolucion_ministerial_c"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Resolución ministerial"
           outlined
           dense
@@ -536,7 +563,7 @@ defineExpose({
         </q-input>
         <q-input
           v-model="formatDate"
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           label="Fecha de Resolución Ministerial"
           outlined
           dense
@@ -544,7 +571,7 @@ defineExpose({
         >
         </q-input>
         <q-select
-          class="col-12 col-sm-6"
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
           v-model="inputData.iddivision_c"
@@ -558,8 +585,17 @@ defineExpose({
           readonly
         >
         </q-select>
-        <q-select
-          class="col-12 col-sm-6"
+        <q-input
+          v-model="inputData.license_c"
+          class="col-12 col-sm-6 q-py-sm"
+          label="Licencia"
+          outlined
+          dense
+          readonly
+        >
+        </q-input>
+        <!--<q-select
+          class="col-12 col-sm-6 q-py-sm"
           outlined
           dense
           v-model="inputData.idamercado_c"
@@ -571,7 +607,7 @@ defineExpose({
           emit-value
           map-options
         >
-        </q-select>
+        </q-select>-->
       </div>
     </template>
   </view-card-component>

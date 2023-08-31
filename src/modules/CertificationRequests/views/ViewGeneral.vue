@@ -1,13 +1,10 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import CardApplicant from '../components/Cards/CardApplicant.vue';
 
 import type { CertificationRequest } from '../utils/types';
+import CardApplicant from '../components/Cards/CardApplicant.vue';
 import CardProduct from '../components/Cards/CardProduct.vue';
-import AssignedSingleUser2 from 'src/components/AssignedUsers/AssignedSingleUser2.vue';
-
 import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
-
 import { userStore } from 'src/modules/Users/store/UserStore';
 import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
 import CommentsList from 'src/components/Comments/CommentsList.vue';
@@ -20,6 +17,7 @@ interface Props {
 interface Emits {
   (e: 'create', value: Partial<CertificationRequest>): void;
   (e: 'update', value: Partial<CertificationRequest>): void;
+  (e: 'update-state'): void;
 }
 
 const props = defineProps<Props>();
@@ -29,22 +27,28 @@ const $q = useQuasar();
 
 // variables
 const { userCRM } = userStore();
-const showFooter = ref(false);
+//const showFooter = ref(false);
 const tab = ref(props.data?.id ? 'Activities' : 'comentarios');
 const commentCreate = ref<string>('');
 
 const cardApplicantRef = ref<InstanceType<typeof CardApplicant> | null>(null);
 const cardProductRef = ref<InstanceType<typeof CardProduct> | null>(null);
 const assignedSingleUserRef = ref<InstanceType<
-  typeof AssignedSingleUser2
+  typeof AssignedUser
 > | null>(null);
 
 // computed variables
 const isSomeCardEditing = computed(() => {
-  return [
+  const a = [
     cardApplicantRef.value?.isEditing,
     cardProductRef.value?.isEditing,
   ].some((value) => !!value);
+  console.log(a);
+  console.log('causa');
+  if(a){
+    emits('update-state')
+  }
+  return a;
 });
 
 const applicantData = computed(() => {
@@ -68,11 +72,17 @@ const onChangeUserAssigned = (id: string) => {
 
 const validateCards = async () => {
   const validCards: (boolean | undefined)[] = [];
+
+  if (cardApplicantRef.value?.isEditing) {
+    const cardApplicantValidation = await cardApplicantRef.value.validateInputs();
+    validCards.push(cardApplicantValidation);
+  }
   
   if (cardProductRef.value?.isEditing) {
     const cardProductValidation = await cardProductRef.value.validateInputs();
     validCards.push(cardProductValidation);
   }
+
   return validCards.every((card) => !!card);
 };
 
@@ -111,8 +121,13 @@ const onSubmit = async () => {
     emits('update', body);
   } else {
     body.description = commentCreate.value;
+    body.date_entered = new Date().toISOString();
     emits('create', body);
   }
+
+  defineExpose({
+    isSomeCardEditing,
+});
 };
 </script>
 
@@ -137,13 +152,6 @@ const onSubmit = async () => {
           </div>
         </div>
         <div class="col-12 col-md-6 q-pt-sm">
-          <!--<AssignedSingleUser2
-            ref="assignedSingleUserRef"
-            :module="'HANCE_SolicitudCertificacion'"
-            :module-id="props.data?.assigned_user_id || ''"
-            :withList="false"
-            @changeUser="onChangeUserAssigned"
-          />-->
           <AssignedUser
             :title="'Solicitante'"
              ref="assignedSingleUserRef"
@@ -226,7 +234,7 @@ const onSubmit = async () => {
                       <ActivitiesComponent
                         :id="props.data?.id || ''"
                         :idUser="userCRM.id"
-                        module="HANCE_SolicitudCertificacion"
+                        :module="'HANCE_SolicitudCertificacion'"
                       ></ActivitiesComponent>
                     </q-tab-panel>
                     <q-tab-panel name="historychanges">

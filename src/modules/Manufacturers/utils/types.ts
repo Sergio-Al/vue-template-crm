@@ -36,3 +36,52 @@ export interface Manufacturer {
     website: string;
     direccion: string;
   }
+
+  export interface Filter {
+    account?: string;
+    name?: string;
+    pst_code?: string;
+    aio_code?: string;
+    status?: string;
+    start_date?: string;
+    end_date?: string;
+    country?: string;
+    state?: string;
+    city?: string;
+    created_by?: string[];
+    modified_by?: string[];
+    assigned_to?: string[];
+    creation_date?: string;
+    fastFilter?: string;
+  }
+
+  export interface Params {
+    page: number;
+    rowsPerPage: number;
+    sortBy: string;
+    order: string;
+    filter: Filter;
+  }
+
+  export interface Pagination {
+    page: number;
+    sortBy: string;
+    descending: boolean;
+    rowsPerPage: number;
+    rowsNumber: number;
+  }
+
+  export interface PaginationTable {
+    sortBy: string;
+    descending: boolean;
+    page: number;
+    rowsPerPage: number;
+    rowsNumber?: number;
+  }
+
+  export interface UpdateMassiveModel {
+    pais_c?: string;
+    priority?: string;
+    status?: string;
+  }
+  

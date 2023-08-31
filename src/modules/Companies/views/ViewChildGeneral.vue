@@ -1,17 +1,17 @@
 <script lang="ts">
 // vue-quasar-libraries
-import { Loading, QInput } from 'quasar';
+import { Loading, QInput, useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 
 // global-components
 
 import { useChildCompaniesStore } from '../store/childCompanyStore';
-import CommentsList from 'src/components/Comments/CommentsList.vue';
-import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
-import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
+//import CommentsList from 'src/components/Comments/CommentsList.vue';
+//import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
+//import ActivitiesComponent from 'src/components/Activities/ActivitiesComponent.vue';
 
 // module-components
-import CardDocuments from '../components/Cards/CardDocuments.vue';
+//import CardDocuments from '../components/Cards/CardDocuments.vue';
 import CardInfo from '../components/Cards/ChildCompany/CardInfo.vue';
 import CardContact from '../components/Cards/ChildCompany/CardContact.vue';
 
@@ -20,12 +20,17 @@ import { useAsyncState } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { ChildCompany, Company } from '../utils/types';
 import DirectionCard from 'src/components/MainCard/DirectionCard.vue';
-import CardDelegate from '../components/Cards/CardDelegate.vue';
+//import CardDelegate from '../components/Cards/CardDelegate.vue';
+import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
+//import { userCRM } from 'src/modules/Certifications/store/useCertificationTableStore';
+
 </script>
 <script lang="ts" setup>
-const props = defineProps<{
+  const props = defineProps<{
   id?: string;
 }>();
+
+const $q = useQuasar()
 
 const childCompanyStore = useChildCompaniesStore();
 const { childPayload, cardInfo, cardContact } = storeToRefs(childCompanyStore);
@@ -36,11 +41,14 @@ const commentCreate = ref('');
 
 const cardInfoRef = ref<InstanceType<typeof CardInfo> | null>(null);
 const cardContactRef = ref<InstanceType<typeof CardContact> | null>(null);
-const cardDocumentsRef = ref<InstanceType<typeof CardDocuments> | null>(null);
+//const cardDocumentsRef = ref<InstanceType<typeof CardDocuments> | null>(null);
 const directionCardComponentRef = ref<InstanceType<
   typeof DirectionCard
 > | null>(null);
-const cardDelegateRef = ref<InstanceType<typeof CardDelegate> | null>(null);
+//const cardDelegateRef = ref<InstanceType<typeof CardDelegate> | null>(null);
+const assignedSingleUserRef = ref<InstanceType<
+  typeof AssignedUser
+> | null>(null);
 
 const commentRef = ref<InstanceType<typeof QInput> | null>(null);
 
@@ -51,7 +59,7 @@ const isSomeCardEditing = computed(() => {
     cardContactRef.value?.isEditing,
     cardInfoRef.value?.isEditing,
     directionCardComponentRef.value?.isEditing,
-    cardDelegateRef.value?.isEditing,
+    //cardDelegateRef.value?.isEditing,
   ].some((value) => !!value);
 });
 
@@ -61,30 +69,35 @@ const { isLoading, execute } = useAsyncState(async () => {
   }
 }, {} as ChildCompany);
 
-// const validateCards = async () => {
-//   const validCards: (boolean | undefined)[] = [];
-//   if (infoCardRef.value?.isEditing) {
-//     const infoCardValidation = await infoCardRef.value.validateInputs();
-//     validCards.push(infoCardValidation);
-//   }
-//   if (!localId.value) {
-//     const firstCommentValidation = await commentRef.value?.validate();
-//     validCards.push(firstCommentValidation);
-//   }
-//   return validCards.every((card) => !!card);
-// };
+const validateCards = async () => {
+  const validCards: (boolean | undefined)[] = [];
+  if (cardInfoRef.value?.isEditing) {
+    const infoCardValidation = await cardInfoRef.value.validateInputs();
+    validCards.push(infoCardValidation);
+  }
+  
+  if (cardContactRef.value?.isEditing) {
+    const cardContactValidation = await cardContactRef.value.validateInputs();
+    validCards.push(cardContactValidation);
+  }
+  if (!localId.value) {
+    const firstCommentValidation = await commentRef.value?.validate();
+    validCards.push(firstCommentValidation);
+  }
+  return validCards.every((card) => !!card);
+};
 
 const onSubmit = async (parentId: string) => {
   // Validar datos...
-  // const areCardsValid = await validateCards();
-  // if (!areCardsValid) {
-  //   $q.notify({
-  //     type: 'warning',
-  //     message: 'Error de validación',
-  //     caption: 'Algunos campos necesitan ser llenados',
-  //   });
-  //   return;
-  // }
+  const areCardsValid = await validateCards();
+  if (!areCardsValid) {
+    $q.notify({
+      type: 'warning',
+      message: 'Error de validación',
+      caption: 'Algunos campos necesitan ser llenados',
+    });
+    return;
+  }
 
   // Verificar si existe un id por localId
   if (!!localId.value) {
@@ -92,7 +105,8 @@ const onSubmit = async (parentId: string) => {
     const cardInfoData = cardInfoRef.value?.exposeUpdateData();
     const cardContactData = cardContactRef.value?.exposeUpdateData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
-    const user_id_c = cardDelegateRef.value?.exposeData();
+    const assignedUser = assignedSingleUserRef.value?.assignedUser.id || '1';
+    //const user_id_c = cardDelegateRef.value?.exposeData();
 
     if (!!cardInfoData || !!cardContactData) {
       try {
@@ -100,7 +114,7 @@ const onSubmit = async (parentId: string) => {
           ...cardInfoData,
           ...cardContactData,
           direccion_c: directionData?.address_street_generated_c,
-          user_id_c: user_id_c || '',
+          assigned_user_id: assignedUser,
         } as ChildCompany;
 
         await childCompanyStore.onUpdateChildCompany(localId.value, body);
@@ -114,7 +128,9 @@ const onSubmit = async (parentId: string) => {
     const cardInfoData = cardInfoRef.value?.exposeData();
     const cardContactData = cardContactRef.value?.exposeData();
     const directionData = directionCardComponentRef.value?.captureCurrentData();
-    const user_id_c = cardDelegateRef.value?.exposeData();
+    //const user_id_c = cardDelegateRef.value?.exposeData();
+    const assignedUser = assignedSingleUserRef.value?.assignedUser.id || '1';
+
 
     if (!!cardInfoData || !!cardContactData) {
       try {
@@ -126,7 +142,8 @@ const onSubmit = async (parentId: string) => {
           ...cardInfoData,
           ...cardContactData,
           direccion_c: directionData?.address_street_generated_c || '',
-          user_id_c: user_id_c || '',
+          assigned_user_id: assignedUser,
+          //user_id_c: userCRM.id || '',
           comment: commentCreate.value,
         } as ChildCompany;
 
@@ -150,7 +167,7 @@ const updateAssigned = async (id: string | null) => {
     console.log(id);
     if (!!id) {
       await childCompanyStore.onUpdateChildCompany(localId.value, {
-        user_id_c: id,
+        assigned_user_id: id,
       });
       await execute();
     }
@@ -199,6 +216,7 @@ const emits = defineEmits<{
             latitude: 0,
             longitude: 0,
           }"
+          :title="'Dirección'"
           hide-extra-banner
           :options="[]"
           class="col-12"
@@ -207,7 +225,17 @@ const emits = defineEmits<{
     </div>
     <div class="col-12 col-md-6">
       <div class="row q-gutter-y-md">
-        <CardDelegate
+        <div class="col-12">
+            <AssignedUser
+                :title = "'Titular'"
+                ref="assignedSingleUserRef"
+               :module="'HANCE_EmpresaParticipacion'"
+               :module-id="localId"
+               @changeUser="() => {}"
+             />
+          </div>
+
+        <!--<CardDelegate
           class="col-12"
           ref="cardDelegateRef"
           child
@@ -215,8 +243,8 @@ const emits = defineEmits<{
           :show-controls="!!localId"
           :user-id="childPayload ? childPayload.assigned_user_id : ''"
           @update="updateAssigned"
-        />
-        <div class="q-gutter-y-md col-12">
+        />-->
+        <div class="col-12">
           <q-card>
             <q-card-section style="padding: 0px">
               <q-tabs
@@ -297,7 +325,7 @@ const emits = defineEmits<{
                       <div class="text-subtitle2">Sub Empresa</div>
                     </q-card-section>
                     <q-card-section>
-                      Se mostrara el historial de cambios
+                      Se mostrará el historial de cambios
                     </q-card-section>
                   </q-card>
                 </q-tab-panel>

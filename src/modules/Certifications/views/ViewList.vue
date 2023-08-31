@@ -7,31 +7,32 @@ import {
 } from '../store/useCertificationTableStore';
 import AdvancedFilter from '../components/AdvancedFilter/AdvancedFilter.vue';
 
-import { HANSACRM3_URL } from 'src/conections/api_conectors';
+//import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import CertificationDialog from '../components/Dialogs/CertificationDialog.vue';
-import moment from 'moment';
-import { CertificacionBody } from '../utils/types';
+// import moment from 'moment';
+// import { CertificacionBody } from '../utils/types';
 
 const table = useCertificationsTableStore();
-const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
-  useCertificationsTableStore();
+// const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
+//   useCertificationsTableStore();
 
-const onSubmitDataFilter = () => {
-  try {
-    table.data_filter = advancedFilterRef.value?.dataFilter;
-    table.setFilterData();
-    table.reloadList();
-  } catch (error) {
-    throw error;
-  }
-};
 
 const advancedFilterRef = ref<InstanceType<typeof AdvancedFilter> | null>(null);
-const certificationDialogRef = ref<InstanceType<
+  const certificationDialogRef = ref<InstanceType<
   typeof CertificationDialog
-> | null>(null);
+  > | null>(null);
+  
+  const onSubmitDataFilter = () => {
+    try {
+      table.data_filter = advancedFilterRef.value?.dataFilter;
+      table.setFilterData();
+      table.reloadList();
+    } catch (error) {
+      throw error;
+    }
+  };
 
-// const updateMassiveRef = ref<InstanceType<
+  // const updateMassiveRef = ref<InstanceType<
 //   typeof UpdateMassiveComponent
 // > | null>(null);
 
@@ -53,7 +54,7 @@ const onDeleteMultiple = async (selected: { [key: string]: string }[]) => {
 
 const onUpdateDataTable = async () => {
   try {
-    await reloadList();
+    await table.reloadList();
   } catch (error) {
     throw error;
   }
@@ -61,8 +62,8 @@ const onUpdateDataTable = async () => {
 
 const onRequestTable = async (val: { pagination: any; filter: any }) => {
   //console.log('request data table');
-  await setPagination(val.pagination);
-  await getListCertifications(val);
+  await table.setPagination(val.pagination);
+  await table.getListCertifications(val);
 };
 
 const onClearDataFilter = async () => {
@@ -124,7 +125,7 @@ const openItemSelected = (id: string, title: string) => {
         class="text-grey-7"
         active-color="primary"
         indicator-color="orange"
-        @click="reloadList()"
+        @click="table.reloadList()"
       >
         <q-tab name="" label="TODAS" />
         <q-tab name="revision" label="REVISIÓN" />
@@ -146,7 +147,7 @@ const openItemSelected = (id: string, title: string) => {
       :defaultRows="false"
       :style="'height: 95dvh'"
       searchPlaceholder="Busqueda por: Nro. de solicitud"
-      @visibleColumns="setVisibleColumn"
+      @visibleColumns="table.setVisibleColumn"
       @submitFilter="onSubmitDataFilter"
       @updateMultiple="onUpdateMultiple"
       @deleteMultiple="onDeleteMultiple"
@@ -161,26 +162,17 @@ const openItemSelected = (id: string, title: string) => {
           <q-td class="text-left">
             <q-checkbox v-model="propsTable.selected" flat dense />
           </q-td>
-          <q-td key="name" :props="propsTable" :style="'width: 100px;'">
+          <q-td key="name" :props="propsTable" >
             <span
-              class="text-primary text-weight-bold text-break cursor-pointer"
+              class="text-primary text-weight-bold cursor-pointer"
               @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
               {{ propsTable.row.name }}
             </span>
           </q-td>
-          <q-td key="tipo_tramite_c" :props="propsTable">
-            <span>{{ propsTable.row.tipo_tramite_c }}</span>
-          </q-td>
           <q-td key="solicitante" :props="propsTable">
-            <div
-              style="
-                max-width: 150px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-              "
-              class="row"
+            <div class="row"
+            style="width:max-content"
             >
               <div class="col-3">
                 <q-avatar
@@ -192,14 +184,25 @@ const openItemSelected = (id: string, title: string) => {
                 />
               </div>
               <div class="col-9">
-                <span>{{ propsTable.row.solicitante }}</span>
+                <span class="text-break">{{ propsTable.row.solicitante }}</span>
                 <br />
-                <span class="text-caption text-grey">{{
-                  propsTable.row.cargo
-                }}</span>
+                <span class="text-caption text-grey text-break">
+                  <q-tooltip>Cargo</q-tooltip>
+                  {{ propsTable.row.cargo}}
+                </span>
               </div>
             </div>
           </q-td>
+          <q-td key="tipo_tramite_c" :props="propsTable">
+            <div class="row flex-center">
+              <span>{{ propsTable.row.tipo_tramite_c }}</span>
+              <br />
+              <span class="text-caption text-grey"
+                  >Cant. de Requisitos: 10
+              </span>
+            </div>
+          </q-td>
+      
           <q-td key="tipo_producto_c" :props="propsTable">
             <div class="row flex-center" v-if="propsTable.row.tipo_producto_c">
               <q-chip
@@ -210,10 +213,7 @@ const openItemSelected = (id: string, title: string) => {
               >
                 {{ propsTable.row.tipo_producto_c.toUpperCase() }}
               </q-chip>
-              <span class="text-caption"
-                >Cant. de Requisitos
-                <span class="text-weight-bold">10</span></span
-              >
+             
             </div>
           </q-td>
           <q-td key="etapa_c" :props="propsTable">
@@ -233,7 +233,7 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="estado_c" :props="propsTable">
             <span>{{ propsTable.row.estado_c }}</span>
             <div class="text-caption">
-              <span class="text-weight-bold">Fecha de Actualización:</span
+              <q-tooltip>Fecha de Actualización:</q-tooltip
               >{{ propsTable.row.fecha_actualizacion_estado }}
             </div>
           </q-td>
@@ -254,8 +254,8 @@ const openItemSelected = (id: string, title: string) => {
           <q-td key="producto_c" :props="propsTable">
             <div class="row flex-center">
               <span>{{ propsTable.row.producto_c }}</span>
-              <div class="text-caption">
-                <span class="text-bold">Fabricante: </span>
+              <div class="text-caption text-grey">
+                <q-tooltip>Fabricante</q-tooltip>
                 {{ propsTable.row.proveedor }}
               </div>
             </div>
@@ -314,7 +314,7 @@ const openItemSelected = (id: string, title: string) => {
             <q-checkbox flat v-model="propsTable.selected" dense />
             <span
               class="q-ml-md text-ellipsis text-blue-10 cursor-pointer"
-              @click="openDialog(propsTable.row.id)"
+              @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
               {{ propsTable.row.name }}
             </span>
@@ -425,7 +425,9 @@ const openItemSelected = (id: string, title: string) => {
     </table-component>
     <TableSkeleton v-else />
   </div>
-  <CertificationDialog ref="certificationDialogRef" />
+  <CertificationDialog @update="()=>{
+    table.reloadList();
+  }" ref="certificationDialogRef" />
 </template>
 
 <style lang="scss" scoped>
@@ -434,11 +436,8 @@ const openItemSelected = (id: string, title: string) => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .text-break {
-  width: 300px;
-  line-break: auto;
+  word-wrap: break-word;
   white-space: normal;
-  font-size: 1.1em;
 }
 </style>

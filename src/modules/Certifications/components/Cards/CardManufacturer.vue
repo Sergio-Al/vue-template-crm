@@ -8,6 +8,7 @@ import ContactRelationCard from 'src/modules/Leads/components/Cards/ContactRelat
 import CardRelationManufacturerAlt from './CardRelationManufacturerAlt.vue';
 
 import {
+  CertificacionBody,
   Certification,
   CertificationDB,
   Manufacturer,
@@ -41,7 +42,6 @@ const cardRelationContactRef = ref<InstanceType<
 > | null>(null);
 
 const inputData = ref({ ...props.data });
-const test = ref('');
 
 const manufacturersList = ref([]);
 const manufacturerContacts = ref([]);
@@ -71,15 +71,15 @@ const abortFilterFn = () => {
   // console.log('delayed filter aborted')
 };
 
-const assignManufacturerInfo = (id: string) => {
-  const manufacturer = manufacturers.find((m) => m.id === id);
-  inputData.value.correo_fabricante_c = manufacturer?.email || '';
-  inputData.value.telefono_fabricante_c = manufacturer?.phone || '';
-  // en otro caso buscar por servicio
-  manufacturerContacts.value = manufacturerContactsData.filter(
-    (contact) => contact.parentId === id
-  );
-};
+// const assignManufacturerInfo = (id: string) => {
+//   const manufacturer = manufacturers.find((m) => m.id === id);
+//   inputData.value.correo_fabricante_c = manufacturer?.email || '';
+//   inputData.value.telefono_fabricante_c = manufacturer?.phone || '';
+//   // en otro caso buscar por servicio
+//   // manufacturerContacts.value = manufacturerContactsData.filter(
+//   //   (contact) => contact.parentId === id
+//   // );
+// };
 
 const removeManufacturer = () => {
   inputData.value.fabricante_c = '';
@@ -107,16 +107,18 @@ onMounted(async () => {
       );
       manufacturersList.value = [manufacturerSelected];
     }
-    if (!!inputData.value.user_id1_c) {
-      const contact = await getManufacturerContact(inputData.value.user_id1_c);
-      manufacturerContacts.value = [contact];
-    }
+    // if (!!inputData.value.user_id1_c) {
+    //   const contact = await getManufacturerContact(inputData.value.user_id1_c);
+    //   manufacturerContacts.value = [contact];
+    // }
   }
 });
 
 defineExpose({
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
-  exposeData: (): Partial<Certification> => ({ ...inputData.value }),
+  exposeData: (): Partial<CertificacionBody> => ({
+    hanp_proveedores_id_c: inputData.value.hance_empresa_id_c,
+  }),
 });
 </script>
 

@@ -208,7 +208,7 @@ defineExpose({
           ref="productInputRef"
           class="col-12 col-sm-12 q-py-sm"
           dense
-          label="Referencia a Producto"
+          label="Producto"
           outlined
           type="text"
           v-model="inputData.producto_c"

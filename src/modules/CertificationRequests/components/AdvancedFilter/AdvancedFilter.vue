@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue';
 import { useAdvancedFilter } from '../../composables';
 import { useCertificationRequestTableStore } from '../../store/useCertificationRequestTableStore';
-
 import DateRangeComponent from 'src/components/DateRange/DateRangeComponent.vue';
 
 const {

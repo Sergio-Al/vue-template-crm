@@ -2,7 +2,7 @@
     <q-card class="flex fixed-height fixed-width">
         <div>
             <q-table
-            style="flex-grow: 1; width: inherit"
+            style="flex-grow: 1;"
             flat
             bordered
             :rows="schemas"
@@ -11,32 +11,38 @@
             row-key="id"
             >
             <template #top>
-                <div class="col-12 flex justify-between bg-primary q-pa-sm">
+                <div class="col-12 flex justify-between q-pa-sm">
                     <div>
-                        <span class="text-h6 text-white">Esquemas para el tipo</span>
+                        <span class="q-ml-sm text-h6">Esquemas para el tipo</span>
                         <br>
-                        <span class="text-caption text-white"
-                            >{{props.tramite}}</span
+                        <span class="q-ml-sm text-subtitle1"
+                            >{{props.tramite || 'No seleccionado'}}</span
                         >
                     </div>
-                    <q-btn
-                        icon="update"
-                        dense
-                        flat
-                        rounded
-                        @click="reloadList()"
-                        class="text-white"
-                    >
-                        <q-tooltip class="bg-primary" :offset="[10, 10]">
-                        Actualizar
-                        </q-tooltip>
-                    </q-btn>
+
+                    <div>
+                        <q-btn
+                            @click="reloadList"
+                            class="q-ma-xs q-mr-md"
+                            round
+                            dense
+                            color="white"
+                            >
+                            <q-icon name="update" color="black">
+                                <q-tooltip> Actualizar </q-tooltip>
+                            </q-icon>
+                        </q-btn>
+                        <q-icon @click="()=>{
+                            emits('close')
+                        }" class="pointer text-h5 text-grey" name="close" />
+                    </div>
                 </div>
+              
             </template>
             <template v-slot:header="props">
                 <q-tr :props="props">
                     <q-th auto-width />
-                    <q-th v-for="col in props.cols" :key="col.name" :props="props">
+                    <q-th v-for="col in props.cols" :key="col.name" :props="props" style="width:200px;">
                         {{ col.label }}
                     </q-th>
                 </q-tr>
@@ -69,7 +75,7 @@
                     {{ props.row.name }}
                     </span>
                 </q-td>
-                <q-td key="date_entered" :props="props" :style="'width: 150px;'">
+                <q-td key="date_entered" :props="props">
                     <span class="q-my-sm">
                     {{ props.row.date_entered }}
                     </span>
@@ -77,15 +83,15 @@
                 <q-td key="description" :props="props" :style="'max-width: 250px;'" class="text-break">
                     {{ props.row.description }}
                 </q-td>
-                <q-td key="documents" :props="props" :style="'width: 150px;'">
+                <q-td key="documents" :props="props" >
                     <div class="col-12 text-center">
                         <span class="q-my-sm">{{ props.row.documents }}</span>
                     </div>
                 </q-td>
-                <q-td key="created_by" :props="props" :style="'width: 150px;'">
+                <q-td key="created_by" :props="props" :style="'width: 250px;'" class="text-break">
                     <span class="q-my-sm">{{ props.row.created_by }}</span>
                 </q-td>
-                <q-td key="actions" :props="props" :style="'width: 150px;'">
+                <q-td key="actions" :props="props" >
                     <q-btn text-color="white" label="Seleccionar" color="primary" @click="seleccionar(props.row)" />
                 </q-td>
                 </q-tr>
@@ -113,6 +119,7 @@ interface Props {
 }
 interface Emits {
   (e: 'select', value: any): void;
+  (e: 'close'): void;
 }
 
 const props = defineProps<Props>();
@@ -190,7 +197,7 @@ const {
 }
 
 .fixed-width{
-    min-width:950px;
+    min-width:900px;
 }
 
 .text-break {
@@ -198,5 +205,9 @@ const {
     line-break: normal;
     white-space: wrap;
     font-size: .9em;
+  }
+
+  .pointer{
+      cursor:pointer;
   }
 </style>

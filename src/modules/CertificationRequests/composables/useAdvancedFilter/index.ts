@@ -49,6 +49,13 @@ export const useAdvancedFilter = () => {
     },
     {
       input: 'q-input',
+      label: 'Referencia',
+      clearable: true,
+      field: 'name_request_c',
+      visible: true,
+    },
+    {
+      input: 'q-input',
       label: 'Solicitante',
       clearable: true,
       field: 'solicitante',
@@ -68,7 +75,7 @@ export const useAdvancedFilter = () => {
     },
     {
       input: 'q-input',
-      label: 'Referencia a Producto',
+      label: 'Producto',
       clearable: true,
       field: 'producto_c',
       visible: true,

@@ -13,10 +13,9 @@ import { userStore } from 'src/modules/Users/store/UserStore';
 import {
   useDivAreaMercado,
   useDivision,
-  useGrupoCliente,
   useRegionales,
 } from 'src/composables/useLanguage';
-import { user } from '../../utils/dummyData';
+//import { user } from '../../utils/dummyData';
 //import { amercado, divisions, regional } from '../../utils/dummyData';
 
 interface Props {
@@ -100,22 +99,20 @@ onMounted(async () => {
     }
   }
 
-  console.log(inputData.value);
-
   // buscar solicitante y asignar a users[] (options)
-  if (!!inputData.value.user_id_c) {
-    if (!!props.id) {
-      const response:any = await getUser(inputData.value.user_id_c);
-      users.value = [response[0]];
-    }
-    // const response = await getUser(inputData.value.user_id_c);
-    //   console.log(response);
-    //   users.value = [response];
-  }
+  // if (!!inputData.value.user_id_c) {
+  //   if (!!props.id) {
+  //     const response:any = await getUser(inputData.value.user_id_c);
+  //     users.value = [response[0]];
+  //   }
+  //   // const response = await getUser(inputData.value.user_id_c);
+  //   //   console.log(response);
+  //   //   users.value = [response];
+  // }
 
   //listAreaMercado.value = await useDivAreaMercado(inputData.value.iddivision_c);
 
-  const aux:any = await listRegionales.value.find(
+  const aux:any = listRegionales.value.find(
     (element: any) => element.cod_pais == 'BO'
   );
 
@@ -143,6 +140,8 @@ onMounted(async () => {
   await getListDivisiones();
   await getRegionales();
   await formatData();
+
+  console.log(props);
 });
 
 const amercadoList = computed(() => {

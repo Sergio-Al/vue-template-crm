@@ -66,7 +66,7 @@ defineExpose({
           :class="$q.dark.isActive ? 'bg-dark' : 'bg-grey-4'"
         >
           <q-toolbar class="justify-center">
-            <slot name="footer"> Aqui van los botones </slot>
+            <slot name="footer"> - </slot>
           </q-toolbar>
         </q-footer>
       </transition>

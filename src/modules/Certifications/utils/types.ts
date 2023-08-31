@@ -347,4 +347,8 @@ export interface CertificacionBody {
   user_id_c?: any; // SOLICITANTE
   user_idl_c?: string;
   solicitante?:string;
+  schema_id?:string;
+  license_c?:string;
+  producto_c?:string;
+  code_c?:number;
 }

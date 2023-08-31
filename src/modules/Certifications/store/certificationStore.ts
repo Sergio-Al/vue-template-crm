@@ -6,9 +6,9 @@ import { userStore } from 'src/modules/Users/store/UserStore';
 import { computed, ref } from 'vue';
 import moment from 'moment';
 import {
-  createCertificationRequest,
+  //createCertification,
   getCertificationRequest,
-  updateCertificationRequest,
+  //updateCertificationRequest,
   deleteCertificationRequest,
   getLastSchema,
   getDocumentsSchema,
@@ -165,22 +165,22 @@ export const useCertificationStore = defineStore('certification-store', () => {
     }
   };
 
-  const onUpdateCertificationRequest = async (
-    id: string,
-    data: Partial<CertificationDB>
-  ) => {
-    try {
-      Loading.show({
-        message: 'Actualizando información',
-      });
-      await updateCertificationRequest(id, data);
-      // return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      Loading.hide();
-    }
-  };
+  // const onUpdateCertificationRequest = async (
+  //   id: string,
+  //   data: Partial<CertificationDB>
+  // ) => {
+  //   try {
+  //     Loading.show({
+  //       message: 'Actualizando información',
+  //     });
+  //     await updateCertificationRequest(id, data);
+  //     // return response;
+  //   } catch (error) {
+  //     throw error;
+  //   } finally {
+  //     Loading.hide();
+  //   }
+  // };
 
   const onDeleteCertificationRequest = async (id: string) => {
     try {
@@ -312,7 +312,7 @@ export const useCertificationStore = defineStore('certification-store', () => {
     //actions
     onCreateCertificationRequest,
     onGetCertificationRequest,
-    onUpdateCertificationRequest,
+    //onUpdateCertificationRequest,
     onDeleteCertificationRequest,
     onGetLastSchema,
     onGetDocumentsSchema,

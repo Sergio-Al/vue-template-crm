@@ -24,7 +24,6 @@ const restoreValues = () => {
 
 const validateInputs = async () => {
   const validatedFields = await Promise.all([
-    //websiteInputRef.value?.validate(),
     websiteInputRef.value?.validate(),
     email1InputRef.value?.validate(),
     phoneofficeInputRef.value?.validate(),
@@ -38,11 +37,11 @@ const isValidEmail = (val: string) => {
   return emailPattern.test(val) || 'El email no es válido';
 };
 
-// const isValidWebSite = (val: string) => {
-//   const websitePattern =
-//   /[^\s/$.?#].[^\s]*$/;
-//   return websitePattern.test(val) || 'La dirección no es válida';
-// };
+const isValidWebSite = (val: string) => {
+  const websitePattern =
+  /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}(\/[a-zA-Z0-9_\-./]*)?$/;
+  return websitePattern.test(val) || 'La dirección no es válida';
+};
 
 defineExpose({
   validateInputs,
@@ -73,9 +72,7 @@ defineExpose({
           label="Sitio Web"
           outlined
           dense
-          :rules="[(val) => !!val || 'Campo requerido'
-          //,isValidWebSite
-        ]"
+          :rules="[(val) => !!val || 'Campo requerido',isValidWebSite]"
         />
         <q-input
           ref="email1InputRef"

@@ -243,6 +243,8 @@ export interface PaginationTable {
     referencia_prods: string;
     user_id?: string;
     user_id_c?: string;
+    code_c?:number;
+    name_request_c?:string;
   }
   
   export interface CertificationTable {

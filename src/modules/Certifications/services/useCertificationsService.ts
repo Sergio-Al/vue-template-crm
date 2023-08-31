@@ -23,20 +23,20 @@ import {
 } from 'src/components/types';
 
 import {
-  certicationsList,
-  user,
-  certification,
-  manufacturer,
+  //certicationsList,
+  //user,
+  //certification,
+  //manufacturer,
   manufacturerContact,
   product,
   //manufacturerFiltered,
   productsFiltered,
-  certificationsRequestPromise,
-  certificationsPromise,
-  getUsersPromise,
-  getEmpresaParticipacionPromise,
-  createCertificationPromise,
-  certificationRequestPromise,
+  //certificationsRequestPromise,
+  //certificationsPromise,
+  //getUsersPromise,
+  //getEmpresaParticipacionPromise,
+  //createCertificationPromise,
+  //certificationRequestPromise,
 } from '../utils/dummyData';
 
 const { userCRM } = userStore();
@@ -49,15 +49,15 @@ export const updateMassiveData = async (data: any) => {
   }
 };
 
-export const updateStateCertificationRequest = async(id:string, state:string)=>{
-  try{
-    await axios_NS_07.patch(`/solicitud/state/${id}`, {estado_aprobacion_c:state});
-    return;
-  }
-  catch(e){
-    throw e;
-  }
-}
+// export const updateStateCertificationRequest = async(id:string, state:string)=>{
+//   try{
+//     await axios_NS_07.patch(`/solicitud/state/${id}`, {estado_aprobacion_c:state});
+//     return;
+//   }
+//   catch(e){
+//     throw e;
+//   }
+// }
 
 export const deleteMassiveData = async (data: any) => {
   try {
@@ -98,7 +98,6 @@ export const deleteMassiveDataRequest = async (data: any) => {
 
 export const getTableData = async (params: Params) => {
   try {
-    console.log(params);
     // DEV-1 request
     // const { data } = await axios_NS_07.get('/certification-request');
     // console.log(data);
@@ -111,7 +110,7 @@ export const getTableData = async (params: Params) => {
     const { data } = await axios_NS_07.get(
       `/certificacion/advanced?params=${JSON.stringify(params)}`
     );
-    console.log(data);
+    //console.log(data);
     return data;
   } catch (error) {
     throw error;
@@ -171,44 +170,44 @@ export const updateTablePreferences = async (id: string, data: any) => {
  * producto_c: 'Agujas';
  * referencia_prods: 'adsfasdf,|aadsfadsf,|asdfadsf,|safasdf';
  * user_id_c: undefined;
- * @param solicitud_certification body de la nueva solicitud *ver ejemplo*
+ * @param certification body de la nueva solicitud *ver ejemplo*
  * @returns la nueva solicitud con su id
  */
-export const createCertificationRequest = async (
-  solicitud_certification: Partial<CertificationRequest>
-) => {
-  solicitud_certification.estado_aprobacion_c = 'pending';
-  const last_value = await getLastNumberCertificationRequest();
-  const nro_cert = parseInt(last_value.split('/')[0]) + 1;
-  solicitud_certification.name = `${nro_cert.toString()}/${new Date().getFullYear()}`;
+// export const createCertificationRequest = async (
+//   certification: Partial<CertificationRequest>
+// ) => {
+//   const last_value = await getLastNumberCertificationRequest();
+//   const new_code = parseInt(last_value)+1;
+//   certification.name = `${new_code}/${new Date().getFullYear()}`;
+//   certification.code_c = new_code;  
+  
+//   //certification.estado_aprobacion_c = 'pending';
 
-  console.log(solicitud_certification);
+//   const { data } = await axios_NS_07.post(
+//     '/solicitud',
+//     certification
+//   );
 
-  const { data } = await axios_NS_07.post(
-    '/solicitud',
-    solicitud_certification
-  );
+//   // const comment = {
+//   //   assigned_user_id: certification.assigned_user_id,
+//   //   bean_id: data.id,
+//   //   bean_module: 'HANCE_Certificacion',
+//   //   description: certification.description,
+//   //   relevance: 'medium',
+//   //   visualizacion_c: 'interno',
+//   //   created_by: certification.assigned_user_id,
+//   // };
+//   // console.log(comment);
+//   // await axios_GLOBAL.post('/comments-new', { comment });
+//   //TODO: guardar comentario
 
-  const comment = {
-    assigned_user_id: solicitud_certification.assigned_user_id,
-    bean_id: data.id,
-    bean_module: 'HANCE_SolicitudCertificacion',
-    description: solicitud_certification.description,
-    relevance: 'medium',
-    visualizacion_c: 'interno',
-    created_by: solicitud_certification.assigned_user_id,
-  };
-  console.log(comment);
-  await axios_GLOBAL.post('/comments-new', { comment });
-  //TODO: guardar comentario
-
-  return data;
-};
+//   return data;
+// };
 
 const getLastNumberCertificationRequest = async () => {
   try {
-    const { data } = await axios_NS_07.get('/solicitud/last-number');
-    return data[0].name;
+    const { data } = await axios_NS_07.get('/certificacion/last-number/cert');
+    return data[0].code;
   } catch (e) {
     throw e;
   }
@@ -291,20 +290,20 @@ export const getCertification = async (id: string) => {
  * @param body body de la solicitud ver ejemplo
  * @returns los datos actualizados
  */
-export const updateCertificationRequest = async (
-  id: string,
-  body: Partial<CertificationRequest>
-) => {
-  try {
-    // DEV-1 request
-    console.log(body);
-    const { data } = await axios_NS_07.patch(`solicitud/${id}`, body);
-    return data;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
+// export const updateCertificationRequest = async (
+//   id: string,
+//   body: Partial<CertificationRequest>
+// ) => {
+//   try {
+//     // DEV-1 request
+//     console.log(body);
+//     const { data } = await axios_NS_07.patch(`solicitud/${id}`, body);
+//     return data;
+//   } catch (error) {
+//     console.log(error);
+//     throw error;
+//   }
+// };
 
 export const deleteCertificationRequest = async (id: string) => {
   try {
@@ -447,8 +446,21 @@ export const getCertificationRequests = async (params: any) => {
 export const createCertificationService = async (
   body: Partial<CertificacionBody>
 ) => {
-  console.log(body);
-  return await createCertificationPromise();
+  //console.log(body);
+
+  const last_value = await getLastNumberCertificationRequest();
+  const new_code = parseInt(last_value)+1;
+  body.name = `${new_code}/${new Date().getFullYear()}`;
+  body.code_c = new_code;  
+
+  try{
+    const { data } = await axios_NS_07.post(`/certificacion`, body);
+    //console.log(data)
+    return data;
+  }
+  catch(e){
+    throw e;
+  }
 };
 
 export const getLastSchema = async(base:string)=>{
@@ -487,6 +499,16 @@ export const getParticipacionComo = async (id:string)=>{
       const  { data } = await axios_NS_07.get(`/empresas/empresa-participacion/${id}`);
       console.log(data);
       return data;
+  }
+  catch(e){
+    throw e;
+  }
+}
+
+export const updateCertificationService = async(id:string, item:any)=>{
+  try{
+    const { data } = await axios_NS_07.patch(`/certificacion/${id}`, item);
+    return data;
   }
   catch(e){
     throw e;

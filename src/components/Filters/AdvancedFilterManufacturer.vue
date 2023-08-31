@@ -3,10 +3,9 @@ import { ref, computed, defineAsyncComponent } from 'vue';
 import { useQuasar } from 'quasar';
 import { HANSACRM3_URL } from 'src/conections/api_conectors';
 import { getRecordModuleInfo } from 'src/services/GlobalService';
-
 import { getManufacturers } from 'src/modules/Certifications/services/useCertificationsService';
-
 import { Manufacturer } from 'src/modules/Certifications/utils/types';
+import ManufacturerDialog from 'src/modules/Manufacturers/components/Dialogs/ManufacturerDialog.vue';
 
 const $q = useQuasar();
 
@@ -24,6 +23,8 @@ const props = withDefaults(
     altAccountId: '',
   }
 );
+
+const manufacturerDialogRef = ref<InstanceType<typeof ManufacturerDialog> | null>(null);
 
 const showFilter = ref(false);
 const isFiltering = ref(false);
@@ -180,7 +181,7 @@ const onSubmit = async () => {
 
     loading.value = true;
     const response = await getManufacturers(body);
-    console.log(response);
+    //console.log(response);
     manufacturerFiltered.value = response;
     isFiltering.value = true;
   } catch (error) {
@@ -230,6 +231,11 @@ const onClose = () => {
   console.log('closed ');
 };
 
+const openManufacturerDialog = () => {
+  manufacturerDialogRef.value?.openDialogTab();
+}
+
+
 // const openDetail = async (id: any) => {
 //   documentRelation.value = await getRelationAll('Contacts', id);
 // };
@@ -275,7 +281,7 @@ defineExpose({
             <div class="col-md-6 col-sm-12" v-if="isFiltering">
               <q-card class="no-border-radius bg-none" flat>
                 <q-card-section>
-                  <div class="text-h7 q-mb-sm">Lista de coincidencias</div>
+                  <div class="q-mb-sm">Lista de coincidencias</div>
                   <template v-if="manufacturerFiltered.length > 0">
                     <q-list bordered>
                       <q-virtual-scroll
@@ -337,6 +343,7 @@ defineExpose({
           >
             <q-card class="no-border-radius" flat bordered>
               <q-card-section class="row q-col-gutter-sm">
+                <q-btn color="primary" icon="store" label="NUEVO FABRICANTE" class="full-width" dense @click="openManufacturerDialog"/>
                 <template v-for="(element, index) in formInputs" :key="index">
                   <!-- <q-select
                     v-model="dataFilter[element.field]"
@@ -515,6 +522,7 @@ defineExpose({
         </q-card-section>
       </q-card>
     </q-dialog>
+    <ManufacturerDialog ref="manufacturerDialogRef" />
   </div>
   <!-- <AdvancedFilterAccount
     ref="accountAdvancedFilterRef"

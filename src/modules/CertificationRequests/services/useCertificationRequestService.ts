@@ -38,7 +38,6 @@ import {
   export const updateStateCertificationRequest = async(id:string, state:string)=>{
     try{
       await axios_NS_07.patch(`/solicitud/state/${id}`, {estado_aprobacion_c:state});
-      return;
     }
     catch(e){
       throw e;
@@ -163,12 +162,12 @@ import {
   export const createCertificationRequest = async (
     solicitud_certification: Partial<CertificationRequest>
   ) => {
-    solicitud_certification.estado_aprobacion_c = 'pending';
     const last_value = await getLastNumberCertificationRequest();
-    const nro_cert = parseInt(last_value.split('/')[0]) + 1;
-    solicitud_certification.name = `${nro_cert.toString()}/${new Date().getFullYear()}`;
-  
-    console.log(solicitud_certification);
+    const new_code = parseInt(last_value)+1;
+
+    solicitud_certification.estado_aprobacion_c = 'pending';
+    solicitud_certification.name = `${new_code}/${new Date().getFullYear()}`;
+    solicitud_certification.code_c = new_code;
   
     const { data } = await axios_NS_07.post(
       '/solicitud',
@@ -194,7 +193,7 @@ import {
   const getLastNumberCertificationRequest = async () => {
     try {
       const { data } = await axios_NS_07.get('/solicitud/last-number');
-      return data[0].name;
+      return data[0].code;
     } catch (e) {
       throw e;
     }
@@ -473,6 +472,27 @@ import {
         const  { data } = await axios_NS_07.get(`/empresas/empresa-participacion/${id}`);
         console.log(data);
         return data;
+    }
+    catch(e){
+      throw e;
+    }
+  }
+
+  export const getProfessional = async(iddivision:any)=>{
+    try{
+      const { data } = await axios_NS_07.get(`/users/professional/${iddivision}`);
+      return data[0];
+    }
+    catch(e){
+      throw e;
+    }
+  }
+
+  export const getCertificationByRequestId = async (idRequest:string)=>{
+    try{
+      const { data } = await axios_NS_07.get(`/certificacion/by-id-request/${idRequest}`);
+      console.log(data[0]);
+      return data[0];
     }
     catch(e){
       throw e;

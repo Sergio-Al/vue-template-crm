@@ -12,7 +12,7 @@ import CardManufacture from '../components/Cards/CardManufacturer.vue';
 import CardProduct from '../components/Cards/CardProduct.vue';
 import { useCertificationStore } from '../store/certificationStore';
 import { userStore } from 'src/modules/Users/store/UserStore';
-import type { Certification, CertificationDB } from '../utils/types';
+import type { CertificationDB } from '../utils/types';
 
 interface Props {
   id?: string;
@@ -229,17 +229,6 @@ defineExpose({
           </q-card>
         </div>
       </div>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-6">
-      <!-- <AssignedSingleUser2
-        ref="assignedSingleUserRef"
-        :module="'HANCE_Empresa'"
-        :module-id="localId"
-        :withList="false"
-        @changeUser="onChangeUserAssigned"
-      /> -->
-
-      <q-separator inset></q-separator>
     </div>
   </div>
 </template>

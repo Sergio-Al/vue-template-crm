@@ -15,10 +15,12 @@ const props = withDefaults(
     options: DirectionValueModel[];
     directionCRM3?: string;
     hideExtraBanner?: boolean;
+    title?:string;
   }>(),
   {
     idLocal: '',
     hideExtraBanner: false,
+    title:'Dirección del cliente'
   }
 );
 
@@ -111,7 +113,7 @@ defineExpose({
   <view-card-component
     :controls="!!localIdContact"
     icon-name="location_on"
-    title="Dirección del cliente"
+    :title="title"
     @cancel-change="restoreData"
     ref="baseCardRef"
   >

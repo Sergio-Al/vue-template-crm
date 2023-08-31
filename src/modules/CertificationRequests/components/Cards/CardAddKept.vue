@@ -20,7 +20,7 @@ interface Emits {
 }
 const emits = defineEmits<Emits>();
 const props = defineProps<Props>();
-const dataComment = ref<any>({comment:'', avoid:'no'})
+const dataComment = ref<any>({comment:'', avoid:'yes'})
 
 //const companyStore = useCompaniesStore();
 
@@ -84,7 +84,7 @@ const onSubmit = async () => {
   <q-card class="q-pa-sm" style="min-width: fit-content">
     <q-card-section class="text-h6">Realizar Observación</q-card-section>
     <q-separator class="q-mb-md" />
-    <span class="q-mx-md">Indique el o los motivos de la observación</span>
+    <span class="q-mx-md">Indique los motivos de la observación o rechazo</span>
     <div class="row q-col-gutter-md q-px-md q-py-md">
       <q-input
         class="col-12"
@@ -97,7 +97,7 @@ const onSubmit = async () => {
       />
       <q-checkbox
         v-model="dataComment.avoid"
-        color="secondary"
+        color="primary"
         label="Permitir al solicitante subsanar el registro"
         true-value="yes"
         false-value="no"

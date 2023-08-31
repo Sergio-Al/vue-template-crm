@@ -369,7 +369,12 @@ export type ModuleActivity =
   | 'Leads'
   | 'users'
   | 'ProjectTask'
-  | 'HANO_Lead';
+  | 'HANO_Lead'
+  | 'HANCE_Empresa'
+  | 'HANCE_EmpresaParticipacion'
+  | 'HANCE_SolicitudCertificacion'
+  ;
+
 export interface MeetingModel {
   meeting: Meeting;
   user_invitees: string[];

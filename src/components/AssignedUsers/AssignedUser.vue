@@ -26,12 +26,14 @@ const props = withDefaults(
     autoUpdateDisabled?: boolean;
     title?: string;
     hideChip?: boolean;
+    options?: boolean;
   }>(),
   {
     type: 'single',
     autoUpdateDisabled: false,
     title: 'Usuario Asignado',
     hideChip: false,
+    options:true
   }
 );
 
@@ -208,7 +210,7 @@ defineExpose({
   </div>
   <div v-else>
     <q-card v-if="type === 'single'" class="my-card">
-      <q-card-section horizontal>
+      <q-card-section horizontal class="q-py-sm">
         <q-card-section class="col-auto flex flex-center">
           <!-- <q-avatar
             size="60px"
@@ -223,9 +225,9 @@ defineExpose({
             <img :src="`${HANSACRM3_URL}${assignedUser.avatar}`" alt="" />
           </q-avatar>
         </q-card-section>
-        <q-card-section class="full-width q-py-xs">
+        <q-card-section class="full-width q-py-sm">
           <div class="row q-mt-sm flex justify-between">
-            <span class="text-caption text-weight-medium">
+            <span>
               {{ props.title }}
             </span>
             <div v-if="!props.hideChip">
@@ -257,7 +259,7 @@ defineExpose({
 
       <q-separator />
 
-      <q-card-actions style="padding:10px;" class="card-actions justify-between">
+      <q-card-actions v-if="props.options" style="padding:10px;" class="card-actions justify-between">
         <div>
           <q-btn
             style="font-size: 13px"

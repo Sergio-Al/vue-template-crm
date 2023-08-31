@@ -12,6 +12,8 @@ import CardSchema from '../components/Cards/CardSchema.vue';
 import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
 import { CertificacionBody, CertificationRequest } from '../utils/types';
 
+const $q = useQuasar();
+
 interface Props {
   id?:string;
   data: CertificacionBody;
@@ -20,11 +22,15 @@ interface Props {
   applicantId?:string;
 }
 
+const props = withDefaults(defineProps<Props>(), { id: '', requestId: '' });
+
 interface Emits {
-  //(e: 'create', value: Partial<CertificacionBody>): void;
-  //(e: 'update', value: Partial<CertificacionBody>): void;
+  (e: 'create', value: Partial<CertificacionBody>): void;
+  (e: 'update', value: Partial<CertificacionBody>): void;
   (e: 'continue'): void;
 }
+
+const emits = defineEmits<Emits>();
 
 const cardGeneralDataRef = ref<InstanceType<typeof CardGeneralData> | null>(
   null
@@ -38,18 +44,19 @@ const cardProductTypeRef = ref<InstanceType<typeof CardProductType> | null>(
 const assignedSingleUserRef = ref<InstanceType<typeof AssignedUser> | null>(
   null
 );
+
 const cardRequestRef = ref<InstanceType<typeof CardRequest> | null>(null);
 const cardManufacturerRef = ref<InstanceType<typeof CardManufacturerCert> | null>(null);
 const cardSchemaRef = ref<InstanceType<typeof CardSchema> | null>(null);
-
-const props = withDefaults(defineProps<Props>(), { id: '', requestId: '' });
-
 const localId = ref(props.id)
-const emits = defineEmits<Emits>();
 const procedureValue = ref(props.data.tipo_tramite_c || '');
 const productValue = ref(props.data.tipo_producto_c || '');
+//const watch_change_types = ref<boolean>(false);
 
 const captureData = (procedure?: string, product?: string) => {
+  //actuar como isEditing
+  //watch_change_types.value = true;
+  
   if (!!procedure) {
     procedureValue.value = procedure;
   }
@@ -97,79 +104,77 @@ const certificationData = computed(() => {
   return {} as CertificacionBody;
 });
 
-const onSubmit = async () => {
-  // Validar datos...
-  // const areCardsValid = await validateCards();
-  // if (!areCardsValid) {
-  //   $q.notify({
-  //     type: 'warning',
-  //     message: 'Error de validación',
-  //     caption: 'Algunos campos necesitan ser llenados',
-  //   });
-  //   return;
-  // }
+const validateCards = async () => {
+  const validCards: (boolean | undefined)[] = [];
+  
+  if (cardGeneralDataRef.value?.isEditing) {
+    const cardGeneralDataValidation = await cardGeneralDataRef.value.validateInputs();
+    validCards.push(cardGeneralDataValidation);
+  }
 
-  const cardGeneralData = cardGeneralDataRef.value?.exposeData();
-  const cardProcedureTypeData = cardProcedureTypeRef.value?.exposeData();
-  const cardProductType = cardProductTypeRef.value?.exposeData();
-  const cardRequestData = cardRequestRef.value?.exposeData();
-  const cardManufacturerData = cardManufacturerRef.value?.exposeData();
-  const cardSchemaData = cardSchemaRef.value?.exposeData();
-  //const assignedUser = cardDelegateRef.value?.exposeData();
+  if (cardRequestRef.value?.isEditing) {
+    const cardRequestValidation = await cardRequestRef.value.validateInputs();
+    validCards.push(cardRequestValidation);
+  }
+
+  if (cardManufacturerRef.value?.isEditing) {
+    const cardManufacturerValidation = await cardManufacturerRef.value.validateInputs();
+    validCards.push(cardManufacturerValidation);
+  }
+
+  return validCards.every((card) => !!card);
+};
+
+const onSubmit = async () => {
+
+  const areCardsValid = await validateCards();
+  if (!areCardsValid) {
+    $q.notify({
+      type: 'warning',
+      message: 'Error de validación',
+      caption: 'Algunos campos necesitan ser llenados',
+    });
+    return;
+  }
+
+  const cardGeneralData:any = cardGeneralDataRef.value?.exposeData();
+  const cardRequestData:any = cardRequestRef.value?.exposeData();
+  const cardManufacturerData:any = cardManufacturerRef.value.exposeData();
+  const cardSchemaData:any = cardSchemaRef.value?.exposeData();
   const assignedUser = assignedSingleUserRef.value?.assignedUser.id || '1';
 
-  if (!!localId.value) {
-      //modificar
-      try {
-        Loading.show({
-          message: 'Modificando Información',
-        });
-        const body: any = {
+  const body: any = {
           ...cardGeneralData,
-          // ...cardProcedureTypeData,
-          // ...cardProductType,
-          // ...cardRequestData,
-          // ...cardManufacturerData,
+          ...cardRequestData,
+          ...cardManufacturerData,
           ...cardSchemaData,
           assigned_user_id: assignedUser,
         } as any;
-        console.log(body)
-        // await companyStore.onUpdateCompany(localId.value, body);
-        // emits('submitComplete', localId.value);
-        // await execute();
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    else{
-      console.log('creando...')
-      //crear
-      // try {
-      //   Loading.show({
-      //     message: 'Guardando Información',
-      //   });
-      //   const body:Company = {
-      //     ...cardInfoData,
-      //     ...cardContactData,
-      //     comment: commentCreate.value,
-      //     direccion_c: directionData?.address_street_generated_c,
-      //     //assigned_user_id: assignedUser, //no tiene usuarios aun, no registra responsable
-      //   } as Company;
 
-      //   const newCompany = await companyStore.onCreateCompany(body);
-      //   localId.value = newCompany.id;
-      //   emits('submitComplete', localId.value);
-      //   await execute();
-      // } catch (error) {
-      //   console.log(error);
-      // }
-    }
+          // send data
+  if (!!localId.value) {
+    emits('update', body);
+  } else {
+    body.date_entered = new Date().toISOString();
+    emits('create', body);
+  }
 
 };
 
 const isSomeCardEditing = computed(() => {
+  //console.log(cardGeneralDataRef.value?.isEditing);
+  // if(!cardGeneralDataRef.value?.isEditing){
+  //   watch_change_types.value == false;
+  // }
+
   return [
   cardGeneralDataRef.value?.isEditing,
+  cardProductTypeRef.value?.isEditing,
+  cardProcedureTypeRef.value?.isEditing,
+  cardRequestRef.value?.isEditing,
+  cardManufacturerRef.value?.isEditing,
+  cardSchemaRef.value?.isEditing
+  //watch_change_types
   ].some((value) => !!value);
 });
 
@@ -192,72 +197,71 @@ defineExpose({
 <template>
   <q-layout view="hHh lpR fFf">
     <q-page-container>
-      <div class="row q-col-gutter-lg q-pa-md">
-        <div class="col-xs-12 col-sm-12 col-md-6">
-          <div class="row q-gutter-y-md">
-            <CardGeneralData
+      <div class="row q-gutter-sm q-gutter-y-md q-pa-sm">
+        <div class="row q-col-gutter-x-md">
+            <div class="col-12 col-md-6 col-lg-6">
+              <CardGeneralData
               ref="cardGeneralDataRef"
               :id="props.id || ''"
               :data="certificationData"
               :applicantId="applicantId"
-              class="col-12"
-            />
+              class="q-py-none"
+              />
+            </div>
+            <div class="col-12 col-md-6 col-lg-6 q-gutter-y-md">
+              <AssignedUser
+                title="Profesional Acreditado"
+                ref="assignedSingleUserRef"
+                :module="'HANCE_Certificacion'"
+                :module-id="localId"
+                :options="false"
+                hide-chip
+                @changeUser="() => {}"
+              />
+              <div class="row q-col-gutter-x-sm">
+                <div class="col-6">
+                  <CardRequest
+                  ref="cardRequestRef"
+                  :id="props.id || ''"
+                  :data="props.data || ''"
+                  :requestId="requestId"
+                  @change="(value: string, value2:string) => captureDataReq(value, value2)"
+                  />
+                </div>
+                <div class="col-6">
+                  <CardManufacturerCert
+                  ref="cardManufacturerRef"
+                  :id="props.id || ''"
+                  :data="props.data || ''"
+                  :manufacturerId="manufacturerId"
+                  />
+                </div>
+              </div>
+            </div>
+        </div>
+        
+        <div class="row q-col-gutter-x-md" style="width:100%;">
+          <div class="col-12 q-gutter-y-md col-md-6 col-lg-6">
             <CardProcedureType
               ref="cardProcedureTypeRef"
-              class="col-12"
+              :id="props.id || ''"
               :data="props.data"
               @change="(value: string) => captureData(value, undefined)"
             />
             <CardProductType
               ref="cardProductTypeRef"
-              class="col-12"
+              :id="props.id || ''"
               :data="props.data"
               @change="(value: string) => captureData(undefined, value)"
             />
           </div>
-        </div>
-        <div class="col-12 col-md-6 q-gutter-y-md">
-          <AssignedUser
-            title="Profesional Acreditado"
-            hide-chip
-            ref="assignedSingleUserRef"
-            :module="'HANCE_Certificacion'"
-            :module-id="localId"
-            @changeUser="() => {}"
-          />
-
-          <!--<AssignedSingleUser2
-            ref="assignedSingleUserRef"
-            :module="'HANCE_Certificacion'"
-            :module-id="''"
-            :withList="false"
-            @changeUser="() => {}"
-          />-->
-          <div class="row justify-between">
-            <div class="col-6 q-col-gutter-xs">
-              <CardRequest
-              ref="cardRequestRef"
+          <div class="col-12 col-md-6 col-lg-6">
+            <CardSchema
+              ref="cardSchemaRef"
               :id="props.id || ''"
               :data="props.data || ''"
-              :requestId="requestId"
-              @change="(value: string, value2:string) => captureDataReq(value, value2)"
-              />
-            </div>
-            <div class="col-6 q-col-gutter-xs">
-              <CardManufacturerCert
-              ref="cardManufacturerRef"
-              :id="props.id || ''"
-              :data="props.data || ''"
-              :manufacturerId="manufacturerId"
-              />
-            </div>
+            />
           </div>
-          <CardSchema
-            ref="cardSchemaRef"
-            :id="props.id || ''"
-            :data="props.data || ''"
-            class="col-12"
-          />
         </div>
       </div>
     </q-page-container>

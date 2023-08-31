@@ -37,7 +37,10 @@ const restoreValues = () => {
 
 defineExpose({
   validateInputs,
-  isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
+  isEditing: computed(() => {
+    console.log(baseCardRef.value?.isEditing === 'edit')
+    return baseCardRef.value?.isEditing === 'edit'
+  }),
   exposeData: (): Company => ({ ...inputData.value }),
 });
 </script>
@@ -61,7 +64,7 @@ defineExpose({
           v-model="inputData.razon_social_c"
           type="text"
           class="col-12 col-sm-12 q-py-sm"
-          label="Razón Social"
+          label="* Razón Social"
           outlined
           dense
           :rules="[(val) => !!val || 'Campo requerido']"
@@ -71,7 +74,7 @@ defineExpose({
           v-model="inputData.name"
           type="text"
           class="col-12 col-sm-6 q-py-sm"
-          label="Nombre Comercial"
+          label="* Nombre Comercial"
           outlined
           dense
           :rules="[(val) => !!val || 'Campo requerido']"
@@ -109,7 +112,7 @@ defineExpose({
           v-model="inputData.razon_social_c"
           type="text"
           class="col-12 col-sm-12 q-py-sm"
-          label="Razón Social"
+          label="* Razón Social"
           outlined
           dense
           readonly
@@ -118,7 +121,7 @@ defineExpose({
           v-model="inputData.name"
           type="text"
           class="col-12 col-sm-6 q-py-sm"
-          label="Nombre Comercial"
+          label="* Nombre Comercial"
           outlined
           dense
           readonly

@@ -1,26 +1,25 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue';
-import { useQuasar, QPopupProxy } from 'quasar';
+import { useQuasar, QPopupProxy, QInput } from 'quasar';
 import moment from 'moment';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 //import { getUsers, getUser } from '../../services/useCertificationsService';
 
-import { CertificationRequest } from '../../utils/types';
+import { CertificacionBody, CertificationRequest } from '../../utils/types';
 import { userStore } from 'src/modules/Users/store/UserStore';
 import RelacionadoSol from 'src/components/Activities/Dialogs/CallsActivityDialog/CallRelacion/RelacionadoSol.vue';
-import CertificationRequestDialog from 'src/modules/Certifications/components/Dialogs/CertificationRequestDialog.vue';
+import CertificationRequestDialog from 'src/modules/CertificationRequests/components/Dialogs/CertificationRequestDialog.vue';
 
 // obtener data del repositorio de mongoDB y borrar este import
-import {
-  useDivAreaMercado,
-  useDivision,
-  useGrupoCliente,
-  useRegionales,
-} from 'src/composables/useLanguage';
+// import {
+//   useDivAreaMercado,
+//   useDivision,
+//   useGrupoCliente,
+//   useRegionales,
+// } from 'src/composables/useLanguage';
 
 import {
-  getCertificationRequest,
   getCertificationRequestCustomized,
 } from '../../services/useCertificationsService';
 import { useAsyncState } from '@vueuse/core';
@@ -34,12 +33,11 @@ interface Props {
   requestId?:string;
 }
 
+const props = defineProps<Props>();
 const advancedFilterSol = ref<InstanceType<typeof RelacionadoSol> | null>(null);
 
 const certificationRequest = ref({} as any);
-const { userCRM } = userStore();
-
-const props = defineProps<Props>();
+//const certificationRequest_aux = ref({} as any);
 const $q = useQuasar();
 
 const emits = defineEmits<{
@@ -49,7 +47,7 @@ const emits = defineEmits<{
 }>();
 
 const showFilter = ref(false);
-const bloqueado = ref(true);
+//const bloqueado = ref(true);
 
 //const { userCRM, getCompany } = useCompany();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
@@ -57,6 +55,7 @@ const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
 const requestDialogRef = ref<InstanceType<
   typeof CertificationRequestDialog
 > | null>(null);
+const requestInputRef = ref<InstanceType<typeof QInput> | null>(null);
 
 const inputData = ref({ ...props.data });
 //inputData.value.iddivision_c = '';
@@ -97,17 +96,13 @@ const inputData = ref({ ...props.data });
 //   }
 // }
 
-const verDialogItem = async (id: string) => {
-  await requestDialogRef.value?.openDialogTab(id);
-};
-
-const { isLoading } = useAsyncState(async () => {
+const { isLoading, execute } = useAsyncState(async () => {
   if (!!props.requestId)
       try {
         const response = await getCertificationRequestCustomized(props.requestId);
-        //console.log(response);
         certificationRequest.value = response[0];
-        return response;
+        //certificationRequest_aux.value = response[0];
+        //return response;
       } catch (error) {
         $q.notify({
           type: 'warning',
@@ -116,6 +111,18 @@ const { isLoading } = useAsyncState(async () => {
         });
       }
 }, null as null | CertificationRequest);
+
+// const validateInputs = async () => {
+//   const validatedFields = await Promise.all([
+//     requestInputRef.value?.validate(),
+//     //manufacturerInputRef.value?.validate()
+//   ]);
+//   return validatedFields.every((field) => !!field);
+// };
+
+const verDialogItem = async (id: string) => {
+  requestDialogRef.value?.openDialogTab(id);
+};
 
 onMounted(async () => {
   console.log(props.requestId);
@@ -179,38 +186,42 @@ const abortFilterFn = () => {
   // console.log('delayed filter aborted')
 };
 
-const divisionList = ref([]);
-//let listAreaMercado = ref({});
-const listRegional = ref([]);
+// const divisionList = ref([]);
+// //let listAreaMercado = ref({});
+// const listRegional = ref([]);
 
 const toggleFilter = () => {
-  bloqueado.value = false;
   showFilter.value = !showFilter.value;
-  //console.log('permitir elegir la solicitud')
+  if(showFilter.value == false && props.id){
+    execute();
+    //devolver los valores originales
+  }
 };
 
 const openDialogSol = () => {
   advancedFilterSol.value?.openDialog();
 };
 
-const selectRelaSol = (item: any) => {
-  console.log(item);
-  
+const selectRelaSol = (item: any) => {  
   emits('change', item.id_fabricante, item.assigned_user_id);
 
-  certificationRequest.value.name = String(item.name);
-  certificationRequest.value.id = String(item.id);
-  certificationRequest.value.solicitante = String(item.solicitante);
-  certificationRequest.value.fecha_creacion = String(item.date_entered);
+  certificationRequest.value.name = item.name
+  certificationRequest.value.id = item.id
+  certificationRequest.value.solicitante = item.solicitante
+  certificationRequest.value.fecha_creacion = item.date_entered
+  certificationRequest.value.producto_c = item.producto_c
   //emits('idAccount', { idrequest: item.id });
 
   advancedFilterSol.value?.onClose();
-  toggleFilter();
+  //toggleFilter();
 };
 
 const clearSol = () => {
   certificationRequest.value.name = '';
   certificationRequest.value.id = '';
+  certificationRequest.value.solicitante = '';
+  certificationRequest.value.fecha_creacion = '';
+  certificationRequest.value.producto_c = '';
 };
 
 // onMounted(async () => {
@@ -228,21 +239,13 @@ const clearSol = () => {
 //   return aux.amercado;
 // });
 
-// defineExpose({
-//   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
-//   exposeData: (): Partial<CertificationRequest> => ({
-//     user_id_c: inputData.value.user_id_c,
-//     user_id : userCRM.id,
-//     date_entered: inputData.value.date_entered,
-//     iddivision_c: inputData.value.iddivision_c,
-//     idamercado_c: inputData.value.idamercado_c,
-//     idregional_c: inputData.value.idregional_c,
-//   }),
-// });
-
 defineExpose({
-  isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
-  exposeData: (): string => certificationRequest.value,
+  //validateInputs,
+  isEditing: computed(() => showFilter.value === true),
+  exposeData: (): Partial<CertificacionBody> => ({
+    hance_solicitudcertificacion_id_c: certificationRequest.value.id,
+    producto_c: certificationRequest.value.producto_c,
+  }),
 });
 </script>
 
@@ -252,6 +255,7 @@ defineExpose({
     account_id=""
     ref="advancedFilterSol"
     @selectItem="selectRelaSol"
+    :title="'Búsqueda de Solicitudes'"
   />
   <!--<div v-if="isLoading">
     <q-card class="q-pa-sm">
@@ -281,17 +285,22 @@ defineExpose({
             <q-icon name="article" color="white" size="30px" />
           </q-avatar>
         </q-card-section>
-        <q-card-section class="full-width q-py-md">
-          <div class="row q-mt-sm flex justify-between">
-            <span class="text-caption text-weight-medium">
-              Solicitud</span
+        <q-card-section class="full-width q-py-sm">
+          <div class="row q-mt-sm">
+            <span>
+              Solicitud
+            </span
             >
           </div>
           <div class="assigned-user q-mt-none q-mb-none">
-            <span class="text-subtitle-1 text-font-weight"
-              >Nro.<span class="text-primary q-pl-sm">
-                {{ certificationRequest.name || 'Sin asignar' }}</span
-              ></span
+            <span class="text-subtitle-1 text-font-weight">
+              <span v-if="certificationRequest.name" class="text-primary cursor-pointer text-weight-medium" @click="verDialogItem(certificationRequest.id)">
+                {{ certificationRequest.name }}
+              </span>
+              <span v-else class="text-grey">
+                -
+              </span>
+            </span
             >
           </div>
           <div
@@ -309,7 +318,7 @@ defineExpose({
 
       <q-separator />
 
-      <q-card-actions class="card-actions justify-between q-py-md-custom">
+      <q-card-actions>
         <q-btn
           style="font-size: 13px"
           icon="edit"
@@ -319,24 +328,16 @@ defineExpose({
         >
           <span class="q-ml-xs"> Cambiar Solicitud </span>
         </q-btn>
-        <q-btn
-          style="font-size: 13px"
-          icon="visibility"
-          @click="verDialogItem(certificationRequest.id)"
-          label="Ver"
-          color="primary"
-          outline
-          :disabled="!certificationRequest.id"
-        >
-        </q-btn>
       </q-card-actions>
-      <q-card-section v-if="showFilter">
+      <q-card-section v-if="showFilter" class="q-pt-none q-pb-md">
         <q-input
+          ref="requestInputRef"
           outlined
           v-model="certificationRequest.name"
           label="Solicitud de Certificación"
-          class="col-md-6 col-sm-12"
-          :readonly="bloqueado"
+          class="col-md-6 col-sm-12 q-py-none"
+          readonly
+          hide-details
           dense
           label-slot
         >
@@ -349,19 +350,25 @@ defineExpose({
             <q-btn
               dense
               outline
-              icon="north_west"
+              icon="search"
               color="primary"
               @click="openDialogSol"
-              :disable="bloqueado"
-            />
+            >
+              <q-tooltip>
+                Búsqueda
+              </q-tooltip>
+            </q-btn>
             <q-btn
               dense
               outline
               icon="close"
               color="negative"
               @click="clearSol"
-              :disable="bloqueado"
-            />
+            >
+            <q-tooltip>
+              Limpiar
+            </q-tooltip>
+            </q-btn>
           </template>
         </q-input>
       </q-card-section>
@@ -373,13 +380,4 @@ defineExpose({
 .assigned-user {
   font-size: 1.04rem;
 }
-
-.q-py-md-custom{
-  padding:13px 10px;
-}
-
-.my-card{
-  min-height:187px;
-}
-
 </style>

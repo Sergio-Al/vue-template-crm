@@ -64,9 +64,17 @@ export const useCertificationRequestTableStore = defineStore(
           visible: true,
         },
         {
+          name: 'name_request_c',
+          align: 'left',
+          label: 'Referencia',
+          field: 'name_request_c',
+          sortable: true,
+          visible: true,
+        },
+        {
           name: 'date_entered',
           align: 'left',
-          label: 'Fecha',
+          label: 'Fecha de Creación',
           field: 'date_entered',
           sortable: true,
           visible: true,
@@ -98,7 +106,7 @@ export const useCertificationRequestTableStore = defineStore(
         {
           name: 'producto_c',
           align: 'center',
-          label: 'Ref Producto',
+          label: 'Producto',
           field: 'producto_c',
           sortable: true,
           visible: true,
@@ -131,6 +139,7 @@ export const useCertificationRequestTableStore = defineStore(
 
     const visible_fields = ref([
       'name',
+      'name_request_c',
       'solicitante',
       'division',
       'producto_c',
@@ -139,6 +148,7 @@ export const useCertificationRequestTableStore = defineStore(
     ]);
     const visible_columns = ref([
       'name',
+      'name_request_c',
       'date_entered',
       'assigned_user_id',
       'state_aprobacion',
@@ -147,7 +157,7 @@ export const useCertificationRequestTableStore = defineStore(
       'idamercado_c',
       'idregional_c',
       'producto_c',
-      'fabricante_c',
+      //'fabricante_c',
       'nro_certificacion',
       'options',
     ]);
@@ -190,8 +200,7 @@ export const useCertificationRequestTableStore = defineStore(
         };
         // const data = await getCertificationRequests(params);
         const data = await getCertificationRequests(params);
-        //console.log('peticion de lista de solicitantes');
-        //console.log(data);
+        console.log(data);
         data_table.value.rows = data;
         // pagination.value = data.length;
         pagination.value.rowsNumber = data.length;

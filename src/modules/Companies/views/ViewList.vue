@@ -194,7 +194,12 @@ onMounted(async () => {
             <div class="text-center">
               {{ propsTable.row.resolucion_ministerial_c }}
               <br>
-              <span class="text-caption">Fecha: <span class="text-grey">{{propsTable.row.resolucion_ministerial_date_c}}</span></span>
+              <span class="text-grey">
+                <q-tooltip>
+                    Fecha de Resolución Ministerial
+                  </q-tooltip>
+                {{propsTable.row.resolucion_ministerial_date_c}}
+              </span>
             </div>
           </q-td>
           <q-td key="website" :props="propsTable">
@@ -234,6 +239,9 @@ onMounted(async () => {
               </div>
               <div class="column q-pl-sm ellipsis col-11">
                 <span v-if="propsTable.row.representante != ' '" class="ellipsis-item text-break">
+                  <q-tooltip>
+                    Cargo
+                  </q-tooltip>
                   {{ propsTable.row.representante}}
                   <br>
                   <span class="text-grey">{{propsTable.row.title}}</span>
@@ -280,12 +288,11 @@ onMounted(async () => {
   </div>
   <CompanyDialog ref="companyDialogRef" />
 </template>
-<style scoped>
+<style type="css" scoped>
   .text-break {
-    width:500px;
-    line-break: auto;
+    min-width:200px;
+    word-wrap: break-word;
     white-space: normal;
-    font-size: 1.1em;
   }
 
   .ellipsis-item {

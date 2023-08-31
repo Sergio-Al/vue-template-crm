@@ -11,6 +11,7 @@ import { CertificacionBody } from '../../utils/types';
 import {
   getCertification,
   createCertificationService,
+  updateCertificationService
 } from '../../services/useCertificationsService';
 import { userStore } from 'src/modules/Users/store/UserStore';
 
@@ -34,7 +35,7 @@ const manufacturerId = ref<string>('');
 const applicantId = ref<string>('');
 
 interface Emits {
-  (e: 'udpate'): void;
+  (e: 'update'): void;
 }
 
 const emits = defineEmits<Emits>();
@@ -112,17 +113,25 @@ const onCloseDialog = () => {
   open.value = false;
 };
 
-const createCertification = async () => {
-  const body: Partial<CertificacionBody> = {
-    ...generalFormRef.value?.exposeData(),
-    ...dataManufacturerRef.value?.exposeData(),
-  };
+const createCertification = async (data:CertificacionBody) => {
+
+  //adicionar estado inicial
+
+  const body = {
+    ...data,
+    id_user:userCRM.id,
+    etapa_c : 'revision',
+    estado_c : 'revision_encurso'
+  }
 
   try {
     $q.loading.show({
       message: 'Guardando datos',
     });
-    await createCertificationService(body);
+    const response:any = await createCertificationService(body);
+    localId.value = response.id;
+    emits('update');
+    execute();
   } catch (error) {
     $q.notify({
       type: 'negative',
@@ -133,9 +142,25 @@ const createCertification = async () => {
   }
 };
 
-const updateCertification = (data: Partial<CertificacionBody>) => {
-  console.log(data);
-  emits('udpate');
+const updateCertification = async (data: CertificacionBody) => {
+  try{
+    $q.loading.show({
+      message: 'Actualizando datos',
+    });
+    await updateCertificationService(localId.value, {...data, id_user:userCRM.id})
+    //console.log(response);
+    emits('update');
+    execute();
+  }
+  catch(e){
+    $q.notify({
+      type: 'negative',
+      message: 'Error al modificar la certificación',
+    });
+  }
+  finally{
+    $q.loading.hide();
+  }
 };
 
 const goTabManufacturer = () => {

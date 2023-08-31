@@ -19,7 +19,6 @@ import { useAsyncState } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { Company } from '../utils/types';
 import DirectionCard from 'src/components/MainCard/DirectionCard.vue';
-//import CardDelegate from '../components/Cards/CardDelegate.vue';
 import AssignedSingleUser2 from 'src/components/AssignedUsers/AssignedSingleUser2.vue';
 import AssignedUser from 'src/components/AssignedUsers/AssignedUser.vue';
 

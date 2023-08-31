@@ -15,11 +15,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-//const state = ref('');
-
-// const table = useCertificationRequestTableStore();
-// const { setVisibleColumn, getListCertifications, reloadList, setPagination } =
-//   useCertificationsTableStore();
 
 const certificationRequestTableStore = useCertificationRequestTableStore();
 const {
@@ -91,7 +86,6 @@ const onUpdateDataTable = async () => {
 };
 
 const onRequestTable = async (val: { pagination: any; filter: any }) => {
-  //console.log('request data table');
   await setPagination(val.pagination);
   await getListCertificationRequest(val);
 };
@@ -112,7 +106,8 @@ const setEstadoColor = (estado: string): string => {
     Pendiente: 'orange',
     Aprobada: 'green',
     Rechazada: 'red',
-    Observada: 'red'
+    Observada: 'red',
+    Corregida: 'info'
   };
 
   return colorEstado[estado] || 'blue';
@@ -127,7 +122,6 @@ const openItemSelected = (id: string, title: string) => {
 };
 
 const filterState = ()=>{
-  //console.log(value);
   reloadList();
 }
 </script>
@@ -146,10 +140,11 @@ const filterState = ()=>{
           @click="reloadList()"
           >
             <q-tab name="" label="TODAS" />
-            <q-tab name="pending" label="PENDIENTE" />
-            <q-tab name="approved" label="APROBADA" />
-            <q-tab name="kept" label="OBSERVADA" />
-            <q-tab name="rejected" label="RECHAZADA" />
+            <q-tab name="pending" label="PENDIENTES" />
+            <q-tab name="approved" label="APROBADAS" />
+            <q-tab name="amend" label="CORREGIDAS" />
+            <q-tab name="kept" label="OBSERVADAS" />
+            <q-tab name="rejected" label="RECHAZADAS" />
           </q-tabs>
         </q-card>
 
@@ -184,16 +179,19 @@ const filterState = ()=>{
           </q-td>
           <q-td key="name" :props="propsTable" :style="'width: 100px;'">
             <span
-              class="text-primary text-weight-bold text-break cursor-pointer"
+              class="text-primary text-weight-bold cursor-pointer"
               @click="openItemSelected(propsTable.row.id, propsTable.row.name)"
             >
              {{ propsTable.row.name || 'Sin Número' }}
             </span>
           </q-td>
+          <q-td key="name_request_c" :props="propsTable" class="text-break">
+            <span>{{ propsTable.row.name_request_c }}</span>
+          </q-td>
           <q-td key="date_entered" :props="propsTable">
             <span>{{ propsTable.row.date_entered }}</span>
           </q-td>
-          <q-td key="assigned_user_id" :props="propsTable">
+          <q-td key="assigned_user_id" :props="propsTable" class="text-break">
             <div
               style="
                 white-space: nowrap;
@@ -214,7 +212,11 @@ const filterState = ()=>{
               <div class="col-9 text-left">
                 <span>{{ propsTable.row.solicitante }}</span>
                 <br>
-                <span class="text-caption text-grey">{{propsTable.row.cargo}}</span>
+                <span class="text-caption text-grey">
+                  <q-tooltip>
+                    Cargo
+                  </q-tooltip>
+                  {{propsTable.row.cargo}}</span>
               </div>
             </div>
               
@@ -235,18 +237,27 @@ const filterState = ()=>{
           <q-td key="division" :props="propsTable">
             <span>{{ propsTable.row.division }}</span>
             <br />
-            <span class="text-caption"><span class="text-grey">Area de Mercado:</span> {{ propsTable.row.amercado }}</span>
+            <span class="text-caption text-grey">
+              <q-tooltip>
+                Área de Mercado
+              </q-tooltip>
+              {{ propsTable.row.amercado }}
+            </span>
           </q-td>
-
           <q-td key="producto_c" :props="propsTable">
             <span>{{ propsTable.row.producto_c }}</span>
-          </q-td>
-          <q-td key="fabricante_c" :props="propsTable">
-            <span>{{ propsTable.row.fabricante_c }}</span>
+            <br />
+            <span class="text-caption text-grey">
+              <q-tooltip>
+                Fabricante
+              </q-tooltip>
+              {{ propsTable.row.fabricante_c }}
+            </span>
           </q-td>
           <q-td key="nro_certificacion" :props="propsTable">
             <span v-if="propsTable.row.nro_certificacion" class="text-weight-bold text-primary">{{ propsTable.row.nro_certificacion }}</span>
-            <span v-else class="text-grey">En espera</span>
+            <span v-else-if="propsTable.row.state_aprobacion == 'Rechazada'" class="text-grey">No corresponde</span>
+            <span v-else class="text-grey"> En espera</span>
           </q-td>
           <q-td key="options" :props="propsTable">
             <q-btn color="primary" icon="more_vert" round outline size="sm">
@@ -388,9 +399,10 @@ const filterState = ()=>{
 }
 
 .text-break {
-  width: 300px;
-  line-break: auto;
+  min-width:150px;
+  //width: 900px;
+  word-wrap: break-word;
+  //line-break:auto;
   white-space: normal;
-  font-size: 1.1em;
 }
 </style>

@@ -34,8 +34,8 @@
               <div class="col-md-6 col-sm-12" v-if="isFiltering">
                 <q-card class="no-border-radius bg-none" flat>
                   <q-card-section>
-                    <div class="text-h6 q-mb-sm flex flex-center text-primary">
-                      Lista de solicitudes
+                    <div class="q-mb-sm">
+                      Lista de coincidencias
                     </div>
                     <template v-if="filteredRequests.length > 0">
                       <q-list bordered>
@@ -45,16 +45,16 @@
                           separator
                           v-slot="{ item, index }"
                         >
-                          <q-item :key="index" clickable>
+                          <q-item :key="index" clickable v-if="item.nro_certificacion">
                             <q-item-section
                               avatar
                               class="cursor-pointer"
                               @click="$emit('selectItem', item)"
                             >
                               <q-avatar
-                                color="green-7"
+                                color="blue-3"
                                 text-color="text-dark"
-                                icon="work"
+                                icon="article"
                                 font-size="20px"
                               />
                             </q-item-section>
@@ -62,17 +62,63 @@
                               class="cursor-pointer"
                               @click="$emit('selectItem', item)"
                             >
-                              <q-item-label>{{ item.nro }}</q-item-label>
-                              <q-item-label caption lines="1"
-                                ><span class="text-primary">Referencia Prod: </span
-                                >{{ item.producto_c }}
+                              <q-item-label>Nro. {{ item.name }}</q-item-label>
+                              <q-item-label caption
+                                >
+                                <div>
+                                  <span class="text-primary">Producto: </span
+                                  >{{ item.producto_c }}
+                                </div> 
+                                <div>
+                                  <span class="text-primary">Solicitante {{item.solicitante}}</span>
+                                </div>
+                                  
                               </q-item-label>
-                              <span class="text-primary">Solicitante {{item.solicitante}}</span>
                             </q-item-section>
                             <q-item-section>
                               <q-btn
                                 outline
                                 color="primary"
+                                label="Ver"
+                                @click="verDialogItem(item.id)"
+                              />
+                            </q-item-section>
+
+                          </q-item>
+                          <q-item clickable v-else>
+                            <q-item-section
+                                avatar
+                                class="cursor-pointer"
+                                @click="notify(1)"
+                              >
+                              <q-avatar
+                                color="grey-3"
+                                text-color="text-dark"
+                                icon="article"
+                                font-size="20px"
+                              />
+                            </q-item-section>
+                            <q-item-section
+                              class="cursor-pointer"
+                              @click="notify(1)"
+                            >
+                              <q-item-label class="text-grey">Nro. {{ item.name }}</q-item-label>
+                              <q-item-label caption
+                                >
+                                <div>
+                                  <span class="text-primary text-grey">Producto: </span
+                                  >{{ item.producto_c }}
+                                </div> 
+                                <div>
+                                  <span class="text-grey">Solicitante {{item.solicitante}}</span>
+                                </div>
+                                  
+                              </q-item-label>
+                            </q-item-section>
+                            <q-item-section>
+                              <q-btn
+                                outline
+                                color="grey"
                                 label="Ver"
                                 @click="verDialogItem(item.id)"
                               />
@@ -279,7 +325,8 @@
   import { ref, computed } from 'vue';
   import { useBusquedaSol } from '../../../../../composables/Activity/useBusquedaSol';
   //import OpportunityDialog from 'src/modules/Opportunities/components/Dialogs/OpportunityDialog.vue';
-  import CertificationRequestDialog from 'src/modules/Certifications/components/Dialogs/CertificationRequestDialog.vue';
+  import CertificationRequestDialog from 'src/modules/CertificationRequests/components/Dialogs/CertificationRequestDialog.vue';
+import { useQuasar } from 'quasar';
   
   const props = withDefaults(
     defineProps<{
@@ -307,6 +354,8 @@
     onClose,
   } = useBusquedaSol();
 
+  const $q = useQuasar();
+
   // const opportunityDialogRef = ref<InstanceType<typeof OpportunityDialog> | null>(
   //   null
   // );
@@ -331,6 +380,16 @@
   const verDialogItem = async (id: string) => {
     await requestDialogRef.value?.openDialogTab(id)
   };
+
+  const notify = (value:number)=>{
+    if(value == 1){
+      $q.notify({
+        type: 'warning',
+        message: 'Información',
+        caption: 'No se puede seleccionar la solicitud por que ya esta asociada a una certificación',
+      });
+    }
+  }
   
   const onReset = () => {
     clearFilter();

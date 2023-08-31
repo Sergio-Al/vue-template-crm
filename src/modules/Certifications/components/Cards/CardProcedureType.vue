@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ViewCard } from 'src/modules/Accounts/components';
+import { ref, onMounted, computed } from 'vue';
 import { CertificacionBody } from '../../utils/types';
 
 interface Props {
+  id: string;
   data: CertificacionBody;
 }
 
@@ -52,6 +54,8 @@ const procedureTypes = [
   },
 ];
 
+const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
+
 const value = ref<string>(props.data.tipo_tramite_c || 'inscripcion');
 
 const changeValue = () => {
@@ -63,14 +67,30 @@ onMounted(() => {
 });
 
 defineExpose({
+  isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): string => value.value,
 });
+
+const restoreValues = () => {
+  if (props.data) {
+    value.value = props.data.tipo_tramite_c || 'inscripcion';
+  }
+};
+
 </script>
 
 <template>
-  <q-card class="my-card">
-    <q-card-section> Tipo de Trámite </q-card-section>
-    <q-separator spaced inset />
+  <view-card-component
+    v-bind="$attrs"
+    :controls="!!props.id"
+    :initial-status="props.id ? 'read' : 'edit'"
+    icon-name="folder"
+    ref="baseCardRef"
+    title="Tipo de Trámite"
+    @cancel-change="restoreValues"
+    @edit-change="restoreValues"
+    >
+    <template #edit>
     <q-card-section class="row">
       <q-item
         v-for="(procedure, index) in procedureTypes"
@@ -95,5 +115,30 @@ defineExpose({
         </div>
       </q-item>
     </q-card-section>
-  </q-card>
+    </template>
+    <template #read>
+      <q-card-section class="row">
+      <q-item
+        v-for="(procedure, index) in procedureTypes"
+        :key="index"
+        :tag="procedure.tag"
+        v-ripple
+        :class="procedure.class"
+      >
+        <q-item-section top avatar>
+          <img :src="procedure.imgSrc" style="height: 50px; max-width: 720px" />
+          <span>{{ procedure.label }}</span>
+        </q-item-section>
+        <div>
+          <q-radio
+            v-model="value"
+            :val="procedure.value"
+            :color="procedure.color"
+            disable
+          />
+        </div>
+      </q-item>
+    </q-card-section>
+    </template>
+  </view-card-component>
 </template>

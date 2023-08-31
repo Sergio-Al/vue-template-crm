@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
+import { QInput, useQuasar } from 'quasar';
 import { computed, defineAsyncComponent, ref } from 'vue';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
@@ -12,13 +12,15 @@ const AdvancedFilterCampaign = defineAsyncComponent(
 
 interface Props {
   id: string;
-  data: ChildCompany;
+  data: any;
 }
 
 const props = defineProps<Props>();
 const $q = useQuasar();
 //const { userCRM, getCompany } = useCompany();
 const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
+const razonSocialInputRef = ref<InstanceType<typeof QInput> | null>(null);
+const nameInputRef = ref<InstanceType<typeof QInput> | null>(null);
 
 const inputData = ref({ ...props.data });
 
@@ -27,7 +29,17 @@ const restoreValues = () => {
   if (props.data) inputData.value = { ...props.data };
 };
 
+const validateInputs = async () => {
+  const validatedFields = await Promise.all([
+    razonSocialInputRef.value?.validate(),
+    nameInputRef.value?.validate(),
+  ]);
+  return validatedFields.every((field) => !!field);
+};
+
+
 defineExpose({
+  validateInputs,
   isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
   exposeData: (): ChildCompany => ({ ...inputData.value }),
   exposeUpdateData:()=>
@@ -41,6 +53,7 @@ defineExpose({
     } as ChildCompany
   )
 });
+
 </script>
 
 <template>
@@ -58,6 +71,7 @@ defineExpose({
       <!-- Modo edicion -->
       <div class="row q-col-gutter-md q-px-md q-py-md">
         <q-input
+          ref="razonSocialInputRef"
           v-model="inputData.razon_social_c"
           type="text"
           class="col-12 col-sm-12 q-py-sm"
@@ -67,6 +81,7 @@ defineExpose({
           :rules="[(val) => !!val || 'Campo requerido']"
         />
         <q-input
+          ref="nameInputRef"
           v-model="inputData.name"
           type="text"
           class="col-12 col-sm-6 q-py-sm"

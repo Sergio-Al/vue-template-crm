@@ -175,6 +175,11 @@ const {
       <template #top>
         <span class="text-h6">Participantes de la empresa</span>
         <q-space />
+        <q-btn class="q-mx-sm" flat round color="primary" icon="history" @click="reloadList">
+          <q-tooltip>
+          Actualizar
+         </q-tooltip>
+        </q-btn>
         <q-btn color="primary" icon="add" label="Nuevo" @click="openDialog()" />
       </template>
       <template v-slot:header="props">
@@ -260,7 +265,10 @@ const {
                 {{ props.row.resolucion_ministerial_c }}
                 </span><br>
                 <span class="text-caption text-grey" v-if="props.row.resolucion_ministerial_date_c">
-                  Fecha: {{props.row.resolucion_ministerial_date_c}}
+                  <q-tooltip>
+                    Fecha de Resolución Ministerial
+                  </q-tooltip>
+                  {{props.row.resolucion_ministerial_date_c}}
                 </span>
               </div>
             </div>

@@ -42,7 +42,8 @@ const cardRelationManufacturerRef = ref<InstanceType<typeof CardRelationManufact
 const validateInputs = async () => {
   const validatedFields = await Promise.all([
     productInputRef.value?.validate(),
-    //manufacturerInputRef.value?.validate()
+    //manufacturerInputRef.value?.validate(),
+    //cardRelationManufacturerRef?.value.validate(),
   ]);
   return validatedFields.every((field) => !!field);
 };
@@ -146,7 +147,9 @@ onMounted(async () => {
 
 defineExpose({
   validateInputs,
-  isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
+  isEditing: computed(() => 
+    baseCardRef.value?.isEditing === 'edit'
+  ),
   exposeData: (): Partial<CertificationRequest> => ({
     hance_empresa_id_c: modeFab.value?inputData.value.fabricante_c:cardRelationManufacturerRef.value?.state.id,
     fabricante_c: modeFab.value?inputData.value.fabricante_c:cardRelationManufacturerRef.value?.state.title,

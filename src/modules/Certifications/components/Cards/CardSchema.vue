@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue';
-import { useQuasar, QPopupProxy } from 'quasar';
+import { useQuasar, QPopupProxy, QInput } from 'quasar';
 import moment from 'moment';
 
 import ViewCard from 'src/components/MainCard/ViewCard.vue';
 import { getUsers, getUser } from '../../services/useCertificationsService';
 
-import { CertificationDB, CertificationRequest, User } from '../../utils/types';
+import { CertificacionBody, CertificationDB, CertificationRequest, User } from '../../utils/types';
 import { userStore } from 'src/modules/Users/store/UserStore';
 import { useCertificationStore } from '../../store/certificationStore';
 import { useAsyncState } from '@vueuse/core';
@@ -30,13 +30,13 @@ interface Props {
 
 // const { getListDivisiones, listDivisiones } = useDivision();
 // const { getRegionales, listRegionales } = useRegionales();
-const { userCRM } = userStore();
+//const { userCRM } = userStore();
 
 const props = defineProps<Props>();
-const $q = useQuasar();
+//const $q = useQuasar();
 const certificationStore = useCertificationStore();
 //const { userCRM, getCompany } = useCompany();
-const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
+//const baseCardRef = ref<InstanceType<typeof ViewCard> | null>(null);
 const dateRef = ref<InstanceType<typeof QPopupProxy> | null>(null);
 
 const localId = ref(props.id);
@@ -47,6 +47,7 @@ const producto = ref<string>('dispositivo');
 
 const documentsSchema = ref<any>([]);
 const showSchemas = ref<boolean>(false);
+const edit = ref<boolean>(false)
 
 //inputData.value.iddivision_c = '';
 //inputData.value.user_id_c = '5c19df6d-0cf0-6e23-7c01-629fb9d01588';
@@ -71,46 +72,14 @@ onMounted(() => {
     tramite.value = props.data.tipo_tramite_c;
     producto.value = props.data.tipo_producto_c;
   }
+  else{
+    edit.value = true;
+  }
 });
-//* Methods
-// const restoreValues = async () => {
-//   if (props.data) inputData.value = { ...props.data };
-//   await formatData();
-// };
 
-// const filterFn = async (
-//   val: string,
-//   update: (callback: () => void) => void,
-//   abort: () => void
-// ) => {
-//   update(async () => {
-//     if (val === '') {
-//       if (!!users.value && users.value.length > 0) return;
-//       users.value = [];
-//     } else {
-//       const response = await getUsers(val);
-//       console.log(response);
-//       users.value = response;
-//       //users.value = [{ id: '1', fullname: 'Dan dd' }];
-//       //console.log(users.value);
-//     }
-//   });
-// };
-
-// const formatData = async () => {
-//   if (!!inputData.value.date_entered) {
-//     inputData.value.date_entered = moment(inputData.value.date_entered).format(
-//       'YYYY-MM-DD'
-//     );
-//   }
-// }
-
-// onMounted(async () => {
-//   console.log(schema.value)
-// });
-
-
+// Methods
 const assignSchema = (item:any)=>{
+  //console.log(item);
   showSchemas.value = false;
   schema.value = item;
   getDocuments(item.id);
@@ -155,6 +124,15 @@ const divisionList = ref([]);
 //let listAreaMercado = ref({});
 const listRegional = ref([]);
 
+const editMode = ()=>{
+  edit.value = true;
+}
+
+const restoreValues = ()=>{
+  edit.value = false;
+  reload();
+}
+
 // onMounted(async () => {
 //   await getListDivisiones();
 //   await getRegionales();
@@ -169,79 +147,54 @@ const listRegional = ref([]);
 //   const aux = { ...result[0] };
 //   return aux.amercado;
 // });
-const reloadList = async()=>{
+const reload = async()=>{
   await execute();
 }
 
 defineExpose({
-  isEditing: computed(() => baseCardRef.value?.isEditing === 'edit'),
-  exposeData: (): Partial<CertificationRequest> => ({
-    user_id_c: inputData.value.user_id_c,
-    user_id: userCRM.id,
-    date_entered: inputData.value.date_entered,
-    iddivision_c: inputData.value.iddivision_c,
-    idamercado_c: inputData.value.idamercado_c,
-    idregional_c: inputData.value.idregional_c,
+  isEditing: computed(() => edit.value === true),
+  exposeData: (): Partial<CertificacionBody> => ({
+    tipo_tramite_c: tramite.value,
+    tipo_producto_c: producto.value,
+    schema_id: schema.value.id,
   }),
   changeSchema: (procedure: string, product: string) => {
     tramite.value = procedure;
     producto.value = product;
-    reloadList();
+    //console.log(schema);
+    reload();
   },
 });
 </script>
 
 <template>
   <q-dialog v-model="showSchemas">
-    <CardSchemasSelect @select="assignSchema" :tramite="schema.tramite" />
+      <CardSchemasSelect 
+      :tramite="schema.tramite" 
+      @close="()=>{
+        showSchemas = false;
+      }" 
+      @select="assignSchema" 
+      />
   </q-dialog>
-  <q-card class="my-card" :loading="isLoading">
-    <q-card-section>
-      <span class="">
+  <q-card class="my-card-schema">
+    <q-card-section class="flex justify-between">
+      <span>
         <q-icon size="20px" name="insert_drive_file" color="primary" />
         Requisitos
       </span>
+      <div v-if="props.id">
+        <q-btn v-if="!edit" @click="editMode" class="q-px-none" icon="edit" flat size="sm">
+        <q-tooltip>Editar</q-tooltip>  
+        </q-btn>
+        <q-btn v-else @click="restoreValues" class="q-px-none" icon="cancel" flat size="sm">
+          <q-tooltip>Cancelar</q-tooltip>  
+        </q-btn>
+      </div>
     </q-card-section>
     <q-separator />
-    <q-card-section class="col-12 padding-schema">
+    <q-card-section class="col-12 padding-schema" v-if="tramite != 'correccion'">
       <q-card class="bg-primary glossy q-mb-sm">
-        <!--<q-list separator>
-                <q-item class="item-list">
-                    <q-item-section avatar>
-                        <q-circular-progress
-                        show-value
-                        font-size="12px"
-                        :value="100"
-                        size="50px"
-                        :thickness="0.10"
-                        color="orange"
-                        track-color="grey-3"
-                        class="q-ma-md"
-                        >
-                            <q-icon color="white" size="35px" name="toc" />
-                        </q-circular-progress>
-                    </q-item-section>
-                    <q-item-section class="">
-                        <q-item-label>
-                            <div class="flex items-center text-white justify-between">
-                                Esquema: Equipo
-                            </div>
-                            <div>
-                            <small class="text-blue-grey-2">
-                                Fecha de creación: {{ 'Sin asignar' }}
-                            </small>
-                            <br />
-                            <small class="text-blue-grey-2">
-                                Descripcion
-                            </small>
-                            </div>
-                        </q-item-label>
-                    </q-item-section>
-                    <q-item-section class="justify-end">
-
-                    </q-item-section>
-                </q-item>
-            </q-list>-->
         <div class="row q-px-sm">
           <div class="col-2 text-left">
             <q-circular-progress
@@ -279,16 +232,17 @@ defineExpose({
               class="q-ma-md"
               round
               color="white"
+              :disabled = "!edit"
             >
-              <q-icon name="edit" color="black">
-                <q-tooltip> Cambiar Esquema </q-tooltip>
+              <q-icon name="search" color="black">
+                <q-tooltip> Búsqueda </q-tooltip>
               </q-icon>
             </q-btn>
           </div>
         </div>
       </q-card>
     </q-card-section>
-    <q-card-section class="q-pb-md">
+    <q-card-section class="q-pb-md" v-if="tramite != 'correccion'">
         <div class="q-pa-sm">
             <q-table
                 style="height: 400px"
@@ -325,6 +279,10 @@ defineExpose({
 
             </q-table>
         </div>
+    </q-card-section>
+    <q-card-section class="text-center text-grey" v-else>
+      <q-icon name="info" />
+      El trámite seleccionado, no lleva requisitos consigo
     </q-card-section>
   </q-card>
   <!--<div v-if="isLoading">
@@ -376,5 +334,9 @@ defineExpose({
 
 .padding-schema {
   padding: 10px 10px 0px;
+}
+
+.my-card-schema{
+  min-height:395px;
 }
 </style>

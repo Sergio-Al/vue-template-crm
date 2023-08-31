@@ -6,6 +6,8 @@ import { AlertComponent } from 'src/components';
 
 //import ViewGeneralSkeleton from 'src/components/Skeletons/ViewGeneralSkeleton.vue';
 import { Manufacturer } from '../../utils/types';
+import { useManufacturerStore } from '../../store/useManufacturerStore';
+import { useManufacturerTableStore } from '../../store/useManufacturerTableStore';
 // import {
 //   getCertification,
 //   createCertificationService,
@@ -48,8 +50,11 @@ import { Manufacturer } from '../../utils/types';
     const open = ref(false);
     const localId = ref('');
 
+    const manufacturerStore = useManufacturerStore();
+    const manufacturerTableStore = useManufacturerTableStore();
+
     //* reference variables
-    const generalFormRef = ref<InstanceType<typeof ViewGeneralData> | null>(null);
+    const generalFormRef = ref<InstanceType<typeof ViewGeneral> | null>(null);
     // const dataManufacturerRef = ref<InstanceType<
     // typeof ViewDataManufacturer
     // > | null>(null);

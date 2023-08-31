@@ -12,19 +12,17 @@ import {
   getTablePreferences,
   saveTablePreferences,
   updateTablePreferences,
-} from '../services/useCertificationsService';
+} from '../services/useManufacturerService';
 import { axios_PREFERENCES } from 'src/conections/axiosCRM';
 import { Notification } from 'src/composables';
 import { userStore } from 'src/modules/Users/store/UserStore';
-import { ref } from 'vue';
 
-export const { userCRM } = userStore();
+const { userCRM } = userStore();
 
-export const useCertificationsTableStore = defineStore('certification_table', {
+export const useManufacturerTableStore = defineStore('manufacturer_table', {
   state: () => ({
     loading: false,
     mongo_id: '',
-    state_tab: '',
     pagination: {
       page: 1,
       sortBy: 'fecha_creacion',
@@ -34,12 +32,9 @@ export const useCertificationsTableStore = defineStore('certification_table', {
     },
     data_filter: {
       name: '',
-      tipo_tramite_c: '',
-      tipo_producto_c: '',
-      etapa_c: '',
-      solicitante:'',
-      solicitud:'',
-      producto_c: '',
+      phone_office: '',
+      phone_alternate:'',
+      billing_address_street: '',
       created_by: [],
       modified_by: [],
       assigned_to: [],
@@ -51,137 +46,38 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         {
           name: 'name',
           align: 'left',
-          label: 'Nro de Registro',
+          label: 'Nombre',
           field: 'name',
           sortable: true,
           visible: true,
         },
         {
-          name: 'solicitante',
+          name: 'website',
           align: 'left',
-          label: 'Solicitante',
-          field: 'solicitante',
+          label: 'Sitio web',
+          field: 'website',
           sortable: true,
           visible: true,
         },
         {
-          name: 'tipo_tramite_c',
+          name: 'phone_office',
           align: 'left',
-          label: 'Tipo de tramite',
-          field: 'tipo_tramite_c',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'tipo_producto_c',
-          align: 'left',
-          label: 'Tipo de Producto',
-          field: 'tipo_producto_c',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'etapa_c',
-          align: 'left',
-          label: 'Etapa',
-          field: 'etapa_c',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'estado_c',
-          align: 'center',
-          label: 'Estado',
-          field: 'estado_c',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'fecha_creacion',
-          align: 'center',
-          label: 'Fecha de Creación',
-          field: 'fecha_creacion',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'cumplimiento_req',
-          align: 'center',
-          label: 'Cumplimiento de requisitos',
-          field: 'cumplimiento_req',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'producto_c',
-          align: 'center',
-          label: 'Producto',
-          field: 'producto_c',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'proveedor',
-          align: 'center',
-          label: 'Producto',
-          field: 'proveedor',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'nro_solicitud',
-          align: 'center',
-          label: 'Nro. solicitud',
-          field: 'nro_solicitud',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'certificacion',
-          align: 'center',
-          label: 'Certificación Emitida',
-          field: 'certificacion',
-          sortable: true,
-          visible: true,
-        },
-        {
-          name: 'options',
-          align: 'center',
-          label: 'Acciones',
-          field: 'options',
+          label: 'Teléfono',
+          field: 'phone_office',
           sortable: true,
           visible: true,
         },
       ],
     },
     visible_fields: [
-      'id',
-      'name',
-      'tipo_tramite_c',
-      'solicitante',
-      'tipo_producto_c',
-      'etapa_c',
-      'estado_c',
-      'fecha_creacion',
-      'cumplimiento_req',
-      'producto_c',
-      'nro_solicitud',
-      'proveedor'
+      'name', 
+      'website', 
+      'phone_office',
     ],
     visible_columns: [
-      'name',
-      'tipo_tramite_c',
-      'solicitante',
-      'tipo_producto_c',
-      'etapa_c',
-      'estado_c',
-      'producto_c',
-      'fecha_creacion',
-      'nro_solicitud',
-      'cumplimiento_req',
-      'nro_solicitud',
-      'certificacion',
-      'options',
+        'name', 
+        'website', 
+        'phone_office',
     ],
   }),
   actions: {
@@ -206,12 +102,9 @@ export const useCertificationsTableStore = defineStore('certification_table', {
       }
     },
 
-    async getListCertifications(props: {
-      pagination: Pagination;
-      filter: Filter;
-    }) {
+    async getListManufacturers(props: { pagination: Pagination; filter: Filter }) {
       try {
-        //this.loading = true;
+        this.loading = true;
         const { pagination, filter } = props;
         const { page, rowsPerPage, sortBy, descending } = pagination;
         const params = {
@@ -219,13 +112,12 @@ export const useCertificationsTableStore = defineStore('certification_table', {
           rowsPerPage: rowsPerPage,
           sortBy: sortBy,
           order: descending ? 'desc' : 'asc',
-          filter: filter,
+          filter,
         };
-        const data = await getTableData(params);
-        console.log(data);
+
+        const data:any = await getTableData(params);
         this.data_table.rows = data;
         this.pagination.rowsNumber = data.length;
-        //this.loading = false;
       } catch (error) {
         console.log(error);
       } finally {
@@ -234,8 +126,8 @@ export const useCertificationsTableStore = defineStore('certification_table', {
     },
 
     async reloadList() {
-      //this.data_filter.etapa_c = this.state_tab;
-      await this.getListCertifications({
+      //console.log(this.data_filter);
+      this.getListManufacturers({
         pagination: this.pagination,
         filter: this.data_filter,
       });
@@ -290,20 +182,19 @@ export const useCertificationsTableStore = defineStore('certification_table', {
 
     async deleteMultiple(selectItems: { id: string }[]) {
       this.loading = true;
-
       try {
         const dataSend = {
           user_id: userCRM.id,
           items: selectItems,
         };
         await deleteMassiveData(dataSend);
-        await this.reloadList();
         Notification(
           'positive',
           'check_circle',
-          `<strong> Acción exitosa¡ </strong> <br/> ${selectItems.length > 1
-            ? `Se eliminaron ${selectItems.length} registros de la tabla.`
-            : 'Se eliminó un registro de la tabla.'
+          `<strong> Acción exitosa! </strong> <br/> ${
+            selectItems.length > 1
+              ? `Se eliminaron ${selectItems.length} registros de la tabla.`
+              : 'Se eliminó un registro de la tabla.'
           }`
         );
       } catch (error) {
@@ -337,9 +228,10 @@ export const useCertificationsTableStore = defineStore('certification_table', {
         Notification(
           'positive',
           'check_circle',
-          `<strong> Acción exitosa¡ </strong> <br/> ${selectItems.length > 1
-            ? `Se actualizaron ${selectItems.length} registros de la tabla.`
-            : 'Se actualizó un registro de la tabla.'
+          `<strong> Acción exitosa¡ </strong> <br/> ${
+            selectItems.length > 1
+              ? `Se actualizaron ${selectItems.length} registros de la tabla.`
+              : 'Se actualizó un registro de la tabla.'
           }`
         );
       } catch (error) {
@@ -355,14 +247,11 @@ export const useCertificationsTableStore = defineStore('certification_table', {
     },
 
     async clearFilterData() {
-      this.state_tab = '';
       this.data_filter = {
         name: '',
-        etapa_c: '',
-        tipo_tramite_c: '',
-        producto_c: '',
-        aprobacion_c: '',
-        id_empresa: '',
+        phone_office: '',
+        phone_alternate:'',
+        billing_address_street: '',
         created_by: [],
         modified_by: [],
         assigned_to: [],
@@ -381,3 +270,4 @@ export const useCertificationsTableStore = defineStore('certification_table', {
     },
   },
 });
+
